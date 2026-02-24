@@ -1,0 +1,76 @@
+name: 毎朝レポート & スキャン
+
+on:
+  schedule:
+    # 毎朝8:00 JST（= UTC 23:00）に実行 ※日本時間はUTC+9
+    - cron: '0 23 * * 1-5'   # 平日（月〜金）のみ
+  workflow_dispatch:           # 手動実行も可能
+
+jobs:
+  daily-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. リポジトリをチェックアウト
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      # 2. Pythonをセットアップ
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. 依存パッケージをインストール
+      - name: 依存パッケージをインストール
+        run: |
+          pip install -r requirements.txt
+
+      # 4. config.yaml をシークレットから生成
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      # 5. trade_log.json をキャッシュから復元
+      - name: trade_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/trade_log.json
+          key: trade-log-${{ github.run_number }}
+          restore-keys: |
+            trade-log-
+
+      # 6. 株価データを取得
+      - name: 株価データ取得
+        run: |
+          python main.py --mode fetch
+        continue-on-error: true
+
+      # 7. スキャン実行（シグナル検出 → Slack通知）
+      - name: スキャン実行
+        run: |
+          python main.py --mode scan
+        continue-on-error: true
+
+      # 8. ポジション更新 & 朝次レポートをSlackに送信
+      - name: 朝次レポート送信
+        run: |
+          python main.py --mode status --notify
+
+      # 9. trade_log.json を保存（次回実行のため）
+      - name: trade_log.json を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/trade_log.json
+          key: trade-log-${{ github.run_number }}

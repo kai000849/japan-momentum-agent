@@ -1,0 +1,21 @@
+# Japan Momentum Agent - 必要ライブラリ一覧
+# pip install -r requirements.txt で一括インストールできます
+
+# J-Quants API クライアント（日本株データ取得用）
+jquants-api-client
+
+# データ操作・分析
+pandas
+numpy
+
+# HTTP リクエスト（EDINET API通信用）
+requests
+
+# 設定ファイル読み込み（config.yaml用）
+pyyaml
+
+# テクニカル指標計算（RSI・移動平均等）
+ta
+
+# スケジュール実行（定期自動実行用）
+schedule

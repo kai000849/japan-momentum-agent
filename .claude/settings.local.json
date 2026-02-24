@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(python3 -m pip install:*)",
+      "WebFetch(domain:jpx-jquants.com)",
+      "WebSearch",
+      "Bash(source:*)",
+      "Bash(pip show:*)",
+      "Bash(venv/Scripts/python.exe -m pip show:*)",
+      "Bash(venv/Scripts/python.exe:*)"
+    ]
+  }
+}

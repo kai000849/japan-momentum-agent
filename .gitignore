@@ -1,0 +1,50 @@
+# ========================================
+# Japan Momentum Agent - .gitignore
+# Gitで管理しないファイルを指定します
+# ========================================
+
+# --- 設定ファイル（APIキーが含まれる！絶対にGitに含めない） ---
+config.yaml
+
+# --- Pythonキャッシュ ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# --- 仮想環境 ---
+venv/
+.venv/
+env/
+.env/
+
+# --- データファイル（容量が大きいため除外） ---
+data/raw/
+data/processed/
+
+# --- メモリ・ログファイル（個人の取引履歴） ---
+memory/trade_log.json
+memory/disclosure_log.json
+
+# --- Jupyter Notebook チェックポイント ---
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# --- IDE設定 ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS固有ファイル ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- ログファイル ---
+*.log
+logs/
+
+# --- トークンキャッシュ（認証情報が含まれる） ---
+*.token
+token_cache.json
