@@ -192,10 +192,11 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
     lines = []
     for s in signals[:10]:  # 最大10件
         code = s.get("stockCode", "")
-        name = s.get("companyName", "")[:12]
+        name = (s.get("companyName") or s.get("company_name") or "")[:12]
+        name_str = f" {name}" if name else ""
         close = s.get("close", 0)
         score = s.get("score", s.get("momentum_score", 0))
-        lines.append(f"  • {code} {name}  ¥{close:,.0f}  スコア:{score:.1f}")
+        lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
 
     signals_text = "\n".join(lines)
     now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
