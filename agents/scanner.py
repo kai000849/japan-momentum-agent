@@ -28,7 +28,7 @@ except ImportError:
     logging.warning("警告: taライブラリが見つかりません。pip install ta でインストールしてください。")
 
 # 同プロジェクト内のモジュールをインポート
-from agents.jquants_fetcher import load_latest_quotes, fetch_all_stocks_data
+from agents.jquants_fetcher import load_latest_quotes, fetch_all_stocks_data, get_listed_stocks
 from agents.edinet_fetcher import get_earnings_announcements, save_disclosure_log
 
 # ログ設定
@@ -469,6 +469,32 @@ def run_scan(mode: str, date: str = None) -> list:
             return []
 
         logger.info(f"株価データ読み込み完了: {df_all['Code'].nunique() if 'Code' in df_all.columns else '?'}銘柄")
+
+        # 銘柄マスターから銘柄名を結合する
+        try:
+            master_df = get_listed_stocks()
+            if not master_df.empty and "Code" in master_df.columns and "CompanyName" in master_df.columns:
+                # マスターのCodeを文字列化（4桁 or 5桁どちらでも対応）
+                master_df["Code_str"] = master_df["Code"].astype(str)
+                # 5桁で末尾0の場合は4桁に変換してマップ作成
+                name_map = {}
+                for _, row in master_df.iterrows():
+                    c = row["Code_str"]
+                    name_map[c] = row["CompanyName"]
+                    # 4桁でも登録
+                    if len(c) == 5 and c.endswith("0"):
+                        name_map[c[:4]] = row["CompanyName"]
+                    elif len(c) == 4:
+                        name_map[c + "0"] = row["CompanyName"]
+
+                def lookup_name(code):
+                    c = str(code)
+                    return name_map.get(c) or name_map.get(c[:4]) or name_map.get(c + "0") or ""
+
+                df_all["CompanyName"] = df_all["Code"].apply(lookup_name)
+                logger.info("銘柄名の付加完了")
+        except Exception as e:
+            logger.warning(f"銘柄名の取得に失敗しました（スキップ）: {e}")
 
         # 日付が未指定の場合はCSVの最終日付を自動使用
         # （今日の日付を使うとデータが存在しないため全銘柄スキップされる）
