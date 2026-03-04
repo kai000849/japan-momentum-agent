@@ -150,12 +150,32 @@ def run_scan_mode(args):
     total_hits = sum(len(r) for r in all_results.values())
     print(f"\n【スキャン完了】合計ヒット数: {total_hits}銘柄")
 
-    # Slack通知: シグナル検出
+    # バックテストを実行してPFを計算してからSlack通知
     try:
+        from agents.backtester import run_backtest
         from agents.slack_notifier import notify_new_signal
+
         for mode, results in all_results.items():
-            if results:
+            if not results:
+                continue
+
+            # EARNINGS（決算）モードはバックテスト対象外なのでPF=0で通知
+            if mode == "EARNINGS":
                 notify_new_signal(results, mode=mode, profit_factor=0.0)
+                continue
+
+            # SHORT_TERM・MOMENTUMはバックテストを実行してPFを取得
+            try:
+                logger.info(f"{mode} のバックテストを実行中...")
+                bt_result = run_backtest(results, lookback_days=90)
+                pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
+                logger.info(f"{mode} PF: {pf:.2f}")
+            except Exception as bt_err:
+                logger.warning(f"{mode} バックテストエラー（PF=0で通知）: {bt_err}")
+                pf = 0.0
+
+            notify_new_signal(results, mode=mode, profit_factor=pf)
+
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
 
