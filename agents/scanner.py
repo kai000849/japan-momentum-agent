@@ -288,25 +288,23 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 and target_idx >= 75
             )
 
-            if has_ma75:
-                # 75日MAのデータが揃っている場合：3つ全て確認
-                all_ma_rising = all([
-                    ma_data["ma5"]["rising"],
-                    ma_data["ma25"]["rising"],
-                    ma_data["ma75"]["rising"]
-                ])
-            else:
-                # データ不足で75日MAが計算できない場合：5日・25日MAのみ確認
-                all_ma_rising = all([
-                    ma_data["ma5"]["rising"],
-                    ma_data["ma25"]["rising"]
-                ])
+            # ---- 条件1: 75日MAが必須 ----
+            # データが75日分未満の銘柄はスキップ（条件を緩めない）
+            if not has_ma75:
+                continue  # 75日MAが計算できない銘柄は除外
+
+            # 5日・25日・75日MA全て上昇中であることを確認
+            all_ma_rising = all([
+                ma_data["ma5"]["rising"],
+                ma_data["ma25"]["rising"],
+                ma_data["ma75"]["rising"]
+            ])
 
             if not all_ma_rising:
                 continue
 
-            # ---- 条件2: 現在株価が52週高値の90%以上 ----
-            # 52週 = 約252営業日（データがあれば）
+            # ---- 条件2: 現在株価が52週高値の95%以上 ----
+            # 90% → 95%に厳格化（より高値圏に近い銘柄のみ）
             price_52w_window = closes.tail(252)
             high_52w = float(price_52w_window.max())
 
@@ -315,14 +313,15 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 
             price_to_high_ratio = (current_close / high_52w) * 100  # 52週高値比（%）
 
-            if price_to_high_ratio < 90.0:
+            if price_to_high_ratio < 95.0:
                 continue
 
-            # ---- 条件3: RSI(14日)が50〜75の範囲 ----
+            # ---- 条件3: RSI(14日)が55〜70の範囲 ----
+            # 50〜75 → 55〜70に厳格化（より健全なモメンタム帯のみ）
             rsi_series = calculate_rsi(closes, period=14)
             current_rsi = float(rsi_series.iloc[-1]) if not rsi_series.empty else None
 
-            if current_rsi is None or not (50 <= current_rsi <= 75):
+            if current_rsi is None or not (55 <= current_rsi <= 70):
                 continue
 
             # ---- モメンタムスコア計算 ----
