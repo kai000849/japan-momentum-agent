@@ -409,14 +409,46 @@ def _scan_earnings(scan_date: str) -> list:
         logger.warning(f"{scan_date}の決算発表銘柄が見つかりませんでした。")
         return []
 
-    # モードとスコアを追加（決算スキャンはスコアを均等に1.0とする）
+    # ---- 株価データを読み込んで銘柄コードと紐付けるための辞書を作成 ----
+    price_map = {}  # {銘柄コード文字列: 最新終値}
+    try:
+        df_all = load_latest_quotes()
+        if not df_all.empty:
+            code_col = _detect_code_column(df_all)
+            # 各銘柄の最新終値を取得
+            latest = (
+                df_all.sort_values("Date")
+                .groupby(code_col)
+                .last()
+                .reset_index()
+            )
+            for _, row in latest.iterrows():
+                code = str(row[code_col])
+                close = float(row.get("Close", 0) or 0)
+                price_map[code] = close
+                # 5桁・4桁の両方で登録（コード形式のゆらぎ対応）
+                if len(code) == 5 and code.endswith("0"):
+                    price_map[code[:4]] = close
+                elif len(code) == 4:
+                    price_map[code + "0"] = close
+        logger.info(f"株価マップ作成完了: {len(price_map)}銘柄")
+    except Exception as e:
+        logger.warning(f"株価データの読み込みに失敗しました（株価なしで継続）: {e}")
+
+    # モードとスコアを追加
     results = []
     for e in earnings:
+        sec_code = str(e.get("secCode", ""))
+
+        # 株価を取得（4桁・5桁どちらでも検索）
+        close = price_map.get(sec_code) or price_map.get(sec_code[:4]) or 0.0
+
         results.append({
-            "stockCode": e.get("secCode", ""),
+            "stockCode": sec_code,
             "companyName": e.get("companyName", ""),
             "mode": MODE_EARNINGS,
             "scanDate": scan_date,
+            "close": close,                              # 最新終値（追加）
             "docTypeCode": e.get("docTypeCode", ""),
             "docDescription": e.get("docDescription", ""),
             "submitDateTime": e.get("submitDateTime", ""),

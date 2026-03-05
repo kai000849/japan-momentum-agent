@@ -208,6 +208,11 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
                 f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
             )
+        elif mode == "EARNINGS":
+            # 決算シグナルは株価と書類種別を表示
+            doc_desc = s.get("docDescription", "")[:15] or "決算"
+            close_str = f"¥{close:,.0f}" if close > 0 else "株価取得中"
+            lines.append(f"  • {code}{name_str}  {close_str}  [{doc_desc}]")
         else:
             lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
 
