@@ -154,6 +154,8 @@ def run_scan_mode(args):
     try:
         from agents.backtester import run_backtest
         from agents.slack_notifier import notify_new_signal
+        import json
+        from pathlib import Path
 
         for mode, results in all_results.items():
             if not results:
@@ -165,11 +167,43 @@ def run_scan_mode(args):
                 continue
 
             # SHORT_TERM・MOMENTUMはバックテストを実行してPFを取得
+            # ※ 当日スキャン結果では翌日データがないためPF=0になる問題を回避するため
+            #   過去のスキャン結果ファイル（翌日以降のデータが存在するもの）を優先使用する
             try:
-                logger.info(f"{mode} のバックテストを実行中...")
-                bt_result = run_backtest(results, lookback_days=90)
-                pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
-                logger.info(f"{mode} PF: {pf:.2f}")
+                pf = 0.0
+                scans_dir = Path(__file__).parent / "data" / "processed" / "scans"
+                # 過去スキャンファイルを日付降順で取得（当日分を除く最新2件を候補に）
+                past_scan_files = sorted(
+                    scans_dir.glob(f"scan_*_{mode}.json"), reverse=True
+                )
+                # 当日ファイル名を作成（除外用）
+                today_str = datetime.now().strftime("%Y%m%d")
+
+                past_results = []
+                for f in past_scan_files:
+                    if today_str in f.name:
+                        continue  # 当日ファイルはスキップ
+                    try:
+                        with open(f, "r", encoding="utf-8") as fp:
+                            data = json.load(fp)
+                        past_results.extend(data.get("results", []))
+                        if len(past_results) >= 20:  # 20件以上あれば十分
+                            break
+                    except Exception:
+                        continue
+
+                if past_results:
+                    logger.info(f"{mode}: 過去スキャン結果{len(past_results)}件でバックテスト実行...")
+                    bt_result = run_backtest(past_results, lookback_days=90)
+                    pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
+                    logger.info(f"{mode} PF（過去データ基準）: {pf:.2f}")
+                else:
+                    # 過去データがない場合は当日データでバックテスト（初回起動時など）
+                    logger.info(f"{mode}: 過去スキャンデータなし。当日データでバックテスト実行...")
+                    bt_result = run_backtest(results, lookback_days=90)
+                    pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
+                    logger.info(f"{mode} PF: {pf:.2f}")
+
             except Exception as bt_err:
                 logger.warning(f"{mode} バックテストエラー（PF=0で通知）: {bt_err}")
                 pf = 0.0
