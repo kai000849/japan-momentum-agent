@@ -304,7 +304,6 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 continue
 
             # ---- 条件2: 現在株価が52週高値の95%以上 ----
-            # 90% → 95%に厳格化（より高値圏に近い銘柄のみ）
             price_52w_window = closes.tail(252)
             high_52w = float(price_52w_window.max())
 
@@ -317,19 +316,47 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 continue
 
             # ---- 条件3: RSI(14日)が55〜70の範囲 ----
-            # 50〜75 → 55〜70に厳格化（より健全なモメンタム帯のみ）
             rsi_series = calculate_rsi(closes, period=14)
             current_rsi = float(rsi_series.iloc[-1]) if not rsi_series.empty else None
 
             if current_rsi is None or not (55 <= current_rsi <= 70):
                 continue
 
-            # ---- モメンタムスコア計算 ----
-            # スコア = RSI × (現在株価/52週高値%) × 全MA上昇ボーナス
+            # ---- 追加指標1: 新高値更新スコア ----
+            # 直近20日間で何回52週高値を更新したか（0〜20）
+            # 「高値更新が続いている」銘柄を高く評価する
+            recent_closes = closes.tail(20)
+            new_high_count = 0
+            running_high = float(closes.iloc[-(21)] if len(closes) > 20 else closes.iloc[0])
+            for price in recent_closes:
+                if price > running_high:
+                    new_high_count += 1
+                    running_high = price
+            # 正規化: 0〜1.0（20日で20回更新 = 1.0）
+            new_high_score = new_high_count / 20.0
+
+            # ---- 追加指標2: 出来高増加トレンド ----
+            # 直近5日平均出来高 ÷ 直近25日平均出来高
+            # 1.0より大きければ出来高が増加トレンド
+            volumes = group_to_date["Volume"].astype(float)
+            avg_vol_5d = float(volumes.tail(5).mean())
+            avg_vol_25d = float(volumes.tail(25).mean())
+            volume_trend = (avg_vol_5d / avg_vol_25d) if avg_vol_25d > 0 else 1.0
+            # 1.5倍以上は上限キャップ（スコアが支配的にならないよう）
+            volume_trend = min(volume_trend, 1.5)
+
+            # ---- モメンタムスコア計算（中長期向け強化版）----
+            # 基本スコア: RSI × 52週高値比
+            base_score = current_rsi * (price_to_high_ratio / 100)
+            # ボーナス乗数:
+            #   全MA上昇中       → ×1.2
+            #   新高値更新あり   → ×(1.0 + new_high_score × 0.3)  最大×1.3
+            #   出来高増加トレンド → ×(0.85 + volume_trend × 0.1)  最大×1.0
             momentum_score = (
-                current_rsi
-                * (price_to_high_ratio / 100)
-                * (1.2 if all_ma_rising else 1.0)  # 全MA上昇のボーナス
+                base_score
+                * (1.2 if all_ma_rising else 1.0)
+                * (1.0 + new_high_score * 0.3)
+                * (0.85 + volume_trend * 0.1)
             )
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
@@ -343,11 +370,13 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 "scanDate": scan_date,
                 "close": current_close,
                 "high52w": high_52w,
-                "priceToHighRatio": round(price_to_high_ratio, 2),  # 52週高値比（%）
+                "priceToHighRatio": round(price_to_high_ratio, 2),   # 52週高値比（%）
                 "rsi14": round(current_rsi, 2),
                 "ma5": round(ma_data["ma5"]["current"], 2),
                 "ma25": round(ma_data["ma25"]["current"], 2),
                 "ma75": round(ma75_val, 2) if ma75_val is not None else None,
+                "newHighCount": new_high_count,                       # 直近20日の新高値更新回数
+                "volumeTrend": round(volume_trend, 2),                # 出来高トレンド比（5日/25日）
                 "score": round(momentum_score, 2),
             })
 

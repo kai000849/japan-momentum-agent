@@ -196,7 +196,20 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
         name_str = f" {name}" if name else ""
         close = s.get("close", 0)
         score = s.get("score", s.get("momentum_score", 0))
-        lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
+
+        if mode == "MOMENTUM":
+            # モメンタムシグナルは追加指標も表示
+            rsi = s.get("rsi14", 0)
+            high_ratio = s.get("priceToHighRatio", 0)
+            new_high = s.get("newHighCount", 0)
+            vol_trend = s.get("volumeTrend", 1.0)
+            vol_icon = "📶" if vol_trend >= 1.2 else ("➡️" if vol_trend >= 0.9 else "📉")
+            lines.append(
+                f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
+                f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
+            )
+        else:
+            lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
 
     signals_text = "\n".join(lines)
     now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
