@@ -319,7 +319,7 @@ def fetch_all_stocks_data(days: int = 60) -> pd.DataFrame:
         pd.DataFrame: プライム市場銘柄の株価データ（縦積み）
     """
     # リクエスト間の基本待機秒数（429対策。短すぎると429が頻発する）
-    REQUEST_INTERVAL_SEC = 20
+    REQUEST_INTERVAL_SEC = 3
     # 429発生時の追加待機秒数
     RATE_LIMIT_WAIT_SEC = 300
 
