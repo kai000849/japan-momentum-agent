@@ -233,7 +233,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 
     条件:
     - 5日・25日・75日移動平均が全て前日より上昇
-    - 現在株価が52週高値の90%以上
+    - 現在株価が52週高値の85%以上
     - RSI(14日)が50〜75の範囲
 
     Args:
@@ -278,9 +278,6 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 continue
 
             # ---- 条件1: 移動平均が全て上昇中 ----
-            # データ量に応じて使用できる移動平均を柔軟に判断する
-            # - 76日以上あれば: 5日・25日・75日MA全て確認
-            # - 26日以上75日未満: 5日・25日MAのみ確認（75日MAはスキップ）
             ma_data = calculate_moving_averages(closes)
 
             has_ma75 = (
@@ -288,10 +285,9 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 and target_idx >= 75
             )
 
-            # ---- 条件1: 75日MAが必須 ----
-            # データが75日分未満の銘柄はスキップ（条件を緩めない）
+            # 75日MAが計算できない銘柄は除外
             if not has_ma75:
-                continue  # 75日MAが計算できない銘柄は除外
+                continue
 
             # 5日・25日・75日MA全て上昇中であることを確認
             all_ma_rising = all([
@@ -303,7 +299,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             if not all_ma_rising:
                 continue
 
-            # ---- 条件2: 現在株価が52週高値の95%以上 ----
+            # ---- 条件2: 現在株価が52週高値の85%以上 ----
             price_52w_window = closes.tail(252)
             high_52w = float(price_52w_window.max())
 
@@ -312,19 +308,17 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 
             price_to_high_ratio = (current_close / high_52w) * 100  # 52週高値比（%）
 
-            if price_to_high_ratio < 95.0:
+            if price_to_high_ratio < 85.0:
                 continue
 
-            # ---- 条件3: RSI(14日)が55〜70の範囲 ----
+            # ---- 条件3: RSI(14日)が50〜75の範囲 ----
             rsi_series = calculate_rsi(closes, period=14)
             current_rsi = float(rsi_series.iloc[-1]) if not rsi_series.empty else None
 
-            if current_rsi is None or not (55 <= current_rsi <= 70):
+            if current_rsi is None or not (50 <= current_rsi <= 75):
                 continue
 
             # ---- 追加指標1: 新高値更新スコア ----
-            # 直近20日間で何回52週高値を更新したか（0〜20）
-            # 「高値更新が続いている」銘柄を高く評価する
             recent_closes = closes.tail(20)
             new_high_count = 0
             running_high = float(closes.iloc[-(21)] if len(closes) > 20 else closes.iloc[0])
@@ -332,26 +326,17 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 if price > running_high:
                     new_high_count += 1
                     running_high = price
-            # 正規化: 0〜1.0（20日で20回更新 = 1.0）
             new_high_score = new_high_count / 20.0
 
             # ---- 追加指標2: 出来高増加トレンド ----
-            # 直近5日平均出来高 ÷ 直近25日平均出来高
-            # 1.0より大きければ出来高が増加トレンド
             volumes = group_to_date["Volume"].astype(float)
             avg_vol_5d = float(volumes.tail(5).mean())
             avg_vol_25d = float(volumes.tail(25).mean())
             volume_trend = (avg_vol_5d / avg_vol_25d) if avg_vol_25d > 0 else 1.0
-            # 1.5倍以上は上限キャップ（スコアが支配的にならないよう）
             volume_trend = min(volume_trend, 1.5)
 
-            # ---- モメンタムスコア計算（中長期向け強化版）----
-            # 基本スコア: RSI × 52週高値比
+            # ---- モメンタムスコア計算 ----
             base_score = current_rsi * (price_to_high_ratio / 100)
-            # ボーナス乗数:
-            #   全MA上昇中       → ×1.2
-            #   新高値更新あり   → ×(1.0 + new_high_score × 0.3)  最大×1.3
-            #   出来高増加トレンド → ×(0.85 + volume_trend × 0.1)  最大×1.0
             momentum_score = (
                 base_score
                 * (1.2 if all_ma_rising else 1.0)
@@ -361,7 +346,6 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
 
-            # ma75はデータ不足の場合 None になることがある
             ma75_val = ma_data["ma75"]["current"]
             results.append({
                 "stockCode": str(stock_code),
@@ -370,13 +354,13 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 "scanDate": scan_date,
                 "close": current_close,
                 "high52w": high_52w,
-                "priceToHighRatio": round(price_to_high_ratio, 2),   # 52週高値比（%）
+                "priceToHighRatio": round(price_to_high_ratio, 2),
                 "rsi14": round(current_rsi, 2),
                 "ma5": round(ma_data["ma5"]["current"], 2),
                 "ma25": round(ma_data["ma25"]["current"], 2),
                 "ma75": round(ma75_val, 2) if ma75_val is not None else None,
-                "newHighCount": new_high_count,                       # 直近20日の新高値更新回数
-                "volumeTrend": round(volume_trend, 2),                # 出来高トレンド比（5日/25日）
+                "newHighCount": new_high_count,
+                "volumeTrend": round(volume_trend, 2),
                 "score": round(momentum_score, 2),
             })
 
@@ -392,30 +376,20 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 def _scan_earnings(scan_date: str) -> list:
     """
     決算開示モードのスクリーニングを実行する。
-    当日のEDINET開示書類から決算発表銘柄を抽出し、翌日の値動き追跡のために記録する。
-
-    Args:
-        scan_date (str): スキャン日付（YYYY-MM-DD）
-
-    Returns:
-        list: 決算発表銘柄のリスト
     """
     logger.info(f"決算開示モードでスクリーニング中（{scan_date}）...")
 
-    # EDINETから決算発表銘柄を取得
     earnings = get_earnings_announcements(scan_date)
 
     if not earnings:
         logger.warning(f"{scan_date}の決算発表銘柄が見つかりませんでした。")
         return []
 
-    # ---- 株価データを読み込んで銘柄コードと紐付けるための辞書を作成 ----
-    price_map = {}  # {銘柄コード文字列: 最新終値}
+    price_map = {}
     try:
         df_all = load_latest_quotes()
         if not df_all.empty:
             code_col = _detect_code_column(df_all)
-            # 各銘柄の最新終値を取得
             latest = (
                 df_all.sort_values("Date")
                 .groupby(code_col)
@@ -426,7 +400,6 @@ def _scan_earnings(scan_date: str) -> list:
                 code = str(row[code_col])
                 close = float(row.get("Close", 0) or 0)
                 price_map[code] = close
-                # 5桁・4桁の両方で登録（コード形式のゆらぎ対応）
                 if len(code) == 5 and code.endswith("0"):
                     price_map[code[:4]] = close
                 elif len(code) == 4:
@@ -435,12 +408,9 @@ def _scan_earnings(scan_date: str) -> list:
     except Exception as e:
         logger.warning(f"株価データの読み込みに失敗しました（株価なしで継続）: {e}")
 
-    # モードとスコアを追加
     results = []
     for e in earnings:
         sec_code = str(e.get("secCode", ""))
-
-        # 株価を取得（4桁・5桁どちらでも検索）
         close = price_map.get(sec_code) or price_map.get(sec_code[:4]) or 0.0
 
         results.append({
@@ -448,14 +418,13 @@ def _scan_earnings(scan_date: str) -> list:
             "companyName": e.get("companyName", ""),
             "mode": MODE_EARNINGS,
             "scanDate": scan_date,
-            "close": close,                              # 最新終値（追加）
+            "close": close,
             "docTypeCode": e.get("docTypeCode", ""),
             "docDescription": e.get("docDescription", ""),
             "submitDateTime": e.get("submitDateTime", ""),
-            "score": 1.0,  # 決算スキャンは全銘柄スコア同一
+            "score": 1.0,
         })
 
-    # 開示ログに保存（翌日の株価確認のため）
     save_disclosure_log(earnings, scan_date)
 
     logger.info(f"決算開示モード: {len(results)}銘柄を記録しました。")
@@ -465,14 +434,7 @@ def _scan_earnings(scan_date: str) -> list:
 def _detect_code_column(df: pd.DataFrame) -> str:
     """
     DataFrameから銘柄コード列を自動検出する（内部関数）。
-
-    Args:
-        df (pd.DataFrame): 株価DataFrame
-
-    Returns:
-        str: 銘柄コード列名
     """
-    # 候補列名を順に試す
     for col in ["Code", "code", "StockCode", "stock_code"]:
         if col in df.columns:
             return col
@@ -489,20 +451,7 @@ def _detect_code_column(df: pd.DataFrame) -> str:
 def run_scan(mode: str, date: str = None) -> list:
     """
     指定モードでスクリーニングを実行する。
-
-    Args:
-        mode (str): スクリーニングモード
-                    "SHORT_TERM" / "MOMENTUM" / "EARNINGS"
-        date (str): スキャン日付（YYYY-MM-DD）。
-                    Noneの場合はCSVの最終日付を自動使用（データと日付のずれを防ぐ）
-
-    Returns:
-        list: スクリーニング結果のリスト（スコア降順ソート済み）
-
-    Raises:
-        ValueError: 無効なモードが指定された場合
     """
-    # モードの検証
     mode = mode.upper()
     if mode not in VALID_MODES:
         raise ValueError(
@@ -510,14 +459,12 @@ def run_scan(mode: str, date: str = None) -> list:
             f"有効なモード: {', '.join(VALID_MODES)}"
         )
 
-    # 決算開示モードはEDINETのみ使用（株価データ不要）
     if mode == MODE_EARNINGS:
         if date is None:
             date = datetime.now().strftime("%Y-%m-%d")
         logger.info(f"スキャン開始: モード={mode}, 日付={date}")
         results = _scan_earnings(date)
     else:
-        # 急騰・モメンタムモードは株価データが必要
         logger.info("株価データを読み込み中...")
         df_all = load_latest_quotes()
 
@@ -530,18 +477,14 @@ def run_scan(mode: str, date: str = None) -> list:
 
         logger.info(f"株価データ読み込み完了: {df_all['Code'].nunique() if 'Code' in df_all.columns else '?'}銘柄")
 
-        # 銘柄マスターから銘柄名を結合する
         try:
             master_df = get_listed_stocks()
             if not master_df.empty and "Code" in master_df.columns and "CompanyName" in master_df.columns:
-                # マスターのCodeを文字列化（4桁 or 5桁どちらでも対応）
                 master_df["Code_str"] = master_df["Code"].astype(str)
-                # 5桁で末尾0の場合は4桁に変換してマップ作成
                 name_map = {}
                 for _, row in master_df.iterrows():
                     c = row["Code_str"]
                     name_map[c] = row["CompanyName"]
-                    # 4桁でも登録
                     if len(c) == 5 and c.endswith("0"):
                         name_map[c[:4]] = row["CompanyName"]
                     elif len(c) == 4:
@@ -556,8 +499,6 @@ def run_scan(mode: str, date: str = None) -> list:
         except Exception as e:
             logger.warning(f"銘柄名の取得に失敗しました（スキップ）: {e}")
 
-        # 日付が未指定の場合はCSVの最終日付を自動使用
-        # （今日の日付を使うとデータが存在しないため全銘柄スキップされる）
         if date is None:
             if "Date" in df_all.columns:
                 last_date = df_all["Date"].max()
@@ -576,7 +517,6 @@ def run_scan(mode: str, date: str = None) -> list:
         elif mode == MODE_MOMENTUM:
             results = _scan_momentum(df_all, date)
 
-    # 結果をJSONに保存
     if results:
         _save_scan_results(results, date, mode)
 
@@ -586,19 +526,10 @@ def run_scan(mode: str, date: str = None) -> list:
 def _save_scan_results(results: list, date: str, mode: str) -> Path:
     """
     スキャン結果をJSONファイルに保存する（内部関数）。
-
-    Args:
-        results (list): スキャン結果
-        date (str): スキャン日付
-        mode (str): スキャンモード
-
-    Returns:
-        Path: 保存ファイルパス
     """
     save_dir = Path(__file__).parent.parent / "data" / "processed" / "scans"
     save_dir.mkdir(parents=True, exist_ok=True)
 
-    # ファイル名: scan_YYYYMMDD_MODE.json
     date_str = date.replace("-", "")
     file_name = f"scan_{date_str}_{mode}.json"
     save_path = save_dir / file_name
@@ -625,16 +556,11 @@ def _save_scan_results(results: list, date: str, mode: str) -> Path:
 def display_top_results(results: list, top_n: int = 10) -> None:
     """
     スクリーニング結果の上位N銘柄をコンソールに表示する。
-
-    Args:
-        results (list): スキャン結果リスト（スコア降順ソート済みを想定）
-        top_n (int): 表示する銘柄数（デフォルト: 10）
     """
     if not results:
         print("\n【スキャン結果】ヒット銘柄なし")
         return
 
-    # 上位N件を取得
     top_results = results[:top_n]
     mode = top_results[0].get("mode", "UNKNOWN")
     scan_date = top_results[0].get("scanDate", "")
@@ -645,7 +571,6 @@ def display_top_results(results: list, top_n: int = 10) -> None:
     print(f"{'='*65}")
 
     if mode == MODE_SHORT_TERM:
-        # 急騰モードの表示
         print(f"{'順位':>4} {'銘柄コード':>8} {'会社名':<20} {'前日比':>7} {'出来高倍':>7} {'スコア':>8}")
         print("-" * 65)
         for i, r in enumerate(top_results, 1):
@@ -660,7 +585,6 @@ def display_top_results(results: list, top_n: int = 10) -> None:
             )
 
     elif mode == MODE_MOMENTUM:
-        # モメンタムモードの表示
         print(f"{'順位':>4} {'銘柄コード':>8} {'会社名':<20} {'RSI':>6} {'高値比':>7} {'スコア':>8}")
         print("-" * 65)
         for i, r in enumerate(top_results, 1):
@@ -675,7 +599,6 @@ def display_top_results(results: list, top_n: int = 10) -> None:
             )
 
     elif mode == MODE_EARNINGS:
-        # 決算開示モードの表示
         print(f"{'順位':>4} {'銘柄コード':>8} {'会社名':<25} {'提出書類':<20}")
         print("-" * 65)
         for i, r in enumerate(top_results, 1):
@@ -696,10 +619,6 @@ def display_top_results(results: list, top_n: int = 10) -> None:
 # ========================================
 
 if __name__ == "__main__":
-    """
-    このファイルを直接実行した場合のテスト処理
-    使い方: python agents/scanner.py
-    """
     import sys
 
     print("=" * 60)
@@ -707,8 +626,6 @@ if __name__ == "__main__":
     print("=" * 60)
 
     today = datetime.now().strftime("%Y-%m-%d")
-
-    # コマンドライン引数でモードを指定可能
     test_mode = sys.argv[1].upper() if len(sys.argv) > 1 else MODE_SHORT_TERM
 
     print(f"\nテストモード: {test_mode}")

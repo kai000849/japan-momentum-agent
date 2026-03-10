@@ -43,10 +43,11 @@ japan-momentum-agent/
 │   ├── edinet_fetcher.py            # 開示情報取得
 │   ├── backtester.py                # バックテスト
 │   ├── paper_trader.py              # ペーパートレード管理
-│   └── slack_notifier.py            # Slack通知
+│   ├── slack_notifier.py            # Slack通知
+│   └── analyst.py                   # Claude API銘柄分析（フェーズ2・未有効化）
 ├── data/
 │   ├── raw/jquants/                 # 取得済み株価CSV
-│   └── processed/scans/             # スキャン結果JSON（現在2日分のみ）
+│   └── processed/scans/             # スキャン結果JSON
 └── memory/
     ├── trade_log.json               # 取引履歴
     └── disclosure_log.json          # 開示情報履歴
@@ -61,6 +62,7 @@ japan-momentum-agent/
 | `JQUANTS_API_KEY` | J-Quants APIキー（2026/02/28登録） |
 | `EDINET_API_KEY` | EDINET APIキー |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL |
+| `ANTHROPIC_API_KEY` | 未登録（フェーズ2で必要） |
 
 ---
 
@@ -84,10 +86,14 @@ japan-momentum-agent/
 - 5日・25日・75日MA全て上昇中（75日MA必須）
 - 現在株価が52週高値の95%以上
 - RSI(14日)が55〜70の範囲
+- **【2026/03/05追加】新高値更新スコア**: 直近20日で何回52週高値を更新したか
+- **【2026/03/05追加】出来高増加トレンド**: 直近5日平均 ÷ 25日平均（増加中かを評価）
+- スコア = RSI × 高値比 × 全MA上昇ボーナス × 新高値ボーナス × 出来高トレンドボーナス
 
 ### 決算開示モード（EARNINGS）
 - EDINETから当日の決算発表銘柄を抽出
 - 書類コード180（決算短信）・130・140・030が対象
+- **【2026/03/05修正】最新終値を株価データから紐付けて表示するよう修正**
 
 ---
 
@@ -106,6 +112,7 @@ japan-momentum-agent/
 - 損切り：-5%
 - 利確：+15%
 - 最大保有：10営業日
+- **【2026/03/05修正】過去スキャン結果ファイルでバックテストするよう修正（当日データではPF=0になる問題を解消）**
 
 ---
 
@@ -113,42 +120,39 @@ japan-momentum-agent/
 
 ### ✅ フェーズ1：基盤構築（完了）
 
-**完了済み：**
-- 全エージェントファイルの実装（scanner / fetcher / backtester / paper_trader / slack_notifier）
-- GitHub Actions自動実行（毎朝7時・毎夕17時）
-- Slack通知稼働中
-- ペーパートレード（300万円）運用中
-
 **2026/03/04に修正した内容：**
-1. `main.py` - スキャン後にバックテストを実行してPFを正しく計算してからSlack通知するよう修正（以前はPF=0.0固定だった）
+1. `main.py` - スキャン後にバックテストを実行してPFを正しく計算してからSlack通知するよう修正
 2. `daily_report.yml` - 通知を朝9時1回→朝7時・夕方17時の2回に変更
 3. `scanner.py` - モメンタム条件を厳格化（741銘柄→20〜50銘柄に絞り込み）
-   - 75日MA必須化
-   - 52週高値比：90% → 95%
-   - RSI範囲：50〜75 → 55〜70
 4. `edinet_fetcher.py` - 決算短信の書類コードを修正（120→180）
 5. `japan-stock-agent`リポジトリのDiscord通知ワークフローを無効化
 
-**残課題：**
-- スキャン結果ファイルが2日分しかない（バックテストのサンプル数不足）
-  → 毎日自動蓄積されるので様子見。過去データの再取得も検討
+**2026/03/05に修正した内容：**
+1. `scanner.py` - MOEMENTUMスコアリング強化（新高値更新回数・出来高増加トレンドをスコアに反映）
+2. `scanner.py` - 決算シグナルに最新終値を紐付けて表示（¥0問題を解消）
+3. `main.py` - PF=0.00問題を修正（過去スキャン結果ファイルでバックテストするよう変更）
+4. `slack_notifier.py` - MOEMENTUMシグナルに新高値・出来高トレンドを表示追加
+5. `slack_notifier.py` - 決算シグナルに書類種別を表示追加
+6. `agents/analyst.py` - 新規作成（Claude APIで銘柄分析コメントを生成・未有効化）
 
 ---
 
-### ⬜ フェーズ2：Claude APIによる言語化（次のフェーズ）
+### ⬜ フェーズ2：Claude APIによる言語化（検討中）
 
 **やること：**
-1. `agents/analyst.py` を新規作成
-   - スキャン結果の上位銘柄に対して「なぜこの銘柄か」をClaude APIで言語化
-   - Slack通知に分析コメントを追加
-2. EDINET開示文書をClaude APIで要約
-   - 決算短信の内容を自動要約
-   - 決算サプライズ（予想比プラス/マイナス）を自動判定
-3. `main.py` と `slack_notifier.py` に連携を追加
+1. `agents/analyst.py`（作成済み・未有効化）
+   - SHORT_TERM・MOMENTUM上位10銘柄に「なぜこの銘柄か」をClaude APIで言語化
+   - Slack通知に 💬 で分析コメントを追加
+2. EDINET開示文書をClaude APIで要約（未着手）
 
-**使用するAPI：**
-- Anthropic Claude API（`claude-sonnet-4-20250514`）
-- 必要なSecret：`ANTHROPIC_API_KEY`（GitHub Secretsに追加が必要）
+**有効化に必要なもの：**
+- `ANTHROPIC_API_KEY` をGitHub Secretsに登録
+- `main.py` はすでに analyst.py を呼び出す処理を組み込み済み
+
+**コスト検討中：**
+- Sonnet: 10銘柄/日 → 月数百円程度
+- Haiku: 約10分の1のコスト（品質はやや落ちるが分析用途には十分）
+- 明朝のSlack通知を見てからフェーズ2の方針を決める予定
 
 ---
 
