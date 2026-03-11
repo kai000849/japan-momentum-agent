@@ -2,10 +2,10 @@
 agents/scanner.py
 日本株スクリーニングモジュール
 
-3つのスクリーニングモードを提供する：
+3つのスクリーニングモードを実装する:
 1. SHORT_TERM（急騰モード）: 前日比+3%以上 かつ 出来高急増
-2. MOMENTUM（モメンタムモード）: 移動平均上昇 + 52週高値付近 + RSI良好
-3. EARNINGS（決算開示モード）: 当日の決算発表銘柄を追跡
+2. MOMENTUM（モメンタムモード）: 移動平均上昇 + 52週高値比率 + RSI範囲
+3. EARNINGS（決算開示モード）: 当日の決算発表銘柄を抽出
 
 作者: Japan Momentum Agent
 """
@@ -19,7 +19,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-# ta（テクニカル分析ライブラリ）からRSI計算器をインポート
+# ta（テクニカル分析ライブラリ）からRSI計算用をインポート
 try:
     import ta
     TA_AVAILABLE = True
@@ -27,7 +27,7 @@ except ImportError:
     TA_AVAILABLE = False
     logging.warning("警告: taライブラリが見つかりません。pip install ta でインストールしてください。")
 
-# 同プロジェクト内のモジュールをインポート
+# 同じプロジェクト内のモジュールをインポート
 from agents.jquants_fetcher import load_latest_quotes, fetch_all_stocks_data, get_listed_stocks
 from agents.edinet_fetcher import get_earnings_announcements, save_disclosure_log
 
@@ -67,10 +67,9 @@ def calculate_rsi(prices: pd.Series, period: int = 14) -> pd.Series:
         pd.Series: RSI値の時系列
     """
     if TA_AVAILABLE:
-        # taライブラリを使用（推奨）
         return ta.momentum.RSIIndicator(prices, window=period).rsi()
     else:
-        # taライブラリがない場合は手動計算
+        # taライブラリがない場合の手動計算
         delta = prices.diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
@@ -95,14 +94,13 @@ def calculate_moving_averages(prices: pd.Series) -> dict:
     result = {}
 
     for period in [5, 25, 75]:
-        # 移動平均を計算（データが足りない場合はNaN）
         ma = prices.rolling(window=period, min_periods=period).mean()
 
         if len(ma.dropna()) >= 2:
             result[f"ma{period}"] = {
-                "current": float(ma.iloc[-1]),    # 最新の移動平均
-                "prev": float(ma.iloc[-2]),         # 前日の移動平均
-                "rising": ma.iloc[-1] > ma.iloc[-2]  # 上昇中かどうか
+                "current": float(ma.iloc[-1]),
+                "prev": float(ma.iloc[-2]),
+                "rising": ma.iloc[-1] > ma.iloc[-2]
             }
         else:
             result[f"ma{period}"] = {
@@ -121,7 +119,6 @@ def calculate_moving_averages(prices: pd.Series) -> dict:
 def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
     """
     急騰モードのスクリーニングを実行する。
-
     条件:
     - 前日比 +3% 以上
     - 当日出来高 >= 25日平均出来高 × 2.0倍
@@ -137,70 +134,54 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
     logger.info("急騰モードでスクリーニング中...")
     results = []
 
-    # 日付でフィルタリング
     scan_dt = pd.to_datetime(scan_date)
-
-    # 銘柄コードごとに処理
     code_column = _detect_code_column(df_all)
     grouped = df_all.groupby(code_column)
 
     for stock_code, group in grouped:
-        # 日付でソート
         group = group.sort_values("Date").reset_index(drop=True)
 
-        # 対象日のデータが存在するか確認
         target_mask = group["Date"] == scan_dt
         if not target_mask.any():
             continue
 
-        # 最低26日分のデータが必要（25日平均計算のため）
         if len(group) < 26:
             continue
 
         try:
-            # 最新行（スキャン日）と前日行を取得
             target_idx = group[target_mask].index[-1]
-            if target_idx == 0:  # 前日データがない場合はスキップ
+            if target_idx == 0:
                 continue
 
             today_row = group.loc[target_idx]
             prev_row = group.loc[target_idx - 1]
 
-            # 終値を取得
             today_close = float(today_row.get("Close", 0) or 0)
             prev_close = float(prev_row.get("Close", 0) or 0)
 
             if prev_close <= 0 or today_close <= 0:
                 continue
 
-            # 前日比計算（%）
             price_change_pct = ((today_close - prev_close) / prev_close) * 100
 
-            # 条件1: 前日比 +3% 以上
             if price_change_pct < 3.0:
                 continue
 
-            # 出来高を取得
             today_volume = float(today_row.get("Volume", 0) or 0)
 
-            # 25日平均出来高計算（スキャン日を含まない直近25日）
             past_volumes = group.loc[:target_idx - 1, "Volume"].tail(25).astype(float)
             avg_volume_25d = past_volumes.mean()
 
             if avg_volume_25d <= 0:
                 continue
 
-            # 出来高倍率
             volume_ratio = today_volume / avg_volume_25d
 
-            # 条件2: 出来高が25日平均の2倍以上
             if volume_ratio < 2.0:
                 continue
 
-            # 急騰スコア計算
             surge_score = price_change_pct * volume_ratio
 
-            # 銘柄名を取得（あれば）
             company_name = str(today_row.get("CompanyName", "")) or ""
 
             results.append({
@@ -210,18 +191,17 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
                 "scanDate": scan_date,
                 "close": today_close,
                 "prevClose": prev_close,
-                "priceChangePct": round(price_change_pct, 2),   # 前日比（%）
+                "priceChangePct": round(price_change_pct, 2),
                 "volume": int(today_volume),
                 "avgVolume25d": round(avg_volume_25d, 0),
-                "volumeRatio": round(volume_ratio, 2),           # 出来高倍率
-                "score": round(surge_score, 2),                  # 急騰スコア
+                "volumeRatio": round(volume_ratio, 2),
+                "score": round(surge_score, 2),
             })
 
         except Exception as e:
             logger.debug(f"銘柄 {stock_code} のスキャン中にエラー（スキップ）: {e}")
             continue
 
-    # スコア降順でソート
     results.sort(key=lambda x: x["score"], reverse=True)
     logger.info(f"急騰モード: {len(results)}銘柄がヒットしました。")
     return results
@@ -230,11 +210,10 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
 def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
     """
     モメンタムモードのスクリーニングを実行する。
-
     条件:
     - 5日・25日・75日移動平均が全て前日より上昇
-    - 現在株価が52週高値の85%以上
-    - RSI(14日)が50〜75の範囲
+    - 現在株価が52週高値の90%以上
+    - RSI(14日)が55〜72の範囲
 
     Args:
         df_all (pd.DataFrame): 全銘柄の株価データ
@@ -253,26 +232,21 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
     for stock_code, group in grouped:
         group = group.sort_values("Date").reset_index(drop=True)
 
-        # 対象日のデータが存在するか確認
         target_mask = group["Date"] == scan_dt
         if not target_mask.any():
             continue
 
-        # 最低26日分のデータが必要（25日移動平均のため）
         if len(group) < 26:
             continue
 
         try:
-            # スキャン日のインデックスを取得
             target_idx = group[target_mask].index[-1]
-            if target_idx < 25:  # 25日MAに最低26行必要
+            if target_idx < 25:
                 continue
 
-            # スキャン日時点のデータをスライス
             group_to_date = group.loc[:target_idx].copy()
             closes = group_to_date["Close"].astype(float)
 
-            # 現在株価
             current_close = float(closes.iloc[-1])
             if current_close <= 0:
                 continue
@@ -280,16 +254,10 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             # ---- 条件1: 移動平均が全て上昇中 ----
             ma_data = calculate_moving_averages(closes)
 
-            has_ma75 = (
-                ma_data["ma75"]["current"] is not None
-                and target_idx >= 75
-            )
-
-            # 75日MAが計算できない銘柄は除外
-            if not has_ma75:
+            # 75日MAが計算できない場合はスキップ
+            if ma_data["ma75"]["current"] is None:
                 continue
 
-            # 5日・25日・75日MA全て上昇中であることを確認
             all_ma_rising = all([
                 ma_data["ma5"]["rising"],
                 ma_data["ma25"]["rising"],
@@ -299,26 +267,25 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             if not all_ma_rising:
                 continue
 
-            # ---- 条件2: 現在株価が52週高値の85%以上 ----
+            # ---- 条件2: 現在株価が52週高値の90%以上 ----
             price_52w_window = closes.tail(252)
             high_52w = float(price_52w_window.max())
 
             if high_52w <= 0:
                 continue
 
-            price_to_high_ratio = (current_close / high_52w) * 100  # 52週高値比（%）
-
-            if price_to_high_ratio < 85.0:
+            price_to_high_ratio = (current_close / high_52w) * 100
+            if price_to_high_ratio < 90.0:
                 continue
 
-            # ---- 条件3: RSI(14日)が50〜75の範囲 ----
+            # ---- 条件3: RSI(14日)が55〜72の範囲 ----
             rsi_series = calculate_rsi(closes, period=14)
             current_rsi = float(rsi_series.iloc[-1]) if not rsi_series.empty else None
 
-            if current_rsi is None or not (50 <= current_rsi <= 75):
+            if current_rsi is None or not (55 <= current_rsi <= 72):
                 continue
 
-            # ---- 追加指標1: 新高値更新スコア ----
+            # ---- 追加指標: 新高値更新スコア ----
             recent_closes = closes.tail(20)
             new_high_count = 0
             running_high = float(closes.iloc[-(21)] if len(closes) > 20 else closes.iloc[0])
@@ -328,7 +295,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                     running_high = price
             new_high_score = new_high_count / 20.0
 
-            # ---- 追加指標2: 出来高増加トレンド ----
+            # ---- 追加指標: 出来高増加トレンド ----
             volumes = group_to_date["Volume"].astype(float)
             avg_vol_5d = float(volumes.tail(5).mean())
             avg_vol_25d = float(volumes.tail(25).mean())
@@ -345,8 +312,8 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             )
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
-
             ma75_val = ma_data["ma75"]["current"]
+
             results.append({
                 "stockCode": str(stock_code),
                 "companyName": company_name,
@@ -376,6 +343,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 def _scan_earnings(scan_date: str) -> list:
     """
     決算開示モードのスクリーニングを実行する。
+    EDINETから当日の決算発表銘柄を取得し、株価データと紐付ける。
     """
     logger.info(f"決算開示モードでスクリーニング中（{scan_date}）...")
 
@@ -555,7 +523,7 @@ def _save_scan_results(results: list, date: str, mode: str) -> Path:
 
 def display_top_results(results: list, top_n: int = 10) -> None:
     """
-    スクリーニング結果の上位N銘柄をコンソールに表示する。
+    スクリーニング結果の上位銘柄をコンソールに表示する。
     """
     if not results:
         print("\n【スキャン結果】ヒット銘柄なし")
@@ -571,7 +539,7 @@ def display_top_results(results: list, top_n: int = 10) -> None:
     print(f"{'='*65}")
 
     if mode == MODE_SHORT_TERM:
-        print(f"{'順位':>4} {'銘柄コード':>8} {'会社名':<20} {'前日比':>7} {'出来高倍':>7} {'スコア':>8}")
+        print(f"{'順位':>4} {'銘柄コード':>8} {'会社名':<20} {'前日比':>7} {'出来高比':>7} {'スコア':>8}")
         print("-" * 65)
         for i, r in enumerate(top_results, 1):
             company = r.get("companyName", "")[:18] or "N/A"

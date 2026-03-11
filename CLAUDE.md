@@ -84,8 +84,8 @@ japan-momentum-agent/
 
 ### モメンタムモード（MOMENTUM）
 - 5日・25日・75日MA全て上昇中（75日MA必須）
-- 現在株価が52週高値の95%以上
-- RSI(14日)が55〜70の範囲
+- 現在株価が52週高値の**85%以上**（2026/03/10修正：95%→85%）
+- RSI(14日)が**50〜75**の範囲（2026/03/10修正：55-70→50-75）
 - **【2026/03/05追加】新高値更新スコア**: 直近20日で何回52週高値を更新したか
 - **【2026/03/05追加】出来高増加トレンド**: 直近5日平均 ÷ 25日平均（増加中かを評価）
 - スコア = RSI × 高値比 × 全MA上昇ボーナス × 新高値ボーナス × 出来高トレンドボーナス
@@ -135,6 +135,16 @@ japan-momentum-agent/
 5. `slack_notifier.py` - 決算シグナルに書類種別を表示追加
 6. `agents/analyst.py` - 新規作成（Claude APIで銘柄分析コメントを生成・未有効化）
 
+**2026/03/10に修正した内容：**
+1. `jquants_fetcher.py` - REQUEST_INTERVAL_SEC を20秒→3秒に短縮（ライトプランで十分）
+2. `scanner.py` - モメンタム条件を緩和（高値比95%→85%、RSI55-70→50-75）
+3. `scanner.py` - `target_idx >= 75` チェックを削除（90日分CSVで全銘柄脱落していたバグ修正）
+4. 株価CSVを90日分再取得（`quotes_20260310.csv`、1596銘柄・94152レコード）
+
+**2026/03/10時点の未解決問題：**
+- モメンタム0銘柄問題：CSVが65営業日分しかなく75日MA計算不可
+- **次回やること → `python main.py --mode fetch --days 150` を実行してデータを150日分取得する**
+
 ---
 
 ### ⬜ フェーズ2：Claude APIによる言語化（検討中）
@@ -152,7 +162,6 @@ japan-momentum-agent/
 **コスト検討中：**
 - Sonnet: 10銘柄/日 → 月数百円程度
 - Haiku: 約10分の1のコスト（品質はやや落ちるが分析用途には十分）
-- 明朝のSlack通知を見てからフェーズ2の方針を決める予定
 
 ---
 
@@ -179,6 +188,9 @@ japan-momentum-agent/
 # ローカルで手動実行
 cd C:\Users\dgwrt\OneDrive\Desktop\japan-momentum-agent
 
+# データ取得（150日分推奨）
+python main.py --mode fetch --days 150
+
 # スキャンのみ
 python main.py --mode scan
 
@@ -191,10 +203,13 @@ python main.py --mode full
 # ポートフォリオ確認
 python main.py --mode status
 
-# GitHubに反映
+# GitHubに反映（パソコンで編集後）
 git add .
 git commit -m "変更内容のメモ"
 git push
+
+# GitHubの変更をパソコンに取り込む
+git pull
 ```
 
 ---
@@ -205,3 +220,4 @@ git push
 - APIキーは絶対にコードに直書きしない
 - J-Quantsライトプラン：最新データが取得可能（12週間遅延なし）
 - Windowsのコマンドプロンプトで作業（PowerShellでも可）
+- **ファイル編集はパソコンで行い、git pushでGitHubに反映する（GitHub上での直接編集は避ける）**
