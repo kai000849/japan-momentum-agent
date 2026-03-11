@@ -2,21 +2,20 @@ name: Daily Report & Scan
 
 on:
   schedule:
-    # 朝7:00 JST (UTC 22:00 前日) - スキャン＆シグナル通知
-    - cron: '0 22 * * 0-4'   # 日〜木（日本時間の月〜金の朝）
-    # 夕方17:00 JST (UTC 08:00) - ポートフォリオ状況レポート
-    - cron: '0 8 * * 1-5'    # 月〜金（日本時間の平日夕方）
+    # 朝6:00 JST (UTC 21:00 前日) - スキャン＆シグナル通知
+    - cron: '0 21 * * 0-4'   # 日〜木（日本時間の月〜金の朝）
+    # 夕方16:00 JST (UTC 07:00) - ポートフォリオ状況レポート
+    - cron: '0 7 * * 1-5'    # 月〜金（日本時間の平日午後）
   workflow_dispatch:           # 手動実行も可能
 
 jobs:
   # ===========================
   # 朝ジョブ: スキャン＆シグナル通知
-  # 毎朝7:00 JSTに実行
+  # 毎朝7:00 JST頃に実行
   # ===========================
   morning-scan:
     runs-on: ubuntu-latest
-    # UTC 22:00（= JST 7:00）のときだけ実行
-    if: github.event.schedule == '0 22 * * 0-4' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 21 * * 0-4' || github.event_name == 'workflow_dispatch'
     steps:
       # 1. リポジトリをチェックアウト
       - name: コードを取得
@@ -79,12 +78,11 @@ jobs:
 
   # ===========================
   # 夕方ジョブ: ポートフォリオ状況レポート
-  # 毎日17:00 JSTに実行
+  # 毎日17:00 JST頃に実行
   # ===========================
   evening-report:
     runs-on: ubuntu-latest
-    # UTC 08:00（= JST 17:00）のときだけ実行
-    if: github.event.schedule == '0 8 * * 1-5' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 7 * * 1-5' || github.event_name == 'workflow_dispatch'
     steps:
       # 1. リポジトリをチェックアウト
       - name: コードを取得
