@@ -482,8 +482,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status"],
-        help="実行モード: fetch(データ取得) / scan(スキャン) / backtest(バックテスト) / full(全実行) / status(状況表示)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan"],
+        help="実行モード: fetch(データ取得) / scan(スキャン) / backtest(バックテスト) / full(全実行) / status(状況表示) / us_scan(米市場スキャン)"
     )
 
     # オプション: スキャンタイプ
@@ -575,6 +575,36 @@ def main():
         elif args.mode == "status":
             # ポートフォリオ状況表示モード
             run_status_mode(args)
+
+        elif args.mode == "us_scan":
+            # 米市場セクター・テーマスキャン
+            print("【米市場スキャンモード】")
+            print("① 米国セクターETFモメンタム分析")
+            print("② 米国財務メディアからホットキーワード抽出\n")
+            from agents.us_market_scanner import run_us_market_scan
+            from agents.us_theme_extractor import run_theme_extraction
+            from agents.slack_notifier import notify_us_market_scan, notify_us_theme_extraction
+
+            # ETFモメンタムスキャン
+            print("--- ETFモメンタム取得中 ---")
+            scan_result = run_us_market_scan()
+            ranking = scan_result.get("sector_ranking", [])
+            print(f"セクターETF取得: {len(ranking)}本")
+            if ranking:
+                for s in ranking[:5]:
+                    print(f"  {s['name']}({s['ticker']}): "
+                          f"スコア{'+' if s['score']>=0 else ''}{s['score']:.1f} "
+                          f"[5日:{'+' if s['mom5d']>=0 else ''}{s['mom5d']:.1f}%]")
+            notify_us_market_scan(scan_result)
+            print("✓ ETFスキャン通知送信\n")
+
+            # テーマ・キーワード抽出
+            print("--- ホットキーワード抽出中 ---")
+            theme_result = run_theme_extraction()
+            kw_count = len(theme_result.get("keywords", {}).get("hot_keywords", []))
+            print(f"キーワード抽出: {kw_count}件")
+            notify_us_theme_extraction(theme_result)
+            print("✓ キーワード通知送信")
 
         else:
             print(f"エラー: 無効なモード '{args.mode}' です。")

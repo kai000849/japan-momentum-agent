@@ -397,6 +397,210 @@ def notify_position_exit(stock_code: str, company_name: str,
     return send_slack_message(text)
 
 
+def notify_us_market_scan(scan_result: dict) -> bool:
+    """
+    米市場セクター・テーマモメンタムスキャン結果をSlackに通知する。
+
+    Args:
+        scan_result (dict): us_market_scanner.run_us_market_scan()の戻り値
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    sector_ranking = scan_result.get("sector_ranking", [])
+    macro = scan_result.get("macro", {})
+    analysis = scan_result.get("analysis", {})
+    scan_date = scan_result.get("scan_date", datetime.now().strftime("%Y年%m月%d日 %H:%M"))
+
+    if not sector_ranking:
+        return True
+
+    # ========== マクロ状況 ==========
+    macro_lines = []
+    for sym, data in macro.items():
+        change = data.get("change5d", 0)
+        icon = "📈" if change >= 1 else ("📉" if change <= -1 else "➡️")
+        sign = "+" if change >= 0 else ""
+        macro_lines.append(f"  {icon} {data['name']}: {sign}{change:.1f}%")
+    macro_text = "\n".join(macro_lines) if macro_lines else "  データなし"
+
+    # ========== セクターランキング上位5・下位3 ==========
+    top5 = sector_ranking[:5]
+    bottom3 = [s for s in sector_ranking if s.get("score", 0) < 0][-3:]
+
+    top_lines = []
+    for i, s in enumerate(top5, 1):
+        score = s.get("score", 0)
+        mom5 = s.get("mom5d", 0)
+        mom20 = s.get("mom20d", 0)
+        vol = s.get("vol_trend", 1.0)
+        vol_icon = "📶" if vol >= 1.3 else ("➡️" if vol >= 0.9 else "📉")
+        sign5 = "+" if mom5 >= 0 else ""
+        sign20 = "+" if mom20 >= 0 else ""
+        japan = s.get("japan_theme", "")
+        top_lines.append(
+            f"  *{i}. {s['name']}({s['ticker']})*  スコア:{score:.1f}\n"
+            f"     5日:{sign5}{mom5:.1f}% / 20日:{sign20}{mom20:.1f}%  出来高:{vol_icon}{vol:.2f}x\n"
+            f"     🇯🇵 {japan}"
+        )
+
+    bottom_lines = []
+    for s in bottom3:
+        mom5 = s.get("mom5d", 0)
+        sign5 = "+" if mom5 >= 0 else ""
+        bottom_lines.append(
+            f"  🔻 {s['name']}({s['ticker']}): {sign5}{mom5:.1f}%/5日"
+        )
+
+    top_text = "\n\n".join(top_lines) if top_lines else "  データなし"
+    bottom_text = "\n".join(bottom_lines) if bottom_lines else "  なし"
+
+    # ========== Claude分析 ==========
+    analysis_text = ""
+    if analysis and "error" not in analysis:
+        market_summary = analysis.get("market_summary", "")
+        japan_opps = analysis.get("japan_opportunities", [])
+        risks = analysis.get("risk_factors", [])
+        theme_analysis = analysis.get("theme_analysis", [])
+
+        # テーマ分析
+        theme_lines = []
+        for t in theme_analysis[:3]:
+            sustain_map = {"short": "短期", "medium": "中期", "long": "長期"}
+            sustain = sustain_map.get(t.get("sustainability", ""), t.get("sustainability", ""))
+            theme_lines.append(
+                f"  • *{t.get('sector', '')}*（{sustain}）\n"
+                f"    {t.get('reason', '')}\n"
+                f"    🇯🇵 注目: {t.get('japan_stocks', '')}"
+            )
+
+        opps_text = "・".join(japan_opps[:3]) if japan_opps else "なし"
+        risk_text = "・".join(risks[:2]) if risks else "なし"
+        themes_text = "\n\n".join(theme_lines)
+
+        analysis_text = f"""
+━━━━━━━━━━━━━━━━━━
+🤖 *Claude分析*
+{market_summary}
+
+📌 *注目テーマ（詳細）*
+{themes_text}
+
+🇯🇵 *日本株チャンス*: {opps_text}
+⚠️ *リスク*: {risk_text}"""
+
+    # ========== メッセージ組み立て ==========
+    text = f"""
+🌏 *米市場テーマ検出*  {scan_date}
+
+━━━━━━━━━━━━━━━━━━
+📊 *マクロ指数（5日騰落）*
+{macro_text}
+
+━━━━━━━━━━━━━━━━━━
+🔥 *強いセクター TOP5*
+
+{top_text}
+
+🔻 *弱いセクター*
+{bottom_text}{analysis_text}
+━━━━━━━━━━━━━━━━━━
+""".strip()
+
+    return send_slack_message(text)
+
+
+def notify_us_theme_extraction(theme_result: dict) -> bool:
+    """
+    米市場ホットキーワード・テーマ抽出結果をSlackに通知する。
+
+    Args:
+        theme_result (dict): us_theme_extractor.run_theme_extraction()の戻り値
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    keywords_data = theme_result.get("keywords", {})
+    scan_date = theme_result.get("scan_date", datetime.now().strftime("%Y年%m月%d日 %H:%M"))
+    headline_count = theme_result.get("headline_count", 0)
+
+    if not keywords_data or "error" in keywords_data:
+        error = keywords_data.get("error", "不明なエラー")
+        text = f"⚠️ 米市場テーマ抽出エラー\n{scan_date}\n{error}"
+        return send_slack_message(text)
+
+    hot_keywords = keywords_data.get("hot_keywords", [])
+    sector_narratives = keywords_data.get("sector_narratives", [])
+    japan_plays = keywords_data.get("japan_plays", [])
+    macro_narrative = keywords_data.get("macro_narrative", "")
+    risk_keywords = keywords_data.get("risk_keywords", [])
+
+    # ========== ホットキーワード ==========
+    mention_icons = {"high": "🔥", "medium": "📈", "low": "💡"}
+    keyword_lines = []
+    for i, kw in enumerate(hot_keywords[:8], 1):
+        icon = mention_icons.get(kw.get("mention_level", "medium"), "📈")
+        keyword_lines.append(
+            f"  {icon} *{i}. {kw.get('keyword', '')}*  [{kw.get('sector', '')}]\n"
+            f"     {kw.get('context', '')}"
+        )
+    keywords_text = "\n\n".join(keyword_lines) if keyword_lines else "  データなし"
+
+    # ========== セクター別サブテーマ ==========
+    momentum_icons = {"rising": "⬆️", "stable": "➡️", "falling": "⬇️"}
+    narrative_lines = []
+    for s in sector_narratives[:5]:
+        icon = momentum_icons.get(s.get("momentum", "stable"), "➡️")
+        narrative_lines.append(
+            f"  {icon} *{s.get('sector', '')}* › {s.get('sub_theme', '')}\n"
+            f"     {s.get('detail', '')}"
+        )
+    narratives_text = "\n\n".join(narrative_lines) if narrative_lines else "  データなし"
+
+    # ========== 日本株への波及 ==========
+    japan_lines = []
+    for jp in japan_plays[:5]:
+        stocks = "・".join(jp.get("stocks", [])[:3])
+        japan_lines.append(
+            f"  🇯🇵 *{jp.get('theme', '')}*\n"
+            f"     注目: {stocks}\n"
+            f"     {jp.get('reason', '')}"
+        )
+    japan_text = "\n\n".join(japan_lines) if japan_lines else "  なし"
+
+    # ========== リスク ==========
+    risk_text = "・".join(risk_keywords[:3]) if risk_keywords else "なし"
+
+    text = f"""
+🔍 *米市場 ホットキーワード*  {scan_date}
+（ニュース{headline_count}件を分析）
+
+━━━━━━━━━━━━━━━━━━
+📌 *マクロ環境*
+  {macro_narrative}
+
+━━━━━━━━━━━━━━━━━━
+🔥 *注目キーワード TOP8*
+
+{keywords_text}
+
+━━━━━━━━━━━━━━━━━━
+🏭 *セクター別サブテーマ*
+
+{narratives_text}
+
+━━━━━━━━━━━━━━━━━━
+🇯🇵 *日本株への波及チャンス*
+
+{japan_text}
+
+⚠️ *リスクワード*: {risk_text}
+━━━━━━━━━━━━━━━━━━
+""".strip()
+
+    return send_slack_message(text)
+
+
 def notify_error(error_message: str, context: str = "") -> bool:
     """
     エラー発生をSlackに通知する。
