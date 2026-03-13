@@ -183,10 +183,13 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
     if not signals:
         return True
 
+    # EARNINGSは専用通知関数を使用
+    if mode == "EARNINGS":
+        return notify_earnings_signal(signals)
+
     mode_label = {
         "SHORT_TERM": "🚀 急騰シグナル",
         "MOMENTUM": "📈 モメンタムシグナル",
-        "EARNINGS": "📋 決算シグナル",
     }.get(mode, mode)
 
     lines = []
@@ -198,21 +201,15 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
         score = s.get("score", s.get("momentum_score", 0))
 
         if mode == "MOMENTUM":
-            # モメンタムシグナルは追加指標も表示
             rsi = s.get("rsi14", 0)
             high_ratio = s.get("priceToHighRatio", 0)
             new_high = s.get("newHighCount", 0)
             vol_trend = s.get("volumeTrend", 1.0)
             vol_icon = "📶" if vol_trend >= 1.2 else ("➡️" if vol_trend >= 0.9 else "📉")
             lines.append(
-                f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
+                f"  • {code}{name_str}  スコア:{score:.1f}\n"
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
             )
-        elif mode == "EARNINGS":
-            # 決算シグナルは株価と書類種別を表示
-            doc_desc = s.get("docDescription", "")[:15] or "決算"
-            close_str = f"¥{close:,.0f}" if close > 0 else "株価取得中"
-            lines.append(f"  • {code}{name_str}  {close_str}  [{doc_desc}]")
         else:
             lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
 
@@ -228,6 +225,136 @@ PF: *{profit_factor:.2f}*  |  対象: *{len(signals)}銘柄*
 {signals_text}
 
 {"⚠️ PF < 1.2のため発注見送り" if profit_factor < 1.2 else "✅ 発注条件クリア → ペーパートレード追加"}
+""".strip()
+
+    return send_slack_message(text)
+
+
+def notify_earnings_signal(signals: list) -> bool:
+    """
+    決算スコアリング結果をSlackに通知する。
+    ベスト/ワーストをランキング形式で表示。
+
+    Args:
+        signals (list): EARNINGSスキャン結果（analyze_earnings_batchの出力を含む）
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    if not signals:
+        return True
+
+    now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
+
+    # スコア付き分析済みと未分析を分離
+    analyzed = [s for s in signals if s.get("analyzed", False)]
+    unanalyzed = [s for s in signals if not s.get("analyzed", False)]
+
+    if not analyzed:
+        # 未分析のみの場合（APIキー未設定など）→ 旧来の簡易表示
+        lines = []
+        for s in signals[:20]:
+            code = s.get("stockCode", "")
+            name = (s.get("companyName") or "")[:15]
+            doc_desc = s.get("docDescription", "")[:20] or "決算"
+            lines.append(f"  • {code} {name}  [{doc_desc}]")
+
+        text = f"""
+📋 *決算シグナル 検出！*
+{now}
+
+対象: *{len(signals)}銘柄*（未分析・APIキー設定で詳細分析が有効になります）
+
+{"　".join(lines[:20])}
+""".strip()
+        return send_slack_message(text)
+
+    # ベスト/ワーストを抽出
+    best = sorted([s for s in analyzed if s.get("score", 0) > 0],
+                  key=lambda x: x.get("score", 0), reverse=True)[:10]
+    worst = sorted([s for s in analyzed if s.get("score", 0) < 0],
+                   key=lambda x: x.get("score", 0))[:10]
+    neutral = [s for s in analyzed if s.get("score", 0) == 0]
+
+    # ========== ベスト部分 ==========
+    best_lines = []
+    for i, s in enumerate(best, 1):
+        code = s.get("stockCode", "")
+        name = (s.get("companyName") or "")[:15]
+        score = s.get("score", 0)
+        revenue_yoy = s.get("revenue_yoy", "不明")
+        profit_yoy = s.get("profit_yoy", "不明")
+        vs_forecast = s.get("vs_forecast", "不明")
+        summary = s.get("summary", "")
+        structural = s.get("structural_change", False)
+        structural_comment = s.get("structural_comment", "")
+
+        # スコアに応じたアイコン
+        if score >= 80:
+            icon = "🔥"
+        elif score >= 50:
+            icon = "🟢"
+        else:
+            icon = "🔼"
+
+        struct_str = f"\n    🔄 {structural_comment}" if structural and structural_comment else ""
+
+        best_lines.append(
+            f"{icon} *{i}位 +{score}点* {code} {name}\n"
+            f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
+            f"    💬 {summary}{struct_str}"
+        )
+
+    # ========== ワースト部分 ==========
+    worst_lines = []
+    for i, s in enumerate(worst, 1):
+        code = s.get("stockCode", "")
+        name = (s.get("companyName") or "")[:15]
+        score = s.get("score", 0)
+        revenue_yoy = s.get("revenue_yoy", "不明")
+        profit_yoy = s.get("profit_yoy", "不明")
+        vs_forecast = s.get("vs_forecast", "不明")
+        summary = s.get("summary", "")
+        structural = s.get("structural_change", False)
+        structural_comment = s.get("structural_comment", "")
+
+        if score <= -80:
+            icon = "💀"
+        elif score <= -50:
+            icon = "🔴"
+        else:
+            icon = "🔽"
+
+        struct_str = f"\n    ⚠️ {structural_comment}" if structural and structural_comment else ""
+
+        worst_lines.append(
+            f"{icon} *{i}位 {score}点* {code} {name}\n"
+            f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
+            f"    💬 {summary}{struct_str}"
+        )
+
+    # ========== メッセージ組み立て ==========
+    best_text = "\n\n".join(best_lines) if best_lines else "  ポジティブな決算なし"
+    worst_text = "\n\n".join(worst_lines) if worst_lines else "  ネガティブな決算なし"
+
+    unanalyzed_str = ""
+    if unanalyzed:
+        unanalyzed_str = f"\n\n📄 未分析（PDF取得不可等）: {len(unanalyzed)}件"
+
+    text = f"""
+📊 *決算スコアリング {now}*
+分析済み: {len(analyzed)}件 | 総件数: {len(signals)}件
+
+━━━━━━━━━━━━━━━━━━
+🟢 *ポジティブ TOP{len(best)}*
+
+{best_text}
+
+━━━━━━━━━━━━━━━━━━
+🔴 *ネガティブ TOP{len(worst)}*
+
+{worst_text}{unanalyzed_str}
+━━━━━━━━━━━━━━━━━━
 """.strip()
 
     return send_slack_message(text)

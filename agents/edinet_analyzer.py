@@ -1,0 +1,417 @@
+"""
+agents/edinet_analyzer.py
+EDINET決算書類をClaude APIで読解・スコアリングするモジュール
+
+【処理フロー】
+1. EDINET APIから決算短信PDFをダウンロード
+2. Claude APIに投げて以下を抽出：
+   - 売上・営業利益の前年比・予想比
+   - ポジ/ネガスコア（-100〜+100）
+   - 理由コメント（2〜3行）
+   - 構造的変化の有無
+3. スコア上位（ポジ）・下位（ネガ）をランキング化して返す
+
+作者: Japan Momentum Agent
+"""
+
+import base64
+import json
+import logging
+import os
+import time
+from pathlib import Path
+
+import requests
+
+logger = logging.getLogger(__name__)
+
+# ========================================
+# 定数
+# ========================================
+
+EDINET_BASE_URL = "https://api.edinet-fsa.go.jp/api/v2"
+
+# Claude APIエンドポイント
+CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
+CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト効率優先
+MAX_TOKENS = 1024
+
+# スコアリング対象の書類種別（決算短信のみ）
+TARGET_DOC_TYPES = ["180", "130", "140", "030"]
+
+# PDFダウンロード保存先
+PDF_CACHE_DIR = Path(__file__).parent.parent / "data" / "raw" / "edinet_pdfs"
+
+
+# ========================================
+# APIキー取得
+# ========================================
+
+def _get_anthropic_key() -> str:
+    """
+    ANTHROPIC_API_KEYを環境変数から取得する。
+    GitHub ActionsではSecretsから自動注入される。
+    ローカルではconfig.yamlから読み込む。
+    """
+    # 環境変数を最優先（GitHub Actions）
+    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if key:
+        return key
+
+    # ローカル実行時はconfig.yamlから読む
+    try:
+        import yaml
+        config_path = Path(__file__).parent.parent / "config.yaml"
+        if config_path.exists():
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            key = config.get("anthropic", {}).get("api_key", "")
+            if key and key != "YOUR_ANTHROPIC_API_KEY":
+                return key
+    except Exception:
+        pass
+
+    return ""
+
+
+def _get_edinet_key() -> str:
+    """EDINET APIキーを取得する。"""
+    key = os.environ.get("EDINET_API_KEY", "")
+    if key:
+        return key
+    try:
+        import yaml
+        config_path = Path(__file__).parent.parent / "config.yaml"
+        if config_path.exists():
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            return config.get("edinet", {}).get("api_key", "")
+    except Exception:
+        pass
+    return ""
+
+
+# ========================================
+# PDFダウンロード
+# ========================================
+
+def download_earnings_pdf(doc_id: str) -> bytes | None:
+    """
+    EDINET APIから決算短信PDFをダウンロードする。
+
+    Args:
+        doc_id (str): EDINETの書類ID（例: "S100XXXX"）
+
+    Returns:
+        bytes: PDFバイナリ。失敗時はNone
+    """
+    # キャッシュ確認
+    PDF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_path = PDF_CACHE_DIR / f"{doc_id}.pdf"
+    if cache_path.exists():
+        logger.info(f"PDFキャッシュ使用: {doc_id}")
+        return cache_path.read_bytes()
+
+    api_key = _get_edinet_key()
+    # 書類取得API（type=2: 書類本体）
+    url = f"{EDINET_BASE_URL}/documents/{doc_id}"
+    params = {
+        "type": 2,
+        "Subscription-Key": api_key
+    }
+
+    try:
+        logger.info(f"PDFダウンロード中: {doc_id}")
+        resp = requests.get(url, params=params, timeout=60)
+        resp.raise_for_status()
+
+        content_type = resp.headers.get("Content-Type", "")
+        if "pdf" not in content_type.lower() and len(resp.content) < 1000:
+            logger.warning(f"PDF取得失敗（非PDFレスポンス）: {doc_id}")
+            return None
+
+        # キャッシュ保存
+        cache_path.write_bytes(resp.content)
+        logger.info(f"PDFダウンロード完了: {doc_id} ({len(resp.content):,} bytes)")
+        return resp.content
+
+    except Exception as e:
+        logger.warning(f"PDFダウンロードエラー {doc_id}: {e}")
+        return None
+
+
+# ========================================
+# Claude APIで決算分析
+# ========================================
+
+def analyze_earnings_pdf(
+    pdf_bytes: bytes,
+    company_name: str,
+    doc_description: str
+) -> dict:
+    """
+    決算短信PDFをClaude APIで分析してスコアリングする。
+
+    Args:
+        pdf_bytes (bytes): PDFバイナリ
+        company_name (str): 会社名
+        doc_description (str): 書類概要
+
+    Returns:
+        dict: {
+            "score": int,           # -100〜+100（ポジ/ネガ）
+            "summary": str,         # 2〜3行の要約コメント
+            "positive_points": list,# ポジティブな点（最大3件）
+            "negative_points": list,# ネガティブな点（最大3件）
+            "structural_change": bool,  # 構造的変化の有無
+            "structural_comment": str,  # 構造的変化のコメント
+            "revenue_yoy": str,     # 売上前年比（例: "+12%"）
+            "profit_yoy": str,      # 営業利益前年比
+            "vs_forecast": str,     # 予想比（例: "上振れ+5%"）
+            "error": str            # エラー時のみ
+        }
+    """
+    api_key = _get_anthropic_key()
+    if not api_key:
+        return {"error": "ANTHROPIC_API_KEY未設定", "score": 0}
+
+    # PDFをbase64エンコード
+    pdf_b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
+
+    prompt = f"""
+あなたは日本株投資の決算分析専門家です。
+以下の決算書類（{company_name} / {doc_description}）を読み、投資判断に役立つ分析を行ってください。
+
+【出力形式】
+必ず以下のJSON形式のみで回答してください。前置きや説明は不要です。
+
+{{
+  "score": <-100から+100の整数。強いポジはプラス大、強いネガはマイナス大>,
+  "summary": "<2〜3文で決算の核心をまとめる。数字を必ず含める>",
+  "positive_points": ["<ポジティブな点1>", "<ポジティブな点2>"],
+  "negative_points": ["<ネガティブな点1>", "<ネガティブな点2>"],
+  "structural_change": <true/false。事業構造・競争環境に大きな変化があればtrue>,
+  "structural_comment": "<structural_changeがtrueの場合のみ、変化の内容を1文で>",
+  "revenue_yoy": "<売上の前年同期比。例: +12.3%、-5.1%、不明>",
+  "profit_yoy": "<営業利益の前年同期比。例: +34.2%、-41.0%、不明>",
+  "vs_forecast": "<会社予想比または市場予想比。例: 上振れ+8%、下振れ-12%、概ね一致、不明>"
+}}
+
+【スコア基準】
++80〜+100: 大幅上振れ・強気ガイダンス・構造的好転
++40〜+79: 増益・予想超え・ポジティブな変化
++10〜+39: 軽微なポジティブ
+-10〜+9: ほぼ中立
+-10〜-39: 軽微なネガティブ
+-40〜-79: 減益・下方修正・懸念あり
+-80〜-100: 大幅下振れ・業績悪化・構造的問題
+"""
+
+    payload = {
+        "model": CLAUDE_MODEL,
+        "max_tokens": MAX_TOKENS,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "application/pdf",
+                            "data": pdf_b64
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
+            }
+        ]
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01"
+    }
+
+    try:
+        resp = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=60)
+        resp.raise_for_status()
+
+        data = resp.json()
+        raw_text = data["content"][0]["text"].strip()
+
+        # JSON部分を抽出（```json ... ``` で囲まれていても対応）
+        if "```" in raw_text:
+            raw_text = raw_text.split("```")[1]
+            if raw_text.startswith("json"):
+                raw_text = raw_text[4:]
+
+        result = json.loads(raw_text)
+        logger.info(f"Claude分析完了: {company_name} スコア={result.get('score', 0)}")
+        return result
+
+    except json.JSONDecodeError as e:
+        logger.error(f"JSONパースエラー ({company_name}): {e}\n生テキスト: {raw_text[:200]}")
+        return {"error": f"JSONパースエラー: {e}", "score": 0}
+    except Exception as e:
+        logger.error(f"Claude API呼び出しエラー ({company_name}): {e}")
+        return {"error": str(e), "score": 0}
+
+
+# ========================================
+# メイン：決算銘柄を一括分析
+# ========================================
+
+def analyze_earnings_batch(earnings_list: list) -> list:
+    """
+    決算発表銘柄リストを一括分析してスコア付きで返す。
+
+    Args:
+        earnings_list (list): edinet_fetcher.get_earnings_announcements()の戻り値
+
+    Returns:
+        list: スコア付き決算分析結果リスト
+              各要素: {stockCode, companyName, score, summary,
+                       positive_points, negative_points,
+                       structural_change, structural_comment,
+                       revenue_yoy, profit_yoy, vs_forecast, docDescription}
+    """
+    if not earnings_list:
+        logger.info("分析対象の決算書類がありません。")
+        return []
+
+    # 決算短信（180）を優先、その他は後回し
+    priority_types = ["180"]
+    other_types = ["130", "140", "030"]
+
+    sorted_earnings = (
+        [e for e in earnings_list if e.get("docTypeCode") in priority_types] +
+        [e for e in earnings_list if e.get("docTypeCode") in other_types]
+    )
+
+    # 重複排除（同一銘柄の複数書類は1件だけ処理）
+    seen_codes = set()
+    unique_earnings = []
+    for e in sorted_earnings:
+        code = e.get("secCode", "")
+        if code not in seen_codes:
+            seen_codes.add(code)
+            unique_earnings.append(e)
+
+    logger.info(f"決算分析開始: {len(unique_earnings)}銘柄（重複除去後）")
+
+    results = []
+    api_key = _get_anthropic_key()
+
+    for i, earning in enumerate(unique_earnings):
+        company_name = earning.get("companyName", "不明")
+        doc_id = earning.get("docID", "")
+        doc_type = earning.get("docTypeCode", "")
+        doc_desc = earning.get("docDescription", "")
+        sec_code = earning.get("secCode", "")
+
+        logger.info(f"[{i+1}/{len(unique_earnings)}] {company_name} ({sec_code}) 分析中...")
+
+        # APIキーがない場合はスキップ（書類情報だけ記録）
+        if not api_key or not doc_id:
+            results.append({
+                "stockCode": sec_code,
+                "companyName": company_name,
+                "docTypeCode": doc_type,
+                "docDescription": doc_desc,
+                "score": 0,
+                "summary": "APIキー未設定のため未分析",
+                "positive_points": [],
+                "negative_points": [],
+                "structural_change": False,
+                "structural_comment": "",
+                "revenue_yoy": "不明",
+                "profit_yoy": "不明",
+                "vs_forecast": "不明",
+                "analyzed": False
+            })
+            continue
+
+        # PDFダウンロード
+        pdf_bytes = download_earnings_pdf(doc_id)
+        if not pdf_bytes:
+            logger.warning(f"PDF取得失敗: {company_name} → スキップ")
+            results.append({
+                "stockCode": sec_code,
+                "companyName": company_name,
+                "docTypeCode": doc_type,
+                "docDescription": doc_desc,
+                "score": 0,
+                "summary": "PDF取得失敗",
+                "positive_points": [],
+                "negative_points": [],
+                "structural_change": False,
+                "structural_comment": "",
+                "revenue_yoy": "不明",
+                "profit_yoy": "不明",
+                "vs_forecast": "不明",
+                "analyzed": False
+            })
+            continue
+
+        # Claude APIで分析
+        analysis = analyze_earnings_pdf(pdf_bytes, company_name, doc_desc)
+
+        results.append({
+            "stockCode": sec_code,
+            "companyName": company_name,
+            "docTypeCode": doc_type,
+            "docDescription": doc_desc,
+            "score": analysis.get("score", 0),
+            "summary": analysis.get("summary", ""),
+            "positive_points": analysis.get("positive_points", []),
+            "negative_points": analysis.get("negative_points", []),
+            "structural_change": analysis.get("structural_change", False),
+            "structural_comment": analysis.get("structural_comment", ""),
+            "revenue_yoy": analysis.get("revenue_yoy", "不明"),
+            "profit_yoy": analysis.get("profit_yoy", "不明"),
+            "vs_forecast": analysis.get("vs_forecast", "不明"),
+            "analyzed": "error" not in analysis,
+            "error": analysis.get("error", "")
+        })
+
+        # APIレート制限対策（1秒待機）
+        if i < len(unique_earnings) - 1:
+            time.sleep(1.0)
+
+    logger.info(f"決算分析完了: {len(results)}件")
+    return results
+
+
+def get_best_worst_earnings(analyzed_results: list, top_n: int = 10) -> dict:
+    """
+    分析済み結果からベスト/ワーストをランキング化する。
+
+    Args:
+        analyzed_results (list): analyze_earnings_batch()の戻り値
+        top_n (int): 取得件数（デフォルト10件）
+
+    Returns:
+        dict: {"best": [...], "worst": [...]}
+    """
+    # 分析済みのみ抽出
+    analyzed = [r for r in analyzed_results if r.get("analyzed", False)]
+    unanalyzed = [r for r in analyzed_results if not r.get("analyzed", False)]
+
+    # スコアでソート
+    sorted_results = sorted(analyzed, key=lambda x: x.get("score", 0), reverse=True)
+
+    best = [r for r in sorted_results if r.get("score", 0) > 0][:top_n]
+    worst = [r for r in reversed(sorted_results) if r.get("score", 0) < 0][:top_n]
+
+    logger.info(f"ベスト: {len(best)}件 / ワースト: {len(worst)}件 / 未分析: {len(unanalyzed)}件")
+
+    return {
+        "best": best,
+        "worst": worst,
+        "unanalyzed": unanalyzed
+    }

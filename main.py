@@ -161,9 +161,24 @@ def run_scan_mode(args):
             if not results:
                 continue
 
-            # EARNINGS（決算）モードはバックテスト対象外なのでPF=0で通知
+            # EARNINGS（決算）モードはClaude APIで分析してスコアリング通知
             if mode == "EARNINGS":
-                notify_new_signal(results, mode=mode, profit_factor=0.0)
+                try:
+                    from agents.edinet_analyzer import analyze_earnings_batch
+                    print("  決算書類をClaude APIで分析中...")
+                    analyzed = analyze_earnings_batch(results)
+                    analyzed_map = {r.get("stockCode"): r for r in analyzed}
+                    merged = []
+                    for r in results:
+                        code = r.get("stockCode", "")
+                        if code in analyzed_map:
+                            merged.append({**r, **analyzed_map[code]})
+                        else:
+                            merged.append(r)
+                    notify_new_signal(merged, mode=mode, profit_factor=0.0)
+                except Exception as e:
+                    print(f"  決算分析エラー（簡易通知に切り替え）: {e}")
+                    notify_new_signal(results, mode=mode, profit_factor=0.0)
                 continue
 
             # SHORT_TERM・MOMENTUMはバックテストを実行してPFを取得

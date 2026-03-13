@@ -42,6 +42,8 @@ jobs:
             api_key: "${{ secrets.EDINET_API_KEY }}"
           slack:
             webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
           paper_trading:
             initial_capital: 3000000
             max_position_size: 300000
@@ -109,6 +111,8 @@ jobs:
             api_key: "${{ secrets.EDINET_API_KEY }}"
           slack:
             webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
           paper_trading:
             initial_capital: 3000000
             max_position_size: 300000
