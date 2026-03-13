@@ -225,7 +225,29 @@ def run_scan_mode(args):
 
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
+# ---- モメンタム判定（SHORT_TERMシグナルを2段階で精査） ----
+    short_term_results = all_results.get("SHORT_TERM", [])
+    if short_term_results:
+        try:
+            from agents.momentum_qualifier import qualify_signals, format_qualify_result_for_slack
+            from agents.jquants_fetcher import load_latest_quotes
+            from agents.slack_notifier import send_slack_message
 
+            logger.info("モメンタム判定を開始します...")
+            df_all = load_latest_quotes()
+
+            if not df_all.empty:
+                qualify_results = qualify_signals(short_term_results, df_all)
+
+                # Slack通知
+                slack_text = format_qualify_result_for_slack(qualify_results)
+                send_slack_message(slack_text)
+                logger.info("モメンタム判定結果をSlackに送信しました。")
+            else:
+                logger.warning("株価データが取得できずモメンタム判定をスキップ")
+
+        except Exception as e:
+            logger.warning(f"モメンタム判定エラー（スキップ）: {e}")
     return all_results
 
 

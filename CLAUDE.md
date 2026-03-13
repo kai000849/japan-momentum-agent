@@ -162,9 +162,11 @@ japan-momentum-agent/
 8. **全てgit push済み（コミット: `feat: 米市場スキャン・キーワード抽出追加 + yfinance追加`）**
 
 **【最優先・次回セッション冒頭】ANTHROPIC_API_KEY登録手順：**
-1. https://console.anthropic.com でキー作成（名前: `japan-momentum-agent`）
-2. クレジット購入（$5〜・月400〜700円程度の見込み）
-3. https://github.com/kai000849/japan-momentum-agent/settings/secrets/actions で `ANTHROPIC_API_KEY` を登録
+1. https://console.anthropic.com でクレジット購入（$5〜）＋キー確認
+   - **注意**: Googleアカウントログインだと請求ページでエラーになる事例あり
+   - **解決策**: メールアドレス＋パスワードで直接ログインする（「パスワードを忘れた」でリセット可）
+   - それでもエラーの場合はブラウザのキャッシュクリア or シークレットモードで試す
+2. https://github.com/kai000849/japan-momentum-agent/settings/secrets/actions で `ANTHROPIC_API_KEY` を登録
 
 ### 🔲 フェーズ3（過去パターンの蓄積と学習）
 - 「このチャートパターン・この値動きは過去何回中何回成功」という統計を自動蓄積
@@ -176,13 +178,14 @@ japan-momentum-agent/
 
 ---
 
-## 現在の状況（2026/03/13夕方時点）
+## 現在の状況（2026/03/13夜時点）
 - 毎朝7時・夕方17時にSlack自動通知が稼働中
 - 株価データ：99営業日分（3596銘柄）
 - モメンタムスキャン：207銘柄ヒット
 - PF=0バグ修正済み・稼働確認中
 - **ANTHROPIC_API_KEY未登録のため決算分析・米市場キーワード分析は未稼働**
 - ペーパートレード：発注なし（PF<1.2のため）
+- **Console請求ページのログイン問題が未解決（次回セッション冒頭で再試行）**
 
 ---
 
