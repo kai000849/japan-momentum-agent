@@ -5,7 +5,7 @@ on:
     # 夕方18:00 JST (UTC 09:00) - メイン通知（スキャン＋保有状況）
     - cron: '0 9 * * 1-5'    # 月〜金（日本時間の平日夕方）
     # 翌朝6:00 JST (UTC 21:00 前日) - 朝通知（再スキャン＋保有状況＋米市場）
-    - cron: '0 21 * * 0-4'   # 日〜木（日本時間の月〜金の朝）
+    - cron: '0 21 * * 0-5'   # 日〜金（日本時間の月〜土の朝→平日月〜金の朝6時をカバー）
   workflow_dispatch:           # 手動実行も可能
 
 jobs:
@@ -77,11 +77,11 @@ jobs:
 
   # ===========================
   # 朝ジョブ: 再スキャン＆保有状況＆米市場スキャン
-  # 毎朝6:00 JST頃に実行
+  # 毎朝6:00 JST頃に実行（月〜金）
   # ===========================
   morning-scan:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 21 * * 0-4' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '0 21 * * 0-5' || github.event_name == 'workflow_dispatch'
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
