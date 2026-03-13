@@ -174,7 +174,7 @@ def run_scan_mode(args):
                 scans_dir = Path(__file__).parent / "data" / "processed" / "scans"
                 # 過去スキャンファイルを日付降順で取得（当日分を除く最新2件を候補に）
                 past_scan_files = sorted(
-                    scans_dir.glob(f"scan_*_{mode}.json"), reverse=True
+                    scans_dir.glob(f"scan_*_{mode}.json"), reverse=False
                 )
                 # 当日ファイル名を作成（除外用）
                 today_str = datetime.now().strftime("%Y%m%d")
@@ -187,8 +187,6 @@ def run_scan_mode(args):
                         with open(f, "r", encoding="utf-8") as fp:
                             data = json.load(fp)
                         past_results.extend(data.get("results", []))
-                        if len(past_results) >= 20:  # 20件以上あれば十分
-                            break
                     except Exception:
                         continue
 
