@@ -194,25 +194,59 @@ def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
   "comment": "50文字以内の理由"
 }}"""
 
-        response = client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=300,
-            tools=[{"type": "web_search_20250305", "name": "web_search"}],
-            messages=[{"role": "user", "content": prompt}]
-        )
+        messages = [{"role": "user", "content": prompt}]
 
-        # レスポンスからテキストを抽出
+        # web_search使用時は複数ターンになるためループで処理
         result_text = ""
-        for block in response.content:
-            if hasattr(block, "text"):
-                result_text += block.text
+        for _ in range(5):  # 最大5ターン（無限ループ防止）
+            response = client.messages.create(
+                model=CLAUDE_MODEL,
+                max_tokens=1500,
+                tools=[{"type": "web_search_20250305", "name": "web_search"}],
+                messages=messages
+            )
 
-        # JSONパース
+            # アシスタントの返答を会話履歴に追加
+            messages.append({"role": "assistant", "content": response.content})
+
+            # stop_reason が end_turn になったら完了
+            if response.stop_reason == "end_turn":
+                # textブロックのみ抽出
+                for block in response.content:
+                    if hasattr(block, "text"):
+                        result_text += block.text
+                break
+
+            # tool_use の場合はツール結果を追加して継続
+            tool_results = []
+            for block in response.content:
+                if block.type == "tool_use":
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": ""  # web_searchは自動実行されるため空でOK
+                    })
+            if tool_results:
+                messages.append({"role": "user", "content": tool_results})
+
+        # JSONパース（コードブロック除去）
         result_text = result_text.strip()
-        if result_text.startswith("```"):
-            result_text = result_text.split("```")[1]
-            if result_text.startswith("json"):
-                result_text = result_text[4:]
+        if "```" in result_text:
+            parts = result_text.split("```")
+            for part in parts:
+                if part.startswith("json"):
+                    result_text = part[4:].strip()
+                    break
+                elif "{" in part:
+                    result_text = part.strip()
+                    break
+
+        # JSONが埋め込まれている場合の抽出
+        if not result_text.startswith("{"):
+            start = result_text.find("{")
+            end = result_text.rfind("}") + 1
+            if start != -1 and end > start:
+                result_text = result_text[start:end]
 
         parsed = json.loads(result_text)
         parsed["stage2Available"] = True
