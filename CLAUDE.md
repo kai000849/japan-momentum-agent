@@ -21,7 +21,7 @@
 - EDINET API（決算情報取得）
 - GitHub Actions（自動実行）
 - Slack Webhook（通知）
-- Claude API（Haiku 4.5・フェーズ2実装中・APIキー未登録）
+- Claude API（Haiku 4.5・フェーズ2動作確認済み・APIキー再登録待ち）
 - yfinance（米国ETFデータ取得・無料）
 
 ---
@@ -67,7 +67,7 @@ japan-momentum-agent/
 | `JQUANTS_API_KEY` | J-Quants APIキー（登録済み） |
 | `EDINET_API_KEY` | EDINET APIキー（登録済み） |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL（登録済み） |
-| `ANTHROPIC_API_KEY` | **未登録・要対応**（Console復旧後にキー取得→登録） |
+| `ANTHROPIC_API_KEY` | **削除済み・再登録待ち**（PCのConsoleログイン問題解決後にキー取得→登録） |
 
 ---
 
@@ -170,24 +170,34 @@ japan-momentum-agent/
 ### ✅ フェーズ1（基盤構築・完了）
 （省略・過去の修正履歴はGitログ参照）
 
-### 🔄 フェーズ2（Claude API統合・実装済み・APIキー待ち）
+### 🔄 フェーズ2（Claude API統合・動作確認済み・APIキー再登録待ち）
 
-**実装済み内容：**
+**実装済み・動作確認済み内容：**
 1. `agents/edinet_analyzer.py` - 決算短信PDFをClaude APIでスコアリング
 2. `agents/us_market_scanner.py` - 米国セクターETF17本のモメンタム分析
 3. `agents/us_theme_extractor.py` - 米財務メディアからキーワード抽出
-4. `agents/momentum_qualifier.py` - 急騰シグナルの2段階モメンタム判定【2026/03/13追加】
+4. `agents/momentum_qualifier.py` - 急騰シグナルの2段階モメンタム判定（web_searchマルチターン対応済み）
 5. `agents/slack_notifier.py` - 各種通知対応済み
-6. `main.py` - 全モード対応済み
-7. **全てgit push済み（最新コミット: `feat: モメンタム判定モジュール追加`）**
+6. `main.py` - `.env`読み込み対応済み（`from dotenv import load_dotenv` 追加済み）
+7. **全てgit push済み（最新コミット: `fix: .envをgitignoreに追加・APIキー削除`）**
 
-**【最優先・次回セッション冒頭】ANTHROPIC_API_KEY登録手順：**
-1. https://console.anthropic.com でクレジット購入（$5〜）＋キー確認
-   - **注意**: Googleアカウントログインだと請求ページでエラーになる事例あり
-   - **解決策**: メールアドレス＋パスワードで直接ログイン（「パスワードを忘れた」でリセット可）
-   - それでもエラーの場合はブラウザのキャッシュクリア or シークレットモードで試す
-2. https://github.com/kai000849/japan-momentum-agent/settings/secrets/actions で `ANTHROPIC_API_KEY` を登録
-3. 登録後 `python main.py --mode scan` で動作確認（STRONGシグナルが出るか確認）
+**ローカル環境のセットアップ（済み）：**
+- `python-dotenv`・`anthropic`ライブラリ インストール済み
+- `.env`ファイル作成済み（`.gitignore`で除外済み）
+- `.env`にAPIキーを入れるだけで動く状態
+
+**【次回セッション冒頭】ANTHROPIC_API_KEY再登録手順：**
+1. PCのConsoleログイン問題を解決する（下記参照）
+2. https://console.anthropic.com/settings/keys で新しいキーを作成
+3. ローカル`.env`を更新：`echo ANTHROPIC_API_KEY=新しいキー > .env`
+4. GitHub Secretsも更新：https://github.com/kai000849/japan-momentum-agent/settings/secrets/actions → `ANTHROPIC_API_KEY`の鉛筆マーク
+5. `python main.py --mode scan` で動作確認（STRONG判定が出るか確認）
+
+**PCのConsoleログイン問題（未解決）：**
+- Googleアカウントログインだと請求ページでエラーになる
+- 解決策候補：メールアドレス＋パスワードで直接ログイン（「パスワードを忘れた」でリセット）
+- それでもエラーの場合はブラウザのキャッシュクリア or シークレットモードで試す
+- スマホからは正常にログイン・クレジット購入済み
 
 ### 🔲 フェーズ3（過去パターンの蓄積と学習）
 - qualify_log.jsonにSTRONG/WEAK/NOISEの結果が蓄積される
@@ -200,13 +210,14 @@ japan-momentum-agent/
 
 ---
 
-## 現在の状況（2026/03/13夜時点）
+## 現在の状況（2026/03/15夜時点）
 - 夕方18時・翌朝6時にSlack自動通知が稼働中（朝はus_scan含む）
-- 株価データ：99営業日分（3596銘柄）
+- 株価データ：99営業日分（1596銘柄）
 - SHORT_TERM PF: 1.24 / MOMENTUM PF: 1.53（発注条件クリア済み）
-- **ANTHROPIC_API_KEY未登録のため決算分析・米市場分析・STRONG判定は未稼働（WATCH通知のみ）**
+- **ANTHROPIC_API_KEY：一度登録・動作確認済み（STRONG=4件確認）→その後キー削除済み・再登録待ち**
 - ペーパートレード：発注あり（PF≥1.2のため）
-- **Console請求ページのログイン問題が未解決（次回セッション冒頭で再試行）**
+- **PCのConsole請求ページのログイン問題が未解決（次回セッション冒頭で再試行）**
+- **スマホからはConsoleにログイン・クレジット購入済み**
 
 ---
 
@@ -245,6 +256,7 @@ git pull
 
 ## 注意事項
 - `config.yaml` はGitに含めない（.gitignoreで除外済み）
+- `.env`はGitに含めない（.gitignoreで除外済み）← **重要：過去に誤コミットしてGitHubにブロックされた経験あり**
 - APIキーは絶対にコードに直書きしない
 - J-Quantsライトプラン：最新データが取得可能（2週間遅延なし）
 - Windowsのコマンドプロンプトで作業
