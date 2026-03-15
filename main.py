@@ -15,6 +15,9 @@ Japan Momentum Agent - メインエントリーポイント
 作者: Japan Momentum Agent
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import argparse
 import io
 import logging
