@@ -48,3 +48,5 @@ logs/
 # --- トークンキャッシュ（認証情報が含まれる） ---
 *.token
 token_cache.json
+.env 
+.env.txt 
