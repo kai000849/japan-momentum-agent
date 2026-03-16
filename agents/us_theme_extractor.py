@@ -232,39 +232,41 @@ def extract_hot_keywords(headlines: list) -> dict:
 hot_keywordsは上位8件、sector_narrativesは上位5件、japan_playsは上位5件を出力してください。
 """
 
-    payload = {
-        "model": CLAUDE_MODEL,
-        "max_tokens": 2000,
-        "tools": [
-            {
-                "type": "web_search_20250305",
-                "name": "web_search"
-            }
-        ],
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01",
-        "anthropic-beta": "web-search-2025-03-05"
-    }
-
     try:
+        import anthropic
+
         logger.info("Claude APIでキーワード抽出中（web_search有効）...")
-        resp = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=90)
-        resp.raise_for_status()
+        client = anthropic.Anthropic(api_key=api_key)
+        messages = [{"role": "user", "content": prompt}]
 
-        data = resp.json()
-
-        # textブロックを全て結合
+        # web_search使用時は複数ターンになるためループで処理
         raw_text = ""
-        for block in data.get("content", []):
-            if block.get("type") == "text":
-                raw_text += block.get("text", "")
+        for _ in range(5):  # 最大5ターン（無限ループ防止）
+            response = client.messages.create(
+                model=CLAUDE_MODEL,
+                max_tokens=2000,
+                tools=[{"type": "web_search_20250305", "name": "web_search"}],
+                messages=messages
+            )
+
+            messages.append({"role": "assistant", "content": response.content})
+
+            if response.stop_reason == "end_turn":
+                for block in response.content:
+                    if hasattr(block, "text"):
+                        raw_text += block.text
+                break
+
+            tool_results = []
+            for block in response.content:
+                if block.type == "tool_use":
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": ""  # web_searchは自動実行されるため空でOK
+                    })
+            if tool_results:
+                messages.append({"role": "user", "content": tool_results})
 
         raw_text = raw_text.strip()
 
@@ -287,7 +289,7 @@ hot_keywordsは上位8件、sector_narrativesは上位5件、japan_playsは上�
 
     except json.JSONDecodeError as e:
         logger.error(f"JSONパースエラー: {e}\n生テキスト: {raw_text[:400]}")
-        return {"error": f"JSONパースエラー", "raw": raw_text[:300]}
+        return {"error": "JSONパースエラー", "raw": raw_text[:300]}
     except Exception as e:
         logger.error(f"Claude API エラー: {e}")
         return {"error": str(e)}

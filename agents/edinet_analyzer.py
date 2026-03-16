@@ -34,7 +34,7 @@ EDINET_BASE_URL = "https://api.edinet-fsa.go.jp/api/v2"
 # Claude APIエンドポイント
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト効率優先
-MAX_TOKENS = 1024
+MAX_TOKENS = 1500
 
 # スコアリング対象の書類種別（決算短信のみ）
 TARGET_DOC_TYPES = ["180", "130", "140", "030"]
@@ -207,48 +207,46 @@ def analyze_earnings_pdf(
 -80〜-100: 大幅下振れ・業績悪化・構造的問題
 """
 
-    payload = {
-        "model": CLAUDE_MODEL,
-        "max_tokens": MAX_TOKENS,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "document",
-                        "source": {
-                            "type": "base64",
-                            "media_type": "application/pdf",
-                            "data": pdf_b64
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
-        ]
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01"
-    }
-
     try:
-        resp = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=60)
-        resp.raise_for_status()
+        import anthropic
 
-        data = resp.json()
-        raw_text = data["content"][0]["text"].strip()
+        client = anthropic.Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=MAX_TOKENS,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "document",
+                            "source": {
+                                "type": "base64",
+                                "media_type": "application/pdf",
+                                "data": pdf_b64
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": prompt
+                        }
+                    ]
+                }
+            ]
+        )
+
+        raw_text = response.content[0].text.strip()
 
         # JSON部分を抽出（```json ... ``` で囲まれていても対応）
         if "```" in raw_text:
             raw_text = raw_text.split("```")[1]
             if raw_text.startswith("json"):
                 raw_text = raw_text[4:]
+
+        start = raw_text.find("{")
+        end = raw_text.rfind("}") + 1
+        if start >= 0 and end > start:
+            raw_text = raw_text[start:end]
 
         result = json.loads(raw_text)
         logger.info(f"Claude分析完了: {company_name} スコア={result.get('score', 0)}")

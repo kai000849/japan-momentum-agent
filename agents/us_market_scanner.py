@@ -266,49 +266,51 @@ def analyze_us_market_theme(top_sectors: list, macro: dict) -> dict:
 theme_analysisは強いセクター上位3つのみ記載してください。
 """
 
-    # web_searchツール付きで呼び出す
-    payload = {
-        "model": CLAUDE_MODEL,
-        "max_tokens": 1500,
-        "tools": [
-            {
-                "type": "web_search_20250305",
-                "name": "web_search"
-            }
-        ],
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01",
-        "anthropic-beta": "web-search-2025-03-05"
-    }
-
     try:
-        resp = requests.post(CLAUDE_API_URL, json=payload, headers=headers, timeout=60)
-        resp.raise_for_status()
+        import anthropic
 
-        data = resp.json()
+        client = anthropic.Anthropic(api_key=api_key)
+        messages = [{"role": "user", "content": prompt}]
 
-        # text typeのコンテンツを抽出
+        # web_search使用時は複数ターンになるためループで処理
         raw_text = ""
-        for block in data.get("content", []):
-            if block.get("type") == "text":
-                raw_text += block.get("text", "")
+        for _ in range(5):  # 最大5ターン（無限ループ防止）
+            response = client.messages.create(
+                model=CLAUDE_MODEL,
+                max_tokens=1500,
+                tools=[{"type": "web_search_20250305", "name": "web_search"}],
+                messages=messages
+            )
+
+            messages.append({"role": "assistant", "content": response.content})
+
+            if response.stop_reason == "end_turn":
+                for block in response.content:
+                    if hasattr(block, "text"):
+                        raw_text += block.text
+                break
+
+            tool_results = []
+            for block in response.content:
+                if block.type == "tool_use":
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": ""  # web_searchは自動実行されるため空でOK
+                    })
+            if tool_results:
+                messages.append({"role": "user", "content": tool_results})
 
         raw_text = raw_text.strip()
 
         # JSON抽出
         if "```" in raw_text:
-            raw_text = raw_text.split("```")[1]
-            if raw_text.startswith("json"):
-                raw_text = raw_text[4:]
+            parts = raw_text.split("```")
+            for part in parts:
+                if part.startswith("json"):
+                    raw_text = part[4:].strip()
+                    break
 
-        # JSON部分だけ抜き出す
         start = raw_text.find("{")
         end = raw_text.rfind("}") + 1
         if start >= 0 and end > start:
