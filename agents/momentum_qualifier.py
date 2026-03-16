@@ -240,23 +240,16 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
             if tool_results:
                 messages.append({"role": "user", "content": tool_results})
 
-        # JSONパース（コードブロック除去）
+        # JSONパース（<cite>タグ・コードブロック除去後に最外周JSONを抽出）
+        import re
         result_text = result_text.strip()
-        if "```" in result_text:
-            parts = result_text.split("```")
-            for part in parts:
-                if part.startswith("json"):
-                    result_text = part[4:].strip()
-                    break
-                elif "{" in part:
-                    result_text = part.strip()
-                    break
-
-        if not result_text.startswith("{"):
-            start = result_text.find("{")
-            end = result_text.rfind("}") + 1
-            if start != -1 and end > start:
-                result_text = result_text[start:end]
+        result_text = re.sub(r'<cite[^>]*>', '', result_text)
+        result_text = result_text.replace('</cite>', '')
+        result_text = re.sub(r'```(?:json)?', '', result_text)
+        start = result_text.find("{")
+        end = result_text.rfind("}") + 1
+        if start >= 0 and end > start:
+            result_text = result_text[start:end]
 
         parsed = json.loads(result_text)
 

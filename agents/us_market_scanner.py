@@ -303,14 +303,13 @@ theme_analysisは強いセクター上位3つのみ記載してください。
 
         raw_text = raw_text.strip()
 
-        # JSON抽出
-        if "```" in raw_text:
-            parts = raw_text.split("```")
-            for part in parts:
-                if part.startswith("json"):
-                    raw_text = part[4:].strip()
-                    break
+        # web_searchの<cite>引用タグを除去（属性の"がJSONを壊すため）
+        import re
+        raw_text = re.sub(r'<cite[^>]*>', '', raw_text)
+        raw_text = raw_text.replace('</cite>', '')
 
+        # コードブロックマーカーを除去してから最外周JSONを抽出
+        raw_text = re.sub(r'```(?:json)?', '', raw_text)
         start = raw_text.find("{")
         end = raw_text.rfind("}") + 1
         if start >= 0 and end > start:

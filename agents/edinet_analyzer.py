@@ -237,12 +237,9 @@ def analyze_earnings_pdf(
 
         raw_text = response.content[0].text.strip()
 
-        # JSON部分を抽出（```json ... ``` で囲まれていても対応）
-        if "```" in raw_text:
-            raw_text = raw_text.split("```")[1]
-            if raw_text.startswith("json"):
-                raw_text = raw_text[4:]
-
+        # コードブロックマーカーを除去してから最外周JSONを抽出
+        import re
+        raw_text = re.sub(r'```(?:json)?', '', raw_text)
         start = raw_text.find("{")
         end = raw_text.rfind("}") + 1
         if start >= 0 and end > start:
