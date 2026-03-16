@@ -22,3 +22,9 @@ schedule
 
 # 米国株・ETFデータ取得（米市場スキャン用）
 yfinance
+
+# 環境変数読み込み（.envファイル対応）
+python-dotenv
+
+# Claude API クライアント
+anthropic
