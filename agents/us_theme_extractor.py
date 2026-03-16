@@ -244,7 +244,7 @@ hot_keywordsは上位8件、sector_narrativesは上位5件、japan_playsは上�
         for _ in range(5):  # 最大5ターン（無限ループ防止）
             response = client.messages.create(
                 model=CLAUDE_MODEL,
-                max_tokens=2000,
+                max_tokens=4000,
                 tools=[{"type": "web_search_20250305", "name": "web_search"}],
                 messages=messages
             )
