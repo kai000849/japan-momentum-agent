@@ -277,7 +277,7 @@ theme_analysisは強いセクター上位3つのみ記載してください。
         for _ in range(5):  # 最大5ターン（無限ループ防止）
             response = client.messages.create(
                 model=CLAUDE_MODEL,
-                max_tokens=1500,
+                max_tokens=2000,
                 tools=[{"type": "web_search_20250305", "name": "web_search"}],
                 messages=messages
             )
@@ -303,17 +303,37 @@ theme_analysisは強いセクター上位3つのみ記載してください。
 
         raw_text = raw_text.strip()
 
-        # web_searchの<cite>引用タグを除去（属性の"がJSONを壊すため）
+        # web_searchの<cite>引用タグを除去
         import re
         raw_text = re.sub(r'<cite[^>]*>', '', raw_text)
         raw_text = raw_text.replace('</cite>', '')
 
-        # コードブロックマーカーを除去してから最外周JSONを抽出
+        # コードブロックマーカーを除去
         raw_text = re.sub(r'```(?:json)?', '', raw_text)
-        start = raw_text.find("{")
-        end = raw_text.rfind("}") + 1
-        if start >= 0 and end > start:
-            raw_text = raw_text[start:end]
+
+        # バランス波括弧で最大の {..} ブロックを抽出（find/rfindより正確）
+        depth = 0
+        best_s = best_e = cur_s = 0
+        in_str = esc = False
+        for k, ch in enumerate(raw_text):
+            if esc:
+                esc = False; continue
+            if ch == '\\' and in_str:
+                esc = True; continue
+            if ch == '"':
+                in_str = not in_str; continue
+            if in_str:
+                continue
+            if ch == '{':
+                if depth == 0:
+                    cur_s = k
+                depth += 1
+            elif ch == '}' and depth > 0:
+                depth -= 1
+                if depth == 0 and k + 1 - cur_s > best_e - best_s:
+                    best_s, best_e = cur_s, k + 1
+        if best_e > best_s:
+            raw_text = raw_text[best_s:best_e]
 
         result = json.loads(raw_text)
         logger.info("米市場テーマ分析完了")
