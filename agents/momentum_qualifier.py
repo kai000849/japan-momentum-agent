@@ -143,57 +143,69 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
 
 
 # ========================================
-# ステージ2: Claude APIによる構造的変化判定
+# ステージ2: Claude APIによる構造的変化判定（一括処理）
 # ========================================
 
-def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
+def _analyze_structural_change_batch(stocks: list) -> dict:
     """
-    Claude APIを使って銘柄の構造的変化を判定する。
+    複数銘柄をまとめて1回のClaude API呼び出しで構造的変化を判定する。
+    銘柄ごとに個別呼び出しする代わりにバッチ化してトークン消費を削減。
 
     Args:
-        stock_code: 銘柄コード
-        company_name: 会社名
+        stocks: [{"stockCode": str, "companyName": str}] のリスト
 
     Returns:
-        dict: {
-            "structuralChange": bool,  # 構造的変化ありか
-            "confidence": str,         # 確信度（high/medium/low）
-            "comment": str,            # 理由コメント
-            "stage2Available": bool,   # APIが使えたか
-        }
+        dict: {stockCode: {"structuralChange": bool, "confidence": str,
+                           "comment": str, "stage2Available": bool}}
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    stock_codes = [s["stockCode"] for s in stocks]
+
     if not api_key:
         return {
-            "structuralChange": None,
-            "confidence": None,
-            "comment": "APIキー未設定のためスキップ",
-            "stage2Available": False,
+            code: {
+                "structuralChange": None,
+                "confidence": None,
+                "comment": "APIキー未設定のためスキップ",
+                "stage2Available": False,
+            }
+            for code in stock_codes
         }
 
-    try:
-        import anthropic
+    stocks_text = "\n".join([
+        f"- 銘柄コード: {s['stockCode']} / 会社名: {s['companyName']}"
+        for s in stocks
+    ])
 
-        client = anthropic.Anthropic(api_key=api_key)
+    prompt = f"""あなたは日本株の投資アナリストです。
+以下の{len(stocks)}銘柄が急騰しました。各銘柄について、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
 
-        prompt = f"""あなたは日本株の投資アナリストです。
-以下の銘柄が急騰しました。これが短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
+【対象銘柄一覧】
+{stocks_text}
 
-銘柄コード: {stock_code}
-会社名: {company_name}
-
-以下の観点で調べて判断してください：
+以下の観点でweb検索して調べてください：
 1. 直近のニュース・決算・開示情報
 2. ビジネスモデルの変化・新市場参入・規制変化などの構造的要因
 3. 一時的なイベント（仕手、空売り踏み上げ、単発ニュース）の可能性
 
 必ず以下のJSON形式のみで回答してください（他のテキスト不要）：
 {{
-  "structuralChange": true or false,
-  "confidence": "high" or "medium" or "low",
-  "comment": "50文字以内の理由"
-}}"""
+  "results": [
+    {{
+      "stockCode": "<銘柄コード>",
+      "structuralChange": true or false,
+      "confidence": "high" or "medium" or "low",
+      "comment": "50文字以内の理由"
+    }}
+  ]
+}}
 
+resultsには対象の全{len(stocks)}銘柄を含めてください。"""
+
+    try:
+        import anthropic
+
+        client = anthropic.Anthropic(api_key=api_key)
         messages = [{"role": "user", "content": prompt}]
 
         # web_search使用時は複数ターンになるためループで処理
@@ -201,7 +213,7 @@ def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
         for _ in range(5):  # 最大5ターン（無限ループ防止）
             response = client.messages.create(
                 model=CLAUDE_MODEL,
-                max_tokens=1500,
+                max_tokens=2000,
                 tools=[{"type": "web_search_20250305", "name": "web_search"}],
                 messages=messages
             )
@@ -211,7 +223,6 @@ def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
 
             # stop_reason が end_turn になったら完了
             if response.stop_reason == "end_turn":
-                # textブロックのみ抽出
                 for block in response.content:
                     if hasattr(block, "text"):
                         result_text += block.text
@@ -241,7 +252,6 @@ def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
                     result_text = part.strip()
                     break
 
-        # JSONが埋め込まれている場合の抽出
         if not result_text.startswith("{"):
             start = result_text.find("{")
             end = result_text.rfind("}") + 1
@@ -249,23 +259,52 @@ def _analyze_structural_change(stock_code: str, company_name: str) -> dict:
                 result_text = result_text[start:end]
 
         parsed = json.loads(result_text)
-        parsed["stage2Available"] = True
-        return parsed
+
+        # resultsリストを {stockCode: result} の辞書に変換
+        batch_results = {}
+        for item in parsed.get("results", []):
+            code = str(item.get("stockCode", ""))
+            batch_results[code] = {
+                "structuralChange": item.get("structuralChange"),
+                "confidence": item.get("confidence"),
+                "comment": item.get("comment", ""),
+                "stage2Available": True,
+            }
+
+        # Claudeが返さなかった銘柄にフォールバック値を設定
+        for code in stock_codes:
+            if code not in batch_results:
+                logger.warning(f"バッチ判定: {code} の結果がレスポンスに含まれていません")
+                batch_results[code] = {
+                    "structuralChange": None,
+                    "confidence": "low",
+                    "comment": "判定結果なし",
+                    "stage2Available": True,
+                }
+
+        return batch_results
 
     except json.JSONDecodeError:
+        logger.warning("バッチ判定: JSONパースエラー")
         return {
-            "structuralChange": None,
-            "confidence": "low",
-            "comment": "レスポンス解析エラー",
-            "stage2Available": True,
+            code: {
+                "structuralChange": None,
+                "confidence": "low",
+                "comment": "レスポンス解析エラー",
+                "stage2Available": True,
+            }
+            for code in stock_codes
         }
     except Exception as e:
-        logger.warning(f"Claude API呼び出しエラー（{stock_code}）: {e}")
+        logger.warning(f"バッチ判定: Claude API呼び出しエラー: {e}")
         return {
-            "structuralChange": None,
-            "confidence": None,
-            "comment": f"APIエラー: {str(e)[:30]}",
-            "stage2Available": False,
+            code: {
+                "structuralChange": None,
+                "confidence": None,
+                "comment": f"APIエラー: {str(e)[:30]}",
+                "stage2Available": False,
+            }
+            for code in stock_codes
         }
 
 
@@ -292,27 +331,50 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     results = []
     code_col = "Code" if "Code" in df_all.columns else "code"
 
+    # ---- ステージ1: 全銘柄の出来高継続チェック ----
+    stage1_map = {}
     for signal in signals:
         stock_code = signal.get("stockCode", "")
-        company_name = signal.get("companyName", "")
         surge_date = signal.get("scanDate", "")
-
-        result = {**signal}  # 元のシグナルデータをコピー
-
-        # ---- ステージ1: 出来高継続チェック ----
         try:
             df_stock = df_all[df_all[code_col].astype(str) == stock_code].copy()
             stage1 = _check_volume_sustain(df_stock, surge_date)
         except Exception as e:
             logger.debug(f"{stock_code} ステージ1エラー: {e}")
             stage1 = {"stage1Pass": False, "reason": f"エラー: {e}"}
+        stage1_map[stock_code] = stage1
 
+    # ---- ステージ2: ステージ1通過銘柄を一括でClaude判定（API呼び出し1回） ----
+    stage1_pass_signals = [
+        s for s in signals
+        if stage1_map.get(s.get("stockCode", ""), {}).get("stage1Pass", False)
+    ]
+
+    stage2_map = {}
+    if stage1_pass_signals:
+        stocks_for_batch = [
+            {"stockCode": s.get("stockCode", ""), "companyName": s.get("companyName", "")}
+            for s in stage1_pass_signals
+        ]
+        logger.info(f"  ステージ1通過: {len(stocks_for_batch)}銘柄 → Claude一括判定中...")
+        stage2_map = _analyze_structural_change_batch(stocks_for_batch)
+
+    # ---- 結果まとめ ----
+    for signal in signals:
+        stock_code = signal.get("stockCode", "")
+        company_name = signal.get("companyName", "")
+        result = {**signal}
+
+        stage1 = stage1_map.get(stock_code, {"stage1Pass": False, "reason": "不明"})
         result["stage1"] = stage1
 
-        # ---- ステージ2: Claude API構造的変化判定（ステージ1通過時のみ） ----
         if stage1.get("stage1Pass", False):
-            logger.info(f"  {stock_code} {company_name}: ステージ1通過 → Claude判定中...")
-            stage2 = _analyze_structural_change(stock_code, company_name)
+            stage2 = stage2_map.get(stock_code, {
+                "structuralChange": None,
+                "confidence": "low",
+                "comment": "判定結果なし",
+                "stage2Available": False,
+            })
         else:
             logger.info(f"  {stock_code} {company_name}: ステージ1不通過（{stage1.get('reason', '')}）")
             stage2 = {
