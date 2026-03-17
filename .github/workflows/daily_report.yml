@@ -2,16 +2,188 @@ name: Daily Report & Scan
 
 on:
   schedule:
-    # 夕方18:00 JST (UTC 09:00) - メイン通知（スキャン＋保有状況）
-    - cron: '0 9 * * 1-5'    # 月〜金（日本時間の平日夕方）
-    # 翌朝6:00 JST (UTC 21:00 前日) - 朝通知（再スキャン＋保有状況＋米市場）
-    - cron: '0 21 * * 0-5'   # 日〜金（日本時間の月〜土の朝→平日月〜金の朝6時をカバー）
+    # 【朝1】米市場スキャン専用 6:30 JST (UTC 21:30 前日)
+    # 米国市場終了（JST 6:00）直後に実行。GitHub Actions遅延を考慮して30分後に設定。
+    - cron: '30 21 * * 0-5'   # 日〜金（月〜土のJST朝6:30）
+
+    # 【朝2】日本株スキャン＆保有状況 8:00 JST (UTC 23:00 前日)
+    # 米市場スキャン結果（us_themes）取得済みの状態でスキャンするため、
+    # 米市場ジョブの約1.5時間後に設定。
+    - cron: '0 23 * * 0-5'    # 日〜金（月〜土のJST朝8:00）
+
+    # 【夕方】メイン通知 18:00 JST (UTC 09:00)
+    # 夕方のシグナル確認＆保有状況通知（米市場スキャンなし・朝の結果を参照）
+    - cron: '0 9 * * 1-5'     # 月〜金（日本時間の平日夕方18:00）
+
   workflow_dispatch:           # 手動実行も可能
 
 jobs:
   # ===========================
+  # 朝1ジョブ: 米市場スキャン（単独・早朝）
+  # 米国市場終了直後 JST 6:30頃に実行
+  # 結果は us_themes キャッシュに保存され、朝2ジョブ・夕方ジョブが参照する
+  # ===========================
+  us-market-scan:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '30 21 * * 0-5' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 必要パッケージをインストール
+        run: |
+          pip install -r requirements.txt
+
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      - name: 米市場スキャン実行（ETFモメンタム＋テーマ抽出）
+        id: us_scan
+        run: |
+          python main.py --mode us_scan
+        continue-on-error: true
+
+      - name: エラー通知
+        if: steps.us_scan.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *米市場スキャン（朝1ジョブ）でエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+
+  # ===========================
+  # 朝2ジョブ: 日本株スキャン＆保有状況
+  # JST 8:00頃に実行（米市場結果取得済みの状態）
+  # ===========================
+  morning-scan:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 23 * * 0-5' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 必要パッケージをインストール
+        run: |
+          pip install -r requirements.txt
+
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      - name: trade_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/trade_log.json
+          key: trade-log-${{ github.run_number }}
+          restore-keys: |
+            trade-log-
+
+      - name: qualify_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/qualify_log.json
+          key: qualify-log-${{ github.run_number }}
+          restore-keys: |
+            qualify-log-
+
+      - name: スキャン結果キャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
+          restore-keys: |
+            scans-
+
+      - name: 株価データ取得
+        id: fetch
+        run: |
+          python main.py --mode fetch
+        continue-on-error: true
+
+      - name: スキャン実行（シグナル検出＆Slack通知）
+        id: scan
+        run: |
+          python main.py --mode scan
+        continue-on-error: true
+
+      - name: 保有状況をSlackに送信
+        id: status
+        run: |
+          python main.py --mode status --notify
+        continue-on-error: true
+
+      - name: trade_log.json を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/trade_log.json
+          key: trade-log-${{ github.run_number }}
+
+      - name: qualify_log.json を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/qualify_log.json
+          key: qualify-log-${{ github.run_number }}
+
+      - name: スキャン結果キャッシュを保存
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
+
+      - name: エラー通知
+        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          ERRORS=""
+          [ "${{ steps.fetch.outcome }}" = "failure" ] && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
+          [ "${{ steps.scan.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・スキャン実行(scan)\n"
+          [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *GitHub Actions 朝2ジョブでエラー発生*\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+
+  # ===========================
   # 夕方ジョブ: スキャン＆シグナル＆保有状況（メイン通知）
-  # 毎日18:00 JST頃に実行
+  # 毎日18:00 JST頃に実行（米市場スキャンなし・朝の結果を参照）
   # ===========================
   evening-scan:
     runs-on: ubuntu-latest
@@ -106,7 +278,7 @@ jobs:
           path: data/processed/scans
           key: scans-${{ github.run_number }}
 
-      - name: エラー通知（失敗ステップがある場合）
+      - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -117,122 +289,4 @@ jobs:
           [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{\"text\":\"⚠️ *GitHub Actions 夕方ジョブでエラー発生*\n実行ID: ${{ github.run_id }}\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
-
-  # ===========================
-  # 朝ジョブ: 再スキャン＆保有状況＆米市場スキャン
-  # 毎朝6:00 JST頃に実行（月〜金）
-  # ===========================
-  morning-scan:
-    runs-on: ubuntu-latest
-    if: github.event.schedule == '0 21 * * 0-5' || github.event_name == 'workflow_dispatch'
-    steps:
-      - name: コードを取得
-        uses: actions/checkout@v4
-
-      - name: Python 3.11 をセットアップ
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 必要パッケージをインストール
-        run: |
-          pip install -r requirements.txt
-          pip install yfinance
-
-      - name: config.yaml を生成
-        run: |
-          cat > config.yaml << 'EOF'
-          jquants:
-            api_key: "${{ secrets.JQUANTS_API_KEY }}"
-          edinet:
-            api_key: "${{ secrets.EDINET_API_KEY }}"
-          slack:
-            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
-          anthropic:
-            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
-          paper_trading:
-            initial_capital: 3000000
-            max_position_size: 300000
-            max_positions: 10
-          EOF
-
-      - name: trade_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
-          restore-keys: |
-            trade-log-
-
-      - name: qualify_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
-
-      - name: スキャン結果キャッシュを復元
-        uses: actions/cache@v4
-        with:
-          path: data/processed/scans
-          key: scans-${{ github.run_number }}
-          restore-keys: |
-            scans-
-
-      - name: 株価データ取得
-        id: fetch
-        run: |
-          python main.py --mode fetch
-        continue-on-error: true
-
-      - name: スキャン実行（シグナル検出＆Slack通知）
-        id: scan
-        run: |
-          python main.py --mode scan
-        continue-on-error: true
-
-      - name: 保有状況をSlackに送信
-        id: status
-        run: |
-          python main.py --mode status --notify
-        continue-on-error: true
-
-      - name: 米市場スキャン実行
-        id: us_scan
-        run: |
-          python main.py --mode us_scan
-        continue-on-error: true
-
-      - name: trade_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
-
-      - name: qualify_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-
-      - name: スキャン結果キャッシュを保存
-        uses: actions/cache@v4
-        with:
-          path: data/processed/scans
-          key: scans-${{ github.run_number }}
-
-      - name: エラー通知（失敗ステップがある場合）
-        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.us_scan.outcome == 'failure'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          ERRORS=""
-          [ "${{ steps.fetch.outcome }}" = "failure" ]   && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
-          [ "${{ steps.scan.outcome }}" = "failure" ]    && ERRORS="${ERRORS}・スキャン実行(scan)\n"
-          [ "${{ steps.status.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・保有状況通知(status)\n"
-          [ "${{ steps.us_scan.outcome }}" = "failure" ] && ERRORS="${ERRORS}・米市場スキャン(us_scan)\n"
-          curl -s -X POST "$SLACK_WEBHOOK_URL" \
-            -H "Content-Type: application/json" \
-            -d "{\"text\":\"⚠️ *GitHub Actions 朝ジョブでエラー発生*\n実行ID: ${{ github.run_id }}\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+            -d "{\"text\":\"⚠️ *GitHub Actions 夕方ジョブでエラー発生*\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
