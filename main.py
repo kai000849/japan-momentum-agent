@@ -1,20 +1,3 @@
-"""
-main.py
-Japan Momentum Agent - メインエントリーポイント
-
-実行モード一覧:
-  python main.py --mode scan              # 全スキャン（急騰+モメンタム+決算）
-  python main.py --mode scan --type short    # 急騰スキャンのみ
-  python main.py --mode scan --type momentum # モメンタムスキャンのみ
-  python main.py --mode scan --type earnings # 決算スキャンのみ
-  python main.py --mode backtest          # スキャン + バックテスト
-  python main.py --mode full              # 全パイプライン実行
-  python main.py --mode status            # ペーパートレード状況表示
-  python main.py --mode fetch             # 株価データ取得のみ
-
-作者: Japan Momentum Agent
-"""
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -57,6 +40,58 @@ def print_banner():
     print(BANNER)
     print(f"  実行日時: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")
     print()
+
+
+# ========================================
+# PF計算ユーティリティ
+# ========================================
+
+def _calc_pf_for_mode(mode: str) -> float:
+    """
+    指定モードのPFを計算する。
+
+    戦略:
+      1. ローカルCSVデータの最終日から15営業日前をバックテスト用スキャン日に設定
+         （15営業日後のデータが存在する → バックテスト成立）
+      2. その日付でスキャン → バックテスト実行 → PF取得
+      3. ヒットなし/エラー時は0.0を返す
+
+    Args:
+        mode (str): スキャンモード（SHORT_TERM / MOMENTUM）
+
+    Returns:
+        float: プロフィットファクター
+    """
+    try:
+        from agents.jquants_fetcher import load_latest_quotes
+        from agents.scanner import run_scan
+        from agents.backtester import run_backtest
+
+        df_all = load_latest_quotes()
+        if df_all.empty or "Date" not in df_all.columns:
+            logger.warning(f"PF計算: 株価データなし → PF=0")
+            return 0.0
+
+        last_date = pd.to_datetime(df_all["Date"]).max()
+        # 最終日から15営業日前 → バックテスト用の翌10日分データを確保
+        offset = pd.tseries.offsets.BDay(15)
+        bt_scan_date = (last_date - offset).strftime("%Y-%m-%d")
+
+        logger.info(f"PF計算: {mode} スキャン日={bt_scan_date}（最終日{last_date.strftime('%Y-%m-%d')}から15営業日前）")
+
+        bt_scan_results = run_scan(mode=mode, date=bt_scan_date)
+        if not bt_scan_results:
+            logger.warning(f"PF計算: {mode} ヒットなし → PF=0")
+            return 0.0
+
+        bt_result = run_backtest(bt_scan_results, lookback_days=90)
+        pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
+        logger.info(f"PF計算完了: {mode} PF={pf:.2f}（{len(bt_scan_results)}銘柄バックテスト）")
+        return pf
+
+    except Exception as e:
+        logger.warning(f"PF計算エラー（{mode}）: {e} → PF=0")
+        return 0.0
 
 
 # ========================================
@@ -155,10 +190,7 @@ def run_scan_mode(args):
 
     # バックテストを実行してPFを計算してからSlack通知
     try:
-        from agents.backtester import run_backtest
         from agents.slack_notifier import notify_new_signal
-        import json
-        from pathlib import Path
 
         for mode, results in all_results.items():
             if not results:
@@ -184,51 +216,15 @@ def run_scan_mode(args):
                     notify_new_signal(results, mode=mode, profit_factor=0.0)
                 continue
 
-            # SHORT_TERM・MOMENTUMはバックテストを実行してPFを取得
-            # ※ 当日スキャン結果では翌日データがないためPF=0になる問題を回避するため
-            #   過去のスキャン結果ファイル（翌日以降のデータが存在するもの）を優先使用する
-            try:
-                pf = 0.0
-                scans_dir = Path(__file__).parent / "data" / "processed" / "scans"
-                # 過去スキャンファイルを日付降順で取得（当日分を除く最新2件を候補に）
-                past_scan_files = sorted(
-                    scans_dir.glob(f"scan_*_{mode}.json"), reverse=False
-                )
-                # 当日ファイル名を作成（除外用）
-                today_str = datetime.now().strftime("%Y%m%d")
-
-                past_results = []
-                for f in past_scan_files:
-                    if today_str in f.name:
-                        continue  # 当日ファイルはスキップ
-                    try:
-                        with open(f, "r", encoding="utf-8") as fp:
-                            data = json.load(fp)
-                        past_results.extend(data.get("results", []))
-                    except Exception:
-                        continue
-
-                if past_results:
-                    logger.info(f"{mode}: 過去スキャン結果{len(past_results)}件でバックテスト実行...")
-                    bt_result = run_backtest(past_results, lookback_days=90)
-                    pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
-                    logger.info(f"{mode} PF（過去データ基準）: {pf:.2f}")
-                else:
-                    # 過去データがない場合は当日データでバックテスト（初回起動時など）
-                    logger.info(f"{mode}: 過去スキャンデータなし。当日データでバックテスト実行...")
-                    bt_result = run_backtest(results, lookback_days=90)
-                    pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
-                    logger.info(f"{mode} PF: {pf:.2f}")
-
-            except Exception as bt_err:
-                logger.warning(f"{mode} バックテストエラー（PF=0で通知）: {bt_err}")
-                pf = 0.0
-
+            # SHORT_TERM・MOMENTUMはバックテストでPFを計算してSlack通知
+            # CSVの最終日から15営業日前の日付でスキャン→バックテスト→PF計算
+            pf = _calc_pf_for_mode(mode)
             notify_new_signal(results, mode=mode, profit_factor=pf)
 
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
-# ---- モメンタム判定（SHORT_TERMシグナルを2段階で精査） ----
+
+    # ---- モメンタム判定（SHORT_TERMシグナルを2段階で精査） ----
     short_term_results = all_results.get("SHORT_TERM", [])
     if short_term_results:
         try:

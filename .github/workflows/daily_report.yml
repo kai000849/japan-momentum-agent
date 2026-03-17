@@ -54,6 +54,14 @@ jobs:
           restore-keys: |
             trade-log-
 
+      - name: スキャン結果キャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
+          restore-keys: |
+            scans-
+
       - name: 株価データ取得
         run: |
           python main.py --mode fetch
@@ -74,6 +82,12 @@ jobs:
         with:
           path: memory/trade_log.json
           key: trade-log-${{ github.run_number }}
+
+      - name: スキャン結果キャッシュを保存
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
 
   # ===========================
   # 朝ジョブ: 再スキャン＆保有状況＆米市場スキャン
@@ -121,6 +135,14 @@ jobs:
           restore-keys: |
             trade-log-
 
+      - name: スキャン結果キャッシュを復元
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
+          restore-keys: |
+            scans-
+
       - name: 株価データ取得
         run: |
           python main.py --mode fetch
@@ -146,3 +168,9 @@ jobs:
         with:
           path: memory/trade_log.json
           key: trade-log-${{ github.run_number }}
+
+      - name: スキャン結果キャッシュを保存
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
