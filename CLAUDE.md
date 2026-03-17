@@ -6,7 +6,7 @@
 ---
 
 ## プロジェクト概要
-日本株モメンタム投資の自動化AIエージェント。平日夕方18時・翌朝6時の2回、銘柄スクリーニングを実行しSlackに通知する。
+日本株モメンタム投資の自動化AIエージェント。毎朝6:30米市場スキャン・8:00日本株スキャン・夕方18:00メイン通知の3ジョブ構成でSlackに通知する。
 
 - **GitHubリポジトリ**: https://github.com/kai000849/japan-momentum-agent
 - **ローカルパス**: `C:\Users\dgwrt\OneDrive\Desktop\japan-momentum-agent`
@@ -23,6 +23,7 @@
 - Slack Webhook（通知）
 - Claude API（Haiku 4.5・anthropic SDK使用・APIキー登録済み・動作確認済み）
 - yfinance（米国ETFデータ取得・無料）
+- pdfplumber（決算PDF→テキスト抽出・トークン節約用）
 
 ---
 
@@ -41,24 +42,24 @@ japan-momentum-agent/
 │   ├── edinet_fetcher.py            # 開示情報取得
 │   ├── edinet_analyzer.py           # 決算PDFをClaude APIで読解・スコアリング
 │   ├── momentum_qualifier.py        # モメンタム判定（重複防止・フェーズ3結果記録対応済み）
-│   ├── investment_advisor.py        # ★フェーズ4: 投資判断エージェント（新規）
+│   ├── investment_advisor.py        # フェーズ4: 投資判断エージェント
 │   ├── us_market_scanner.py         # 米国セクターETF17本モメンタム
 │   ├── us_theme_extractor.py        # 米財務メディアからキーワード抽出
 │   ├── backtester.py                # バックテスト
 │   ├── paper_trader.py              # ペーパートレード管理
 │   ├── slack_notifier.py            # Slack通知
-│   ├── utils.py                     # 共通ユーティリティ（get_anthropic_key等）
-│   └── analyst.py                   # 銘柄分析コメント（未有効化）
+│   └── utils.py                     # 共通ユーティリティ（get_anthropic_key等）
 ├── data/
 │   ├── raw/jquants/                 # 取得済み株価CSV
 │   ├── raw/edinet_pdfs/             # 決算短信PDFキャッシュ
 │   ├── processed/scans/             # スキャン結果JSON（GitHub Actionsでキャッシュ済み）
 │   ├── processed/us_scans/          # 米ETFスキャン結果JSON
-│   └── processed/us_themes/         # 米テーマ抽出結果JSON
+│   ├── processed/us_themes/         # 米テーマ抽出結果JSON
+│   └── processed/edinet_analysis_cache.json  # EDINET分析結果キャッシュ（7日間・GitHub Actionsで永続化）
 └── memory/
     ├── trade_log.json               # 取引履歴（GitHub Actionsでキャッシュ済み）
     ├── disclosure_log.json          # 開示情報履歴
-    └── qualify_log.json             # モメンタム判定ログ（★GitHub Actionsでキャッシュ済み）
+    └── qualify_log.json             # モメンタム判定ログ（GitHub Actionsでキャッシュ済み）
 ```
 
 ---
@@ -73,19 +74,44 @@ japan-momentum-agent/
 
 ---
 
-## GitHub Actions スケジュール
+## GitHub Actions スケジュール（3ジョブ構成）
 
-| 時刻 | ジョブ | 内容 |
-|---|---|---|
-| 夕方 18:00 JST（UTC 09:00・月〜金） | evening-scan | fetch → scan（＋qualify判定＋**投資判断**） → status通知 |
-| 朝 06:00 JST（UTC 21:00・月〜土） | morning-scan | fetch → scan（＋qualify判定＋**投資判断**） → status通知 → us_scan |
+| 時刻（JST） | ジョブ名 | cron（UTC） | 内容 |
+|---|---|---|---|
+| 朝 6:30 | us-market-scan | `30 21 * * 0-5` | 米市場スキャン専用（ETFモメンタム＋テーマ抽出）。米国市場終了直後に単独実行。 |
+| 朝 8:00 | morning-scan | `0 23 * * 0-5` | 日本株スキャン＋保有状況通知。米市場結果反映済みの状態で実行。 |
+| 夕方 18:00 | evening-scan | `0 9 * * 1-5` | メイン通知。シグナル＋保有状況（米市場スキャンなし・朝の結果を参照）。 |
 
-**キャッシュ対象：**
+**キャッシュ対象（朝2・夕方ジョブ）：**
 - `memory/trade_log.json`
-- `memory/qualify_log.json` ★新規追加
+- `memory/qualify_log.json`
 - `data/processed/scans/`
+- `data/processed/edinet_analysis_cache.json` ★追加
 
-**エラー監視：** 各ステップ失敗時にSlackへcurlで直接通知。
+---
+
+## Claude API呼び出し箇所と設定（全箇所・web_searchなし）
+
+| ファイル | 用途 | モデル | max_tokens | 備考 |
+|---|---|---|---|---|
+| `edinet_analyzer.py` | 決算PDF分析・スコアリング | Haiku | 1500 | pdfplumber抽出テキストのみ渡す・結果キャッシュあり |
+| `us_theme_extractor.py` | RSSキーワード抽出 | Haiku | 1500 | ヘッドライン40件のみ |
+| `us_market_scanner.py` | ETFセクター分析 | Haiku | 1200 | ETF数値データのみ渡す |
+| `momentum_qualifier.py` | 構造的変化判定 | Haiku | 800 | ステージ1通過銘柄を一括1回呼び出し |
+
+**全箇所でweb_searchツールを削除済み（2026/03/17）。コスト削減を優先。**
+
+---
+
+## トークン節約施策（2026/03/17実施）
+
+| 施策 | 対象 | 効果 |
+|---|---|---|
+| web_search削除（全箇所） | 全4ファイル | ▲50〜80%/回 |
+| PDF base64渡し→pdfplumberテキスト抽出（先頭15P・6000文字） | edinet_analyzer | ▲80〜90%/銘柄 |
+| RSSヘッドライン80→40件 | us_theme_extractor | ▲50% input |
+| EDINET分析結果キャッシュ（7日間・docID単位） | edinet_analyzer | 朝夕重複ゼロ |
+| max_tokens削減（4000→1500、2000→800〜1200） | 全4ファイル | output上限削減 |
 
 ---
 
@@ -93,15 +119,14 @@ japan-momentum-agent/
 ### 急騰モード（SHORT_TERM）
 - 前日比+3%以上
 - 出来高が25日平均の2倍以上
-- 急騰スコア = 前日比(%) × 出来高倍率
 
 ### モメンタムモード（MOMENTUM）
-- 5日・25日・75日MA全て上昇中（5日MA必須）
-- 現在株価が52週高値の**90%以上**
-- RSI(14日)が**55〜72**の範囲
+- 5日・25日・75日MA全て上昇中
+- 現在株価が52週高値の90%以上
+- RSI(14日)が55〜72の範囲
 
 ### 決算開示モード（EARNINGS）
-- EDINETから当日の決算発表銘柄を抽出
+- EDINETから当日の決算発表銘柄を抽出（銘柄数上限なし・全件カバー）
 - Claude APIで決算PDFを読解してポジ/ネガスコアリング
 
 ---
@@ -112,8 +137,9 @@ japan-momentum-agent/
 - 急騰後3日間の出来高が急騰日の50%以上を維持しているか
 - 急騰後の株価が急騰終値の97%以上を維持しているか
 
-### ステージ2: Claude APIによる構造的変化判定（バッチ処理）
+### ステージ2: Claude APIによる構造的変化判定（バッチ処理・web_searchなし）
 - ステージ1通過銘柄を全てまとめて1回のAPI呼び出しで判定
+- 学習済み知識のみで判断（銘柄名・事業内容から推定）
 
 ### 判定結果
 | 結果 | 条件 |
@@ -123,117 +149,44 @@ japan-momentum-agent/
 | WEAK | ステージ1✅ + Claude判定❌ |
 | NOISE | ステージ1❌ |
 
-### 重複防止（2026/03/17追加）
-- `_save_qualify_log()` で同一(stockCode, scanDate)は上書き更新（重複追記しない）
-
 ### フェーズ3: 10営業日後の結果自動記録
 - `qualify_signals()`実行のたびに`record_outcomes()`が自動呼び出し
-- `outcome=null`のエントリで10営業日以上経過しているものに株価リターンを記録
-- `get_outcome_stats()`でSTRONG/WEAK/NOISEごとの勝率・平均リターンを集計
 - 記録が5件以上溜まるとSlack通知に精度サマリーが追加表示
 
 ---
 
-## フェーズ4: 投資判断エージェント（investment_advisor.py）★新規
+## フェーズ4: 投資判断エージェント（investment_advisor.py）
 
-### 概要
-qualify結果・PF・ポートフォリオ余力・米市場シグナルを統合して
-「エントリー推奨 / 様子見 / 見送り」をSlackに通知する。
-夕方18時通知の最後に自動で付加される。
+qualify結果・PF・ポートフォリオ余力・米市場シグナルを統合して推奨を出す。
 
-### 推奨判定ロジック（ルールベース）
 | 推奨 | 条件 |
 |---|---|
 | ENTRY（エントリー推奨） | qualifyResult==STRONG かつ PF≥1.2 かつ ポートフォリオ余力あり |
 | WATCH（様子見） | STRONG だが PF不足 or 余力なし |
 | SKIP（見送り） | WEAK / NOISE |
 
-### 加点要素（Slackに表示）
-- 関連セクターETFが上昇中（us_market_scanner結果）
-- STRONG過去勝率（qualify_log蓄積後・5件以上で表示）
-
-### Slack通知イメージ
-```
-🎯 投資判断サマリー
-━━ エントリー推奨 ━━
-96780 カナモト
-  ✅ STRONG判定（4期連続増収...）
-  ✅ PF 1.8（バックテスト良好）
-  ✅ PF余力あり（3/10枠使用中）
-  📌 翌朝始値目安: ¥4,357  損切: ¥4,139  利確: ¥5,011
-  💴 投資額目安: 50万円
-━━ 見送り ━━
-67400 ジャパンディスプレイ — ❌ WEAK（仕手的急騰...）
-```
-
----
-
-## qualify_log.json の現状（2026/03/17時点）
-
-- **8件**（2026-03-11スキャン分・重複クリーンアップ済み）
-- 全件 `outcome=null`（3/25以降に自動記録予定）
-- 内訳: STRONG 5件 / WEAK 3件
-
-| 銘柄 | 結果 |
-|---|---|
-| カナモト(96780) | STRONG |
-| コーエーテクモ(36350) | STRONG |
-| テスHD(50740) | STRONG |
-| 任天堂(79740) | STRONG |
-| 日本新薬(45160) | STRONG |
-| ビューティガレージ(31800) | WEAK |
-| KLab(36560) | WEAK |
-| ジャパンディスプレイ(67400) | WEAK |
-
----
-
-## PF計算ロジック（main.py）
-
-`_calc_pf_for_mode(mode)`関数でPFを計算する。
-- ローカルCSVの最終日から**15営業日前**の日付でスキャン→バックテスト→PF算出
-- GitHub Actionsのクリーン環境でも毎回正しく計算される
-
 ---
 
 ## ペーパートレード設定
-- 仮想資金：300万円
-- 1銘柄あたり最大50万円
-- 最大同時保有：10銘柄
-- 発注条件：PF ≥ 1.2
-
----
+- 仮想資金：300万円 / 1銘柄最大50万円 / 最大同時保有10銘柄
 
 ## バックテスト設定
-- エントリー：シグナル翌営業日の始値
-- 損切り：-5%
-- 利確：+15%
-- 最大保有：10営業日
+- エントリー：翌営業日始値 / 損切-5% / 利確+15% / 最大10営業日保有
 
 ---
 
 ## フェーズ進捗
 
-### ✅ フェーズ1（基盤構築・完了）
-### ✅ フェーズ2（Claude API統合・完全動作確認済み）
-### ✅ フェーズ2.5（品質改善・2026/03/17完了）
-1. PF=0再発修正
-2. agents/utils.py共通化
-3. GitHub Actionsエラー監視
-4. フェーズ3入口実装（record_outcomes）
-
-### ✅ フェーズ3（蓄積基盤・2026/03/17完了）
-1. qualify_log重複防止（同一stockCode+scanDateは上書き）
-2. qualify_log既存重複クリーンアップ（64件→8件）
-3. `--mode qualify_report` コマンド追加
-4. qualify_log.jsonをGitHub Actionsキャッシュに追加
-
-### ✅ フェーズ4（投資判断エージェント・2026/03/17完了）
-1. `agents/investment_advisor.py` 新規作成
-2. run_scan_mode に統合（夕方スキャン後に自動でSlack通知）
+### ✅ フェーズ1〜4（完了）
+### ✅ トークン節約・スケジュール最適化（2026/03/17完了）
+- 全Claude API呼び出しからweb_search削除
+- PDF base64渡し廃止・pdfplumber事前抽出に変更
+- EDINET分析結果キャッシュ実装（7日間）
+- 米市場スキャンを独立ジョブ化（JST6:30・米国市場終了直後）
+- EDINETキャッシュをGitHub Actions永続化
 
 ### 🔲 フェーズ3継続（データ蓄積後）
-- qualify_log outcome が5件以上溜まったら精度レポートを確認
-- STRONGの実績勝率をinvestment_advisorの判断に反映
+- qualify_log outcome が5件以上溜まったら精度レポートで検証
 
 ### 🔲 フェーズ5（今後）
 - かいさん自身の投資判断ロジックをプロンプトに組み込む
@@ -248,7 +201,7 @@ cd C:\Users\dgwrt\OneDrive\Desktop\japan-momentum-agent
 # データ取得（150日分・推奨）
 python main.py --mode fetch --days 150
 
-# 日本株スキャン（qualify判定＋投資判断も自動実行）
+# 日本株スキャン
 python main.py --mode scan
 
 # 判定精度レポート確認
@@ -257,12 +210,6 @@ python main.py --mode qualify_report
 # 米市場スキャン
 python main.py --mode us_scan
 
-# バックテスト
-python main.py --mode backtest
-
-# 全パイプライン
-python main.py --mode full
-
 # ポートフォリオ確認
 python main.py --mode status
 
@@ -270,19 +217,13 @@ python main.py --mode status
 git add .
 git commit -m "変更内容のメモ"
 git push
-
-# GitHubの変更をパソコンに取り込む
-git pull
 ```
 
 ---
 
 ## 注意事項
-- `config.yaml` はGitに含めない（.gitignoreで除外済み）
-- `.env`はGitに含めない（.gitignoreで除外済み）← **重要：過去に誤コミットしてGitHubにブロックされた経験あり**
+- `config.yaml` / `.env` はGitに含めない（.gitignoreで除外済み）← **過去に誤コミットしてGitHubにブロックされた経験あり**
 - APIキーは絶対にコードに直書きしない
-- J-Quantsライトプラン：最新データが取得可能
-- Windowsのコマンドプロンプトで作業
 - **ファイル編集はWindows-MCP:FileSystemツールで直接行う（PowerShellはgitでハングするため使わない）**
 - **GitHub上での直接編集は避ける**
 - **Consoleを開くときは必ずブラウザの翻訳をオフに！**（翻訳がHTMLを壊してエラーになる）
@@ -290,8 +231,9 @@ git pull
 
 ---
 
-## 現在の状況（2026/03/17夜時点）
-- 夕方18時・翌朝6時にSlack自動通知が稼働中
-- **フェーズ4まで実装完了** — 次回スキャンから投資判断がSlackに届く
+## 現在の状況（2026/03/17深夜時点）
+- 3ジョブ構成（朝6:30米市場・朝8:00日本株・夕方18:00メイン）で稼働中
+- 全Claude API呼び出しのweb_search削除・トークン大幅節約済み
+- EDINETキャッシュのGitHub Actions永続化済み
 - qualify_logは8件蓄積中。3/25以降にoutcome自動記録が始まる予定
 - 次のマイルストーン: outcome 5件以上溜まったら精度レポートで検証
