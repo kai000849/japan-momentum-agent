@@ -1,4 +1,4 @@
-﻿"""
+"""
 agents/momentum_qualifier.py
 モメンタム判定モジュール
 
@@ -14,6 +14,7 @@ agents/momentum_qualifier.py
   - 「構造的変化あり/なし」＋理由コメントを出力
 
 結果は memory/qualify_log.json に記録される。
+10営業日後の実際の株価結果も自動記録（フェーズ3精度検証用）。
 APIキー未設定時はステージ1のみ実行し、ステージ2はスキップ。
 
 作者: Japan Momentum Agent
@@ -22,7 +23,7 @@ APIキー未設定時はステージ1のみ実行し、ステージ2はスキッ
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -34,20 +35,14 @@ logger = logging.getLogger(__name__)
 # 定数
 # ========================================
 
-# ステージ1: 急騰後の出来高維持率の閾値（急騰日の何%以上を維持するか）
-VOLUME_SUSTAIN_RATIO = 0.5   # 50%以上を維持していれば継続とみなす
-
-# ステージ1: 急騰後の株価維持率の閾値（急騰後に何%以上の株価を維持するか）
-PRICE_SUSTAIN_RATIO = 0.97   # 急騰終値の97%以上を維持（-3%以内の下落は許容）
-
-# ステージ1: 急騰後の継続確認日数
-SUSTAIN_CHECK_DAYS = 3       # 急騰後3日間のデータで判定
-
-# ステージ2: Claude APIモデル
+VOLUME_SUSTAIN_RATIO = 0.5
+PRICE_SUSTAIN_RATIO = 0.97
+SUSTAIN_CHECK_DAYS = 3
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
-
-# 結果保存パス
 QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
+
+# フェーズ3: 結果記録の基準（何営業日後に検証するか）
+OUTCOME_CHECK_DAYS = 10
 
 
 # ========================================
@@ -57,29 +52,10 @@ QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
 def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
     """
     急騰後の出来高・株価継続性を判定する。
-
-    Args:
-        df_stock: 1銘柄の株価データ（Date, Close, Volume列を含む）
-        surge_date: 急騰日（YYYY-MM-DD）
-
-    Returns:
-        dict: {
-            "volumeSustained": bool,  # 出来高が継続しているか
-            "priceSustained": bool,   # 株価が維持されているか
-            "stage1Pass": bool,       # ステージ1通過フラグ
-            "surgeVolume": float,     # 急騰日の出来高
-            "avgPostVolume": float,   # 急騰後平均出来高
-            "volumeSustainRate": float, # 出来高維持率
-            "surgeClose": float,      # 急騰日終値
-            "latestClose": float,     # 最新終値
-            "priceChangeAfterSurge": float, # 急騰後の株価変化率
-            "daysChecked": int,       # 確認できた日数
-        }
     """
     surge_dt = pd.to_datetime(surge_date)
     df_stock = df_stock.sort_values("Date").reset_index(drop=True)
 
-    # 急騰日のデータを取得
     surge_mask = df_stock["Date"] == surge_dt
     if not surge_mask.any():
         return {"stage1Pass": False, "reason": "急騰日のデータなし"}
@@ -92,11 +68,9 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
     if surge_volume <= 0 or surge_close <= 0:
         return {"stage1Pass": False, "reason": "急騰日データ不正"}
 
-    # 急騰後のデータを取得（最大SUSTAIN_CHECK_DAYS日分）
     post_data = df_stock.loc[surge_idx + 1: surge_idx + SUSTAIN_CHECK_DAYS]
 
     if len(post_data) == 0:
-        # 急騰後のデータがない（最新日の急騰）→ 判定保留・通過扱い
         return {
             "volumeSustained": True,
             "priceSustained": True,
@@ -111,13 +85,11 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
             "reason": "急騰後データなし（最新日）→ 保留通過"
         }
 
-    # 出来高継続チェック
     post_volumes = post_data["Volume"].astype(float)
     avg_post_volume = float(post_volumes.mean())
     volume_sustain_rate = avg_post_volume / surge_volume if surge_volume > 0 else 0
     volume_sustained = volume_sustain_rate >= VOLUME_SUSTAIN_RATIO
 
-    # 株価維持チェック
     latest_close = float(post_data["Close"].iloc[-1])
     price_change_after_surge = (latest_close - surge_close) / surge_close
     price_sustained = latest_close >= surge_close * PRICE_SUSTAIN_RATIO
@@ -149,14 +121,6 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
 def _analyze_structural_change_batch(stocks: list) -> dict:
     """
     複数銘柄をまとめて1回のClaude API呼び出しで構造的変化を判定する。
-    銘柄ごとに個別呼び出しする代わりにバッチ化してトークン消費を削減。
-
-    Args:
-        stocks: [{"stockCode": str, "companyName": str}] のリスト
-
-    Returns:
-        dict: {stockCode: {"structuralChange": bool, "confidence": str,
-                           "comment": str, "stage2Available": bool}}
     """
     from agents.utils import get_anthropic_key
     api_key = get_anthropic_key()
@@ -209,39 +173,33 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
         client = anthropic.Anthropic(api_key=api_key)
         messages = [{"role": "user", "content": prompt}]
 
-        # web_search使用時は複数ターンになるためループで処理
         result_text = ""
-        for _ in range(5):  # 最大5ターン（無限ループ防止）
+        for _ in range(5):
             response = client.messages.create(
                 model=CLAUDE_MODEL,
                 max_tokens=2000,
                 tools=[{"type": "web_search_20250305", "name": "web_search"}],
                 messages=messages
             )
-
-            # アシスタントの返答を会話履歴に追加
             messages.append({"role": "assistant", "content": response.content})
 
-            # stop_reason が end_turn になったら完了
             if response.stop_reason == "end_turn":
                 for block in response.content:
                     if hasattr(block, "text"):
                         result_text += block.text
                 break
 
-            # tool_use の場合はツール結果を追加して継続
             tool_results = []
             for block in response.content:
                 if block.type == "tool_use":
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": block.id,
-                        "content": ""  # web_searchは自動実行されるため空でOK
+                        "content": ""
                     })
             if tool_results:
                 messages.append({"role": "user", "content": tool_results})
 
-        # JSONパース（<cite>タグ・コードブロック除去後にバランス波括弧で最大ブロック抽出）
         import re
         result_text = result_text.strip()
         result_text = re.sub(r'<cite[^>]*>', '', result_text)
@@ -273,7 +231,6 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
 
         parsed = json.loads(result_text)
 
-        # resultsリストを {stockCode: result} の辞書に変換
         batch_results = {}
         for item in parsed.get("results", []):
             code = str(item.get("stockCode", ""))
@@ -284,7 +241,6 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
                 "stage2Available": True,
             }
 
-        # Claudeが返さなかった銘柄にフォールバック値を設定
         for code in stock_codes:
             if code not in batch_results:
                 logger.warning(f"バッチ判定: {code} の結果がレスポンスに含まれていません")
@@ -300,25 +256,194 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
     except json.JSONDecodeError:
         logger.warning("バッチ判定: JSONパースエラー")
         return {
-            code: {
-                "structuralChange": None,
-                "confidence": "low",
-                "comment": "レスポンス解析エラー",
-                "stage2Available": True,
-            }
+            code: {"structuralChange": None, "confidence": "low",
+                   "comment": "レスポンス解析エラー", "stage2Available": True}
             for code in stock_codes
         }
     except Exception as e:
         logger.warning(f"バッチ判定: Claude API呼び出しエラー: {e}")
         return {
-            code: {
-                "structuralChange": None,
-                "confidence": None,
-                "comment": f"APIエラー: {str(e)[:30]}",
-                "stage2Available": False,
-            }
+            code: {"structuralChange": None, "confidence": None,
+                   "comment": f"APIエラー: {str(e)[:30]}", "stage2Available": False}
             for code in stock_codes
         }
+
+
+# ========================================
+# フェーズ3: 10営業日後の結果記録
+# ========================================
+
+def record_outcomes(df_all: pd.DataFrame) -> int:
+    """
+    qualify_log.json の中で「10営業日以上経過・outcome未記録」のエントリに
+    実際の株価結果を記録する。（フェーズ3 判定精度検証用）
+
+    処理の流れ:
+      1. qualify_log.json を読み込む
+      2. outcome が null のエントリを抽出
+      3. 判定日から10営業日以上経過しているか確認
+      4. 急騰日終値 → 10営業日後終値のリターンを計算して記録
+
+    Args:
+        df_all: 全銘柄の株価DataFrame（load_latest_quotes()の戻り値）
+
+    Returns:
+        int: 今回新たに記録したエントリ数
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return 0
+
+    try:
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            log_entries = json.load(f)
+    except Exception as e:
+        logger.warning(f"qualify_log.json 読み込みエラー: {e}")
+        return 0
+
+    if not log_entries:
+        return 0
+
+    code_col = "Code" if "Code" in df_all.columns else "code"
+    today = pd.Timestamp.now().normalize()
+    updated_count = 0
+
+    for entry in log_entries:
+        # outcome が既に記録済みならスキップ
+        if entry.get("outcome") is not None:
+            continue
+
+        qualified_at_str = entry.get("qualifiedAt", "")
+        if not qualified_at_str:
+            continue
+
+        try:
+            qualified_at = pd.to_datetime(qualified_at_str)
+        except Exception:
+            continue
+
+        # 判定日から何営業日経過したか確認
+        bdays_elapsed = len(pd.bdate_range(start=qualified_at, end=today)) - 1
+        if bdays_elapsed < OUTCOME_CHECK_DAYS:
+            continue  # まだ10営業日経っていない
+
+        # 銘柄の株価データを取得
+        stock_code = entry.get("stockCode", "")
+        surge_date_str = entry.get("scanDate", "")
+        if not stock_code or not surge_date_str:
+            continue
+
+        try:
+            df_stock = df_all[df_all[code_col].astype(str) == stock_code].copy()
+            df_stock = df_stock.sort_values("Date").reset_index(drop=True)
+
+            surge_dt = pd.to_datetime(surge_date_str)
+
+            # 急騰日の終値を取得
+            surge_row = df_stock[df_stock["Date"] == surge_dt]
+            if surge_row.empty:
+                entry["outcome"] = {"status": "no_data", "reason": "急騰日データなし"}
+                updated_count += 1
+                continue
+
+            entry_price = float(surge_row.iloc[0]["Close"])
+
+            # 急騰日以降のデータを取得し、10営業日後の終値を取得
+            future_df = df_stock[df_stock["Date"] > surge_dt].reset_index(drop=True)
+            if len(future_df) < OUTCOME_CHECK_DAYS:
+                # データがまだ揃っていない（市場休場等）→ スキップ
+                continue
+
+            exit_row = future_df.iloc[OUTCOME_CHECK_DAYS - 1]
+            exit_price = float(exit_row["Close"])
+            exit_date = exit_row["Date"].strftime("%Y-%m-%d")
+            return_pct = round((exit_price - entry_price) / entry_price * 100, 2)
+
+            entry["outcome"] = {
+                "status": "recorded",
+                "entryPrice": entry_price,
+                "exitPrice": exit_price,
+                "exitDate": exit_date,
+                "returnPct": return_pct,
+                "isWin": return_pct > 0,
+                "recordedAt": datetime.now().isoformat(),
+            }
+            updated_count += 1
+            logger.info(
+                f"結果記録: {stock_code} qualifyResult={entry.get('qualifyResult')} "
+                f"→ {return_pct:+.1f}% ({exit_date})"
+            )
+
+        except Exception as e:
+            logger.warning(f"{stock_code} 結果記録エラー: {e}")
+            entry["outcome"] = {"status": "error", "reason": str(e)[:50]}
+            updated_count += 1
+
+    # 更新があれば保存
+    if updated_count > 0:
+        with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
+            json.dump(log_entries, f, ensure_ascii=False, indent=2)
+        logger.info(f"outcome記録完了: {updated_count}件更新 → {QUALIFY_LOG_PATH}")
+
+    return updated_count
+
+
+def get_outcome_stats() -> dict:
+    """
+    qualify_log.json からSTRONG/WEAK/NOISEごとの勝率・平均リターンを集計する。
+    フェーズ3の判定精度検証に使用。
+
+    Returns:
+        dict: {
+            "STRONG": {"count": int, "win_rate": float, "avg_return": float},
+            "WEAK":   {...},
+            "WATCH":  {...},
+            "NOISE":  {...},
+            "total_recorded": int,
+        }
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return {}
+
+    try:
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            log_entries = json.load(f)
+    except Exception:
+        return {}
+
+    stats = {
+        label: {"count": 0, "wins": 0, "returns": []}
+        for label in ["STRONG", "WATCH", "WEAK", "NOISE"]
+    }
+    total_recorded = 0
+
+    for entry in log_entries:
+        outcome = entry.get("outcome")
+        if not outcome or outcome.get("status") != "recorded":
+            continue
+
+        label = entry.get("qualifyResult", "NOISE")
+        if label not in stats:
+            continue
+
+        total_recorded += 1
+        ret = outcome.get("returnPct", 0)
+        stats[label]["count"] += 1
+        stats[label]["returns"].append(ret)
+        if outcome.get("isWin", False):
+            stats[label]["wins"] += 1
+
+    result = {"total_recorded": total_recorded}
+    for label, s in stats.items():
+        if s["count"] > 0:
+            result[label] = {
+                "count": s["count"],
+                "win_rate": round(s["wins"] / s["count"] * 100, 1),
+                "avg_return": round(sum(s["returns"]) / len(s["returns"]), 2),
+            }
+        else:
+            result[label] = {"count": 0, "win_rate": None, "avg_return": None}
+
+    return result
 
 
 # ========================================
@@ -328,18 +453,20 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
 def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     """
     急騰シグナルリストに対して2段階モメンタム判定を実行する。
-
-    Args:
-        signals: SHORT_TERMスキャン結果のリスト
-        df_all: 全銘柄の株価DataFrame
-
-    Returns:
-        list: 判定結果付きのシグナルリスト
+    実行のたびに過去エントリの10営業日後結果も自動記録する。
     """
     if not signals:
         return []
 
     logger.info(f"モメンタム判定開始: {len(signals)}銘柄")
+
+    # フェーズ3: 過去エントリの結果記録（毎回実行）
+    try:
+        recorded = record_outcomes(df_all)
+        if recorded > 0:
+            logger.info(f"過去エントリの結果記録: {recorded}件更新")
+    except Exception as e:
+        logger.warning(f"結果記録エラー（スキップ）: {e}")
 
     results = []
     code_col = "Code" if "Code" in df_all.columns else "code"
@@ -404,13 +531,16 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         structural_change = stage2.get("structuralChange")
 
         if stage1_pass and structural_change is True:
-            result["qualifyResult"] = "STRONG"   # 強シグナル（両方通過）
+            result["qualifyResult"] = "STRONG"
         elif stage1_pass and structural_change is None:
-            result["qualifyResult"] = "WATCH"    # 要観察（ステージ2判定不能）
+            result["qualifyResult"] = "WATCH"
         elif stage1_pass and structural_change is False:
-            result["qualifyResult"] = "WEAK"     # 弱シグナル（短期加熱の可能性）
+            result["qualifyResult"] = "WEAK"
         else:
-            result["qualifyResult"] = "NOISE"    # ノイズ（ステージ1不通過）
+            result["qualifyResult"] = "NOISE"
+
+        # フェーズ3: outcome フィールドを null で初期化（後で record_outcomes が埋める）
+        result["outcome"] = None
 
         results.append(result)
 
@@ -440,13 +570,10 @@ def _save_qualify_log(results: list):
         except Exception:
             existing = []
 
-    # 今回の結果に判定日時を付加して追記
     for r in results:
         r["qualifiedAt"] = datetime.now().isoformat()
 
     existing.extend(results)
-
-    # 最新500件のみ保持
     existing = existing[-500:]
 
     with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
@@ -458,12 +585,7 @@ def _save_qualify_log(results: list):
 def format_qualify_result_for_slack(results: list) -> str:
     """
     判定結果をSlack通知用のテキストにフォーマットする。
-
-    Args:
-        results: qualify_signals()の戻り値
-
-    Returns:
-        str: Slack通知用テキスト
+    outcome記録があれば精度サマリーも追加する。
     """
     strong_results = [r for r in results if r["qualifyResult"] == "STRONG"]
     watch_results = [r for r in results if r["qualifyResult"] == "WATCH"]
@@ -482,10 +604,8 @@ def format_qualify_result_for_slack(results: list) -> str:
             price_chg = s1.get("priceChangeAfterSurge", 0)
             comment = s2.get("comment", "")
             confidence = s2.get("confidence", "")
-
             vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
-
             lines.append(
                 f"• *{r.get('stockCode')} {r.get('companyName', '')}*\n"
                 f"  {vol_emoji} 出来高維持率:{vol_rate:.0%}  "
@@ -504,5 +624,20 @@ def format_qualify_result_for_slack(results: list) -> str:
                 f"出来高維持:{vol_rate:.0%} 株価:{price_chg:+.1f}%"
             )
 
-    return "\n".join(lines)
+    # フェーズ3: 判定精度サマリーを追記（記録件数が5件以上あれば表示）
+    try:
+        stats = get_outcome_stats()
+        total = stats.get("total_recorded", 0)
+        if total >= 5:
+            lines.append(f"\n📊 *判定精度サマリー（{total}件記録済み）*")
+            for label in ["STRONG", "WEAK", "NOISE"]:
+                s = stats.get(label, {})
+                if s.get("count", 0) > 0:
+                    lines.append(
+                        f"  {label}: 勝率{s['win_rate']}% / 平均{s['avg_return']:+.1f}%"
+                        f"（{s['count']}件）"
+                    )
+    except Exception:
+        pass
 
+    return "\n".join(lines)
