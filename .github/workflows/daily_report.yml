@@ -63,16 +63,19 @@ jobs:
             scans-
 
       - name: 株価データ取得
+        id: fetch
         run: |
           python main.py --mode fetch
         continue-on-error: true
 
       - name: スキャン実行（シグナル検出＆Slack通知）
+        id: scan
         run: |
           python main.py --mode scan
         continue-on-error: true
 
       - name: 保有状況をSlackに送信
+        id: status
         run: |
           python main.py --mode status --notify
         continue-on-error: true
@@ -88,6 +91,19 @@ jobs:
         with:
           path: data/processed/scans
           key: scans-${{ github.run_number }}
+
+      - name: エラー通知（失敗ステップがある場合）
+        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          ERRORS=""
+          [ "${{ steps.fetch.outcome }}" = "failure" ] && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
+          [ "${{ steps.scan.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・スキャン実行(scan)\n"
+          [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *GitHub Actions 夕方ジョブでエラー発生*\n実行ID: ${{ github.run_id }}\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
 
   # ===========================
   # 朝ジョブ: 再スキャン＆保有状況＆米市場スキャン
@@ -144,21 +160,25 @@ jobs:
             scans-
 
       - name: 株価データ取得
+        id: fetch
         run: |
           python main.py --mode fetch
         continue-on-error: true
 
       - name: スキャン実行（シグナル検出＆Slack通知）
+        id: scan
         run: |
           python main.py --mode scan
         continue-on-error: true
 
       - name: 保有状況をSlackに送信
+        id: status
         run: |
           python main.py --mode status --notify
         continue-on-error: true
 
       - name: 米市場スキャン実行
+        id: us_scan
         run: |
           python main.py --mode us_scan
         continue-on-error: true
@@ -174,3 +194,17 @@ jobs:
         with:
           path: data/processed/scans
           key: scans-${{ github.run_number }}
+
+      - name: エラー通知（失敗ステップがある場合）
+        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.us_scan.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          ERRORS=""
+          [ "${{ steps.fetch.outcome }}" = "failure" ]   && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
+          [ "${{ steps.scan.outcome }}" = "failure" ]    && ERRORS="${ERRORS}・スキャン実行(scan)\n"
+          [ "${{ steps.status.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・保有状況通知(status)\n"
+          [ "${{ steps.us_scan.outcome }}" = "failure" ] && ERRORS="${ERRORS}・米市場スキャン(us_scan)\n"
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *GitHub Actions 朝ジョブでエラー発生*\n実行ID: ${{ github.run_id }}\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
