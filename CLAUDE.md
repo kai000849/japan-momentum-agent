@@ -21,7 +21,7 @@
 - EDINET API（決算情報取得）
 - GitHub Actions（自動実行）
 - Slack Webhook（通知）
-- Claude API（Haiku 4.5・フェーズ2動作確認済み・APIキー再登録待ち）
+- Claude API（Haiku 4.5・anthropic SDK使用・APIキー登録済み・動作確認済み）
 - yfinance（米国ETFデータ取得・無料）
 
 ---
@@ -31,7 +31,7 @@
 ```
 japan-momentum-agent/
 ├── main.py                          # エントリーポイント
-├── requirements.txt                 # yfinance追加済み
+├── requirements.txt                 # python-dotenv・anthropic・yfinance追加済み
 ├── scheduler_setup.py
 ├── .github/workflows/
 │   └── daily_report.yml             # GitHub Actions自動実行設定
@@ -40,23 +40,24 @@ japan-momentum-agent/
 │   ├── jquants_fetcher.py           # 株価データ取得（J-Quants V2 API）
 │   ├── edinet_fetcher.py            # 開示情報取得
 │   ├── edinet_analyzer.py           # 決算PDFをClaude APIで読解・スコアリング
-│   ├── momentum_qualifier.py        # モメンタム判定（2段階フィルター）【新規】
+│   ├── momentum_qualifier.py        # モメンタム判定（バッチ処理・フェーズ3結果記録対応済み）
 │   ├── us_market_scanner.py         # 米国セクターETF17本モメンタム
 │   ├── us_theme_extractor.py        # 米財務メディアからキーワード抽出
 │   ├── backtester.py                # バックテスト
 │   ├── paper_trader.py              # ペーパートレード管理
 │   ├── slack_notifier.py            # Slack通知
+│   ├── utils.py                     # 共通ユーティリティ（get_anthropic_key等）
 │   └── analyst.py                   # 銘柄分析コメント（未有効化）
 ├── data/
 │   ├── raw/jquants/                 # 取得済み株価CSV
 │   ├── raw/edinet_pdfs/             # 決算短信PDFキャッシュ
-│   ├── processed/scans/             # スキャン結果JSON
+│   ├── processed/scans/             # スキャン結果JSON（GitHub Actionsでキャッシュ済み）
 │   ├── processed/us_scans/          # 米ETFスキャン結果JSON
 │   └── processed/us_themes/         # 米テーマ抽出結果JSON
 └── memory/
-    ├── trade_log.json               # 取引履歴
+    ├── trade_log.json               # 取引履歴（GitHub Actionsでキャッシュ済み）
     ├── disclosure_log.json          # 開示情報履歴
-    └── qualify_log.json             # モメンタム判定ログ【新規】
+    └── qualify_log.json             # モメンタム判定ログ（10営業日後結果も自動記録）
 ```
 
 ---
@@ -67,7 +68,7 @@ japan-momentum-agent/
 | `JQUANTS_API_KEY` | J-Quants APIキー（登録済み） |
 | `EDINET_API_KEY` | EDINET APIキー（登録済み） |
 | `SLACK_WEBHOOK_URL` | Slack Webhook URL（登録済み） |
-| `ANTHROPIC_API_KEY` | **削除済み・再登録待ち**（PCのConsoleログイン問題解決後にキー取得→登録） |
+| `ANTHROPIC_API_KEY` | **登録済み・動作確認済み**（2026/03/16更新） |
 
 ---
 
@@ -78,7 +79,9 @@ japan-momentum-agent/
 | 夕方 18:00 JST（UTC 09:00・月〜金） | evening-scan | スキャン＋シグナル＋保有状況（メイン通知） |
 | 朝 06:00 JST（UTC 21:00・月〜金） | morning-scan | 再スキャン＋シグナル＋保有状況＋米市場スキャン |
 
-※ 夕方通知がメイン。夜に翌日の発注を検討し、朝通知で最新情報を確認する運用。
+**キャッシュ対象：** `memory/trade_log.json` と `data/processed/scans/` の両方をActions間で引き継ぎ済み。
+
+**エラー監視：** 各ステップ失敗時にSlackへcurlで直接通知（fetch/scan/status/us_scanの4ステップを監視）。
 
 ---
 
@@ -92,59 +95,69 @@ japan-momentum-agent/
 - 5日・25日・75日MA全て上昇中（5日MA必須）
 - 現在株価が52週高値の**90%以上**
 - RSI(14日)が**55〜72**の範囲
-- **新高値更新スコア**: 直近20日で過去52週高値を更新した回数
-- **出来高トレンド比率**: 直近5日平均 ÷ 25日平均
 - スコア = RSI × 高値比率 × 全MA上昇ボーナス × 新高値ボーナス × 出来高トレンドボーナス
 
 ### 決算開示モード（EARNINGS）
 - EDINETから当日の決算発表銘柄を抽出
-- 書類コード180（決算短信）・130・140・030が対象
-- **Claude APIで決算PDFを読解してポジ/ネガスコアリング（APIキー登録後に有効化）**
-- ベスト/ワースト各10件をSlackに通知
+- Claude APIで決算PDFを読解してポジ/ネガスコアリング（動作確認済み）
 
 ---
 
-## モメンタム判定モジュール（momentum_qualifier.py）【新規・2026/03/13追加】
+## PF計算ロジック（main.py）
+
+`_calc_pf_for_mode(mode)`関数でPFを計算する。
+
+- ローカルCSVの最終日から**15営業日前**の日付でスキャン→バックテスト→PF算出
+- ファイルキャッシュ依存を廃止（旧：過去scanファイルを参照 → PF=0になっていた）
+- PF=0の根本原因：GitHub Actionsがクリーン環境のためscansディレクトリが毎回空だった
+
+---
+
+## モメンタム判定モジュール（momentum_qualifier.py）
 
 ### 設計思想
 出来高を伴った急騰が「短期的な加熱」なのか「構造的変化を伴った中長期モメンタムの始まり」なのかを2段階で判定する。
 
 ### ステージ1: 出来高継続パターン判定（数値）
 - 急騰後3日間の出来高が急騰日の50%以上を維持しているか
-- 急騰後の株価が急騰終値の97%以上を維持しているか（-3%以内の下落は許容）
-- 通過 → WATCH or STRONG候補 / 不通過 → NOISE
+- 急騰後の株価が急騰終値の97%以上を維持しているか
 
-### ステージ2: Claude APIによる構造的変化判定
-- ステージ1通過銘柄のみClaudeに投げる
+### ステージ2: Claude APIによる構造的変化判定（バッチ処理）
+- ステージ1通過銘柄を全てまとめて1回のAPI呼び出しで判定
 - web_search付きで最新ニュース・EDINET開示を確認
 - 「構造的変化あり/なし」＋理由コメントを出力
-- APIキー未設定時はスキップ（ステージ1結果のみでWATCH通知）
+- **トークン消費：旧~120,000 → 新~20,000（約1/6に削減済み）**
 
 ### 判定結果
-| 結果 | 条件 | 意味 |
-|---|---|---|
-| STRONG | ステージ1✅ + Claude判定✅ | 構造的変化あり・中長期期待大 |
-| WATCH | ステージ1✅ + APIキーなし | 要観察（API登録後に再判定） |
-| WEAK | ステージ1✅ + Claude判定❌ | 短期加熱の可能性 |
-| NOISE | ステージ1❌ | 出来高・株価が継続せず |
+| 結果 | 条件 |
+|---|---|
+| STRONG | ステージ1✅ + Claude判定✅ |
+| WATCH | ステージ1✅ + APIキーなし |
+| WEAK | ステージ1✅ + Claude判定❌ |
+| NOISE | ステージ1❌ |
 
-### 動作
-- `python main.py --mode scan` 実行時にSHORT_TERMシグナルに対して自動判定
-- 結果は `memory/qualify_log.json` に蓄積（最新500件）
-- Slack通知: STRONG/WATCHのみ通知
+### フェーズ3: 10営業日後の結果自動記録（実装済み）
+- `qualify_signals()`実行のたびに`record_outcomes()`が自動呼び出される
+- `outcome=null`のエントリで10営業日以上経過しているものに株価リターンを記録
+- `get_outcome_stats()`でSTRONG/WEAK/NOISEごとの勝率・平均リターンを集計
+- 記録が5件以上溜まるとSlack通知に精度サマリーが追加表示される
 
 ---
 
 ## 米市場スキャン
 ### ETFモメンタムスキャン（us_market_scanner.py）
 - 監視ETF: 17本（XLK・SOXX・XLV・XLE・ITA・ARKK・AIQ・ROBO等）
-- 5日・20日・60日モメンタム + 出来高トレンドで総合スコア算出
-- Claude API（web_search付き）でセクター強弱の理由と日本株波及先を分析
+- anthropic SDK + web_searchマルチターンループ対応済み
 
 ### キーワード抽出スキャン（us_theme_extractor.py）
 - 情報ソース: Yahoo Finance・WSJ・MarketWatch・FT・Investing.com（5メディア・約100件/日）
-- Claude API（web_search付き）で細分化キーワードを抽出
-- セクター別サブテーマ・日本株波及先・リスクワードをSlackに通知
+- anthropic SDK + web_searchマルチターンループ対応済み
+
+---
+
+## 共通ユーティリティ（agents/utils.py）
+- `get_anthropic_key()` — 環境変数 → config.yaml の順でAPIキーを取得
+- edinet_analyzer・us_market_scanner・us_theme_extractor・momentum_qualifierから参照
 
 ---
 
@@ -161,7 +174,6 @@ japan-momentum-agent/
 - 損切り：-5%
 - 利確：+15%
 - 最大保有：10営業日
-- **過去スキャン結果ファイルでバックテストする（当日データではPF=0になる問題を解決済み）**
 
 ---
 
@@ -170,54 +182,30 @@ japan-momentum-agent/
 ### ✅ フェーズ1（基盤構築・完了）
 （省略・過去の修正履歴はGitログ参照）
 
-### 🔄 フェーズ2（Claude API統合・動作確認済み・APIキー再登録待ち）
+### ✅ フェーズ2（Claude API統合・完全動作確認済み）
+全機能実装・動作確認済み。詳細はGitログ参照。
 
-**実装済み・動作確認済み内容：**
-1. `agents/edinet_analyzer.py` - 決算短信PDFをClaude APIでスコアリング
-2. `agents/us_market_scanner.py` - 米国セクターETF17本のモメンタム分析
-3. `agents/us_theme_extractor.py` - 米財務メディアからキーワード抽出
-4. `agents/momentum_qualifier.py` - 急騰シグナルの2段階モメンタム判定（web_searchマルチターン対応済み）
-5. `agents/slack_notifier.py` - 各種通知対応済み
-6. `main.py` - `.env`読み込み対応済み（`from dotenv import load_dotenv` 追加済み）
-7. **全てgit push済み（最新コミット: `fix: .envをgitignoreに追加・APIキー削除`）**
-
-**ローカル環境のセットアップ（済み）：**
-- `python-dotenv`・`anthropic`ライブラリ インストール済み
-- `.env`ファイル作成済み（`.gitignore`で除外済み）
-- `.env`にAPIキーを入れるだけで動く状態
-
-**【次回セッション冒頭】ANTHROPIC_API_KEY再登録手順：**
-1. PCのConsoleログイン問題を解決する（下記参照）
-2. https://console.anthropic.com/settings/keys で新しいキーを作成
-3. ローカル`.env`を更新：`echo ANTHROPIC_API_KEY=新しいキー > .env`
-4. GitHub Secretsも更新：https://github.com/kai000849/japan-momentum-agent/settings/secrets/actions → `ANTHROPIC_API_KEY`の鉛筆マーク
-5. `python main.py --mode scan` で動作確認（STRONG判定が出るか確認）
-
-**PCのConsoleログイン問題（未解決）：**
-- Googleアカウントログインだと請求ページでエラーになる
-- 解決策候補：メールアドレス＋パスワードで直接ログイン（「パスワードを忘れた」でリセット）
-- それでもエラーの場合はブラウザのキャッシュクリア or シークレットモードで試す
-- スマホからは正常にログイン・クレジット購入済み
+### ✅ フェーズ2.5（品質改善・2026/03/17完了）
+1. **PF=0再発修正** — `_calc_pf_for_mode()`でCSV最終日-15営業日ベースに統一
+2. **`agents/utils.py`共通化** — `_get_anthropic_key()`を4ファイルから削除してutils.pyに集約
+3. **GitHub Actionsエラー監視** — 失敗ステップをSlack通知（curlで直接送信）
+4. **フェーズ3入口実装** — qualify_logへの10営業日後結果自動記録（`record_outcomes()`）
 
 ### 🔲 フェーズ3（過去パターンの蓄積と学習）
-- qualify_log.jsonにSTRONG/WEAK/NOISEの結果が蓄積される
-- 10営業日後の結果（利確/損切り）を自動記録して判定精度を検証
-- 「STRONG判定の勝率」「出来高維持率と勝率の相関」などの統計を可視化
+- qualify_log.jsonへの蓄積・結果記録は実装済み
+- 今後：蓄積データを使った判定ロジック改善・精度レポート自動化
 
 ### 🔲 フェーズ4（投資判断をエージェントに任せる）
 - かいさん自身の投資判断ロジックをプロンプトに組み込む
-- 「迷ったならこう判断する」というルールをエージェントに覚えさせる
 
 ---
 
-## 現在の状況（2026/03/15夜時点）
+## 現在の状況（2026/03/17夜時点）
 - 夕方18時・翌朝6時にSlack自動通知が稼働中（朝はus_scan含む）
-- 株価データ：99営業日分（1596銘柄）
-- SHORT_TERM PF: 1.24 / MOMENTUM PF: 1.53（発注条件クリア済み）
-- **ANTHROPIC_API_KEY：一度登録・動作確認済み（STRONG=4件確認）→その後キー削除済み・再登録待ち**
-- ペーパートレード：発注あり（PF≥1.2のため）
-- **PCのConsole請求ページのログイン問題が未解決（次回セッション冒頭で再試行）**
-- **スマホからはConsoleにログイン・クレジット購入済み**
+- **ANTHROPIC_API_KEY：登録済み・全機能動作確認済み**
+- **Consoleはブラウザの翻訳をオフにすれば正常動作する**（翻訳がHTMLを壊すバグ）
+- PF計算ロジック修正済み（次回実行から反映）
+- フェーズ3の結果蓄積が自動で始まっている
 
 ---
 
@@ -258,8 +246,9 @@ git pull
 - `config.yaml` はGitに含めない（.gitignoreで除外済み）
 - `.env`はGitに含めない（.gitignoreで除外済み）← **重要：過去に誤コミットしてGitHubにブロックされた経験あり**
 - APIキーは絶対にコードに直書きしない
-- J-Quantsライトプラン：最新データが取得可能（2週間遅延なし）
+- J-Quantsライトプラン：最新データが取得可能
 - Windowsのコマンドプロンプトで作業
-- **ファイル編集はClaudeがFileSystemツールで行い、git操作はかいさんがコマンドプロンプトでコピペ実行する（PowerShellツールはgitでハングするため使わない）**
+- **ファイル編集はWindows-MCP:FileSystemツールで直接行う（PowerShellはgitでハングするため複雑なコマンドは使わない）**
 - **GitHub上での直接編集は避ける**
+- **Consoleを開くときは必ずブラウザの翻訳をオフに！**（翻訳がHTMLを壊してエラーになる）
 - **CLAUDE.mdの更新はセッション終了時にかいさんが明示的に依頼したときのみ行う**
