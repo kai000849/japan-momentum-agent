@@ -1,4 +1,4 @@
-"""
+﻿"""
 agents/momentum_qualifier.py
 モメンタム判定モジュール
 
@@ -158,7 +158,8 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
         dict: {stockCode: {"structuralChange": bool, "confidence": str,
                            "comment": str, "stage2Available": bool}}
     """
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    from agents.utils import get_anthropic_key
+    api_key = get_anthropic_key()
     stock_codes = [s["stockCode"] for s in stocks]
 
     if not api_key:
@@ -504,3 +505,4 @@ def format_qualify_result_for_slack(results: list) -> str:
             )
 
     return "\n".join(lines)
+

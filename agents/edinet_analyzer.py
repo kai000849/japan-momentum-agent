@@ -1,4 +1,4 @@
-"""
+﻿"""
 agents/edinet_analyzer.py
 EDINET決算書類をClaude APIで読解・スコアリングするモジュール
 
@@ -47,31 +47,7 @@ PDF_CACHE_DIR = Path(__file__).parent.parent / "data" / "raw" / "edinet_pdfs"
 # APIキー取得
 # ========================================
 
-def _get_anthropic_key() -> str:
-    """
-    ANTHROPIC_API_KEYを環境変数から取得する。
-    GitHub ActionsではSecretsから自動注入される。
-    ローカルではconfig.yamlから読み込む。
-    """
-    # 環境変数を最優先（GitHub Actions）
-    key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if key:
-        return key
-
-    # ローカル実行時はconfig.yamlから読む
-    try:
-        import yaml
-        config_path = Path(__file__).parent.parent / "config.yaml"
-        if config_path.exists():
-            with open(config_path, "r", encoding="utf-8") as f:
-                config = yaml.safe_load(f)
-            key = config.get("anthropic", {}).get("api_key", "")
-            if key and key != "YOUR_ANTHROPIC_API_KEY":
-                return key
-    except Exception:
-        pass
-
-    return ""
+from agents.utils import get_anthropic_key as _get_anthropic_key
 
 
 def _get_edinet_key() -> str:
@@ -410,3 +386,4 @@ def get_best_worst_earnings(analyzed_results: list, top_n: int = 10) -> dict:
         "worst": worst,
         "unanalyzed": unanalyzed
     }
+

@@ -66,22 +66,7 @@ CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 # APIキー取得
 # ========================================
 
-def _get_anthropic_key() -> str:
-    key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if key:
-        return key
-    try:
-        import yaml
-        config_path = Path(__file__).parent.parent / "config.yaml"
-        if config_path.exists():
-            with open(config_path, "r", encoding="utf-8") as f:
-                config = yaml.safe_load(f)
-            key = config.get("anthropic", {}).get("api_key", "")
-            if key and key != "YOUR_ANTHROPIC_API_KEY":
-                return key
-    except Exception:
-        pass
-    return ""
+from agents.utils import get_anthropic_key as _get_anthropic_key
 
 
 # ========================================
@@ -272,9 +257,8 @@ theme_analysisは強いセクター上位3つのみ記載してください。
         client = anthropic.Anthropic(api_key=api_key)
         messages = [{"role": "user", "content": prompt}]
 
-        # web_search使用時は複数ターンになるためループで処理
         raw_text = ""
-        for _ in range(5):  # 最大5ターン（無限ループ防止）
+        for _ in range(5):
             response = client.messages.create(
                 model=CLAUDE_MODEL,
                 max_tokens=2000,
@@ -296,22 +280,18 @@ theme_analysisは強いセクター上位3つのみ記載してください。
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": block.id,
-                        "content": ""  # web_searchは自動実行されるため空でOK
+                        "content": ""
                     })
             if tool_results:
                 messages.append({"role": "user", "content": tool_results})
 
         raw_text = raw_text.strip()
 
-        # web_searchの<cite>引用タグを除去
         import re
         raw_text = re.sub(r'<cite[^>]*>', '', raw_text)
         raw_text = raw_text.replace('</cite>', '')
-
-        # コードブロックマーカーを除去
         raw_text = re.sub(r'```(?:json)?', '', raw_text)
 
-        # バランス波括弧で最大の {..} ブロックを抽出（find/rfindより正確）
         depth = 0
         best_s = best_e = cur_s = 0
         in_str = esc = False
@@ -357,24 +337,21 @@ def run_us_market_scan() -> dict:
 
     Returns:
         dict: {
-            "sector_ranking": list,  # セクターETFランキング
-            "macro": dict,           # マクロ指数
-            "analysis": dict,        # Claude分析結果
+            "sector_ranking": list,
+            "macro": dict,
+            "analysis": dict,
             "scan_date": str,
         }
     """
     scan_date = datetime.now().strftime("%Y-%m-%d %H:%M")
     logger.info("米市場スキャン開始...")
 
-    # 1. セクターETFモメンタム取得
     logger.info("セクターETFデータ取得中...")
     sector_ranking = fetch_etf_momentum(SECTOR_ETFS)
 
-    # 2. マクロ指数取得
     logger.info("マクロ指数取得中...")
     macro = fetch_macro_indices()
 
-    # 3. Claude APIで分析（APIキーがある場合のみ）
     analysis = {}
     api_key = _get_anthropic_key()
     if api_key and sector_ranking:
@@ -390,9 +367,7 @@ def run_us_market_scan() -> dict:
         "scan_date": scan_date,
     }
 
-    # スキャン結果をJSONで保存
     _save_us_scan_result(result)
-
     return result
 
 
