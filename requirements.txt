@@ -28,3 +28,6 @@ python-dotenv
 
 # Claude API クライアント
 anthropic
+
+# PDFテキスト抽出（edinet_analyzer用・トークン節約のため）
+pdfplumber

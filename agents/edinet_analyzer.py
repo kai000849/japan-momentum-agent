@@ -1,20 +1,20 @@
-﻿"""
+"""
 agents/edinet_analyzer.py
 EDINET決算書類をClaude APIで読解・スコアリングするモジュール
 
 【処理フロー】
 1. EDINET APIから決算短信PDFをダウンロード
-2. Claude APIに投げて以下を抽出：
+2. pdfplumberで先頭15ページをテキスト抽出（base64渡し廃止・トークン節約）
+3. Claude APIに投げて以下を抽出：
    - 売上・営業利益の前年比・予想比
    - ポジ/ネガスコア（-100〜+100）
    - 理由コメント（2〜3行）
    - 構造的変化の有無
-3. スコア上位（ポジ）・下位（ネガ）をランキング化して返す
+4. スコア上位（ポジ）・下位（ネガ）をランキング化して返す
 
 作者: Japan Momentum Agent
 """
 
-import base64
 import json
 import logging
 import os
@@ -35,6 +35,12 @@ EDINET_BASE_URL = "https://api.edinet-fsa.go.jp/api/v2"
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト効率優先
 MAX_TOKENS = 1500
+
+# PDFから抽出するページ数の上限（決算短信の重要数字は冒頭に集中）
+PDF_MAX_PAGES = 15
+
+# PDFから渡す文字数の上限（inputトークン節約）
+PDF_MAX_CHARS = 6000
 
 # スコアリング対象の書類種別（決算短信のみ）
 TARGET_DOC_TYPES = ["180", "130", "140", "030"]
@@ -117,6 +123,54 @@ def download_earnings_pdf(doc_id: str) -> bytes | None:
 
 
 # ========================================
+# PDFテキスト抽出（pdfplumber使用）
+# ========================================
+
+def extract_text_from_pdf(pdf_bytes: bytes) -> str:
+    """
+    pdfplumberを使ってPDFから先頭ページのテキストを抽出する。
+    決算短信の重要数値（売上・利益・予想比）は冒頭に集中しているため、
+    先頭PDF_MAX_PAGESページのみ抽出してトークンを節約する。
+
+    Args:
+        pdf_bytes (bytes): PDFバイナリ
+
+    Returns:
+        str: 抽出テキスト（最大PDF_MAX_CHARS文字）
+    """
+    try:
+        import pdfplumber
+        import io
+
+        text_parts = []
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            total_pages = len(pdf.pages)
+            pages_to_read = min(PDF_MAX_PAGES, total_pages)
+            logger.info(f"PDFテキスト抽出: {pages_to_read}/{total_pages}ページ")
+
+            for i, page in enumerate(pdf.pages[:pages_to_read]):
+                page_text = page.extract_text()
+                if page_text:
+                    text_parts.append(f"--- {i+1}ページ ---\n{page_text}")
+
+        full_text = "\n".join(text_parts)
+
+        # 文字数上限でカット（inputトークン節約）
+        if len(full_text) > PDF_MAX_CHARS:
+            full_text = full_text[:PDF_MAX_CHARS] + "\n...(以下省略)"
+
+        logger.info(f"テキスト抽出完了: {len(full_text)}文字")
+        return full_text
+
+    except ImportError:
+        logger.warning("pdfplumberが未インストール。pip install pdfplumber を実行してください。")
+        return ""
+    except Exception as e:
+        logger.warning(f"PDFテキスト抽出エラー: {e}")
+        return ""
+
+
+# ========================================
 # Claude APIで決算分析
 # ========================================
 
@@ -127,6 +181,7 @@ def analyze_earnings_pdf(
 ) -> dict:
     """
     決算短信PDFをClaude APIで分析してスコアリングする。
+    PDFはbase64渡しせず、pdfplumberで事前テキスト抽出してから渡す（トークン節約）。
 
     Args:
         pdf_bytes (bytes): PDFバイナリ
@@ -151,12 +206,16 @@ def analyze_earnings_pdf(
     if not api_key:
         return {"error": "ANTHROPIC_API_KEY未設定", "score": 0}
 
-    # PDFをbase64エンコード
-    pdf_b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
+    # PDFからテキストを事前抽出（base64渡し廃止・大幅トークン節約）
+    pdf_text = extract_text_from_pdf(pdf_bytes)
+    if not pdf_text:
+        return {"error": "PDFテキスト抽出失敗", "score": 0}
 
-    prompt = f"""
-あなたは日本株投資の決算分析専門家です。
-以下の決算書類（{company_name} / {doc_description}）を読み、投資判断に役立つ分析を行ってください。
+    prompt = f"""あなたは日本株投資の決算分析専門家です。
+以下の決算書類テキスト（{company_name} / {doc_description}）を読み、投資判断に役立つ分析を行ってください。
+
+【決算書類テキスト（先頭{PDF_MAX_PAGES}ページ抜粋）】
+{pdf_text}
 
 【出力形式】
 必ず以下のJSON形式のみで回答してください。前置きや説明は不要です。
@@ -185,6 +244,7 @@ def analyze_earnings_pdf(
 
     try:
         import anthropic
+        import re
 
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
@@ -193,20 +253,7 @@ def analyze_earnings_pdf(
             messages=[
                 {
                     "role": "user",
-                    "content": [
-                        {
-                            "type": "document",
-                            "source": {
-                                "type": "base64",
-                                "media_type": "application/pdf",
-                                "data": pdf_b64
-                            }
-                        },
-                        {
-                            "type": "text",
-                            "text": prompt
-                        }
-                    ]
+                    "content": prompt
                 }
             ]
         )
@@ -214,7 +261,6 @@ def analyze_earnings_pdf(
         raw_text = response.content[0].text.strip()
 
         # コードブロックマーカーを除去してから最外周JSONを抽出
-        import re
         raw_text = re.sub(r'```(?:json)?', '', raw_text)
         start = raw_text.find("{")
         end = raw_text.rfind("}") + 1
@@ -386,4 +432,3 @@ def get_best_worst_earnings(analyzed_results: list, top_n: int = 10) -> dict:
         "worst": worst,
         "unanalyzed": unanalyzed
     }
-
