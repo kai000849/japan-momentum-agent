@@ -5,8 +5,8 @@ agents/us_market_scanner.py
 【処理フロー】
 1. yfinanceで主要セクターETF・テーマETFの価格データを取得
 2. 5日・20日モメンタムでランキング化
-3. 強いセクター上位をClaude API（web_search付き）で分析
-   - なぜそのセクターが強いか
+3. 強いセクター上位をClaude API（web_searchなし）で分析
+   - ETF数値データをもとに、なぜそのセクターが強いか
    - 関連する日本株テーマ・具体的銘柄
 4. Slackにランキング＋分析コメントを通知
 
@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 # 監視対象ETF定義
 # ========================================
 
-# セクターETF（SPDRシリーズ中心）
 SECTOR_ETFS = {
     "XLK":  {"name": "テクノロジー",       "japan_theme": "半導体・IT・ソフトウェア"},
     "SOXX": {"name": "半導体",             "japan_theme": "東京エレク・アドバンテスト・レーザーテク"},
@@ -49,7 +48,6 @@ SECTOR_ETFS = {
     "ROBO": {"name": "ロボティクス",        "japan_theme": "ファナック・安川電機・キーエンス"},
 }
 
-# 主要指数（マクロ把握用）
 MACRO_INDICES = {
     "SPY":  "S&P500",
     "QQQ":  "NASDAQ100",
@@ -57,7 +55,6 @@ MACRO_INDICES = {
     "VIX":  "恐怖指数(VIX)",
 }
 
-# Claude API設定
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 
@@ -76,13 +73,6 @@ from agents.utils import get_anthropic_key as _get_anthropic_key
 def fetch_etf_momentum(tickers: dict, period: str = "3mo") -> list:
     """
     ETFリストの価格データを取得してモメンタムを計算する。
-
-    Args:
-        tickers (dict): {ticker: {name, japan_theme}} の辞書
-        period (str): 取得期間（yfinance形式）
-
-    Returns:
-        list: モメンタムスコア付きETF情報のリスト（スコア降順）
     """
     try:
         import yfinance as yf
@@ -104,22 +94,19 @@ def fetch_etf_momentum(tickers: dict, period: str = "3mo") -> list:
             close = hist["Close"]
             latest = float(close.iloc[-1])
 
-            # モメンタム計算
             mom5d  = (latest / float(close.iloc[-6])  - 1) * 100 if len(close) >= 6  else 0.0
             mom20d = (latest / float(close.iloc[-21]) - 1) * 100 if len(close) >= 21 else 0.0
             mom60d = (latest / float(close.iloc[-61]) - 1) * 100 if len(close) >= 61 else 0.0
 
-            # 出来高トレンド（5日平均 ÷ 20日平均）
             vol = hist["Volume"]
             vol_trend = (
                 float(vol.iloc[-5:].mean()) / float(vol.iloc[-20:].mean())
                 if len(vol) >= 20 else 1.0
             )
 
-            # 総合モメンタムスコア（5日重視・出来高加味）
             score = mom5d * 0.5 + mom20d * 0.3 + mom60d * 0.2
             if vol_trend >= 1.3:
-                score *= 1.1  # 出来高増加ボーナス
+                score *= 1.1
 
             results.append({
                 "ticker": ticker_sym,
@@ -133,25 +120,19 @@ def fetch_etf_momentum(tickers: dict, period: str = "3mo") -> list:
                 "score": round(score, 2),
             })
 
-            time.sleep(0.3)  # Yahoo Finance レート制限対策
+            time.sleep(0.3)
 
         except Exception as e:
             logger.warning(f"{ticker_sym} データ取得エラー: {e}")
             continue
 
-    # スコア降順でソート
     results.sort(key=lambda x: x["score"], reverse=True)
     logger.info(f"ETFモメンタム計算完了: {len(results)}本")
     return results
 
 
 def fetch_macro_indices() -> dict:
-    """
-    S&P500・NASDAQ・VIXなどマクロ指数を取得する。
-
-    Returns:
-        dict: {ticker: {name, change5d, latest}} の辞書
-    """
+    """S&P500・NASDAQ・VIXなどマクロ指数を取得する。"""
     try:
         import yfinance as yf
     except ImportError:
@@ -186,44 +167,30 @@ def fetch_macro_indices() -> dict:
 
 def analyze_us_market_theme(top_sectors: list, macro: dict) -> dict:
     """
-    強いセクター上位をClaude API（web_search付き）で分析する。
-
-    Args:
-        top_sectors (list): モメンタム上位セクターETFリスト
-        macro (dict): マクロ指数データ
-
-    Returns:
-        dict: {
-            "market_summary": str,      # 米市場全体の状況サマリー
-            "theme_analysis": list,     # セクターごとの分析
-            "japan_opportunities": list, # 日本株への波及テーマ
-            "risk_factors": list,       # 注意すべきリスク
-        }
+    強いセクター上位をClaude APIで分析する。
+    ETFの数値データのみを渡す（web_searchなし・コスト削減）。
     """
     api_key = _get_anthropic_key()
     if not api_key:
         return {"error": "ANTHROPIC_API_KEY未設定"}
 
-    # マクロ状況テキスト
     macro_text = "\n".join([
         f"- {v['name']}({k}): {v['latest']:.1f} ({'+' if v['change5d'] >= 0 else ''}{v['change5d']:.1f}%/5日)"
         for k, v in macro.items()
     ])
 
-    # 上位セクターテキスト
     top_text = "\n".join([
         f"- {s['name']}({s['ticker']}): スコア{s['score']:.1f} "
         f"[5日:{'+' if s['mom5d']>=0 else ''}{s['mom5d']:.1f}% / "
         f"20日:{'+' if s['mom20d']>=0 else ''}{s['mom20d']:.1f}%] "
-        f"出来高トレンド:{s['vol_trend']:.2f}x"
+        f"出来高:{s['vol_trend']:.2f}x / 日本株関連:{s['japan_theme']}"
         for s in top_sectors[:5]
     ])
 
     today = datetime.now().strftime("%Y年%m月%d日")
 
-    prompt = f"""
-あなたは米国株式市場と日本株市場に精通した投資アナリストです。
-{today}時点の米国市場データを分析し、日本株モメンタム投資家に有益な情報を提供してください。
+    prompt = f"""あなたは米国株式市場と日本株市場に精通した投資アナリストです。
+{today}時点の米国市場ETFデータを分析し、日本株モメンタム投資家に有益な情報を提供してください。
 
 【米国マクロ指数（5日騰落）】
 {macro_text}
@@ -232,15 +199,15 @@ def analyze_us_market_theme(top_sectors: list, macro: dict) -> dict:
 {top_text}
 
 【出力形式】
-必ず以下のJSON形式のみで回答してください。
+必ず以下のJSON形式のみで回答してください。前置き不要。
 
 {{
-  "market_summary": "<米市場全体の状況を2〜3文で。リスクオン/オフ、主要テーマを含める>",
+  "market_summary": "<米市場全体の状況を2文で。リスクオン/オフ・主要テーマを含める>",
   "theme_analysis": [
     {{
       "sector": "<セクター名>",
-      "reason": "<なぜ強いか・背景にある材料を1〜2文で>",
-      "sustainability": "<short/medium/long・このトレンドの持続性>",
+      "reason": "<なぜ強いか・背景を1文で>",
+      "sustainability": "<short/medium/long>",
       "japan_stocks": "<具体的な日本株銘柄名を2〜3社>"
     }}
   ],
@@ -248,48 +215,26 @@ def analyze_us_market_theme(top_sectors: list, macro: dict) -> dict:
   "risk_factors": ["<注意すべきリスク1>", "<リスク2>"]
 }}
 
-theme_analysisは強いセクター上位3つのみ記載してください。
-"""
+theme_analysisは強いセクター上位3つのみ記載してください。"""
 
     try:
         import anthropic
 
+        # web_searchなし・1回呼び出し（コスト削減）
+        logger.info("Claude APIで米市場テーマ分析中（web_searchなし）...")
         client = anthropic.Anthropic(api_key=api_key)
-        messages = [{"role": "user", "content": prompt}]
-
-        raw_text = ""
-        for _ in range(5):
-            response = client.messages.create(
-                model=CLAUDE_MODEL,
-                max_tokens=2000,
-                tools=[{"type": "web_search_20250305", "name": "web_search"}],
-                messages=messages
-            )
-
-            messages.append({"role": "assistant", "content": response.content})
-
-            if response.stop_reason == "end_turn":
-                for block in response.content:
-                    if hasattr(block, "text"):
-                        raw_text += block.text
-                break
-
-            tool_results = []
-            for block in response.content:
-                if block.type == "tool_use":
-                    tool_results.append({
-                        "type": "tool_result",
-                        "tool_use_id": block.id,
-                        "content": ""
-                    })
-            if tool_results:
-                messages.append({"role": "user", "content": tool_results})
-
-        raw_text = raw_text.strip()
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=1200,  # 2000→1200に削減
+            messages=[{"role": "user", "content": prompt}]
+        )
 
         import re
-        raw_text = re.sub(r'<cite[^>]*>', '', raw_text)
-        raw_text = raw_text.replace('</cite>', '')
+        raw_text = ""
+        for block in response.content:
+            if hasattr(block, "text"):
+                raw_text += block.text
+        raw_text = raw_text.strip()
         raw_text = re.sub(r'```(?:json)?', '', raw_text)
 
         depth = 0
@@ -332,17 +277,7 @@ theme_analysisは強いセクター上位3つのみ記載してください。
 # ========================================
 
 def run_us_market_scan() -> dict:
-    """
-    米市場モメンタムスキャンを実行してSlack通知用データを返す。
-
-    Returns:
-        dict: {
-            "sector_ranking": list,
-            "macro": dict,
-            "analysis": dict,
-            "scan_date": str,
-        }
-    """
+    """米市場モメンタムスキャンを実行してSlack通知用データを返す。"""
     scan_date = datetime.now().strftime("%Y-%m-%d %H:%M")
     logger.info("米市場スキャン開始...")
 

@@ -9,8 +9,7 @@ agents/momentum_qualifier.py
   - 株価が急騰後に急落していないか
 
 ステージ2: Claude APIによる構造的変化判定
-  - EDINETの直近開示書類を確認
-  - web_searchで最新ニュースを検索
+  - 銘柄コード・会社名をもとに学習済み知識で判断（web_searchなし・コスト削減）
   - 「構造的変化あり/なし」＋理由コメントを出力
 
 結果は memory/qualify_log.json に記録される。
@@ -121,6 +120,7 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
 def _analyze_structural_change_batch(stocks: list) -> dict:
     """
     複数銘柄をまとめて1回のClaude API呼び出しで構造的変化を判定する。
+    web_searchなし・学習済み知識のみで判断（コスト削減）。
     """
     from agents.utils import get_anthropic_key
     api_key = get_anthropic_key()
@@ -143,15 +143,15 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
     ])
 
     prompt = f"""あなたは日本株の投資アナリストです。
-以下の{len(stocks)}銘柄が急騰しました。各銘柄について、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
+以下の{len(stocks)}銘柄が急騰しました。各銘柄について、あなたの知識をもとに、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
 
 【対象銘柄一覧】
 {stocks_text}
 
-以下の観点でweb検索して調べてください：
-1. 直近のニュース・決算・開示情報
-2. ビジネスモデルの変化・新市場参入・規制変化などの構造的要因
-3. 一時的なイベント（仕手、空売り踏み上げ、単発ニュース）の可能性
+判断の観点：
+1. 会社名・事業内容から考えられる構造的変化の可能性（AI・EV・防衛・半導体など成長テーマとの関連）
+2. 一時的なイベントになりやすい業種かどうか（仕手株・小型株・単発材料）
+3. 事業の安定性・継続性
 
 必ず以下のJSON形式のみで回答してください（他のテキスト不要）：
 {{
@@ -170,40 +170,20 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
     try:
         import anthropic
 
+        # web_searchなし・1回呼び出し（コスト削減）
         client = anthropic.Anthropic(api_key=api_key)
-        messages = [{"role": "user", "content": prompt}]
-
-        result_text = ""
-        for _ in range(5):
-            response = client.messages.create(
-                model=CLAUDE_MODEL,
-                max_tokens=2000,
-                tools=[{"type": "web_search_20250305", "name": "web_search"}],
-                messages=messages
-            )
-            messages.append({"role": "assistant", "content": response.content})
-
-            if response.stop_reason == "end_turn":
-                for block in response.content:
-                    if hasattr(block, "text"):
-                        result_text += block.text
-                break
-
-            tool_results = []
-            for block in response.content:
-                if block.type == "tool_use":
-                    tool_results.append({
-                        "type": "tool_result",
-                        "tool_use_id": block.id,
-                        "content": ""
-                    })
-            if tool_results:
-                messages.append({"role": "user", "content": tool_results})
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=800,  # 2000→800に削減（銘柄ごとに50文字のみ）
+            messages=[{"role": "user", "content": prompt}]
+        )
 
         import re
+        result_text = ""
+        for block in response.content:
+            if hasattr(block, "text"):
+                result_text += block.text
         result_text = result_text.strip()
-        result_text = re.sub(r'<cite[^>]*>', '', result_text)
-        result_text = result_text.replace('</cite>', '')
         result_text = re.sub(r'```(?:json)?', '', result_text)
 
         depth = 0
@@ -277,18 +257,6 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
     """
     qualify_log.json の中で「10営業日以上経過・outcome未記録」のエントリに
     実際の株価結果を記録する。（フェーズ3 判定精度検証用）
-
-    処理の流れ:
-      1. qualify_log.json を読み込む
-      2. outcome が null のエントリを抽出
-      3. 判定日から10営業日以上経過しているか確認
-      4. 急騰日終値 → 10営業日後終値のリターンを計算して記録
-
-    Args:
-        df_all: 全銘柄の株価DataFrame（load_latest_quotes()の戻り値）
-
-    Returns:
-        int: 今回新たに記録したエントリ数
     """
     if not QUALIFY_LOG_PATH.exists():
         return 0
@@ -308,7 +276,6 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
     updated_count = 0
 
     for entry in log_entries:
-        # outcome が既に記録済みならスキップ
         if entry.get("outcome") is not None:
             continue
 
@@ -321,12 +288,10 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
         except Exception:
             continue
 
-        # 判定日から何営業日経過したか確認
         bdays_elapsed = len(pd.bdate_range(start=qualified_at, end=today)) - 1
         if bdays_elapsed < OUTCOME_CHECK_DAYS:
-            continue  # まだ10営業日経っていない
+            continue
 
-        # 銘柄の株価データを取得
         stock_code = entry.get("stockCode", "")
         surge_date_str = entry.get("scanDate", "")
         if not stock_code or not surge_date_str:
@@ -338,7 +303,6 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
 
             surge_dt = pd.to_datetime(surge_date_str)
 
-            # 急騰日の終値を取得
             surge_row = df_stock[df_stock["Date"] == surge_dt]
             if surge_row.empty:
                 entry["outcome"] = {"status": "no_data", "reason": "急騰日データなし"}
@@ -347,10 +311,8 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
 
             entry_price = float(surge_row.iloc[0]["Close"])
 
-            # 急騰日以降のデータを取得し、10営業日後の終値を取得
             future_df = df_stock[df_stock["Date"] > surge_dt].reset_index(drop=True)
             if len(future_df) < OUTCOME_CHECK_DAYS:
-                # データがまだ揃っていない（市場休場等）→ スキップ
                 continue
 
             exit_row = future_df.iloc[OUTCOME_CHECK_DAYS - 1]
@@ -378,7 +340,6 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
             entry["outcome"] = {"status": "error", "reason": str(e)[:50]}
             updated_count += 1
 
-    # 更新があれば保存
     if updated_count > 0:
         with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
             json.dump(log_entries, f, ensure_ascii=False, indent=2)
@@ -390,16 +351,6 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
 def get_outcome_stats() -> dict:
     """
     qualify_log.json からSTRONG/WEAK/NOISEごとの勝率・平均リターンを集計する。
-    フェーズ3の判定精度検証に使用。
-
-    Returns:
-        dict: {
-            "STRONG": {"count": int, "win_rate": float, "avg_return": float},
-            "WEAK":   {...},
-            "WATCH":  {...},
-            "NOISE":  {...},
-            "total_recorded": int,
-        }
     """
     if not QUALIFY_LOG_PATH.exists():
         return {}
@@ -460,7 +411,6 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
 
     logger.info(f"モメンタム判定開始: {len(signals)}銘柄")
 
-    # フェーズ3: 過去エントリの結果記録（毎回実行）
     try:
         recorded = record_outcomes(df_all)
         if recorded > 0:
@@ -526,7 +476,6 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
 
         result["stage2"] = stage2
 
-        # ---- 総合判定 ----
         stage1_pass = stage1.get("stage1Pass", False)
         structural_change = stage2.get("structuralChange")
 
@@ -539,12 +488,9 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         else:
             result["qualifyResult"] = "NOISE"
 
-        # フェーズ3: outcome フィールドを null で初期化（後で record_outcomes が埋める）
         result["outcome"] = None
-
         results.append(result)
 
-    # 結果をログに保存
     _save_qualify_log(results)
 
     strong = sum(1 for r in results if r["qualifyResult"] == "STRONG")
@@ -573,7 +519,6 @@ def _save_qualify_log(results: list):
     for r in results:
         r["qualifiedAt"] = datetime.now().isoformat()
 
-    # 既存エントリのうち、今回と同じ(stockCode, scanDate)があれば除外（上書き更新）
     new_keys = {(r.get("stockCode"), r.get("scanDate")) for r in results}
     existing = [
         e for e in existing
@@ -590,10 +535,7 @@ def _save_qualify_log(results: list):
 
 
 def format_qualify_result_for_slack(results: list) -> str:
-    """
-    判定結果をSlack通知用のテキストにフォーマットする。
-    outcome記録があれば精度サマリーも追加する。
-    """
+    """判定結果をSlack通知用のテキストにフォーマットする。"""
     strong_results = [r for r in results if r["qualifyResult"] == "STRONG"]
     watch_results = [r for r in results if r["qualifyResult"] == "WATCH"]
 
@@ -631,7 +573,6 @@ def format_qualify_result_for_slack(results: list) -> str:
                 f"出来高維持:{vol_rate:.0%} 株価:{price_chg:+.1f}%"
             )
 
-    # フェーズ3: 判定精度サマリーを追記（記録件数が5件以上あれば表示）
     try:
         stats = get_outcome_stats()
         total = stats.get("total_recorded", 0)
