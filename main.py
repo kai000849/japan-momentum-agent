@@ -113,7 +113,7 @@ def run_fetch_mode(args):
     try:
         from agents.jquants_fetcher import fetch_all_stocks_data
 
-        days = getattr(args, "days", 60)
+        days = getattr(args, "days", 150)
         df = fetch_all_stocks_data(days=days)
 
         if df.empty:
@@ -575,8 +575,8 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--days",
         type=int,
-        default=60,
-        help="データ取得日数（fetchモード用）。デフォルト: 60日"
+        default=150,
+        help="データ取得日数（fetchモード用）。デフォルト: 150日（75日MA計算に必要）"
     )
 
     # オプション: Slack通知送信フラグ

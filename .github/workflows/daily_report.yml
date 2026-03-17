@@ -139,10 +139,10 @@ jobs:
           restore-keys: |
             edinet-cache-
 
-      - name: 株価データ取得
+      - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
-          python main.py --mode fetch
+          python main.py --mode fetch --days 150
         continue-on-error: true
 
       - name: スキャン実行（シグナル検出＆Slack通知）
@@ -263,10 +263,10 @@ jobs:
           restore-keys: |
             edinet-cache-
 
-      - name: 株価データ取得
+      - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
-          python main.py --mode fetch
+          python main.py --mode fetch --days 150
         continue-on-error: true
 
       - name: スキャン実行（シグナル検出＆Slack通知）
