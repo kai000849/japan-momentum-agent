@@ -247,6 +247,45 @@ def run_scan_mode(args):
 
         except Exception as e:
             logger.warning(f"モメンタム判定エラー（スキップ）: {e}")
+
+    # ---- フェーズ4: 投資判断エージェント ----
+    # qualify結果・PF・ポートフォリオ余力・米市場シグナルを統合してエントリー推奨を生成
+    short_term_results_for_advice = all_results.get("SHORT_TERM", [])
+    if short_term_results_for_advice:
+        try:
+            from agents.momentum_qualifier import get_outcome_stats
+            from agents.investment_advisor import generate_advice, format_advice_for_slack
+            from agents.slack_notifier import send_slack_message
+
+            # PFマップを作成
+            pf_map = {
+                "SHORT_TERM": _calc_pf_for_mode("SHORT_TERM"),
+                "MOMENTUM": _calc_pf_for_mode("MOMENTUM"),
+            }
+
+            # qualify結果をqualify_logから取得（最新スキャン日分）
+            from agents.momentum_qualifier import QUALIFY_LOG_PATH
+            import json as _json
+            qualify_entries = []
+            if QUALIFY_LOG_PATH.exists():
+                with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as _f:
+                    _log = _json.load(_f)
+                if _log:
+                    latest_scan_date = max(e.get("scanDate", "") for e in _log)
+                    qualify_entries = [e for e in _log if e.get("scanDate") == latest_scan_date]
+
+            if qualify_entries:
+                advices = generate_advice(qualify_entries, pf_map)
+                advice_text = format_advice_for_slack(advices)
+                if advice_text:
+                    send_slack_message(advice_text)
+                    logger.info("投資判断をSlackに送信しました。")
+            else:
+                logger.info("qualify結果がないため投資判断をスキップ")
+
+        except Exception as e:
+            logger.warning(f"投資判断エラー（スキップ）: {e}")
+
     return all_results
 
 
@@ -503,8 +542,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan"],
-        help="実行モード: fetch(データ取得) / scan(スキャン) / backtest(バックテスト) / full(全実行) / status(状況表示) / us_scan(米市場スキャン)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report"],
+        help="実行モード: fetch(データ取得) / scan(スキャン) / backtest(バックテスト) / full(全実行) / status(状況表示) / us_scan(米市場スキャン) / qualify_report(判定精度レポート)"
     )
 
     # オプション: スキャンタイプ
@@ -626,6 +665,57 @@ def main():
             print(f"キーワード抽出: {kw_count}件")
             notify_us_theme_extraction(theme_result)
             print("✓ キーワード通知送信")
+
+        elif args.mode == "qualify_report":
+            # 判定精度レポートモード
+            print("【判定精度レポートモード】")
+            from agents.momentum_qualifier import get_outcome_stats, QUALIFY_LOG_PATH
+            import json
+
+            # qualify_log.json の内容サマリーを表示
+            if QUALIFY_LOG_PATH.exists():
+                with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+                    entries = json.load(f)
+                total = len(entries)
+                recorded = sum(1 for e in entries if e.get("outcome") and e.get("outcome", {}).get("status") == "recorded")
+                pending = sum(1 for e in entries if e.get("outcome") is None)
+                print(f"\n📊 qualify_log.json 状況")
+                print(f"  総エントリ数   : {total}件")
+                print(f"  outcome記録済み: {recorded}件")
+                print(f"  outcome待ち    : {pending}件")
+                print()
+            else:
+                print("qualify_log.json が存在しません。")
+
+            stats = get_outcome_stats()
+            total_recorded = stats.get("total_recorded", 0)
+            if total_recorded == 0:
+                print("⚠️  まだoutcome記録済みのエントリがありません。")
+                print("   （10営業日後に自動記録されます）")
+            else:
+                print(f"📈 判定精度サマリー（{total_recorded}件記録済み）")
+                for label in ["STRONG", "WEAK", "WATCH", "NOISE"]:
+                    s = stats.get(label, {})
+                    count = s.get("count", 0)
+                    if count > 0:
+                        wr = s.get("win_rate")
+                        ar = s.get("avg_return")
+                        print(f"  {label:6s}: 勝率{wr:.1f}% / 平均リターン{ar:+.2f}%（{count}件）")
+                print()
+
+                # Slack通知も送る（--notifyオプション付きの場合）
+                if args.notify:
+                    from agents.slack_notifier import send_slack_message
+                    lines = [f"📊 *判定精度レポート（{total_recorded}件記録済み）*"]
+                    for label in ["STRONG", "WEAK", "WATCH", "NOISE"]:
+                        s = stats.get(label, {})
+                        count = s.get("count", 0)
+                        if count > 0:
+                            wr = s.get("win_rate")
+                            ar = s.get("avg_return")
+                            lines.append(f"  {label}: 勝率{wr:.1f}% / 平均{ar:+.2f}%（{count}件）")
+                    send_slack_message("\n".join(lines))
+                    print("✓ Slack通知を送信しました")
 
         else:
             print(f"エラー: 無効なモード '{args.mode}' です。")

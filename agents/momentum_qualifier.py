@@ -573,6 +573,13 @@ def _save_qualify_log(results: list):
     for r in results:
         r["qualifiedAt"] = datetime.now().isoformat()
 
+    # 既存エントリのうち、今回と同じ(stockCode, scanDate)があれば除外（上書き更新）
+    new_keys = {(r.get("stockCode"), r.get("scanDate")) for r in results}
+    existing = [
+        e for e in existing
+        if (e.get("stockCode"), e.get("scanDate")) not in new_keys
+    ]
+
     existing.extend(results)
     existing = existing[-500:]
 
