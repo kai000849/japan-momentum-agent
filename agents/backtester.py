@@ -45,9 +45,30 @@ logger = logging.getLogger(__name__)
 # バックテスト定数
 # ========================================
 
-STOP_LOSS_PCT = -5.0      # 損切りライン（-5%）
-TAKE_PROFIT_PCT = 15.0    # 利確ライン（+15%）
-MAX_HOLD_DAYS = 10        # 最大保有営業日数
+# モード別パラメータ（投資哲学に合わせてモードごとに時間軸を変える）
+BACKTEST_PARAMS = {
+    "SHORT_TERM": {
+        "stop_loss_pct":   -7.0,   # 日中変動±2-4%に対応（-5%は誤発動が多い）
+        "take_profit_pct": 15.0,
+        "max_hold_days":   10,     # 初動キャッチ・スピード優先
+    },
+    "MOMENTUM": {
+        "stop_loss_pct":   -8.0,   # トレンドの押しを許容
+        "take_profit_pct": 25.0,   # 波に乗り切る（+15%で早期利確しない）
+        "max_hold_days":   30,     # 中期保有（1.5ヶ月）
+    },
+    "EARNINGS": {
+        "stop_loss_pct":   -7.0,
+        "take_profit_pct": 20.0,   # 決算後の評価変化は1ヶ月単位
+        "max_hold_days":   20,
+    },
+}
+
+# デフォルト（モード不明時はSHORT_TERMに準拠）
+_DEFAULT_PARAMS = BACKTEST_PARAMS["SHORT_TERM"]
+
+# 後方互換エイリアス（main.pyのimportを壊さないため）
+MAX_HOLD_DAYS = _DEFAULT_PARAMS["max_hold_days"]
 MIN_PROFIT_FACTOR = 1.2   # ペーパートレード発注条件（PF >= 1.2）
 
 
@@ -136,9 +157,11 @@ def run_backtest(scan_results: list, lookback_days: int = 90) -> dict:
 
             entry_date = entry_row["Date"].strftime("%Y-%m-%d")
 
-            # イグジット判定
+            # イグジット判定（モード別パラメータを使用）
+            mode_key = signal.get("mode", "SHORT_TERM")
+            params = BACKTEST_PARAMS.get(mode_key, _DEFAULT_PARAMS)
             exit_price, exit_date, exit_reason, hold_days = _simulate_exit(
-                future_df, entry_price
+                future_df, entry_price, params
             )
 
             # リターン計算
@@ -188,32 +211,34 @@ def run_backtest(scan_results: list, lookback_days: int = 90) -> dict:
     return result
 
 
-def _simulate_exit(future_df: pd.DataFrame, entry_price: float) -> tuple:
+def _simulate_exit(future_df: pd.DataFrame, entry_price: float, params: dict = None) -> tuple:
     """
     イグジット条件を確認しながら仮想トレードのイグジットを決定する（内部関数）。
 
     イグジット条件（先に成立したものを採用）:
-    1. -5%損切り（ストップロス）
-    2. +15%利確（テイクプロフィット）
-    3. 10営業日保有後に終値で決済
+    1. 損切り（モード別ストップロス）
+    2. 利確（モード別テイクプロフィット）
+    3. 最大保有日数経過後に終値で決済
 
     Args:
         future_df (pd.DataFrame): エントリー日以降の株価データ
         entry_price (float): エントリー価格（翌日始値）
+        params (dict): モード別パラメータ（省略時はデフォルト）
 
     Returns:
         tuple: (exit_price, exit_date, exit_reason, hold_days)
-               exit_price: イグジット価格
-               exit_date: イグジット日付（YYYY-MM-DD）
-               exit_reason: イグジット理由
-               hold_days: 保有日数
     """
-    # ストップロス・テイクプロフィットの絶対価格を計算
-    stop_loss_price = entry_price * (1 + STOP_LOSS_PCT / 100)    # 損切り価格
-    take_profit_price = entry_price * (1 + TAKE_PROFIT_PCT / 100)  # 利確価格
+    if params is None:
+        params = _DEFAULT_PARAMS
+
+    sl_pct = params["stop_loss_pct"]
+    tp_pct = params["take_profit_pct"]
+    max_days = params["max_hold_days"]
+
+    stop_loss_price = entry_price * (1 + sl_pct / 100)
+    take_profit_price = entry_price * (1 + tp_pct / 100)
 
     for hold_days, (_, row) in enumerate(future_df.iterrows(), 1):
-        # 当日の始値・高値・安値・終値を取得
         row_open = float(row.get("Open", 0) or 0)
         row_high = float(row.get("High", 0) or 0)
         row_low = float(row.get("Low", 0) or 0)
@@ -223,19 +248,18 @@ def _simulate_exit(future_df: pd.DataFrame, entry_price: float) -> tuple:
         if row_close <= 0:
             continue
 
-        # ---- 損切り判定（日中安値がストップロス価格を下回った場合）----
+        # ---- 損切り判定 ----
         if row_low > 0 and row_low <= stop_loss_price:
-            # ギャップダウンで始値から下落した場合は始値でイグジット
             actual_exit = min(row_open, stop_loss_price) if row_open > 0 else stop_loss_price
-            return actual_exit, row_date, "損切り(-5%)", hold_days
+            return actual_exit, row_date, f"損切り({sl_pct:.0f}%)", hold_days
 
-        # ---- 利確判定（日中高値が利確価格を上回った場合）----
+        # ---- 利確判定 ----
         if row_high > 0 and row_high >= take_profit_price:
-            return take_profit_price, row_date, "利確(+15%)", hold_days
+            return take_profit_price, row_date, f"利確(+{tp_pct:.0f}%)", hold_days
 
-        # ---- 時間切れ判定（10営業日保有後）----
-        if hold_days >= MAX_HOLD_DAYS:
-            return row_close, row_date, "時間切れ(10日)", hold_days
+        # ---- 時間切れ判定 ----
+        if hold_days >= max_days:
+            return row_close, row_date, f"時間切れ({max_days}日)", hold_days
 
     # データが途中で終わった場合は最終データの終値でイグジット
     if len(future_df) > 0:
@@ -375,8 +399,10 @@ def display_backtest_summary(results: dict) -> None:
     trades = results.get("trades", [])
     mode = results.get("mode", "UNKNOWN")
 
+    p = BACKTEST_PARAMS.get(mode, _DEFAULT_PARAMS)
     print(f"\n{'='*55}")
     print(f"  バックテスト結果サマリー [{mode}]")
+    print(f"  パラメータ: 損切{p['stop_loss_pct']:.0f}% / 利確+{p['take_profit_pct']:.0f}% / 最大{p['max_hold_days']}日保有")
     print(f"{'='*55}")
     print(f"  総トレード数  : {summary.get('totalTrades', 0)}件")
     print(f"  勝ちトレード  : {summary.get('winningTrades', 0)}件")
