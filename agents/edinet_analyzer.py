@@ -443,15 +443,17 @@ def analyze_earnings_batch(earnings_list: list) -> list:
 
         logger.info(f"[{i+1}/{len(unique_earnings)}] {company_name} ({sec_code}) 分析中...")
 
-        # APIキーがない場合はスキップ
+        # APIキーまたはdoc_idがない場合はスキップ
         if not api_key or not doc_id:
+            reason = "APIキー未設定のため未分析" if not api_key else "書類ID未取得のため未分析"
+            logger.warning(f"{company_name}: {reason} (api_key={'有' if api_key else '無'}, doc_id='{doc_id}')")
             results.append({
                 "stockCode": sec_code,
                 "companyName": company_name,
                 "docTypeCode": doc_type,
                 "docDescription": doc_desc,
                 "score": 0,
-                "summary": "APIキー未設定のため未分析",
+                "summary": reason,
                 "positive_points": [],
                 "negative_points": [],
                 "structural_change": False,
@@ -459,7 +461,8 @@ def analyze_earnings_batch(earnings_list: list) -> list:
                 "revenue_yoy": "不明",
                 "profit_yoy": "不明",
                 "vs_forecast": "不明",
-                "analyzed": False
+                "analyzed": False,
+                "skip_reason": "no_api_key" if not api_key else "no_doc_id"
             })
             continue
 

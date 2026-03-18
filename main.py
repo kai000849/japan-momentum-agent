@@ -51,9 +51,9 @@ def _calc_pf_for_mode(mode: str) -> float:
     指定モードのPFを計算する。
 
     戦略:
-      1. ローカルCSVデータの最終日から15営業日前をバックテスト用スキャン日に設定
-         （15営業日後のデータが存在する → バックテスト成立）
-      2. その日付でスキャン → バックテスト実行 → PF取得
+      1. ローカルCSVデータの最終日から20・25・30営業日前の3時点でスキャン
+         （複数日のシグナルを集約してPFの安定性を向上）
+      2. 各日付でスキャン → 全シグナルを合算してバックテスト → PF取得
       3. ヒットなし/エラー時は0.0を返す
 
     Args:
@@ -73,20 +73,32 @@ def _calc_pf_for_mode(mode: str) -> float:
             return 0.0
 
         last_date = pd.to_datetime(df_all["Date"]).max()
-        # 最終日から15営業日前 → バックテスト用の翌10日分データを確保
-        offset = pd.tseries.offsets.BDay(15)
-        bt_scan_date = (last_date - offset).strftime("%Y-%m-%d")
 
-        logger.info(f"PF計算: {mode} スキャン日={bt_scan_date}（最終日{last_date.strftime('%Y-%m-%d')}から15営業日前）")
+        # 20・25・30営業日前の3時点でスキャンして集約（1日分だと不安定なため）
+        all_bt_signals = []
+        seen_keys = set()
+        for bdays_back in [20, 25, 30]:
+            offset = pd.tseries.offsets.BDay(bdays_back)
+            bt_scan_date = (last_date - offset).strftime("%Y-%m-%d")
+            logger.info(f"PF計算: {mode} スキャン日={bt_scan_date}（{bdays_back}営業日前）")
+            try:
+                results = run_scan(mode=mode, date=bt_scan_date)
+                for r in results:
+                    key = (r.get("stockCode", ""), r.get("scanDate", ""))
+                    if key not in seen_keys:
+                        seen_keys.add(key)
+                        all_bt_signals.append(r)
+            except Exception as e:
+                logger.warning(f"PF計算: {bt_scan_date} スキャンエラー（スキップ）: {e}")
 
-        bt_scan_results = run_scan(mode=mode, date=bt_scan_date)
-        if not bt_scan_results:
-            logger.warning(f"PF計算: {mode} ヒットなし → PF=0")
+        if not all_bt_signals:
+            logger.warning(f"PF計算: {mode} 全日付でヒットなし → PF=0")
             return 0.0
 
-        bt_result = run_backtest(bt_scan_results, lookback_days=90)
+        bt_result = run_backtest(all_bt_signals, lookback_days=90)
         pf = bt_result.get("summary", {}).get("profitFactor", 0.0)
-        logger.info(f"PF計算完了: {mode} PF={pf:.2f}（{len(bt_scan_results)}銘柄バックテスト）")
+        trade_count = bt_result.get("tradeCount", 0)
+        logger.info(f"PF計算完了: {mode} PF={pf:.2f}（{len(all_bt_signals)}シグナル→{trade_count}トレード）")
         return pf
 
     except Exception as e:

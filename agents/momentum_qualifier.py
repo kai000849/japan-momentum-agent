@@ -551,14 +551,21 @@ def format_qualify_result_for_slack(results: list) -> str:
             s2 = r.get("stage2", {})
             vol_rate = s1.get("volumeSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
+            days_checked = s1.get("daysChecked", -1)
             comment = s2.get("comment", "")
             confidence = s2.get("confidence", "")
             vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
+            if days_checked == 0:
+                vol_str = "出来高:最新日（翌日以降確認）"
+                price_str = "急騰後:継続確認中"
+            else:
+                vol_str = f"出来高維持率:{vol_rate:.0%}"
+                price_str = f"急騰後株価:{price_chg:+.1f}%"
             lines.append(
                 f"• *{r.get('stockCode')} {r.get('companyName', '')}*\n"
-                f"  {vol_emoji} 出来高維持率:{vol_rate:.0%}  "
-                f"{price_emoji} 急騰後株価:{price_chg:+.1f}%\n"
+                f"  {vol_emoji} {vol_str}  "
+                f"{price_emoji} {price_str}\n"
                 f"  🤖 Claude({confidence}): {comment}"
             )
 
@@ -568,9 +575,16 @@ def format_qualify_result_for_slack(results: list) -> str:
             s1 = r.get("stage1", {})
             vol_rate = s1.get("volumeSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
+            days_checked = s1.get("daysChecked", -1)
+            if days_checked == 0:
+                vol_str = "最新日（翌日以降確認）"
+                price_str = "継続確認中"
+            else:
+                vol_str = f"{vol_rate:.0%}"
+                price_str = f"{price_chg:+.1f}%"
             lines.append(
                 f"• {r.get('stockCode')} {r.get('companyName', '')} "
-                f"出来高維持:{vol_rate:.0%} 株価:{price_chg:+.1f}%"
+                f"出来高維持:{vol_str} 株価:{price_str}"
             )
 
     try:

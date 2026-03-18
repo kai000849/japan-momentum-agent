@@ -251,7 +251,21 @@ def notify_earnings_signal(signals: list) -> bool:
     unanalyzed = [s for s in signals if not s.get("analyzed", False)]
 
     if not analyzed:
-        # 未分析のみの場合（APIキー未設定など）→ 旧来の簡易表示
+        # 未分析のみの場合 → 理由に応じてメッセージを変える
+        from agents.utils import get_anthropic_key as _check_key
+        has_api_key = bool(_check_key())
+        # skip_reason 別に集計
+        no_doc_id_count = sum(1 for s in signals if s.get("skip_reason") == "no_doc_id")
+        pdf_fail_count = sum(1 for s in signals if s.get("summary", "").startswith("PDF"))
+        if not has_api_key:
+            note = "APIキー設定で詳細分析が有効になります"
+        elif no_doc_id_count == len(signals):
+            note = "書類ID未取得（EDINET API応答に docID なし）"
+        elif pdf_fail_count > 0:
+            note = f"PDF取得・解析失敗 {pdf_fail_count}件"
+        else:
+            note = "決算PDF解析スキップ（書類種別・PDFなし等）"
+
         lines = []
         for s in signals[:20]:
             code = s.get("stockCode", "")
@@ -263,7 +277,7 @@ def notify_earnings_signal(signals: list) -> bool:
 📋 *決算シグナル 検出！*
 {now}
 
-対象: *{len(signals)}銘柄*（未分析・APIキー設定で詳細分析が有効になります）
+対象: *{len(signals)}銘柄*（{note}）
 
 {"　".join(lines[:20])}
 """.strip()
