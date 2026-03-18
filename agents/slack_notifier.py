@@ -213,7 +213,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
         else:
             price_chg = s.get("price_change_pct", 0)
             vol_ratio = s.get("volume_ratio", 0)
-            surge_reason = s.get("stage2", {}).get("surgeReason", "") if s.get("stage2") else ""
+            surge_reason = s.get("surgeReason", "")
             sign = "+" if price_chg >= 0 else ""
             reason_str = f"\n    💡 {surge_reason}" if surge_reason else ""
             lines.append(

@@ -22,11 +22,15 @@ APIキー未設定時はステージ1のみ実行し、ステージ2はスキッ
 import json
 import logging
 import os
+import re
+import time
+import urllib.parse
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +46,127 @@ QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
 
 # フェーズ3: 結果記録の基準（何営業日後に検証するか）
 OUTCOME_CHECK_DAYS = 10
+
+
+# ========================================
+# 急騰理由取得: Google News RSS + Claude API
+# ========================================
+
+def _fetch_stock_news(company_name: str, stock_code: str, max_items: int = 4) -> list:
+    """
+    Google News RSSから銘柄関連ニュースを取得する。
+    """
+    query = urllib.parse.quote(f"{company_name} 株")
+    url = f"https://news.google.com/rss/search?q={query}&hl=ja&gl=JP&ceid=JP:ja"
+    try:
+        resp = requests.get(url, timeout=8, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        })
+        if resp.status_code != 200:
+            return []
+        titles = re.findall(
+            r'<title><!\[CDATA\[(.*?)\]\]></title>|<title>(.*?)</title>',
+            resp.text
+        )
+        news = []
+        for t in titles[1:max_items + 1]:  # 先頭はフィードタイトルのためスキップ
+            title = (t[0] or t[1]).strip()
+            if title and len(title) > 8:
+                news.append(title)
+        return news
+    except Exception as e:
+        logger.debug(f"{stock_code} ニュース取得エラー: {e}")
+        return []
+
+
+def _generate_surge_reasons_batch(stocks_with_news: list) -> dict:
+    """
+    銘柄とニュースヘッドラインからClaude APIで急騰理由を一括生成する。
+    ニュースがある銘柄は実際のニュースから、ない銘柄は事業内容から推測（推測）表記付き。
+
+    Returns:
+        dict: {stockCode: surgeReason}
+    """
+    from agents.utils import get_anthropic_key
+    api_key = get_anthropic_key()
+    if not api_key or not stocks_with_news:
+        return {}
+
+    stocks_text = ""
+    for s in stocks_with_news:
+        news_list = s.get("news", [])
+        if news_list:
+            news_str = "\n".join([f"  ・{n}" for n in news_list[:3]])
+        else:
+            news_str = "  （ニュース取得なし）"
+        stocks_text += (
+            f"【{s['stockCode']} {s['companyName']}】"
+            f" 前日比+{s.get('price_change_pct', 0):.1f}% / 出来高{s.get('volume_ratio', 0):.1f}倍\n"
+            f"{news_str}\n\n"
+        )
+
+    prompt = f"""以下の日本株が急騰しました。各銘柄の関連ニュースをもとに、急騰の主因を50文字以内で答えてください。
+ニュースがない銘柄は事業内容から推測し、末尾に「（推測）」と付けてください。
+
+{stocks_text}
+必ず以下のJSON形式のみで回答してください：
+{{
+  "results": [
+    {{
+      "stockCode": "<銘柄コード>",
+      "surgeReason": "<急騰の主因を50文字以内で>"
+    }}
+  ]
+}}"""
+
+    try:
+        import anthropic
+        client = anthropic.Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=600,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        result_text = ""
+        for block in response.content:
+            if hasattr(block, "text"):
+                result_text += block.text
+        result_text = result_text.strip()
+        result_text = re.sub(r'```(?:json)?', '', result_text)
+
+        depth = 0
+        best_s = best_e = cur_s = 0
+        in_str = esc = False
+        for k, ch in enumerate(result_text):
+            if esc:
+                esc = False; continue
+            if ch == '\\' and in_str:
+                esc = True; continue
+            if ch == '"':
+                in_str = not in_str; continue
+            if in_str:
+                continue
+            if ch == '{':
+                if depth == 0:
+                    cur_s = k
+                depth += 1
+            elif ch == '}' and depth > 0:
+                depth -= 1
+                if depth == 0 and k + 1 - cur_s > best_e - best_s:
+                    best_s, best_e = cur_s, k + 1
+        if best_e > best_s:
+            result_text = result_text[best_s:best_e]
+
+        parsed = json.loads(result_text)
+        return {
+            str(item["stockCode"]): item.get("surgeReason", "")
+            for item in parsed.get("results", [])
+        }
+
+    except Exception as e:
+        logger.warning(f"急騰理由生成エラー: {e}")
+        return {}
 
 
 # ========================================
@@ -139,31 +264,28 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
 
     stocks_text = "\n".join([
         f"- 銘柄コード: {s['stockCode']} / 会社名: {s['companyName']}"
-        f" / 前日比: +{s.get('price_change_pct', 0):.1f}% / 出来高: {s.get('volume_ratio', 0):.1f}倍"
         for s in stocks
     ])
 
     prompt = f"""あなたは日本株の投資アナリストです。
-以下の{len(stocks)}銘柄が急騰しました。各銘柄について判断してください。
+以下の{len(stocks)}銘柄が急騰しました。各銘柄について、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
 
 【対象銘柄一覧】
 {stocks_text}
 
-各銘柄について以下を回答してください：
-1. surgeReason: この銘柄が急騰した理由として最も考えられること（会社名・事業から推測。30文字以内）
-2. structuralChange: 中長期で継続する構造的変化を伴った急騰か（AI・EV・防衛・半導体等の成長テーマ関連はtrue、仕手・一時的材料はfalse）
-3. confidence: 判断の確信度（high/medium/low）
-4. comment: 構造的変化の有無とその理由（40文字以内）
+判断の観点：
+1. 会社名・事業内容から考えられる構造的変化の可能性（AI・EV・防衛・半導体など成長テーマとの関連）
+2. 一時的なイベントになりやすい業種かどうか（仕手株・小型株・単発材料）
+3. 事業の安定性・継続性
 
 必ず以下のJSON形式のみで回答してください（他のテキスト不要）：
 {{
   "results": [
     {{
       "stockCode": "<銘柄コード>",
-      "surgeReason": "急騰理由を30文字以内で",
       "structuralChange": true or false,
       "confidence": "high" or "medium" or "low",
-      "comment": "構造的変化の理由を40文字以内で"
+      "comment": "50文字以内の理由"
     }}
   ]
 }}
@@ -177,7 +299,7 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=1000,  # surgeReason追加で800→1000に増量
+            max_tokens=800,
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -221,7 +343,6 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
                 "structuralChange": item.get("structuralChange"),
                 "confidence": item.get("confidence"),
                 "comment": item.get("comment", ""),
-                "surgeReason": item.get("surgeReason", ""),
                 "stage2Available": True,
             }
 
@@ -425,6 +546,29 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     results = []
     code_col = "Code" if "Code" in df_all.columns else "code"
 
+    # ---- 急騰理由生成: Google News RSS → Claude API（全銘柄対象） ----
+    surge_reason_map = {}
+    try:
+        logger.info("  Google News RSSから銘柄ニュースを取得中...")
+        stocks_with_news = []
+        for s in signals:
+            code = s.get("stockCode", "")
+            name = s.get("companyName", "")
+            news = _fetch_stock_news(name, code)
+            stocks_with_news.append({
+                "stockCode": code,
+                "companyName": name,
+                "price_change_pct": s.get("price_change_pct", 0),
+                "volume_ratio": s.get("volume_ratio", 0),
+                "news": news,
+            })
+            time.sleep(0.4)
+        logger.info(f"  ニュース取得完了: {sum(1 for s in stocks_with_news if s['news'])}件取得")
+        surge_reason_map = _generate_surge_reasons_batch(stocks_with_news)
+        logger.info(f"  急騰理由生成完了: {len(surge_reason_map)}銘柄")
+    except Exception as e:
+        logger.warning(f"急騰理由生成エラー（スキップ）: {e}")
+
     # ---- ステージ1: 全銘柄の出来高継続チェック ----
     stage1_map = {}
     for signal in signals:
@@ -447,12 +591,7 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     stage2_map = {}
     if stage1_pass_signals:
         stocks_for_batch = [
-            {
-                "stockCode": s.get("stockCode", ""),
-                "companyName": s.get("companyName", ""),
-                "price_change_pct": s.get("price_change_pct", s.get("priceChangePct", 0)),
-                "volume_ratio": s.get("volume_ratio", s.get("volumeRatio", 0)),
-            }
+            {"stockCode": s.get("stockCode", ""), "companyName": s.get("companyName", "")}
             for s in stage1_pass_signals
         ]
         logger.info(f"  ステージ1通過: {len(stocks_for_batch)}銘柄 → Claude一括判定中...")
@@ -463,6 +602,7 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         stock_code = signal.get("stockCode", "")
         company_name = signal.get("companyName", "")
         result = {**signal}
+        result["surgeReason"] = surge_reason_map.get(stock_code, "")
 
         stage1 = stage1_map.get(stock_code, {"stage1Pass": False, "reason": "不明"})
         result["stage1"] = stage1
@@ -563,7 +703,7 @@ def format_qualify_result_for_slack(results: list) -> str:
             days_checked = s1.get("daysChecked", -1)
             comment = s2.get("comment", "")
             confidence = s2.get("confidence", "")
-            surge_reason = s2.get("surgeReason", "")
+            surge_reason = r.get("surgeReason", "")
             vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
             if days_checked == 0:
