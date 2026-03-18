@@ -104,7 +104,7 @@ japan-momentum-agent/
 | 時刻（JST） | ジョブ名 | cron（UTC） | 内容 |
 |---|---|---|---|
 | 朝 6:30 | us-market-scan | `30 21 * * 0-5` | 米市場スキャン専用（ETFモメンタム＋テーマ抽出）。結果は夕方18:00の投資判断で参照される。 |
-| 朝 6:30 | morning-scan | `30 21 * * 0-5` | 日本株スキャン＋保有状況通知。**us-market-scanと並行実行でよい理由**: morning-scanは米スキャン結果を使わず、夕方のevening-scanが参照する。 |
+| 朝 6:30+ | morning-scan | `needs: us-market-scan` | 日本株スキャン＋保有状況通知。**us-market-scan完了後に起動**し、当日の米セクター結果を朝の投資判断に反映。実行は06:40〜06:50頃。 |
 | 前場 10:30 | midmorning-scan | `30 1 * * 1-5` | ザラ場決算スキャン。morning-scanが保存した earnings_watchlist（日付キー）を参照。 |
 | 正午 12:15 | noon-scan | `15 3 * * 1-5` | 後場エントリー判断。morning-scanが保存した scans（日付キー）と qualify_log を参照。 |
 | 夕方 18:00 | evening-scan | `0 9 * * 1-5` | メイン通知。シグナル＋保有状況＋決算引け後評価＋**米市場スキャン結果（当日6:30分）を参照**。 |

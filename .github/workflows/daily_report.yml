@@ -62,11 +62,27 @@ jobs:
             max_positions: 10
           EOF
 
+      - name: 今日の日付を設定（クロスジョブキャッシュキー用）
+        id: date
+        run: echo "today=$(date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+
       - name: 米市場スキャン実行（ETFモメンタム＋テーマ抽出）
         id: us_scan
         run: |
           python main.py --mode us_scan
         continue-on-error: true
+
+      - name: us_scans を保存（morning-scan受け渡し用・日付キー）
+        uses: actions/cache@v4
+        with:
+          path: data/processed/us_scans
+          key: us-scans-${{ steps.date.outputs.today }}
+
+      - name: us_themes を保存（morning-scan受け渡し用・日付キー）
+        uses: actions/cache@v4
+        with:
+          path: data/processed/us_themes
+          key: us-themes-${{ steps.date.outputs.today }}
 
       - name: エラー通知
         if: steps.us_scan.outcome == 'failure'
@@ -79,11 +95,12 @@ jobs:
 
   # ===========================
   # 朝2ジョブ: 日本株スキャン＆保有状況
-  # JST 6:30頃に実行（us-market-scanと並行・米スキャン結果は夕方eveningで参照）
+  # us-market-scan完了後に実行（米セクター結果を朝通知に反映）
   # ===========================
   morning-scan:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '30 21 * * 0-5' || github.event_name == 'workflow_dispatch'
+    needs: us-market-scan
+    if: always() && (github.event.schedule == '30 21 * * 0-5' || github.event_name == 'workflow_dispatch')
     steps:
       - name: 今日の日付を設定（クロスジョブキャッシュキー用）
         id: date
@@ -117,6 +134,22 @@ jobs:
             max_position_size: 300000
             max_positions: 10
           EOF
+
+      - name: us_scans を復元（us-market-scan完了分・日付キー）
+        uses: actions/cache@v4
+        with:
+          path: data/processed/us_scans
+          key: us-scans-${{ steps.date.outputs.today }}
+          restore-keys: |
+            us-scans-
+
+      - name: us_themes を復元（us-market-scan完了分・日付キー）
+        uses: actions/cache@v4
+        with:
+          path: data/processed/us_themes
+          key: us-themes-${{ steps.date.outputs.today }}
+          restore-keys: |
+            us-themes-
 
       - name: trade_log.json を復元
         uses: actions/cache@v4
