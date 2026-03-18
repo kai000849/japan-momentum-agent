@@ -94,6 +94,7 @@ def fetch_etf_momentum(tickers: dict, period: str = "3mo") -> list:
             close = hist["Close"]
             latest = float(close.iloc[-1])
 
+            mom1d  = (latest / float(close.iloc[-2])  - 1) * 100 if len(close) >= 2  else 0.0
             mom5d  = (latest / float(close.iloc[-6])  - 1) * 100 if len(close) >= 6  else 0.0
             mom20d = (latest / float(close.iloc[-21]) - 1) * 100 if len(close) >= 21 else 0.0
             mom60d = (latest / float(close.iloc[-61]) - 1) * 100 if len(close) >= 61 else 0.0
@@ -113,6 +114,7 @@ def fetch_etf_momentum(tickers: dict, period: str = "3mo") -> list:
                 "name": info["name"],
                 "japan_theme": info["japan_theme"],
                 "latest_price": latest,
+                "mom1d": round(mom1d, 2),
                 "mom5d": round(mom5d, 2),
                 "mom20d": round(mom20d, 2),
                 "mom60d": round(mom60d, 2),
@@ -147,11 +149,14 @@ def fetch_macro_indices() -> dict:
                 continue
             close = hist["Close"]
             latest = float(close.iloc[-1])
+            prev1 = float(close.iloc[-2]) if len(close) >= 2 else latest
             prev5 = float(close.iloc[-6]) if len(close) >= 6 else float(close.iloc[0])
+            change1d = (latest / prev1 - 1) * 100
             change5d = (latest / prev5 - 1) * 100
             macro[ticker_sym] = {
                 "name": name,
                 "latest": round(latest, 2),
+                "change1d": round(change1d, 2),
                 "change5d": round(change5d, 2),
             }
             time.sleep(0.2)

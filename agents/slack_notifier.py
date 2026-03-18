@@ -432,10 +432,12 @@ def notify_us_market_scan(scan_result: dict) -> bool:
     # ========== マクロ状況 ==========
     macro_lines = []
     for sym, data in macro.items():
-        change = data.get("change5d", 0)
-        icon = "📈" if change >= 1 else ("📉" if change <= -1 else "➡️")
-        sign = "+" if change >= 0 else ""
-        macro_lines.append(f"  {icon} {data['name']}: {sign}{change:.1f}%")
+        change1d = data.get("change1d", 0)
+        change5d = data.get("change5d", 0)
+        icon = "📈" if change1d >= 0.5 else ("📉" if change1d <= -0.5 else "➡️")
+        sign1 = "+" if change1d >= 0 else ""
+        sign5 = "+" if change5d >= 0 else ""
+        macro_lines.append(f"  {icon} {data['name']}: 当日{sign1}{change1d:.1f}% / 5日{sign5}{change5d:.1f}%")
     macro_text = "\n".join(macro_lines) if macro_lines else "  データなし"
 
     # ========== セクターランキング上位5・下位3 ==========
@@ -445,25 +447,29 @@ def notify_us_market_scan(scan_result: dict) -> bool:
     top_lines = []
     for i, s in enumerate(top5, 1):
         score = s.get("score", 0)
+        mom1 = s.get("mom1d", 0)
         mom5 = s.get("mom5d", 0)
         mom20 = s.get("mom20d", 0)
         vol = s.get("vol_trend", 1.0)
         vol_icon = "📶" if vol >= 1.3 else ("➡️" if vol >= 0.9 else "📉")
+        sign1 = "+" if mom1 >= 0 else ""
         sign5 = "+" if mom5 >= 0 else ""
         sign20 = "+" if mom20 >= 0 else ""
         japan = s.get("japan_theme", "")
         top_lines.append(
             f"  *{i}. {s['name']}({s['ticker']})*  スコア:{score:.1f}\n"
-            f"     5日:{sign5}{mom5:.1f}% / 20日:{sign20}{mom20:.1f}%  出来高:{vol_icon}{vol:.2f}x\n"
+            f"     当日:{sign1}{mom1:.1f}% / 5日:{sign5}{mom5:.1f}% / 20日:{sign20}{mom20:.1f}%  出来高:{vol_icon}{vol:.2f}x\n"
             f"     🇯🇵 {japan}"
         )
 
     bottom_lines = []
     for s in bottom3:
+        mom1 = s.get("mom1d", 0)
         mom5 = s.get("mom5d", 0)
+        sign1 = "+" if mom1 >= 0 else ""
         sign5 = "+" if mom5 >= 0 else ""
         bottom_lines.append(
-            f"  🔻 {s['name']}({s['ticker']}): {sign5}{mom5:.1f}%/5日"
+            f"  🔻 {s['name']}({s['ticker']}): 当日{sign1}{mom1:.1f}% / 5日{sign5}{mom5:.1f}%"
         )
 
     top_text = "\n\n".join(top_lines) if top_lines else "  データなし"
