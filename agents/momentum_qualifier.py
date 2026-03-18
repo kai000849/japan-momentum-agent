@@ -279,29 +279,32 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
         }
 
     stocks_text = "\n".join([
-        f"- 銘柄コード: {s['stockCode']} / 会社名: {s['companyName']}"
+        f"- {s['stockCode']} {s['companyName']}"
+        + (f"  ／ 開示: {s['surgeReason']}" if s.get("surgeReason") else "  ／ 開示: 不明")
         for s in stocks
     ])
 
-    prompt = f"""あなたは日本株の投資アナリストです。
-以下の{len(stocks)}銘柄が急騰しました。各銘柄について、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
+    prompt = f"""あなたはモメンタム投資専門の日本株アナリストです。
+以下の銘柄が急騰し、出来高・株価ともに急騰後も継続しています。
+「この急騰が中長期的な上昇トレンドの初動か、短期的な加熱で終わるか」を判断してください。
 
-【対象銘柄一覧】
+【対象銘柄】
 {stocks_text}
 
-判断の観点：
-1. 会社名・事業内容から考えられる構造的変化の可能性（AI・EV・防衛・半導体など成長テーマとの関連）
-2. 一時的なイベントになりやすい業種かどうか（仕手株・小型株・単発材料）
-3. 事業の安定性・継続性
+【判断基準（優先順位順）】
+1. 開示内容（最重要）: 業績上方修正・増益・受注・提携・自社株買いなど → 評価の構造的変化につながりやすい
+   ／ 開示なし・不明 → 業種と事業内容で推測
+2. 継続性: 一過性のイベント（単発受注・特需）か、継続的な収益改善か
+3. 業種・テーマ: AI・半導体・防衛・再エネ等の成長テーマとの関連
 
-必ず以下のJSON形式のみで回答してください（他のテキスト不要）：
+必ず以下のJSON形式のみで回答してください：
 {{
   "results": [
     {{
       "stockCode": "<銘柄コード>",
       "structuralChange": true or false,
       "confidence": "high" or "medium" or "low",
-      "comment": "50文字以内の理由"
+      "comment": "50文字以内（開示内容を踏まえた理由）"
     }}
   ]
 }}
@@ -796,7 +799,11 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     stage2_map = {}
     if stage1_pass_signals:
         stocks_for_batch = [
-            {"stockCode": s.get("stockCode", ""), "companyName": s.get("companyName", "")}
+            {
+                "stockCode": s.get("stockCode", ""),
+                "companyName": s.get("companyName", ""),
+                "surgeReason": surge_reason_map.get(s.get("stockCode", ""), ""),
+            }
             for s in stage1_pass_signals
         ]
         logger.info(f"  ステージ1通過: {len(stocks_for_batch)}銘柄 → Claude一括判定中...")
