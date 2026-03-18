@@ -96,6 +96,59 @@ def migrate_qualify_log_labels() -> int:
         return 0
 
 
+def cleanup_qualify_log(retain_days: int = 90) -> int:
+    """
+    qualify_log.json から古いエントリを削除する。
+
+    保持ルール:
+      - scanDate から retain_days 日以内のエントリは無条件保持
+      - outcome未記録（pending）のエントリは常に保持（10営業日後に記録される前に消えないよう）
+
+    Args:
+        retain_days: scanDate からの保持日数（デフォルト90日）
+
+    Returns:
+        int: 削除した件数（0なら不要だった）
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return 0
+    try:
+        from datetime import date, timedelta
+        import json as _json
+
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            entries = _json.load(f)
+        if not isinstance(entries, list):
+            return 0
+
+        cutoff = date.today() - timedelta(days=retain_days)
+        kept = []
+        removed = 0
+        for entry in entries:
+            scan_date_str = entry.get("scanDate", "")
+            # outcome未記録は必ず保持
+            if entry.get("outcome") is None:
+                kept.append(entry)
+                continue
+            try:
+                scan_date = date.fromisoformat(scan_date_str)
+                if scan_date >= cutoff:
+                    kept.append(entry)
+                else:
+                    removed += 1
+            except ValueError:
+                kept.append(entry)  # 日付パース失敗は保持
+
+        if removed > 0:
+            with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
+                _json.dump(kept, f, ensure_ascii=False, indent=2)
+            logger.info(f"qualify_log自動クリーンアップ: {removed}件削除（{retain_days}日超・outcome記録済み）→残{len(kept)}件")
+        return removed
+    except Exception as e:
+        logger.warning(f"qualify_logクリーンアップエラー（スキップ）: {e}")
+        return 0
+
+
 # ========================================
 # 急騰理由取得: Google News RSS + Claude API
 # ========================================
@@ -765,9 +818,10 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
 
     logger.info(f"モメンタム判定開始: {len(signals)}銘柄")
 
-    # 旧英語ラベルが残っていれば自動移行
+    # 旧英語ラベルが残っていれば自動移行 + 古いエントリを自動クリーンアップ
     try:
         migrate_qualify_log_labels()
+        cleanup_qualify_log(retain_days=90)
     except Exception:
         pass
 
