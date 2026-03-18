@@ -43,8 +43,6 @@ MAX_TOKENS = 1500
 # PDFから抽出するページ数の上限（決算短信の重要数字は冒頭に集中）
 PDF_MAX_PAGES = 15
 
-# PDFから渡す文字数の上限（inputトークン節約）
-PDF_MAX_CHARS = 6000
 
 # スコアリング対象の書類種別（決算短信のみ）
 TARGET_DOC_TYPES = ["180", "130", "140", "030"]
@@ -275,9 +273,6 @@ def extract_text_from_pdf(pdf_bytes: bytes) -> str:
                     text_parts.append(f"--- {i+1}ページ ---\n{page_text}")
 
         full_text = "\n".join(text_parts)
-
-        if len(full_text) > PDF_MAX_CHARS:
-            full_text = full_text[:PDF_MAX_CHARS] + "\n...(以下省略)"
 
         logger.info(f"テキスト抽出完了: {len(full_text)}文字")
         return full_text
