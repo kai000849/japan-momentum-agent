@@ -418,7 +418,7 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=800,
+            max_tokens=1500,  # 15銘柄×コメント最大50字 → 約1200トークン必要
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -861,8 +861,8 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
             stocks_with_info.append({
                 "stockCode": code,
                 "companyName": name,
-                "price_change_pct": s.get("price_change_pct", 0),
-                "volume_ratio": s.get("volume_ratio", 0),
+                "price_change_pct": s.get("priceChangePct", 0),
+                "volume_ratio": s.get("volumeRatio", 0),
                 "tdnet_disclosures": tdnet_matches,
                 "news": news,
             })
@@ -903,17 +903,29 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         if stage1_map.get(s.get("stockCode", ""), {}).get("stage1Pass", False)
     ]
 
+    STAGE2_BATCH_LIMIT = 15  # 1回のClaude APIコールに渡す最大銘柄数（トークン上限対策）
+
     stage2_map = {}
     if stage1_pass_signals:
+        # スコア順（高い方が優先）でバッチ上限まで絞る
+        sorted_signals = sorted(
+            stage1_pass_signals,
+            key=lambda x: x.get("score", 0),
+            reverse=True
+        )
+        batch_signals = sorted_signals[:STAGE2_BATCH_LIMIT]
+        skipped = len(sorted_signals) - len(batch_signals)
+        if skipped > 0:
+            logger.info(f"  ステージ2バッチ上限: 上位{STAGE2_BATCH_LIMIT}銘柄のみ判定（残{skipped}銘柄は様子見扱い）")
         stocks_for_batch = [
             {
                 "stockCode": s.get("stockCode", ""),
                 "companyName": s.get("companyName", ""),
                 "surgeReason": surge_reason_map.get(s.get("stockCode", ""), ""),
             }
-            for s in stage1_pass_signals
+            for s in batch_signals
         ]
-        logger.info(f"  ステージ1通過: {len(stocks_for_batch)}銘柄 → Claude一括判定中...")
+        logger.info(f"  ステージ1通過: {len(stage1_pass_signals)}銘柄 → Claude一括判定中（{len(stocks_for_batch)}件）...")
         stage2_map = _analyze_structural_change_batch(stocks_for_batch)
 
     # ---- 結果まとめ ----
@@ -987,13 +999,30 @@ def _save_qualify_log(results: list):
     for r in results:
         r["qualifiedAt"] = datetime.now().isoformat()
 
-    new_keys = {(r.get("stockCode"), r.get("scanDate")) for r in results}
+    # 既存エントリをキー(stockCode, scanDate)でマップ化
+    existing_map = {
+        (e.get("stockCode"), e.get("scanDate")): e
+        for e in existing
+    }
+
+    # 「継続」「一時的」（Claude判定済み）を「様子見」（未実行）で上書きしない
+    _claude_ran = {"継続", "一時的"}
+    to_add = []
+    for r in results:
+        key = (r.get("stockCode"), r.get("scanDate"))
+        prev = existing_map.get(key)
+        if prev and prev.get("qualifyResult") in _claude_ran and r.get("qualifyResult") == "様子見":
+            logger.debug(f"  {r.get('stockCode')}: 既存{prev.get('qualifyResult')}を様子見で上書きしないためスキップ")
+            continue
+        to_add.append(r)
+
+    new_keys = {(r.get("stockCode"), r.get("scanDate")) for r in to_add}
     existing = [
         e for e in existing
         if (e.get("stockCode"), e.get("scanDate")) not in new_keys
     ]
 
-    existing.extend(results)
+    existing.extend(to_add)
     existing = existing[-500:]
 
     with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:

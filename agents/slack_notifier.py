@@ -219,8 +219,8 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
                 f"{comment_str}"
             )
         else:
-            price_chg = s.get("price_change_pct", 0)
-            vol_ratio = s.get("volume_ratio", 0)
+            price_chg = s.get("priceChangePct", 0)
+            vol_ratio = s.get("volumeRatio", 0)
             surge_reason = s.get("surgeReason", "")
             sign = "+" if price_chg >= 0 else ""
             reason_str = f"\n    💡 {surge_reason}" if surge_reason else ""
