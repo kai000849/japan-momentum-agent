@@ -645,11 +645,17 @@ def notify_intraday_earnings_scan(scan_results: list, stats: dict = None) -> boo
 
         sign_g = "+" if gap >= 0 else ""
         sign_m = "+" if momentum >= 0 else ""
-        highs_str = " 📶新高値更新中" if new_highs else ""
+        is_haritsuki = intra.get("is_haritsuki", False)
+        is_yobarazu = intra.get("is_yobarazu", False)
+        highs_str = " 📶新高値更新中" if new_highs and not is_haritsuki else ""
         catalyst_str = f"[{catalyst}] " if catalyst else ""
 
         if not intra:
-            detail = "（前場データ取得不可）"
+            detail = "（前場データ取得不可・寄らずS高の可能性あり）"
+        elif is_yobarazu:
+            detail = f"🚨 寄らずS高買い気配  ギャップ:{sign_g}{gap:.1f}%（板が刺さらない状態）"
+        elif is_haritsuki:
+            detail = f"🔥 ストップ高張り付き中  ギャップ:{sign_g}{gap:.1f}% / 出来高:{vol:.1f}x"
         else:
             detail = (
                 f"寄り:{sign_g}{gap:.1f}% / 前場継続:{sign_m}{momentum:.1f}%"
@@ -727,8 +733,15 @@ def notify_endofday_earnings_scan(scan_results: list, stats: dict = None) -> boo
         sign_c = "+" if close_vs_open >= 0 else ""
         catalyst_str = f"[{catalyst}] " if catalyst else ""
 
+        is_stop_high = eod.get("is_stop_high", False)
+        is_yobarazu_eod = eod.get("is_yobarazu", False)
+
         if not eod:
             detail = "（引け後データ取得不可）"
+        elif is_yobarazu_eod:
+            detail = f"🚨 寄らずS高  前日比:{sign_d}{day_ret:.1f}%（出来高ほぼゼロ）"
+        elif is_stop_high:
+            detail = f"🔥 ストップ高張り付き  前日比:{sign_d}{day_ret:.1f}% / 出来高:{vol:.1f}x"
         else:
             detail = (
                 f"前日比:{sign_d}{day_ret:.1f}% / 寄り後:{sign_c}{close_vs_open:.1f}%"

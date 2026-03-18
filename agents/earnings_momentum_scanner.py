@@ -203,6 +203,13 @@ def fetch_intraday_reaction(stock_code: str) -> dict:
         highs = list(recent["High"])
         is_making_new_highs = all(highs[i] >= highs[i - 1] for i in range(1, len(highs)))
 
+        # 張り付き検出: 直近5本のHighがすべて同一 = ストップ高に張り付いている
+        is_haritsuki = (len(highs) >= 3 and len(set(round(h, 0) for h in highs)) == 1
+                        and opening_gap_pct >= 5)
+
+        # 寄らず検出: 全バーの出来高合計が極小（買い気配で板が刺さらない状態）
+        is_yobarazu_intra = (total_volume < 500 and opening_gap_pct >= 10)
+
         return {
             "open_price": round(open_price, 1),
             "current_price": round(current_price, 1),
@@ -212,6 +219,8 @@ def fetch_intraday_reaction(stock_code: str) -> dict:
             "volume_ratio": round(volume_ratio, 2),
             "high_of_day": round(high_of_day, 1),
             "is_making_new_highs": is_making_new_highs,
+            "is_haritsuki": is_haritsuki,
+            "is_yobarazu": is_yobarazu_intra,
             "bars_count": len(intra),
         }
 
@@ -237,6 +246,14 @@ def _calc_intraday_score(intra: dict) -> float:
     momentum = intra.get("intraday_momentum_pct", 0)
     vol = intra.get("volume_ratio", 1.0)
     new_highs = intra.get("is_making_new_highs", False)
+    is_haritsuki = intra.get("is_haritsuki", False)
+    is_yobarazu = intra.get("is_yobarazu", False)
+
+    # 張り付き・寄らず → 最強シグナル
+    if is_yobarazu:
+        return 8.0   # 寄らずS高買い気配: 需給の圧倒的優位
+    if is_haritsuki:
+        return 6.5   # ストップ高張り付き継続中
 
     # ネガティブな動き（ギャップ後反落）は強いペナルティ
     if gap > 0 and momentum < -gap * 0.5:
@@ -330,6 +347,38 @@ def run_intraday_earnings_scan() -> list:
 
 
 # ========================================
+# 東証値幅制限テーブル（ストップ高検出用）
+# ========================================
+
+def _estimate_stop_price(prev_close: float) -> float:
+    """
+    東証の値幅制限（前日終値ベース）からストップ高価格を推定する。
+    https://www.jpx.co.jp/markets/domestic/equities/02.html
+    """
+    limits = [
+        (100,    30),
+        (200,    50),
+        (500,    80),
+        (700,   100),
+        (1000,  150),
+        (1500,  300),
+        (2000,  400),
+        (3000,  500),
+        (5000,  700),
+        (7000, 1000),
+        (10000, 1500),
+        (15000, 3000),
+        (20000, 4000),
+        (30000, 5000),
+        (50000, 7000),
+    ]
+    for threshold, limit in limits:
+        if prev_close < threshold:
+            return prev_close + limit
+    return prev_close + 10000  # ¥50,000以上
+
+
+# ========================================
 # フェーズ2B: 引け後評価（J-Quants日足使用）
 # ========================================
 
@@ -386,9 +435,18 @@ def fetch_endofday_reaction(stock_code: str, df_all: "pd.DataFrame") -> dict:
         close_position = (close_p - low_p) / price_range if price_range > 0 else 0.5
         volume_ratio = volume / avg_vol if avg_vol > 0 else 1.0
 
+        # ストップ高・寄らず検出
+        stop_price = _estimate_stop_price(prev_close)
+        is_stop_high = close_p >= stop_price * 0.999          # 終値がストップ高価格以上
+        is_yobarazu = volume < 100 or (avg_vol > 0 and volume / avg_vol < 0.03)  # 出来高ほぼゼロ
+
         # ローソク足パターン判定
         body = abs(close_p - open_p)
-        if price_range > 0 and body / price_range >= 0.7 and upper_wick_ratio < 0.1 and close_p > open_p:
+        if is_stop_high and is_yobarazu:
+            candle_pattern = "S高買い気配（寄らず）"
+        elif is_stop_high:
+            candle_pattern = "ストップ高張り付き"
+        elif price_range > 0 and body / price_range >= 0.7 and upper_wick_ratio < 0.1 and close_p > open_p:
             candle_pattern = "白マルボーズ（超強気）"
         elif upper_wick_ratio > 0.5 and close_position < 0.3:
             candle_pattern = "上ヒゲ陰線（売り圧強）"
@@ -405,12 +463,15 @@ def fetch_endofday_reaction(stock_code: str, df_all: "pd.DataFrame") -> dict:
             "high_price": round(high_p, 1),
             "low_price": round(low_p, 1),
             "prev_close": round(prev_close, 1),
+            "stop_price": round(stop_price, 1),
             "day_return_pct": round(day_return_pct, 2),
             "close_vs_open_pct": round(close_vs_open_pct, 2),
             "upper_wick_ratio": round(upper_wick_ratio, 3),
             "close_position": round(close_position, 3),
             "volume_ratio": round(volume_ratio, 2),
             "candle_pattern": candle_pattern,
+            "is_stop_high": is_stop_high,
+            "is_yobarazu": is_yobarazu,
         }
 
     except Exception as e:
@@ -436,6 +497,15 @@ def _calc_endofday_score(eod: dict) -> float:
     vol = eod.get("volume_ratio", 1.0)
     upper_wick = eod.get("upper_wick_ratio", 0)
     close_vs_open = eod.get("close_vs_open_pct", 0)
+
+    # ストップ高・寄らず → 最強シグナル（通常スコアリングをスキップして高得点固定）
+    is_stop_high = eod.get("is_stop_high", False)
+    is_yobarazu = eod.get("is_yobarazu", False)
+    if is_stop_high:
+        base = 8.0 if is_yobarazu else 6.0  # 寄らずS高 > 張り付きS高
+        # 出来高超過があればさらに加点
+        vol_bonus = min(vol - 1.0, 2.0) * 0.3 if not is_yobarazu else 0
+        return round(base + vol_bonus, 2)
 
     # 上ヒゲが強い＆終値が安値圏 → 出尽くし気配
     if upper_wick > 0.5 and close_pos < 0.3:
