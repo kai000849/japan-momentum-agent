@@ -688,11 +688,12 @@ def notify_intraday_earnings_scan(scan_results: list, stats: dict = None) -> boo
                 f" / 出来高:{vol:.1f}x{highs_str}"
             )
 
+        comment = r.get("comment") or summary
         lines.append(
             f"{judgment}\n"
             f"*{i}. {code} {name}*  総合:{total:.0f}  EDINET:{edinet_score:+d}点\n"
             f"  {catalyst_str}{detail}\n"
-            f"  💬 {summary}"
+            f"  💬 {comment}"
         )
 
     results_text = "\n\n".join(lines)
@@ -711,6 +712,85 @@ def notify_intraday_earnings_scan(scan_results: list, stats: dict = None) -> boo
     text = f"""
 🎯 *ザラ場モメンタムスキャン*  {now}
 決算・開示銘柄の前場反応ランキング
+
+━━━━━━━━━━━━━━━━━━
+{results_text}{stats_text}
+━━━━━━━━━━━━━━━━━━
+""".strip()
+
+    return send_slack_message(text)
+
+
+def notify_endofday_earnings_scan(scan_results: list, stats: dict = None) -> bool:
+    """
+    引け後決算モメンタム評価結果をSlackに通知する。
+    J-Quants日足データによる一日の値動き評価ランキング。
+
+    Args:
+        scan_results: earnings_momentum_scanner.run_endofday_earnings_scan()の戻り値
+        stats: get_earnings_accuracy_stats()の戻り値（学習統計）
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
+
+    if not scan_results:
+        text = f"📊 *引け後決算モメンタム評価* {now}\n対象銘柄なし（前日ウォッチリストが空）"
+        return send_slack_message(text)
+
+    lines = []
+    for i, r in enumerate(scan_results[:8], 1):
+        code = r.get("stockCode", "")
+        name = (r.get("companyName") or "")[:12]
+        edinet_score = r.get("edinetScore", 0)
+        eod = r.get("eodData", {})
+        total = r.get("totalScore", 0)
+        judgment = r.get("entryJudgment", "")
+        catalyst = r.get("catalystType", "")
+        comment = r.get("comment", r.get("summary", ""))[:40]
+
+        day_ret = eod.get("day_return_pct", 0)
+        close_vs_open = eod.get("close_vs_open_pct", 0)
+        vol = eod.get("volume_ratio", 0)
+        candle = eod.get("candle_pattern", "")
+
+        sign_d = "+" if day_ret >= 0 else ""
+        sign_c = "+" if close_vs_open >= 0 else ""
+        catalyst_str = f"[{catalyst}] " if catalyst else ""
+
+        if not eod:
+            detail = "（引け後データ取得不可）"
+        else:
+            detail = (
+                f"前日比:{sign_d}{day_ret:.1f}% / 寄り後:{sign_c}{close_vs_open:.1f}%"
+                f" / 出来高:{vol:.1f}x / {candle}"
+            )
+
+        comment_str = f"\n  💬 {comment}" if comment else ""
+
+        lines.append(
+            f"{judgment}\n"
+            f"*{i}. {code} {name}*  総合:{total:.0f}  EDINET:{edinet_score:+d}点\n"
+            f"  {catalyst_str}{detail}{comment_str}"
+        )
+
+    results_text = "\n\n".join(lines)
+
+    # 学習統計
+    stats_text = ""
+    if stats and stats.get("total_signals", 0) >= 5:
+        s5 = stats.get("outcome5d", {})
+        s10 = stats.get("outcome10d", {})
+        stats_text = (
+            f"\n\n📊 *学習統計（{stats['total_signals']}件記録）*\n"
+            f"  5日後: 勝率{s5.get('win_rate', 0):.0f}% / 平均{s5.get('avg_return', 0):+.1f}%\n"
+            f"  10日後: 勝率{s10.get('win_rate', 0):.0f}% / 平均{s10.get('avg_return', 0):+.1f}%"
+        ) if s5 and s10 else ""
+
+    text = f"""
+📊 *引け後決算モメンタム評価*  {now}
+決算・開示銘柄の一日の値動き評価ランキング（J-Quants日足）
 
 ━━━━━━━━━━━━━━━━━━
 {results_text}{stats_text}

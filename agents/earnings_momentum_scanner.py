@@ -5,11 +5,16 @@ agents/earnings_momentum_scanner.py
 【フェーズ1: 前場前スコアリング (pre-market)】
   - EDINET分析済みスコア + momentum_potential で中長期上昇候補をランキング
 
-【フェーズ2: ザラ場反応スキャン (intraday) ← メイン機能】
-  - yfinanceで前場5分足データを取得（当日10:30頃実行）
+【フェーズ2A: ザラ場反応スキャン (intraday) ← メイン機能】
+  - yfinanceで前場5分足データを取得（当日10:30頃実行・J-Quants Lightに分足なし）
   - 寄り付きギャップ・前場継続力・出来高急増を数値化
   - EDINETスコア × ザラ場反応 = 総合モメンタムスコアで順位付け
   - 「今エントリーすべき銘柄」を強度順に表示
+
+【フェーズ2B: 引け後評価スキャン (end-of-day)】
+  - J-Quants日足データで一日の値動きを評価（18:00 JST通知に反映）
+  - 終値ポジション・上ヒゲ比率・出来高急増・ローソク足パターンを数値化
+  - 「翌朝エントリー候補」を強度順に表示
 
 【フェーズ3: 学習ループ】
   - earnings_signal_log.jsonで予測 → 実績を追跡
@@ -32,6 +37,9 @@ logger = logging.getLogger(__name__)
 # 定数
 # ========================================
 
+# Claude APIモデル
+CLAUDE_MODEL = "claude-haiku-4-5-20251001"
+
 # ザラ場スキャン実行タイミングの目安 (JST)
 SCAN_TIME_NOTE = "10:30 JST（前場中盤・初動確認後）"
 
@@ -49,7 +57,98 @@ OUTCOME_CHECK_DAYS = [5, 10, 20]
 
 
 # ========================================
-# フェーズ2: ザラ場データ取得
+# コメント生成: Claude API（共通）
+# ========================================
+
+def generate_ranking_comments_batch(ranked_stocks: list, scan_type: str = "intraday") -> dict:
+    """
+    ランキング上位銘柄に対し「なぜ今注目すべきか」コメントをClaude APIで一括生成する。
+
+    Args:
+        ranked_stocks: スコアソート済みリスト
+        scan_type: "intraday"（10:30前場）or "endofday"（引け後）
+
+    Returns:
+        dict: {stockCode: comment}
+    """
+    from agents.utils import get_anthropic_key
+    api_key = get_anthropic_key()
+    if not api_key or not ranked_stocks:
+        return {}
+
+    targets = [r for r in ranked_stocks[:6] if r.get("totalScore", 0) > 0]
+    if not targets:
+        return {}
+
+    scan_label = "前場10:30時点" if scan_type == "intraday" else "引け後15:30時点"
+    stocks_text = ""
+    for s in targets:
+        code = s.get("stockCode", "")
+        name = s.get("companyName", "")
+        edinet = s.get("edinetScore", 0)
+        catalyst = s.get("catalystType", s.get("catalyst_type", ""))
+        summary = (s.get("summary") or "")[:50]
+
+        if scan_type == "intraday":
+            intra = s.get("intradayData", {})
+            price_str = (
+                f"寄り:{intra.get('opening_gap_pct', 0):+.1f}% "
+                f"/ 前場継続:{intra.get('intraday_momentum_pct', 0):+.1f}% "
+                f"/ 出来高:{intra.get('volume_ratio', 0):.1f}倍"
+                f"{'・新高値更新中' if intra.get('is_making_new_highs') else ''}"
+            )
+        else:
+            eod = s.get("eodData", {})
+            price_str = (
+                f"終日変化:{eod.get('day_return_pct', 0):+.1f}% "
+                f"/ 寄り後継続:{eod.get('close_vs_open_pct', 0):+.1f}% "
+                f"/ 出来高:{eod.get('volume_ratio', 0):.1f}倍 "
+                f"/ {eod.get('candle_pattern', '')}"
+            )
+
+        stocks_text += (
+            f"【{code} {name}】EDINET:{edinet}点 / {catalyst}\n"
+            f"概要: {summary}\n"
+            f"{price_str}\n\n"
+        )
+
+    prompt = f"""あなたはモメンタム投資の専門家です。以下の銘柄の{scan_label}データを見て、
+各銘柄に「モメンタム投資家として今何を注目すべきか」を40文字以内で簡潔にコメントしてください。
+
+{stocks_text}
+必ず以下のJSON形式のみで回答してください：
+{{
+  "comments": [
+    {{
+      "stockCode": "<銘柄コード>",
+      "comment": "<40文字以内のコメント>"
+    }}
+  ]
+}}"""
+
+    try:
+        import anthropic
+        import re as _re
+        client = anthropic.Anthropic(api_key=api_key)
+        resp = client.messages.create(
+            model=CLAUDE_MODEL,
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        raw = resp.content[0].text.strip()
+        raw = _re.sub(r'```(?:json)?', '', raw)
+        s = raw.find("{"); e = raw.rfind("}") + 1
+        if s >= 0 and e > s:
+            raw = raw[s:e]
+        parsed = json.loads(raw)
+        return {str(item["stockCode"]): item.get("comment", "") for item in parsed.get("comments", [])}
+    except Exception as ex:
+        logger.warning(f"コメント生成エラー: {ex}")
+        return {}
+
+
+# ========================================
+# フェーズ2A: ザラ場データ取得（yfinance ※J-Quants Lightに分足なし）
 # ========================================
 
 def fetch_intraday_reaction(stock_code: str) -> dict:
@@ -217,11 +316,206 @@ def run_intraday_earnings_scan() -> list:
     results.sort(key=lambda x: x["totalScore"], reverse=True)
     logger.info(f"ザラ場スキャン完了: {len(results)}銘柄")
 
+    # Claude APIでランキングコメント生成
+    comment_map = generate_ranking_comments_batch(results, scan_type="intraday")
+    for r in results:
+        r["comment"] = comment_map.get(r.get("stockCode", ""), "")
+
     # 学習ループ: エントリー検討銘柄をシグナルログに記録
     for r in results:
         if "エントリー検討" in r.get("entryJudgment", ""):
             _record_earnings_signal(r)
 
+    return results
+
+
+# ========================================
+# フェーズ2B: 引け後評価（J-Quants日足使用）
+# ========================================
+
+def fetch_endofday_reaction(stock_code: str, df_all: "pd.DataFrame") -> dict:
+    """
+    J-Quants日足データから当日の引け後評価指標を計算する（yfinance不使用）。
+
+    Args:
+        stock_code: 4桁銘柄コード
+        df_all: load_latest_quotes()で取得した全銘柄DataFrame
+
+    Returns:
+        dict: {
+            open_price, close_price, high_price, low_price, prev_close,
+            day_return_pct,       # 前日比（%）
+            close_vs_open_pct,    # 寄り付き後の値動き（open→close）
+            upper_wick_ratio,     # 上ヒゲ比率（上ヒゲ/値幅 0〜1）
+            close_position,       # 終値のレンジ内位置（0=底、1=高値）
+            volume_ratio,         # 当日出来高 / 直近20日平均
+            candle_pattern,       # ローソク足パターン（白マルボーズ等）
+        }
+    """
+    try:
+        code_col = "Code" if "Code" in df_all.columns else "code"
+        df_stock = (
+            df_all[df_all[code_col].astype(str) == str(stock_code)]
+            .sort_values("Date")
+            .reset_index(drop=True)
+        )
+        if len(df_stock) < 5:
+            logger.debug(f"{stock_code}: J-Quants日足データ不足（{len(df_stock)}行）")
+            return {}
+
+        today_row = df_stock.iloc[-1]
+        prev_row = df_stock.iloc[-2]
+
+        open_p = float(today_row["Open"])
+        high_p = float(today_row["High"])
+        low_p = float(today_row["Low"])
+        close_p = float(today_row["Close"])
+        volume = float(today_row.get("Volume", 0))
+        prev_close = float(prev_row["Close"])
+
+        # 直近20日平均出来高（当日を除く）
+        hist = df_stock["Volume"].iloc[-21:-1]
+        avg_vol = float(hist.mean()) if len(hist) >= 5 else float(df_stock["Volume"].iloc[:-1].mean())
+
+        day_return_pct = (close_p / prev_close - 1) * 100 if prev_close > 0 else 0.0
+        close_vs_open_pct = (close_p / open_p - 1) * 100 if open_p > 0 else 0.0
+
+        price_range = high_p - low_p
+        upper_wick = high_p - max(open_p, close_p)
+        upper_wick_ratio = upper_wick / price_range if price_range > 0 else 0.0
+        close_position = (close_p - low_p) / price_range if price_range > 0 else 0.5
+        volume_ratio = volume / avg_vol if avg_vol > 0 else 1.0
+
+        # ローソク足パターン判定
+        body = abs(close_p - open_p)
+        if price_range > 0 and body / price_range >= 0.7 and upper_wick_ratio < 0.1 and close_p > open_p:
+            candle_pattern = "白マルボーズ（超強気）"
+        elif upper_wick_ratio > 0.5 and close_position < 0.3:
+            candle_pattern = "上ヒゲ陰線（売り圧強）"
+        elif price_range > 0 and body / price_range < 0.1:
+            candle_pattern = "十字線（迷い）"
+        elif close_p > open_p:
+            candle_pattern = "陽線"
+        else:
+            candle_pattern = "陰線"
+
+        return {
+            "open_price": round(open_p, 1),
+            "close_price": round(close_p, 1),
+            "high_price": round(high_p, 1),
+            "low_price": round(low_p, 1),
+            "prev_close": round(prev_close, 1),
+            "day_return_pct": round(day_return_pct, 2),
+            "close_vs_open_pct": round(close_vs_open_pct, 2),
+            "upper_wick_ratio": round(upper_wick_ratio, 3),
+            "close_position": round(close_position, 3),
+            "volume_ratio": round(volume_ratio, 2),
+            "candle_pattern": candle_pattern,
+        }
+
+    except Exception as e:
+        logger.warning(f"{stock_code} 引け後データ取得エラー: {e}")
+        return {}
+
+
+def _calc_endofday_score(eod: dict) -> float:
+    """
+    引け後の日足データからモメンタムスコアを計算する。
+
+    スコア設計:
+      - close_position (終値のレンジ内位置) → 高いほど強い終わり方（最重要）
+      - day_return_pct (前日比) → プラスで高いほど良い
+      - volume_ratio (出来高) → 信頼性加重
+      - upper_wick_ratio (上ヒゲ) → 高いとペナルティ（売り圧）
+    """
+    if not eod:
+        return 0.0
+
+    close_pos = eod.get("close_position", 0.5)
+    day_ret = eod.get("day_return_pct", 0)
+    vol = eod.get("volume_ratio", 1.0)
+    upper_wick = eod.get("upper_wick_ratio", 0)
+    close_vs_open = eod.get("close_vs_open_pct", 0)
+
+    # 上ヒゲが強い＆終値が安値圏 → 出尽くし気配
+    if upper_wick > 0.5 and close_pos < 0.3:
+        return max(0, day_ret * 0.1)
+
+    score = (
+        close_pos * 2.0 +                      # 終値がレンジ高値寄りほど高得点（max 2.0）
+        max(0, day_ret) * 0.3 +                # 前日比プラス分
+        max(0, close_vs_open) * 0.2 +          # 寄り後上昇分
+        min(vol - 1.0, 3.0) * 0.3 +            # 出来高超過（上限3倍分）
+        (-upper_wick * 1.5)                     # 上ヒゲペナルティ
+    )
+    return round(max(0.0, score), 2)
+
+
+def run_endofday_earnings_scan(df_all: "pd.DataFrame") -> list:
+    """
+    earnings_watchlist.json に保存された銘柄の引け後評価をスキャンする（J-Quants日足使用）。
+    EDINETスコア × 引け後スコア で順位付けして返す。
+
+    Args:
+        df_all: load_latest_quotes()で取得した全銘柄DataFrame
+
+    Returns:
+        list of dict: 総合スコア降順ソート済みの結果リスト
+    """
+    watchlist = _load_watchlist()
+    if not watchlist:
+        logger.info("ウォッチリストが空です。前日の決算スキャンで銘柄が登録されるまでお待ちください。")
+        return []
+
+    signals = watchlist.get("signals", [])
+    watch_date = watchlist.get("date", "")
+    if not signals:
+        logger.info(f"ウォッチリスト（{watch_date}）に対象銘柄がありません。")
+        return []
+
+    logger.info(f"引け後スキャン開始: {len(signals)}銘柄（登録日: {watch_date}）")
+
+    results = []
+    for s in signals:
+        code = s.get("stockCode", "")
+        if not code:
+            continue
+
+        eod = fetch_endofday_reaction(code, df_all)
+        eod_score = _calc_endofday_score(eod)
+        edinet_score = s.get("edinetScore", 0)
+
+        if not eod:
+            total_score = 0.0
+            entry_judgment = "データなし"
+        elif eod_score >= 3.0 and edinet_score >= 50:
+            entry_judgment = "🔥 翌朝エントリー検討"
+        elif eod_score >= 1.5 and edinet_score >= 30:
+            entry_judgment = "👀 翌朝様子見"
+        elif eod.get("upper_wick_ratio", 0) > 0.5:
+            entry_judgment = "⚠️ 上ヒゲ・見送り"
+        else:
+            entry_judgment = "➡️ 反応薄"
+
+        total_score = round(edinet_score * 0.4 + eod_score * 10 * 0.6, 1)
+
+        results.append({
+            **s,
+            "eodData": eod,
+            "eodScore": eod_score,
+            "totalScore": total_score,
+            "entryJudgment": entry_judgment,
+            "scannedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        })
+
+    results.sort(key=lambda x: x["totalScore"], reverse=True)
+
+    # Claude APIでランキングコメント生成
+    comment_map = generate_ranking_comments_batch(results, scan_type="endofday")
+    for r in results:
+        r["comment"] = comment_map.get(r.get("stockCode", ""), "")
+
+    logger.info(f"引け後スキャン完了: {len(results)}銘柄")
     return results
 
 

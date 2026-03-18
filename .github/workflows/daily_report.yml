@@ -6,10 +6,9 @@ on:
     # 米国市場終了（JST 6:00）直後に実行。GitHub Actions遅延を考慮して30分後に設定。
     - cron: '30 21 * * 0-5'   # 日〜金（月〜土のJST朝6:30）
 
-    # 【朝2】日本株スキャン＆保有状況 8:00 JST (UTC 23:00 前日)
-    # 米市場スキャン結果（us_themes）取得済みの状態でスキャンするため、
-    # 米市場ジョブの約1.5時間後に設定。
-    - cron: '0 23 * * 0-5'    # 日〜金（月〜土のJST朝8:00）
+    # 【朝2】日本株スキャン＆保有状況 6:30 JST (UTC 21:30 前日)
+    # 米市場スキャン（朝1ジョブ）と同時刻に並行実行。
+    # → us_scan結果は当日夕方通知で参照するため、並行でも問題なし。
 
     # 【前場中盤】ザラ場決算モメンタムスキャン 10:30 JST (UTC 1:30)
     # 前日決算発表銘柄の寄り付き反応を確認してエントリー判断
@@ -80,7 +79,7 @@ jobs:
   # ===========================
   morning-scan:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 23 * * 0-5' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '30 21 * * 0-5' || github.event_name == 'workflow_dispatch'
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
@@ -198,6 +197,12 @@ jobs:
         with:
           path: data/raw/tdnet
           key: tdnet-${{ github.run_number }}
+
+      - name: earnings_watchlist を保存（ザラ場・引け後スキャン用）
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_watchlist.json
+          key: earnings-watchlist-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
@@ -289,6 +294,22 @@ jobs:
           restore-keys: |
             tdnet-
 
+      - name: earnings_watchlist を復元（引け後スキャン用）
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_watchlist.json
+          key: earnings-watchlist-${{ github.run_number }}
+          restore-keys: |
+            earnings-watchlist-
+
+      - name: earnings_signal_log を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_signal_log.json
+          key: earnings-signal-log-${{ github.run_number }}
+          restore-keys: |
+            earnings-signal-log-
+
       - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
@@ -305,6 +326,12 @@ jobs:
         id: status
         run: |
           python main.py --mode status --notify
+        continue-on-error: true
+
+      - name: 引け後決算モメンタム評価（J-Quants日足・18:00通知）
+        id: endofday
+        run: |
+          python main.py --mode earnings_endofday
         continue-on-error: true
 
       - name: trade_log.json を保存
@@ -342,6 +369,12 @@ jobs:
         with:
           path: memory/earnings_watchlist.json
           key: earnings-watchlist-${{ github.run_number }}
+
+      - name: earnings_signal_log を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_signal_log.json
+          key: earnings-signal-log-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'

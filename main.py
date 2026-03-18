@@ -567,8 +567,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday"],
-        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場決算モメンタムスキャン)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday"],
+        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場) / earnings_endofday(引け後)"
     )
 
     # オプション: スキャンタイプ
@@ -726,6 +726,46 @@ def main():
 
             stats = get_earnings_accuracy_stats()
             notify_intraday_earnings_scan(scan_results, stats)
+            print("✓ Slack通知送信完了")
+
+        elif args.mode == "earnings_endofday":
+            # 引け後決算モメンタム評価（18:00 JST頃に実行・J-Quants日足使用）
+            print("【引け後決算モメンタム評価】")
+            print("前日・当日決算発表銘柄の一日の値動きをJ-Quantsデータで評価します...\n")
+            from agents.earnings_momentum_scanner import (
+                run_endofday_earnings_scan, record_earnings_outcomes,
+                get_earnings_accuracy_stats
+            )
+            from agents.slack_notifier import notify_endofday_earnings_scan
+            from agents.jquants_fetcher import load_latest_quotes
+
+            df_all = load_latest_quotes()
+            if df_all.empty:
+                print("エラー: 株価データが取得できませんでした。先に --mode fetch を実行してください。")
+                sys.exit(1)
+
+            # 学習ループ: 過去シグナルの結果を記録
+            try:
+                updated = record_earnings_outcomes(df_all)
+                if updated > 0:
+                    print(f"  過去シグナルの結果記録: {updated}件更新")
+            except Exception as e:
+                logger.warning(f"結果記録エラー（スキップ）: {e}")
+
+            # 引け後スキャン実行
+            scan_results = run_endofday_earnings_scan(df_all)
+            print(f"  スキャン完了: {len(scan_results)}銘柄")
+            for r in scan_results[:5]:
+                eod = r.get("eodData", {})
+                print(
+                    f"  {r['entryJudgment']:15s}  {r['stockCode']} {r['companyName'][:10]}"
+                    f"  総合:{r['totalScore']:.0f}"
+                    f"  前日比:{eod.get('day_return_pct', 0):+.1f}%"
+                    f"  {eod.get('candle_pattern', '')}"
+                )
+
+            stats = get_earnings_accuracy_stats()
+            notify_endofday_earnings_scan(scan_results, stats)
             print("✓ Slack通知送信完了")
 
         elif args.mode == "qualify_report":
