@@ -231,7 +231,7 @@ def analyze_us_market_theme(top_sectors: list, macro: dict) -> dict:
       "sector": "<セクター名>",
       "reason": "<なぜ強いか・背景を1文で>",
       "sustainability": "<short/medium/long>",
-      "japan_stocks": "<具体的な日本株銘柄名を2〜3社>"
+      "japan_stocks": "<日本株銘柄を2〜3社、必ず「銘柄名(証券コード4桁)」形式で。例: 三菱商事(8058)・INPEX(1605)>"
     }}
   ],
   "japan_opportunities": ["<日本株で注目すべきテーマ1>", "<テーマ2>", "<テーマ3>"],
