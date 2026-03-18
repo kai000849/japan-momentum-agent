@@ -390,6 +390,8 @@ def _scan_earnings(scan_date: str) -> list:
             "docTypeCode": e.get("docTypeCode", ""),
             "docDescription": e.get("docDescription", ""),
             "submitDateTime": e.get("submitDateTime", ""),
+            "docID": e.get("docID", ""),   # ← EDINET分析に必須（これがないとPDFダウンロード不可）
+            "edinetCode": e.get("edinetCode", ""),
             "score": 1.0,
         })
 
