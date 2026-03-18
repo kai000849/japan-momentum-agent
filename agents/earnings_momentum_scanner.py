@@ -148,6 +148,109 @@ def generate_ranking_comments_batch(ranked_stocks: list, scan_type: str = "intra
 
 
 # ========================================
+# PTS（私設取引システム）価格取得
+# ========================================
+
+def fetch_pts_price(stock_code: str) -> dict:
+    """
+    PTSの最新価格を取得する（yfinance prepost=True使用）。
+
+    PTS取引時間（JST）:
+      - 前場前PTS: 8:20〜9:00（正規取引開始前）
+      - 夕方PTS:  16:30〜23:59（正規取引終了後）
+
+    寄らず・ストップ高/安の銘柄はPTSで値が付くことが多く、
+    正規取引データだけでは把握できない市場の評価を補完できる。
+
+    Returns:
+        dict: {
+            pts_price, pts_change_pct, pts_volume,
+            pts_time,        # "16:45" など
+            pts_session,     # "pre"（前場前）or "post"（夕方）
+            pts_vs_stop,     # ストップ高価格に対してどれだけ乖離しているか（%）
+        }
+        空dict: PTS取引なし or 取得失敗
+    """
+    try:
+        import yfinance as yf
+        import pytz
+    except ImportError:
+        logger.debug("yfinance or pytz 未インストール")
+        return {}
+
+    jst = pytz.timezone("Asia/Tokyo")
+    ticker = yf.Ticker(f"{stock_code}.T")
+
+    try:
+        # prepost=True で時間外データも含めて取得
+        raw = ticker.history(period="2d", interval="5m", prepost=True)
+        if raw.empty:
+            return {}
+
+        # タイムゾーンをJSTに統一
+        if raw.index.tzinfo is None:
+            raw.index = raw.index.tz_localize("UTC").tz_convert(jst)
+        else:
+            raw.index = raw.index.tz_convert(jst)
+
+        now_jst = pd.Timestamp.now(tz=jst)
+        today = now_jst.date()
+
+        # 当日のバーのみ抽出
+        today_bars = raw[raw.index.date == today]
+        if today_bars.empty:
+            return {}
+
+        # PTS時間帯のバーを抽出（9:00〜15:30は正規取引）
+        pre_pts  = today_bars[today_bars.index.hour < 9]                       # 前場前PTS
+        post_pts = today_bars[today_bars.index.hour >= 16]                      # 夕方PTS
+        regular  = today_bars[(today_bars.index.hour >= 9) &
+                               (today_bars.index.hour < 16)]
+
+        # 前日終値を取得（前日の正規取引最終バー）
+        yesterday_bars = raw[raw.index.date < today]
+        if not yesterday_bars.empty:
+            prev_close = float(yesterday_bars["Close"].iloc[-1])
+        elif not regular.empty:
+            prev_close = float(regular["Open"].iloc[0])  # 当日寄り付き値で代用
+        else:
+            return {}
+
+        # 最優先: 夕方PTS → なければ前場前PTS
+        if not post_pts.empty:
+            pts_bars = post_pts
+            session = "post"
+        elif not pre_pts.empty:
+            pts_bars = pre_pts
+            session = "pre"
+        else:
+            return {}
+
+        latest = pts_bars.iloc[-1]
+        pts_price  = float(latest["Close"])
+        pts_volume = int(latest["Volume"])
+        pts_time   = latest.name.strftime("%H:%M")
+        pts_change_pct = (pts_price / prev_close - 1) * 100 if prev_close > 0 else 0.0
+
+        # ストップ高価格との乖離（どれだけ超えているか）
+        stop_price = _estimate_stop_price(prev_close)
+        pts_vs_stop = (pts_price / stop_price - 1) * 100 if stop_price > 0 else 0.0
+
+        return {
+            "pts_price": round(pts_price, 1),
+            "pts_change_pct": round(pts_change_pct, 2),
+            "pts_volume": pts_volume,
+            "pts_time": pts_time,
+            "pts_session": session,
+            "pts_vs_stop": round(pts_vs_stop, 2),
+        }
+
+    except Exception as e:
+        logger.debug(f"{stock_code} PTS取得エラー: {e}")
+        return {}
+
+
+# ========================================
 # フェーズ2A: ザラ場データ取得（yfinance ※J-Quants Lightに分足なし）
 # ========================================
 
@@ -300,14 +403,29 @@ def run_intraday_earnings_scan() -> list:
             continue
 
         intra = fetch_intraday_reaction(code)
+
+        # 寄らず or データなし → PTSで補完
+        pts = {}
+        if not intra or intra.get("is_yobarazu"):
+            pts = fetch_pts_price(code)
+            if pts:
+                logger.info(f"{code} 寄らず検出 → PTS価格取得: {pts['pts_price']}円 "
+                            f"({pts['pts_change_pct']:+.1f}%) [{pts['pts_time']}]")
+
         intraday_score = _calc_intraday_score(intra)
         edinet_score = s.get("edinetScore", 0)
 
         # 総合スコア: EDINET基礎力 × ザラ場反応の加速度
         # EDINETスコアが高い銘柄でもザラ場反応がないと低スコア
-        if not intra:
+        if not intra and not pts:
             total_score = 0.0
             entry_judgment = "データなし"
+        elif not intra and pts:
+            # 正規取引データなし・PTS価格あり → PTS変化率でスコア代替
+            pts_chg = pts.get("pts_change_pct", 0)
+            intraday_score = min(max(pts_chg * 0.3, 0), 4.0)  # PTS変化率からスコア推定
+            total_score = round(edinet_score * 0.4 + intraday_score * 10 * 0.6, 1)
+            entry_judgment = "📡 PTS参照"
         elif intraday_score >= 4.0 and edinet_score >= 50:
             entry_judgment = "🔥 エントリー検討"
         elif intraday_score >= 2.0 and edinet_score >= 30:
@@ -322,6 +440,7 @@ def run_intraday_earnings_scan() -> list:
         results.append({
             **s,
             "intradayData": intra,
+            "ptsData": pts,
             "intradayScore": intraday_score,
             "totalScore": total_score,
             "entryJudgment": entry_judgment,
@@ -555,6 +674,14 @@ def run_endofday_earnings_scan(df_all: "pd.DataFrame") -> list:
         eod_score = _calc_endofday_score(eod)
         edinet_score = s.get("edinetScore", 0)
 
+        # 寄らず or ストップ高 → PTSで引け後の実勢価格を補完
+        pts = {}
+        if eod.get("is_yobarazu") or eod.get("is_stop_high"):
+            pts = fetch_pts_price(code)
+            if pts:
+                logger.info(f"{code} S高/寄らず → PTS: {pts['pts_price']}円 "
+                            f"({pts['pts_change_pct']:+.1f}%) [{pts['pts_time']}]")
+
         if not eod:
             total_score = 0.0
             entry_judgment = "データなし"
@@ -572,6 +699,7 @@ def run_endofday_earnings_scan(df_all: "pd.DataFrame") -> list:
         results.append({
             **s,
             "eodData": eod,
+            "ptsData": pts,
             "eodScore": eod_score,
             "totalScore": total_score,
             "entryJudgment": entry_judgment,
