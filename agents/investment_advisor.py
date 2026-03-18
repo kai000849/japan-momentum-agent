@@ -170,35 +170,70 @@ def _get_us_hot_keywords() -> list:
 
 
 # ========================================
-# セクターマッピング（銘柄→関連ETF/セクター）
+# セクターマッピング（J-Quants Sector17CodeName → 米ETFセクター名）
 # ========================================
 
-# 簡易マッピング。銘柄名・業種からキーワードを拾う
-SECTOR_KEYWORDS = {
-    "ゲーム": ["Gaming", "Consumer Discretionary", "Entertainment"],
-    "半導体": ["Semiconductors", "Technology", "AI"],
-    "建設": ["Industrials", "Infrastructure", "Construction"],
-    "医薬": ["Healthcare", "Biotech", "Pharmaceuticals"],
-    "エネルギー": ["Energy", "Clean Energy", "Utilities"],
-    "IT": ["Technology", "AI", "Cloud", "Software"],
-    "自動車": ["Industrials", "EV", "Consumer Discretionary"],
-    "金融": ["Financials", "Banks"],
-    "小売": ["Consumer Discretionary", "Retail"],
-    "ディスプレイ": ["Technology", "Semiconductors"],
+# J-Quants の Sector17CodeName（日本語）→ 米市場スキャン結果のセクター名キーワード
+SECTOR17_TO_US_ETF: dict[str, list[str]] = {
+    "情報通信・サービスその他": ["Technology", "AI", "Cloud", "Software", "Communication"],
+    "電機・精密":              ["Technology", "Semiconductors", "AI", "Industrials"],
+    "機械":                    ["Industrials", "Machinery"],
+    "自動車・輸送機":          ["Consumer Discretionary", "Industrials", "EV"],
+    "医薬品":                  ["Healthcare", "Biotech", "Pharmaceuticals"],
+    "建設・資材":              ["Industrials", "Infrastructure", "Materials"],
+    "素材・化学":              ["Materials", "Industrials"],
+    "鉄鋼・非鉄":             ["Materials", "Industrials"],
+    "エネルギー資源":          ["Energy", "Clean Energy"],
+    "電力・ガス":              ["Utilities", "Energy"],
+    "食品":                    ["Consumer Staples"],
+    "小売":                    ["Consumer Discretionary", "Retail"],
+    "商社・卸売":              ["Industrials", "Materials"],
+    "運輸・物流":              ["Industrials", "Transportation"],
+    "銀行":                    ["Financials", "Banks"],
+    "金融（除く銀行）":        ["Financials"],
+    "不動産":                  ["Real Estate"],
 }
 
-def _infer_sector_match(company_name: str, top_sectors: list) -> Optional[str]:
+# コード→Sector17CodeNameのキャッシュ（プロセス内）
+_sector_cache: dict[str, str] = {}
+
+
+def _build_sector_cache() -> None:
     """
-    会社名から関連セクターを推定し、上昇セクターと一致するか確認する。
+    J-Quants get_listed_stocks() から stock_code → Sector17CodeName の辞書を構築してキャッシュする。
+    失敗しても空のまま続行（セクターマッチなしとして扱う）。
+    """
+    global _sector_cache
+    if _sector_cache:
+        return
+    try:
+        from agents.jquants_fetcher import get_listed_stocks
+        df = get_listed_stocks()
+        if df.empty or "Sector17CodeName" not in df.columns:
+            return
+        code_col = "Code" if "Code" in df.columns else df.columns[0]
+        _sector_cache = dict(zip(df[code_col].astype(str).str.strip(), df["Sector17CodeName"].astype(str)))
+        logger.info(f"セクターキャッシュ構築完了: {len(_sector_cache)}銘柄")
+    except Exception as e:
+        logger.warning(f"セクターキャッシュ構築失敗（セクターマッチをスキップ）: {e}")
+
+
+def _infer_sector_match(stock_code: str, top_sectors: list) -> Optional[str]:
+    """
+    銘柄コードの Sector17CodeName を引き、米国上昇セクターと一致するか確認する。
     一致したセクター名を返す（なければNone）。
     """
-    name = company_name
-    for jp_sector, en_keywords in SECTOR_KEYWORDS.items():
-        if jp_sector in name:
-            for kw in en_keywords:
-                for top in top_sectors:
-                    if kw.lower() in top.lower():
-                        return top
+    _build_sector_cache()
+    # 4桁・5桁どちらでも検索
+    code = str(stock_code).strip()
+    sector17 = _sector_cache.get(code) or _sector_cache.get(code + "0")
+    if not sector17:
+        return None
+    en_keywords = SECTOR17_TO_US_ETF.get(sector17, [])
+    for kw in en_keywords:
+        for top in top_sectors:
+            if kw.lower() in top.lower():
+                return top
     return None
 
 
@@ -279,7 +314,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
 
         # ---- 米市場シグナルチェック ----
         if us_context["available"] and us_context["top_sectors"]:
-            matched = _infer_sector_match(company_name, us_context["top_sectors"])
+            matched = _infer_sector_match(stock_code, us_context["top_sectors"])
             if matched:
                 reasons.append(f"✅ 関連セクター上昇中（{matched}）")
             else:
