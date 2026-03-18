@@ -70,11 +70,15 @@ def _get_portfolio_status() -> dict:
         }
     """
     trade_log = _load_json(TRADE_LOG_PATH)
-    positions = trade_log.get("positions", [])
+    # ペーパートレードのみカウント（実売買は戦略判断から独立させる）
+    positions = [
+        p for p in trade_log.get("positions", [])
+        if p.get("tradeType", "paper") != "actual"
+    ]
     pos_count = len(positions)
     has_capacity = pos_count < MAX_POSITIONS
 
-    # 概算余力（初期資金3,000,000 - 投資済み金額）
+    # 概算余力（初期資金3,000,000 - ペーパー投資済み金額）
     invested = sum(p.get("investedAmount", 0) for p in positions)
     cash_available = max(0, 3_000_000 - invested)
 
