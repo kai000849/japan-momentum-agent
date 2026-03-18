@@ -121,7 +121,7 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
     急騰モードのスクリーニングを実行する。
     条件:
     - 前日比 +3% 以上
-    - 当日出来高 >= 25日平均出来高 × 2.0倍
+    - 当日出来高 >= 25日平均出来高 × 1.5倍
     - 急騰スコア = 前日比(%) × 出来高倍率
 
     Args:
@@ -177,7 +177,7 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
 
             volume_ratio = today_volume / avg_volume_25d
 
-            if volume_ratio < 2.0:
+            if volume_ratio < 1.5:
                 continue
 
             surge_score = price_change_pct * volume_ratio
