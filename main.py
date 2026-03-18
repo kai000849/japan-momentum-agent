@@ -200,6 +200,28 @@ def run_scan_mode(args):
     total_hits = sum(len(r) for r in all_results.values())
     print(f"\n【スキャン完了】合計ヒット数: {total_hits}銘柄")
 
+    # ---- モメンタム判定（SHORT_TERMシグナルを先に実行 → surgeReasonを通知に含める） ----
+    short_term_results = all_results.get("SHORT_TERM", [])
+    qualify_results = []
+    df_all_cache = None
+    if short_term_results:
+        try:
+            from agents.momentum_qualifier import qualify_signals, format_qualify_result_for_slack
+            from agents.jquants_fetcher import load_latest_quotes
+
+            logger.info("モメンタム判定を開始します...")
+            df_all_cache = load_latest_quotes()
+
+            if not df_all_cache.empty:
+                qualify_results = qualify_signals(short_term_results, df_all_cache)
+                # 急騰シグナル通知にsurgeReasonを含めるため結果を差し替え
+                all_results["SHORT_TERM"] = qualify_results
+            else:
+                logger.warning("株価データが取得できずモメンタム判定をスキップ")
+
+        except Exception as e:
+            logger.warning(f"モメンタム判定エラー（スキップ）: {e}")
+
     # バックテストを実行してPFを計算してからSlack通知
     try:
         from agents.slack_notifier import notify_new_signal
@@ -236,29 +258,17 @@ def run_scan_mode(args):
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
 
-    # ---- モメンタム判定（SHORT_TERMシグナルを2段階で精査） ----
-    short_term_results = all_results.get("SHORT_TERM", [])
-    if short_term_results:
+    # ---- モメンタム判定サマリーをSlackに送信 ----
+    if qualify_results:
         try:
-            from agents.momentum_qualifier import qualify_signals, format_qualify_result_for_slack
-            from agents.jquants_fetcher import load_latest_quotes
+            from agents.momentum_qualifier import format_qualify_result_for_slack
             from agents.slack_notifier import send_slack_message
 
-            logger.info("モメンタム判定を開始します...")
-            df_all = load_latest_quotes()
-
-            if not df_all.empty:
-                qualify_results = qualify_signals(short_term_results, df_all)
-
-                # Slack通知
-                slack_text = format_qualify_result_for_slack(qualify_results)
-                send_slack_message(slack_text)
-                logger.info("モメンタム判定結果をSlackに送信しました。")
-            else:
-                logger.warning("株価データが取得できずモメンタム判定をスキップ")
-
+            slack_text = format_qualify_result_for_slack(qualify_results)
+            send_slack_message(slack_text)
+            logger.info("モメンタム判定結果をSlackに送信しました。")
         except Exception as e:
-            logger.warning(f"モメンタム判定エラー（スキップ）: {e}")
+            logger.warning(f"モメンタム判定Slack送信エラー（スキップ）: {e}")
 
     # ---- フェーズ4: 投資判断エージェント ----
     # qualify結果・PF・ポートフォリオ余力・米市場シグナルを統合してエントリー推奨を生成

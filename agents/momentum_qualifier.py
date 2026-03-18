@@ -139,28 +139,31 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
 
     stocks_text = "\n".join([
         f"- 銘柄コード: {s['stockCode']} / 会社名: {s['companyName']}"
+        f" / 前日比: +{s.get('price_change_pct', 0):.1f}% / 出来高: {s.get('volume_ratio', 0):.1f}倍"
         for s in stocks
     ])
 
     prompt = f"""あなたは日本株の投資アナリストです。
-以下の{len(stocks)}銘柄が急騰しました。各銘柄について、あなたの知識をもとに、短期的な加熱なのか、中長期で継続する構造的変化を伴った急騰なのかを判断してください。
+以下の{len(stocks)}銘柄が急騰しました。各銘柄について判断してください。
 
 【対象銘柄一覧】
 {stocks_text}
 
-判断の観点：
-1. 会社名・事業内容から考えられる構造的変化の可能性（AI・EV・防衛・半導体など成長テーマとの関連）
-2. 一時的なイベントになりやすい業種かどうか（仕手株・小型株・単発材料）
-3. 事業の安定性・継続性
+各銘柄について以下を回答してください：
+1. surgeReason: この銘柄が急騰した理由として最も考えられること（会社名・事業から推測。30文字以内）
+2. structuralChange: 中長期で継続する構造的変化を伴った急騰か（AI・EV・防衛・半導体等の成長テーマ関連はtrue、仕手・一時的材料はfalse）
+3. confidence: 判断の確信度（high/medium/low）
+4. comment: 構造的変化の有無とその理由（40文字以内）
 
 必ず以下のJSON形式のみで回答してください（他のテキスト不要）：
 {{
   "results": [
     {{
       "stockCode": "<銘柄コード>",
+      "surgeReason": "急騰理由を30文字以内で",
       "structuralChange": true or false,
       "confidence": "high" or "medium" or "low",
-      "comment": "50文字以内の理由"
+      "comment": "構造的変化の理由を40文字以内で"
     }}
   ]
 }}
@@ -174,7 +177,7 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=800,  # 2000→800に削減（銘柄ごとに50文字のみ）
+            max_tokens=1000,  # surgeReason追加で800→1000に増量
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -218,6 +221,7 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。"""
                 "structuralChange": item.get("structuralChange"),
                 "confidence": item.get("confidence"),
                 "comment": item.get("comment", ""),
+                "surgeReason": item.get("surgeReason", ""),
                 "stage2Available": True,
             }
 
@@ -443,7 +447,12 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     stage2_map = {}
     if stage1_pass_signals:
         stocks_for_batch = [
-            {"stockCode": s.get("stockCode", ""), "companyName": s.get("companyName", "")}
+            {
+                "stockCode": s.get("stockCode", ""),
+                "companyName": s.get("companyName", ""),
+                "price_change_pct": s.get("price_change_pct", s.get("priceChangePct", 0)),
+                "volume_ratio": s.get("volume_ratio", s.get("volumeRatio", 0)),
+            }
             for s in stage1_pass_signals
         ]
         logger.info(f"  ステージ1通過: {len(stocks_for_batch)}銘柄 → Claude一括判定中...")
@@ -554,6 +563,7 @@ def format_qualify_result_for_slack(results: list) -> str:
             days_checked = s1.get("daysChecked", -1)
             comment = s2.get("comment", "")
             confidence = s2.get("confidence", "")
+            surge_reason = s2.get("surgeReason", "")
             vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
             if days_checked == 0:
@@ -562,11 +572,13 @@ def format_qualify_result_for_slack(results: list) -> str:
             else:
                 vol_str = f"出来高維持率:{vol_rate:.0%}"
                 price_str = f"急騰後株価:{price_chg:+.1f}%"
+            reason_line = f"\n  💡 急騰理由: {surge_reason}" if surge_reason else ""
             lines.append(
                 f"• *{r.get('stockCode')} {r.get('companyName', '')}*\n"
                 f"  {vol_emoji} {vol_str}  "
                 f"{price_emoji} {price_str}\n"
                 f"  🤖 Claude({confidence}): {comment}"
+                f"{reason_line}"
             )
 
     if watch_results:

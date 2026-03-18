@@ -211,7 +211,16 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
             )
         else:
-            lines.append(f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}")
+            price_chg = s.get("price_change_pct", 0)
+            vol_ratio = s.get("volume_ratio", 0)
+            surge_reason = s.get("stage2", {}).get("surgeReason", "") if s.get("stage2") else ""
+            sign = "+" if price_chg >= 0 else ""
+            reason_str = f"\n    💡 {surge_reason}" if surge_reason else ""
+            lines.append(
+                f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
+                f"    前日比:{sign}{price_chg:.1f}% / 出来高:{vol_ratio:.1f}x"
+                f"{reason_str}"
+            )
 
     signals_text = "\n".join(lines)
     now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
