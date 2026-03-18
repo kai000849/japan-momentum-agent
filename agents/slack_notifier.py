@@ -456,9 +456,12 @@ def notify_us_market_scan(scan_result: dict) -> bool:
         sign5 = "+" if mom5 >= 0 else ""
         sign20 = "+" if mom20 >= 0 else ""
         japan = s.get("japan_theme", "")
+        top_stocks = s.get("top_stocks", "")
+        stocks_line = f"\n     🏢 {top_stocks}" if top_stocks else ""
         top_lines.append(
             f"  *{i}. {s['name']}({s['ticker']})*  スコア:{score:.1f}\n"
-            f"     当日:{sign1}{mom1:.1f}% / 5日:{sign5}{mom5:.1f}% / 20日:{sign20}{mom20:.1f}%  出来高:{vol_icon}{vol:.2f}x\n"
+            f"     当日:{sign1}{mom1:.1f}% / 5日:{sign5}{mom5:.1f}% / 20日:{sign20}{mom20:.1f}%  出来高:{vol_icon}{vol:.2f}x"
+            f"{stocks_line}\n"
             f"     🇯🇵 {japan}"
         )
 
@@ -468,8 +471,10 @@ def notify_us_market_scan(scan_result: dict) -> bool:
         mom5 = s.get("mom5d", 0)
         sign1 = "+" if mom1 >= 0 else ""
         sign5 = "+" if mom5 >= 0 else ""
+        top_stocks = s.get("top_stocks", "")
+        stocks_str = f"  ({top_stocks})" if top_stocks else ""
         bottom_lines.append(
-            f"  🔻 {s['name']}({s['ticker']}): 当日{sign1}{mom1:.1f}% / 5日{sign5}{mom5:.1f}%"
+            f"  🔻 {s['name']}({s['ticker']}): 当日{sign1}{mom1:.1f}% / 5日{sign5}{mom5:.1f}%{stocks_str}"
         )
 
     top_text = "\n\n".join(top_lines) if top_lines else "  データなし"
