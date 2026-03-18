@@ -256,7 +256,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
                 "stockCode": str,
                 "companyName": str,
                 "qualifyResult": str,
-                "recommendation": "ENTRY" | "WATCH" | "SKIP",
+                "recommendation": "エントリー" | "様子見" | "見送り",
                 "reasons": list[str],    # 推奨理由
                 "cautions": list[str],   # 注意点
                 "entryPrice": float,     # エントリー想定価格
@@ -333,11 +333,11 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         has_capacity = portfolio["has_capacity"]
 
         if is_strong and pf_ok and has_capacity:
-            recommendation = "ENTRY"
+            recommendation = "エントリー"
         elif is_strong and (not pf_ok or not has_capacity):
-            recommendation = "WATCH"
+            recommendation = "様子見"
         else:
-            recommendation = "SKIP"
+            recommendation = "見送り"
 
         # ---- エントリー価格の計算 ----
         # 翌営業日の始値想定（現在終値の+0.5%を想定始値として使用）
@@ -445,9 +445,9 @@ def format_advice_for_slack(advices: list) -> str:
     if not advices:
         return ""
 
-    entry_list = [a for a in advices if a["recommendation"] == "ENTRY"]
-    watch_list = [a for a in advices if a["recommendation"] == "WATCH"]
-    skip_list  = [a for a in advices if a["recommendation"] == "SKIP"]
+    entry_list = [a for a in advices if a["recommendation"] == "エントリー"]
+    watch_list = [a for a in advices if a["recommendation"] == "様子見"]
+    skip_list  = [a for a in advices if a["recommendation"] == "見送り"]
 
     lines = ["🎯 *投資判断サマリー*\n"]
 
@@ -476,7 +476,7 @@ def format_advice_for_slack(advices: list) -> str:
     if skip_list:
         lines.append("\n*━━ 見送り ━━*")
         for a in skip_list:
-            top_caution = a["cautions"][0] if a["cautions"] else "判定WEAK/NOISE"
+            top_caution = a["cautions"][0] if a["cautions"] else "判定: 一時的/ノイズ"
             lines.append(f"{a['stockCode']} {a['companyName']} — {top_caution}")
 
     return "\n".join(lines)

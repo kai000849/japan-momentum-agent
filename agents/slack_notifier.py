@@ -999,9 +999,9 @@ def notify_noon_scan(results: list) -> bool:
         bool: 送信成功かどうか
     """
     now_str = datetime.now().strftime("%H:%M")
-    go_list   = [r for r in results if r["judgment"] == "GO"]
-    watch_list = [r for r in results if r["judgment"] == "WATCH"]
-    skip_list  = [r for r in results if r["judgment"] == "SKIP"]
+    go_list   = [r for r in results if r["judgment"] == "後場GO"]
+    watch_list = [r for r in results if r["judgment"] == "様子見"]
+    skip_list  = [r for r in results if r["judgment"] == "見送り"]
 
     lines = [f"🕐 *後場エントリー判断レポート（{now_str}現在）*\n"]
 

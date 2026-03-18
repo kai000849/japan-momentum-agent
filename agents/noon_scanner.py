@@ -206,7 +206,7 @@ def _judge_holding(intraday: dict, scan_close: float) -> tuple[str, list]:
     reasons = []
 
     if scan_close <= 0:
-        return "WATCH", ["前日終値データなし（要確認）"]
+        return "様子見", ["前日終値データなし（要確認）"]
 
     hold_pct = (current - scan_close) / scan_close * 100
 
@@ -237,11 +237,11 @@ def _judge_holding(intraday: dict, scan_close: float) -> tuple[str, list]:
 
     # ---- 総合判定 ----
     if is_holding and is_trending_up:
-        judgment = "GO"
+        judgment = "後場GO"
     elif is_holding:
-        judgment = "WATCH"
+        judgment = "様子見"
     else:
-        judgment = "SKIP"
+        judgment = "見送り"
 
     return judgment, reasons
 
@@ -343,7 +343,7 @@ def run_noon_scan(scan_date: Optional[str] = None) -> list:
                 "qualifyResult": qualify_result,
                 "scanClose": scan_close,
                 "intradayData": None,
-                "judgment": "WATCH",
+                "judgment": "様子見",
                 "reasons": ["⚠️ 前場データ取得失敗（yfinance）"],
             })
             continue
@@ -362,7 +362,7 @@ def run_noon_scan(scan_date: Optional[str] = None) -> list:
         })
 
     # GO → WATCH → SKIP の順にソート
-    order = {"GO": 0, "WATCH": 1, "SKIP": 2}
+    order = {"後場GO": 0, "様子見": 1, "見送り": 2}
     results.sort(key=lambda x: order.get(x["judgment"], 3))
 
     # ---- 結果をJSONに保存（GitHub Actionsキャッシュ対象外・参考用） ----
@@ -378,6 +378,6 @@ def run_noon_scan(scan_date: Optional[str] = None) -> list:
     except Exception as e:
         logger.warning(f"正午スキャン結果の保存失敗: {e}")
 
-    go_count = sum(1 for r in results if r["judgment"] == "GO")
+    go_count = sum(1 for r in results if r["judgment"] == "後場GO")
     logger.info(f"正午スキャン完了: GO={go_count} / 計{len(results)}銘柄")
     return results
