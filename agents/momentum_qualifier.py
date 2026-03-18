@@ -48,6 +48,53 @@ MOMENTUM_COMMENT_CACHE_PATH = Path(__file__).parent.parent / "data" / "processed
 # フェーズ3: 結果記録の基準（何営業日後に検証するか）
 OUTCOME_CHECK_DAYS = 10
 
+# ラベル移行マップ（旧英語→新日本語）
+_LABEL_MIGRATION: dict[str, str] = {
+    "STRONG": "継続",
+    "WATCH":  "様子見",
+    "WEAK":   "一時的",
+    "NOISE":  "ノイズ",
+}
+
+
+def normalize_qualify_label(label: str) -> str:
+    """旧英語ラベルを日本語ラベルに変換する（既に日本語なら無変換）。"""
+    return _LABEL_MIGRATION.get(label, label)
+
+
+def migrate_qualify_log_labels() -> int:
+    """
+    qualify_log.json 内の旧英語ラベル（STRONG/WATCH/WEAK/NOISE）を
+    日本語ラベルに一括変換して上書き保存する。
+
+    Returns:
+        int: 変換した件数（0なら変換不要だった）
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return 0
+    try:
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            entries = json.load(f)
+        if not isinstance(entries, list):
+            return 0
+
+        updated = 0
+        for entry in entries:
+            old = entry.get("qualifyResult", "")
+            new = _LABEL_MIGRATION.get(old)
+            if new:
+                entry["qualifyResult"] = new
+                updated += 1
+
+        if updated > 0:
+            with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
+                json.dump(entries, f, ensure_ascii=False, indent=2)
+            logger.info(f"qualify_logラベル移行完了: {updated}件を日本語化")
+        return updated
+    except Exception as e:
+        logger.warning(f"qualify_logラベル移行エラー（スキップ）: {e}")
+        return 0
+
 
 # ========================================
 # 急騰理由取得: Google News RSS + Claude API
@@ -717,6 +764,12 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         return []
 
     logger.info(f"モメンタム判定開始: {len(signals)}銘柄")
+
+    # 旧英語ラベルが残っていれば自動移行
+    try:
+        migrate_qualify_log_labels()
+    except Exception:
+        pass
 
     try:
         recorded = record_outcomes(df_all)

@@ -172,15 +172,17 @@ def _load_qualify_log_latest() -> list:
     if not qualify_log_path.exists():
         return []
     try:
+        from agents.momentum_qualifier import normalize_qualify_label
         with open(qualify_log_path, "r", encoding="utf-8") as f:
             entries = json.load(f)
         if not entries:
             return []
         latest_date = max(e.get("scanDate", "") for e in entries)
+        # 旧英語ラベル（STRONG/WATCH）も後方互換で受け入れる
         return [
             e for e in entries
             if e.get("scanDate") == latest_date
-            and e.get("qualifyResult") in ("継続", "様子見")
+            and normalize_qualify_label(e.get("qualifyResult", "")) in ("継続", "様子見")
         ]
     except Exception as e:
         logger.warning(f"qualify_log読み込みエラー: {e}")

@@ -107,9 +107,10 @@ def _get_strong_win_rate() -> Optional[float]:
     if not isinstance(entries, list):
         return None
 
+    from agents.momentum_qualifier import normalize_qualify_label
     recorded = [
         e for e in entries
-        if e.get("qualifyResult") == "継続"
+        if normalize_qualify_label(e.get("qualifyResult", "")) == "継続"
         and e.get("outcome", {}) is not None
         and e.get("outcome", {}).get("status") == "recorded"
     ]
@@ -417,11 +418,12 @@ def find_cross_signals(all_results: dict) -> list:
         c = str(code).strip()
         return c[:4] if (len(c) == 5 and c.endswith("0")) else c
 
-    # SHORT_TERM: STRONG/WATCHのみ（NOISEは対象外）
+    # SHORT_TERM: 継続/様子見のみ（旧英語ラベル含む後方互換）
+    from agents.momentum_qualifier import normalize_qualify_label
     st_map = {
         _norm(r["stockCode"]): r
         for r in all_results.get("SHORT_TERM", [])
-        if r.get("qualifyResult") in ("継続", "様子見")
+        if normalize_qualify_label(r.get("qualifyResult", "")) in ("継続", "様子見")
     }
 
     # MOMENTUM: 全銘柄対象
