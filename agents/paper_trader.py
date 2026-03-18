@@ -602,8 +602,8 @@ def add_actual_trade(
             logger.warning(f"既に実売買記録済み: {stock_code}")
             return False
 
-    stop_loss = round(entry_price * 0.95)
-    take_profit = round(entry_price * 1.15)
+    stop_loss = round(entry_price * (1 + STOP_LOSS_PCT / 100))
+    take_profit = round(entry_price * (1 + TAKE_PROFIT_PCT / 100))
     invested = round(entry_price * shares)
 
     positions.append({

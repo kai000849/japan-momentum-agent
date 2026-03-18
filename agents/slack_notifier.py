@@ -12,6 +12,7 @@ Slack通知モジュール
 
 import json
 import logging
+import sys
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -83,10 +84,14 @@ def send_slack_message(text: str, blocks: list = None) -> bool:
                 logger.error(f"Slack送信失敗: HTTPステータス {response.status}")
                 return False
     except urllib.error.URLError as e:
-        logger.error(f"Slack送信エラー: {e}")
+        msg = f"⚠️ Slack送信エラー: {e}"
+        logger.error(msg)
+        print(msg, file=sys.stderr)
         return False
     except Exception as e:
-        logger.error(f"Slack送信中に予期しないエラー: {e}")
+        msg = f"⚠️ Slack送信中に予期しないエラー: {e}"
+        logger.error(msg)
+        print(msg, file=sys.stderr)
         return False
 
 

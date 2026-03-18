@@ -272,6 +272,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 9 * * 1-5' || github.event_name == 'workflow_dispatch'
     steps:
+      - name: 今日の日付を設定（クロスジョブキャッシュキー用）
+        id: date
+        run: echo "today=$(date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+
       - name: コードを取得
         uses: actions/checkout@v4
 
@@ -341,11 +345,11 @@ jobs:
           restore-keys: |
             tdnet-
 
-      - name: earnings_watchlist を復元（引け後スキャン用）
+      - name: earnings_watchlist を復元（morning/midmorning-scanが当日保存したもの・日付キー）
         uses: actions/cache@v4
         with:
           path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ github.run_number }}
+          key: earnings-watchlist-${{ steps.date.outputs.today }}
           restore-keys: |
             earnings-watchlist-
 
