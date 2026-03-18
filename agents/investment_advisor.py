@@ -35,7 +35,8 @@ US_SCAN_DIR = BASE_DIR / "data" / "processed" / "us_scans"
 US_THEME_DIR = BASE_DIR / "data" / "processed" / "us_themes"
 
 # エントリー推奨の閾値
-MIN_PF = 1.2           # 最低プロフィットファクター
+MIN_PF = 1.2           # 最低プロフィットファクター（SHORT_TERM / EARNINGS）
+MIN_PF_MOMENTUM = 1.5  # MOMMENTUMシグナルのPF閾値（より厳格・遅れ入場リスク対策）
 MAX_POSITIONS = 10     # 最大同時保有数
 MAX_INVEST_PER_STOCK = 500000  # 1銘柄あたり最大投資額（円）
 
@@ -284,6 +285,14 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         reasons = []
         cautions = []
 
+        # ---- モード別役割の明示 ----
+        if mode == "MOMENTUM":
+            cautions.append("📊 長期トレンド確認型（保有継続向け・新規エントリーは慎重に）")
+        elif mode == "SHORT_TERM":
+            reasons.append("⚡ 急騰シグナル（早期エントリー候補）")
+        elif mode == "EARNINGS":
+            reasons.append("📋 決算シグナル（業績裏付けあり）")
+
         # ---- STRONG/WATCH/WEAK/NOISE 判定 ----
         if qualify_result == "継続":
             reasons.append(f"✅ 継続判定（{result.get('stage2', {}).get('comment', '')}）")
@@ -329,8 +338,13 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
 
         # ---- 総合推奨判定 ----
         is_strong = qualify_result == "継続"
-        pf_ok = pf >= MIN_PF
         has_capacity = portfolio["has_capacity"]
+
+        # MOMMENTUMは長期トレンド確認型のため、PF閾値を高く・デフォルト様子見
+        if mode == "MOMENTUM":
+            pf_ok = pf >= MIN_PF_MOMENTUM
+        else:
+            pf_ok = pf >= MIN_PF
 
         if is_strong and pf_ok and has_capacity:
             recommendation = "エントリー"
@@ -451,12 +465,15 @@ def format_advice_for_slack(advices: list) -> str:
 
     lines = ["🎯 *投資判断サマリー*\n"]
 
+    mode_label_map = {"SHORT_TERM": "急騰", "MOMENTUM": "長期モメンタム", "EARNINGS": "決算"}
+
     if entry_list:
         lines.append("*━━ エントリー推奨 ━━*")
         for a in entry_list:
             invest_man = a["investAmount"] / 10000
+            mode_lbl = mode_label_map.get(a.get("mode", ""), "")
             lines.append(
-                f"*{a['stockCode']} {a['companyName']}*\n"
+                f"*{a['stockCode']} {a['companyName']}*（{mode_lbl}）\n"
                 + "\n".join(f"  {r}" for r in a["reasons"])
                 + f"\n  📌 翌朝始値目安: ¥{a['entryPrice']:,}"
                 + f"  損切: ¥{a['stopLoss']:,}  利確: ¥{a['takeProfit']:,}"
@@ -468,8 +485,9 @@ def format_advice_for_slack(advices: list) -> str:
     if watch_list:
         lines.append("\n*━━ 様子見 ━━*")
         for a in watch_list:
+            mode_lbl = mode_label_map.get(a.get("mode", ""), "")
             lines.append(
-                f"{a['stockCode']} {a['companyName']} — "
+                f"{a['stockCode']} {a['companyName']}（{mode_lbl}） — "
                 + " / ".join(a["cautions"])
             )
 
