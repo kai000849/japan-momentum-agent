@@ -246,6 +246,8 @@ def run_scan_mode(args):
                         else:
                             merged.append(r)
                     notify_new_signal(merged, mode=mode, profit_factor=0.0)
+                    # 分析済み結果をクロスシグナル照合のために保存
+                    all_results["EARNINGS"] = merged
                     # 翌朝ザラ場スキャン用ウォッチリストを保存
                     save_watchlist(merged)
                     # 決算・業績開示があった銘柄のモメンタムコメントを失効（再点検対象に）
@@ -278,6 +280,19 @@ def run_scan_mode(args):
 
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
+
+    # ---- クロスシグナル照合（3シグナルの重複銘柄を抽出） ----
+    try:
+        from agents.investment_advisor import find_cross_signals
+        from agents.slack_notifier import notify_cross_signals
+        cross = find_cross_signals(all_results)
+        if cross:
+            notify_cross_signals(cross)
+            logger.info(f"クロスシグナル: {len(cross)}銘柄検出（TRIPLE:{sum(1 for c in cross if c['crossLevel']=='TRIPLE')} / DOUBLE:{sum(1 for c in cross if c['crossLevel']=='DOUBLE')}）")
+        else:
+            logger.info("クロスシグナル: 重複銘柄なし")
+    except Exception as e:
+        logger.warning(f"クロスシグナルエラー（スキップ）: {e}")
 
     # ---- モメンタム判定サマリーをSlackに送信 ----
     if qualify_results:

@@ -781,6 +781,84 @@ def notify_endofday_earnings_scan(scan_results: list, stats: dict = None) -> boo
     return send_slack_message(text)
 
 
+def notify_cross_signals(cross_signals: list) -> bool:
+    """
+    複数シグナルが重なった銘柄をSlackに通知する。
+    3シグナルのうち2つ以上が一致した銘柄 = 確信度が高いエントリー候補。
+
+    Args:
+        cross_signals: find_cross_signals()の戻り値
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    if not cross_signals:
+        return True
+
+    triple = [c for c in cross_signals if c["crossLevel"] == "TRIPLE"]
+    double = [c for c in cross_signals if c["crossLevel"] == "DOUBLE"]
+
+    label_map = {
+        "SHORT_TERM": "急騰",
+        "MOMENTUM": "中長期MO",
+        "EARNINGS": "決算",
+    }
+
+    def _fmt(c: dict) -> str:
+        code = c["stockCode"]
+        name = c["companyName"]
+        sig_str = " ＋ ".join(label_map.get(s, s) for s in c["signals"])
+        rows = [f"• *{code} {name}*  `{sig_str}`"]
+
+        st = c.get("shortTermData")
+        if st:
+            pct = st.get("priceChangePct", 0)
+            vol = st.get("volumeRatio", 0)
+            qr = st.get("qualifyResult", "")
+            reason = st.get("surgeReason", "")
+            row = f"  📈 急騰 +{pct:.1f}% / 出来高 {vol:.1f}倍 [{qr}]"
+            if reason:
+                row += f"\n     💡 {reason}"
+            rows.append(row)
+
+        mo = c.get("momentumData")
+        if mo:
+            rsi = mo.get("rsi14", 0)
+            hr = mo.get("priceToHighRatio", 0)
+            comment = mo.get("comment", "")
+            row = f"  📊 RSI {rsi:.0f} / 52週高値比 {hr:.0f}%"
+            if comment:
+                row += f" / {comment}"
+            rows.append(row)
+
+        ea = c.get("earningsData")
+        if ea:
+            score = ea.get("score", 0)
+            rev = ea.get("revenue_yoy", "不明")
+            prof = ea.get("profit_yoy", "不明")
+            summ = (ea.get("summary") or "")[:50]
+            rows.append(f"  💹 決算スコア {score:+d} / 売上 {rev} / 利益 {prof}")
+            if summ:
+                rows.append(f"     {summ}")
+
+        return "\n".join(rows)
+
+    now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
+    lines = [f"🔀 *クロスシグナル検出* — {now}\n"]
+
+    if triple:
+        lines.append("*━━ トリプル確認（3シグナル全一致・最高確信度）━━*")
+        for c in triple:
+            lines.append(_fmt(c))
+
+    if double:
+        lines.append("\n*━━ ダブル確認（2シグナル一致）━━*")
+        for c in double:
+            lines.append(_fmt(c))
+
+    return send_slack_message("\n".join(lines))
+
+
 def notify_error(error_message: str, context: str = "") -> bool:
     """
     エラー発生をSlackに通知する。

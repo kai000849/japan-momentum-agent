@@ -335,6 +335,74 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
 # Slack通知フォーマット
 # ========================================
 
+def find_cross_signals(all_results: dict) -> list:
+    """
+    SHORT_TERM・MOMENTUM・EARNINGSの3シグナルを照合し、
+    複数シグナルが重なった銘柄を返す。
+
+    重なりの意味:
+      SHORT_TERM + EARNINGS  → 業績裏付けのある急騰（継続性が高い）
+      MOMENTUM   + EARNINGS  → 決算でモメンタム再加速
+      SHORT_TERM + MOMENTUM  → トレンド中の追い風急騰
+      全3つ                  → トリプル確認（最高確信度）
+
+    Args:
+        all_results: {モード名: スキャン結果リスト} の辞書
+
+    Returns:
+        list: crossLevel降順（TRIPLE→DOUBLE）でソートされた重複銘柄リスト
+    """
+    def _norm(code: str) -> str:
+        c = str(code).strip()
+        return c[:4] if (len(c) == 5 and c.endswith("0")) else c
+
+    # SHORT_TERM: STRONG/WATCHのみ（NOISEは対象外）
+    st_map = {
+        _norm(r["stockCode"]): r
+        for r in all_results.get("SHORT_TERM", [])
+        if r.get("qualifyResult") in ("STRONG", "WATCH")
+    }
+
+    # MOMENTUM: 全銘柄対象
+    mo_map = {
+        _norm(r["stockCode"]): r
+        for r in all_results.get("MOMENTUM", [])
+    }
+
+    # EARNINGS: スコア30以上・分析済みのみ
+    ea_map = {
+        _norm(r["stockCode"]): r
+        for r in all_results.get("EARNINGS", [])
+        if r.get("score", 0) >= 30 and r.get("analyzed", False)
+    }
+
+    cross = []
+    for code in set(st_map) | set(mo_map) | set(ea_map):
+        signals = []
+        if code in st_map:
+            signals.append("SHORT_TERM")
+        if code in mo_map:
+            signals.append("MOMENTUM")
+        if code in ea_map:
+            signals.append("EARNINGS")
+
+        if len(signals) < 2:
+            continue
+
+        rep = st_map.get(code) or mo_map.get(code) or ea_map.get(code)
+        cross.append({
+            "stockCode": code,
+            "companyName": rep.get("companyName", ""),
+            "signals": signals,
+            "crossLevel": "TRIPLE" if len(signals) == 3 else "DOUBLE",
+            "shortTermData": st_map.get(code),
+            "momentumData": mo_map.get(code),
+            "earningsData": ea_map.get(code),
+        })
+
+    return sorted(cross, key=lambda x: len(x["signals"]), reverse=True)
+
+
 def format_advice_for_slack(advices: list) -> str:
     """
     投資判断をSlack通知用テキストにフォーマットする。
