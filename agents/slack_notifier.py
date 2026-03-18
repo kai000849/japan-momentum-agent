@@ -650,18 +650,8 @@ def notify_intraday_earnings_scan(scan_results: list, stats: dict = None) -> boo
         highs_str = " 📶新高値更新中" if new_highs and not is_haritsuki else ""
         catalyst_str = f"[{catalyst}] " if catalyst else ""
 
-        pts = r.get("ptsData", {})
-        pts_str = ""
-        if pts:
-            sign_pts = "+" if pts.get("pts_change_pct", 0) >= 0 else ""
-            session_label = "夕方PTS" if pts.get("pts_session") == "post" else "前場前PTS"
-            pts_str = (f"\n  📡 {session_label}({pts['pts_time']}): "
-                       f"¥{pts['pts_price']:,.0f}  {sign_pts}{pts['pts_change_pct']:.1f}%")
-
-        if not intra and not pts:
-            detail = "（前場データ取得不可）"
-        elif not intra and pts:
-            detail = f"📡 正規取引データなし → PTS価格参照"
+        if not intra:
+            detail = "（前場データ取得不可・寄らずS高の可能性あり）"
         elif is_yobarazu:
             detail = f"🚨 寄らずS高買い気配  ギャップ:{sign_g}{gap:.1f}%（板が刺さらない状態）"
         elif is_haritsuki:
@@ -758,20 +748,12 @@ def notify_endofday_earnings_scan(scan_results: list, stats: dict = None) -> boo
                 f" / 出来高:{vol:.1f}x / {candle}"
             )
 
-        pts = r.get("ptsData", {})
-        pts_str = ""
-        if pts:
-            sign_pts = "+" if pts.get("pts_change_pct", 0) >= 0 else ""
-            session_label = "夕方PTS" if pts.get("pts_session") == "post" else "前場前PTS"
-            pts_str = (f"\n  📡 {session_label}({pts['pts_time']}): "
-                       f"¥{pts['pts_price']:,.0f}  {sign_pts}{pts['pts_change_pct']:.1f}%")
-
         comment_str = f"\n  💬 {comment}" if comment else ""
 
         lines.append(
             f"{judgment}\n"
             f"*{i}. {code} {name}*  総合:{total:.0f}  EDINET:{edinet_score:+d}点\n"
-            f"  {catalyst_str}{detail}{pts_str}{comment_str}"
+            f"  {catalyst_str}{detail}{comment_str}"
         )
 
     results_text = "\n\n".join(lines)
