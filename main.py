@@ -248,6 +248,14 @@ def run_scan_mode(args):
                     notify_new_signal(merged, mode=mode, profit_factor=0.0)
                     # 翌朝ザラ場スキャン用ウォッチリストを保存
                     save_watchlist(merged)
+                    # 決算・業績開示があった銘柄のモメンタムコメントを失効（再点検対象に）
+                    try:
+                        from agents.momentum_qualifier import invalidate_momentum_cache_for_codes
+                        analyzed_codes = [r.get("stockCode") for r in merged if r.get("analyzed")]
+                        if analyzed_codes:
+                            invalidate_momentum_cache_for_codes(analyzed_codes)
+                    except Exception as e:
+                        logger.warning(f"モメンタムキャッシュ失効エラー（スキップ）: {e}")
                 except Exception as e:
                     print(f"  決算分析エラー（簡易通知に切り替え）: {e}")
                     notify_new_signal(results, mode=mode, profit_factor=0.0)

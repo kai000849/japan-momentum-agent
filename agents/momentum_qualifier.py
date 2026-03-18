@@ -657,6 +657,50 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
     return {s.get("stockCode", ""): _get_comment(cache.get(s.get("stockCode", ""), "")) for s in signals}
 
 
+def invalidate_momentum_cache_for_codes(stock_codes: list) -> int:
+    """
+    指定銘柄のモメンタムコメントキャッシュを失効させる。
+    重要な適時開示・決算発表があった銘柄に対して呼び出す。
+    失効させると次回スキャン時にコメントが再生成される。
+
+    Args:
+        stock_codes: 失効させる銘柄コードのリスト
+
+    Returns:
+        int: 失効させた件数
+    """
+    if not stock_codes or not MOMENTUM_COMMENT_CACHE_PATH.exists():
+        return 0
+
+    try:
+        with open(MOMENTUM_COMMENT_CACHE_PATH, "r", encoding="utf-8") as f:
+            cache = json.load(f)
+    except Exception:
+        return 0
+
+    expired = 0
+    for code in stock_codes:
+        code = str(code)
+        if code in cache:
+            # generatedAt を過去日付にして期限切れ扱いにする
+            entry = cache[code]
+            if isinstance(entry, str):
+                cache[code] = {"comment": entry, "generatedAt": "2000-01-01"}
+            else:
+                cache[code]["generatedAt"] = "2000-01-01"
+            expired += 1
+
+    if expired > 0:
+        try:
+            with open(MOMENTUM_COMMENT_CACHE_PATH, "w", encoding="utf-8") as f:
+                json.dump(cache, f, ensure_ascii=False, indent=2)
+            logger.info(f"モメンタムコメントキャッシュ失効: {expired}銘柄（重要開示検出）→ 次回再生成")
+        except Exception as e:
+            logger.warning(f"キャッシュ失効保存エラー: {e}")
+
+    return expired
+
+
 # ========================================
 # メイン判定関数
 # ========================================
@@ -716,6 +760,14 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         tdnet_hit = sum(1 for s in stocks_with_info if s["tdnet_disclosures"])
         news_hit = sum(1 for s in stocks_with_info if s["news"])
         logger.info(f"  情報取得完了: TDnet={tdnet_hit}件 / Google News={news_hit}件")
+
+        # 重要な適時開示（業績・上方修正・決算等）があった銘柄のモメンタムコメントを失効
+        high_value_codes = [
+            s["stockCode"] for s in stocks_with_info
+            if any(d.get("is_high_value") for d in s.get("tdnet_disclosures", []))
+        ]
+        if high_value_codes:
+            invalidate_momentum_cache_for_codes(high_value_codes)
 
         surge_reason_map = _generate_surge_reasons_batch(stocks_with_info)
         logger.info(f"  急騰理由生成完了: {len(surge_reason_map)}銘柄")
