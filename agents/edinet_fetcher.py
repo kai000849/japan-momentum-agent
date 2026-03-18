@@ -225,27 +225,49 @@ def get_earnings_announcements(date: str = None) -> list:
         return []
 
     # 決算関連書類を絞り込む
+    # ---- 臨時報告書フィルタ: 業績・決算関連のみ通す ----
+    # docTypeCode="180"（決算短信カテゴリ）には「臨時報告書」も含まれる。
+    # 役員異動・株式発行など業績と無関係な書類は除外し、
+    # 決算短信・業績予想修正・配当修正のみを対象にする。
+    EARNINGS_KEYWORDS = [
+        "決算", "業績", "配当", "経営成績", "財務諸表",
+        "四半期", "半期", "通期", "年度", "利益", "売上"
+    ]
+    # 臨時報告書でも業績修正は対象にする（上記キーワード含む場合はOK）
+    # 有価証券報告書・四半期報告書は無条件で対象（docType 030/130/140）
+
     earnings = []
     for doc in disclosures:
         doc_type = str(doc.get("docTypeCode", ""))
 
         # 決算関連の書類種別コードに一致するものを抽出
-        if doc_type in EARNINGS_DOC_TYPES:
-            # 有価証券コード（証券コード）を取得
-            sec_code = doc.get("secCode", "")
-            if not sec_code:
+        if doc_type not in EARNINGS_DOC_TYPES:
+            continue
+
+        # 有価証券コード（証券コード）を取得
+        sec_code = doc.get("secCode", "")
+        if not sec_code:
+            continue
+
+        doc_desc = doc.get("docDescription", "")
+
+        # docType "180" の場合、「臨時報告書」は業績関連キーワードを含む場合のみ通す
+        # （役員異動・合併・株式発行など業績と無関係な臨時報告書を除外）
+        if doc_type == "180" and "臨時報告書" in doc_desc:
+            if not any(kw in doc_desc for kw in EARNINGS_KEYWORDS):
+                logger.debug(f"非業績系臨時報告書をスキップ: {doc.get('filerName','')} [{doc_desc}]")
                 continue
 
-            earnings.append({
-                "date": date,
-                "secCode": sec_code,                          # 証券コード（例: "72030"）
-                "edinetCode": doc.get("edinetCode", ""),      # EDINETコード
-                "companyName": doc.get("filerName", ""),      # 会社名
-                "docTypeCode": doc_type,                       # 書類種別コード
-                "docDescription": doc.get("docDescription", ""),  # 書類概要
-                "submitDateTime": doc.get("submitDateTime", ""),  # 提出日時
-                "docID": doc.get("docID", "")                 # 書類ID
-            })
+        earnings.append({
+            "date": date,
+            "secCode": sec_code,                          # 証券コード（例: "72030"）
+            "edinetCode": doc.get("edinetCode", ""),      # EDINETコード
+            "companyName": doc.get("filerName", ""),      # 会社名
+            "docTypeCode": doc_type,                       # 書類種別コード
+            "docDescription": doc_desc,                    # 書類概要
+            "submitDateTime": doc.get("submitDateTime", ""),  # 提出日時
+            "docID": doc.get("docID", "")                 # 書類ID
+        })
 
     logger.info(f"決算発表銘柄: {len(earnings)}件を抽出しました。")
 
