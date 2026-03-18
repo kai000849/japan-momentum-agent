@@ -1031,7 +1031,7 @@ def notify_noon_scan(results: list) -> bool:
             current = intra.get("current_price", 0)
             if current > 0:
                 stop = round(current * 0.95)
-                tp   = round(current * 1.12)
+                tp   = round(current * 1.15)
                 lines.append(f"  📌 後場12:30エントリー目安 損切: ¥{stop:,}  利確: ¥{tp:,}")
             lines.append("")
 
