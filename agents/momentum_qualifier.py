@@ -567,8 +567,25 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
         except Exception:
             cache = {}
 
-    # キャッシュにない銘柄だけ抽出
-    new_signals = [s for s in signals if s.get("stockCode", "") not in cache]
+    # 30日以上経過したコメントは期限切れ扱い（月1点検・再生成）
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    def _is_expired(entry) -> bool:
+        if isinstance(entry, str):   # 旧フォーマット互換（文字列のまま）→ 期限切れ扱い
+            return True
+        generated_at = entry.get("generatedAt", "")
+        if not generated_at:
+            return True
+        try:
+            delta = (datetime.now() - datetime.strptime(generated_at, "%Y-%m-%d")).days
+            return delta >= 30
+        except Exception:
+            return True
+
+    # キャッシュにない or 期限切れの銘柄だけ抽出
+    new_signals = [
+        s for s in signals
+        if s.get("stockCode", "") not in cache or _is_expired(cache[s.get("stockCode", "")])
+    ]
 
     if new_signals:
         stocks_text = ""
@@ -617,8 +634,8 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
             for item in parsed.get("comments", []):
                 code = str(item.get("stockCode", ""))
                 if code:
-                    cache[code] = item.get("comment", "")
-            logger.info(f"モメンタムコメント生成: {len(new_signals)}銘柄（新規） → キャッシュ保存")
+                    cache[code] = {"comment": item.get("comment", ""), "generatedAt": today_str}
+            logger.info(f"モメンタムコメント生成: {len(new_signals)}銘柄（新規/期限切れ） → キャッシュ保存")
         except Exception as e:
             logger.warning(f"モメンタムコメント生成エラー: {e}")
 
@@ -632,7 +649,12 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
     else:
         logger.info(f"モメンタムコメント: 全{len(signals)}銘柄キャッシュ済み → API呼び出しなし")
 
-    return {s.get("stockCode", ""): cache.get(s.get("stockCode", ""), "") for s in signals}
+    def _get_comment(entry) -> str:
+        if isinstance(entry, str):
+            return entry
+        return entry.get("comment", "") if isinstance(entry, dict) else ""
+
+    return {s.get("stockCode", ""): _get_comment(cache.get(s.get("stockCode", ""), "")) for s in signals}
 
 
 # ========================================
