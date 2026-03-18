@@ -344,6 +344,17 @@ def run_scan_mode(args):
         except Exception as e:
             logger.warning(f"投資判断エラー（スキップ）: {e}")
 
+    # ---- 実売買ポジション損益確認 ----
+    try:
+        from agents.paper_trader import get_actual_positions
+        from agents.slack_notifier import notify_actual_positions
+        actual_positions = get_actual_positions()
+        if actual_positions:
+            notify_actual_positions(actual_positions)
+            logger.info(f"実売買ポジション通知: {len(actual_positions)}銘柄")
+    except Exception as e:
+        logger.warning(f"実売買ポジション通知エラー（スキップ）: {e}")
+
     return all_results
 
 
@@ -542,13 +553,32 @@ def run_full_mode(args):
 
 def run_status_mode(args):
     """
-    ペーパートレード状況表示モード。
-    現在のポジション・損益を表示する。
+    ポートフォリオ状況表示モード（実売買 + ペーパートレード）。
 
     Args:
         args: コマンドライン引数
     """
-    from agents.paper_trader import display_portfolio_status, PaperTrader
+    from agents.paper_trader import display_portfolio_status, PaperTrader, get_actual_positions
+
+    # ---- 実売買ポジション ----
+    actual = get_actual_positions()
+    if actual:
+        print("【実売買ポジション（yfinance最新価格）】")
+        total_pnl = sum(p.get("unrealizedPnl", 0) for p in actual)
+        for p in actual:
+            ret = p.get("unrealizedPnlPct", 0)
+            pnl = p.get("unrealizedPnl", 0)
+            sign = "+" if ret >= 0 else ""
+            print(
+                f"  {p['stockCode']} {p.get('companyName','')[:12]}"
+                f"  取得¥{p['entryPrice']:,}×{p['shares']}株"
+                f"  現在¥{p.get('currentPrice',0):,}"
+                f"  {sign}{pnl:,.0f}円（{sign}{ret:.1f}%）"
+            )
+        total_sign = "+" if total_pnl >= 0 else ""
+        print(f"  合計含み損益: {total_sign}{total_pnl:,.0f}円\n")
+    else:
+        print("【実売買ポジション】 なし\n")
 
     print("【ペーパートレード状況】")
     display_portfolio_status()
@@ -600,8 +630,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan"],
-        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場) / earnings_endofday(引け後) / noon_scan(正午・後場判断)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade"],
+        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday / earnings_endofday / noon_scan / add_trade(実売買記録) / close_trade(実売買決済)"
     )
 
     # オプション: スキャンタイプ
@@ -644,6 +674,13 @@ def create_parser() -> argparse.ArgumentParser:
         default=False,
         help="Slack通知を送信する（statusモード用）"
     )
+
+    # 実売買記録用オプション
+    parser.add_argument("--code",    type=str,   default=None, help="銘柄コード（add_trade / close_trade用）")
+    parser.add_argument("--price",   type=float, default=None, help="エントリー/決済価格（円）")
+    parser.add_argument("--shares",  type=int,   default=None, help="購入株数（add_trade用）")
+    parser.add_argument("--company", type=str,   default="",   help="会社名（任意）")
+    parser.add_argument("--signal",  type=str,   default="",   help="シグナル種別（任意、例: SHORT_TERM）")
 
     return parser
 
@@ -856,6 +893,50 @@ def main():
 
             notify_noon_scan(results)
             print("✓ Slack通知送信完了")
+
+        elif args.mode == "add_trade":
+            # 実売買エントリー記録
+            from agents.paper_trader import add_actual_trade
+            code    = args.code
+            price   = args.price
+            shares  = args.shares
+            company = getattr(args, "company", "") or ""
+            signal  = getattr(args, "signal", "") or ""
+
+            if not code or not price or not shares:
+                print("エラー: --code, --price, --shares は必須です。")
+                print("例: python main.py --mode add_trade --code 7203 --price 2500 --shares 100")
+                sys.exit(1)
+
+            success = add_actual_trade(code, price, shares, company, signal)
+            if success:
+                invest = price * shares
+                stop   = round(price * 0.95)
+                tp     = round(price * 1.15)
+                print(f"✅ 実売買を記録しました")
+                print(f"  銘柄: {code} {company}")
+                print(f"  エントリー: ¥{price:,} × {shares}株 = ¥{invest:,.0f}")
+                print(f"  損切ライン: ¥{stop:,}（-5%）")
+                print(f"  利確ライン: ¥{tp:,}（+15%）")
+            else:
+                print("❌ 記録失敗（同銘柄が既に記録済みの可能性があります）")
+
+        elif args.mode == "close_trade":
+            # 実売買決済記録
+            from agents.paper_trader import close_actual_trade
+            code  = args.code
+            price = args.price
+
+            if not code or not price:
+                print("エラー: --code, --price は必須です。")
+                print("例: python main.py --mode close_trade --code 7203 --price 2600")
+                sys.exit(1)
+
+            success = close_actual_trade(code, price)
+            if success:
+                print(f"✅ 決済を記録しました: {code} → ¥{price:,}")
+            else:
+                print(f"❌ 決済失敗（{code} の実売買記録が見つかりません）")
 
         elif args.mode == "qualify_report":
             # 判定精度レポートモード

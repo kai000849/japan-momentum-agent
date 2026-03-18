@@ -354,8 +354,19 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
             recommendation = "見送り"
 
         # ---- エントリー価格の計算 ----
-        # 翌営業日の始値想定（現在終値の+0.5%を想定始値として使用）
-        entry_price = round(current_price * 1.005) if current_price > 0 else 0
+        # yfinanceで最新価格を取得（失敗時はJ-Quants終値をそのまま使用）
+        latest_price = current_price
+        price_source = "J-Quants"
+        try:
+            from agents.noon_scanner import fetch_intraday
+            intraday = fetch_intraday(stock_code)
+            if intraday and intraday.get("current_price", 0) > 0:
+                latest_price = intraday["current_price"]
+                price_source = "yfinance"
+        except Exception:
+            pass
+
+        entry_price = round(latest_price) if latest_price > 0 else 0
         stop_loss = round(entry_price * 0.95) if entry_price > 0 else 0
         take_profit = round(entry_price * 1.15) if entry_price > 0 else 0
         invest_amount = min(MAX_INVEST_PER_STOCK, portfolio["cash_available"])
@@ -368,7 +379,8 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
             "recommendation": recommendation,
             "reasons": reasons,
             "cautions": cautions,
-            "currentPrice": current_price,
+            "currentPrice": latest_price,
+            "priceSource": price_source,
             "entryPrice": entry_price,
             "stopLoss": stop_loss,
             "takeProfit": take_profit,
@@ -475,7 +487,7 @@ def format_advice_for_slack(advices: list) -> str:
             lines.append(
                 f"*{a['stockCode']} {a['companyName']}*（{mode_lbl}）\n"
                 + "\n".join(f"  {r}" for r in a["reasons"])
-                + f"\n  📌 翌朝始値目安: ¥{a['entryPrice']:,}"
+                + f"\n  📌 現在値（{a.get('priceSource','参考')}）: ¥{a['entryPrice']:,}"
                 + f"  損切: ¥{a['stopLoss']:,}  利確: ¥{a['takeProfit']:,}"
                 + f"\n  💴 投資額目安: {invest_man:.0f}万円"
             )

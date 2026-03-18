@@ -569,6 +569,113 @@ def display_portfolio_status() -> None:
 
 
 # ========================================
+# 実売買記録（ペーパーとは別・tradeType:"actual"）
+# ========================================
+
+def add_actual_trade(
+    stock_code: str,
+    entry_price: float,
+    shares: int,
+    company_name: str = "",
+    signal: str = "",
+) -> bool:
+    """
+    実際の売買をtrade_log.jsonに記録する。
+    ペーパートレードとは tradeType:"actual" で区別される。
+
+    Args:
+        stock_code:   銘柄コード（例: "7203"）
+        entry_price:  実際のエントリー価格（円）
+        shares:       購入株数
+        company_name: 会社名（任意）
+        signal:       きっかけシグナル（例: "SHORT_TERM"）
+
+    Returns:
+        bool: 記録成功はTrue
+    """
+    trader = PaperTrader()
+    positions = trader.trade_log.get("positions", [])
+
+    # 同銘柄の実売買重複チェック
+    for p in positions:
+        if p.get("stockCode") == stock_code and p.get("tradeType") == "actual":
+            logger.warning(f"既に実売買記録済み: {stock_code}")
+            return False
+
+    stop_loss = round(entry_price * 0.95)
+    take_profit = round(entry_price * 1.15)
+    invested = round(entry_price * shares)
+
+    positions.append({
+        "stockCode": stock_code,
+        "companyName": company_name,
+        "tradeType": "actual",
+        "entryDate": datetime.now().strftime("%Y-%m-%d"),
+        "entryPrice": round(entry_price),
+        "shares": shares,
+        "investedAmount": invested,
+        "stopLossPrice": stop_loss,
+        "takeProfitPrice": take_profit,
+        "holdDays": 0,
+        "currentPrice": round(entry_price),
+        "unrealizedPnl": 0,
+        "unrealizedPnlPct": 0.0,
+        "signal": signal,
+    })
+    trader.trade_log["positions"] = positions
+    trader._save_trade_log()
+    logger.info(f"実売買記録: {stock_code} ¥{entry_price:,}×{shares}株 = ¥{invested:,}")
+    return True
+
+
+def close_actual_trade(stock_code: str, exit_price: float) -> bool:
+    """
+    実売買ポジションの決済を記録する。
+
+    Args:
+        stock_code:  銘柄コード
+        exit_price:  実際の決済価格（円）
+
+    Returns:
+        bool: 成功はTrue
+    """
+    trader = PaperTrader()
+    return trader.close_position(stock_code, exit_price, "手動決済（実売買）")
+
+
+def get_actual_positions() -> list:
+    """
+    実売買ポジション一覧を返す。yfinanceで現在価格を取得して損益を更新する。
+
+    Returns:
+        list: 損益更新済みのポジションリスト（含み損益降順）
+    """
+    trader = PaperTrader()
+    positions = [
+        p for p in trader.trade_log.get("positions", [])
+        if p.get("tradeType") == "actual"
+    ]
+    if not positions:
+        return []
+
+    # yfinanceで最新価格を取得して損益を更新
+    try:
+        from agents.noon_scanner import fetch_intraday
+        for p in positions:
+            intraday = fetch_intraday(p["stockCode"])
+            if intraday and intraday.get("current_price", 0) > 0:
+                current = intraday["current_price"]
+                entry = p["entryPrice"]
+                p["currentPrice"] = current
+                p["unrealizedPnl"] = round((current - entry) * p["shares"])
+                p["unrealizedPnlPct"] = round((current - entry) / entry * 100, 2)
+    except Exception as e:
+        logger.warning(f"実売買現在価格取得エラー（記録価格で表示）: {e}")
+
+    return sorted(positions, key=lambda x: x.get("unrealizedPnlPct", 0), reverse=True)
+
+
+# ========================================
 # メイン（単体テスト用）
 # ========================================
 

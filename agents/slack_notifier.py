@@ -1056,6 +1056,41 @@ def notify_noon_scan(results: list) -> bool:
     return send_slack_message(text)
 
 
+def notify_actual_positions(positions: list) -> bool:
+    """
+    実売買ポジションの含み損益をSlackに通知する。
+
+    Args:
+        positions: paper_trader.get_actual_positions() の戻り値
+
+    Returns:
+        bool: 送信成功かどうか
+    """
+    if not positions:
+        return True
+
+    lines = ["📈 *実売買ポジション 損益確認*\n"]
+    total_pnl = sum(p.get("unrealizedPnl", 0) for p in positions)
+
+    for p in positions:
+        ret = p.get("unrealizedPnlPct", 0)
+        pnl = p.get("unrealizedPnl", 0)
+        icon = "✅" if ret >= 5 else ("📊" if ret >= 0 else ("⚠️" if ret >= -3 else "❌"))
+        current = p.get("currentPrice", 0)
+        entry = p.get("entryPrice", 0)
+        shares = p.get("shares", 0)
+        lines.append(
+            f"{icon} *{p['stockCode']} {p.get('companyName', '')}*\n"
+            f"  取得: ¥{entry:,}×{shares}株  現在: ¥{current:,}\n"
+            f"  損益: {'+' if pnl >= 0 else ''}{pnl:,.0f}円（{'+' if ret >= 0 else ''}{ret:.1f}%）"
+            f"  損切: ¥{p['stopLossPrice']:,} / 利確: ¥{p['takeProfitPrice']:,}"
+        )
+
+    total_sign = "+" if total_pnl >= 0 else ""
+    lines.append(f"\n合計含み損益: {total_sign}{total_pnl:,.0f}円（{len(positions)}銘柄）")
+    return send_slack_message("\n".join(lines))
+
+
 if __name__ == "__main__":
     print("Slack接続テストを実行します...")
     success = send_test_message()
