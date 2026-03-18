@@ -267,7 +267,14 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             if not all_ma_rising:
                 continue
 
-            # ---- 条件2: 現在株価が52週高値の90%以上 ----
+            # ---- 条件1b: MAパーフェクトオーダー（MA5 > MA25 > MA75）----
+            ma5_val  = ma_data["ma5"]["current"]
+            ma25_val = ma_data["ma25"]["current"]
+            ma75_val = ma_data["ma75"]["current"]
+            if not (ma5_val > ma25_val > ma75_val):
+                continue
+
+            # ---- 条件2: 現在株価が52週高値の95%以上 ----
             price_52w_window = closes.tail(252)
             high_52w = float(price_52w_window.max())
 
@@ -275,7 +282,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 continue
 
             price_to_high_ratio = (current_close / high_52w) * 100
-            if price_to_high_ratio < 90.0:
+            if price_to_high_ratio < 95.0:
                 continue
 
             # ---- 条件3: RSI(14日)が55〜72の範囲 ----
@@ -295,11 +302,13 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                     running_high = price
             new_high_score = new_high_count / 20.0
 
-            # ---- 追加指標: 出来高増加トレンド ----
+            # ---- 条件4: 出来高増加トレンド（直近5日平均 >= 直近25日平均）----
             volumes = group_to_date["Volume"].astype(float)
             avg_vol_5d = float(volumes.tail(5).mean())
             avg_vol_25d = float(volumes.tail(25).mean())
             volume_trend = (avg_vol_5d / avg_vol_25d) if avg_vol_25d > 0 else 1.0
+            if volume_trend < 1.0:
+                continue
             volume_trend = min(volume_trend, 1.5)
 
             # ---- モメンタムスコア計算 ----
@@ -312,7 +321,6 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
             )
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
-            ma75_val = ma_data["ma75"]["current"]
 
             results.append({
                 "stockCode": str(stock_code),
