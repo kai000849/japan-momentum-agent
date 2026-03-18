@@ -206,9 +206,12 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
             new_high = s.get("newHighCount", 0)
             vol_trend = s.get("volumeTrend", 1.0)
             vol_icon = "📶" if vol_trend >= 1.2 else ("➡️" if vol_trend >= 0.9 else "📉")
+            comment = s.get("comment", "")
+            comment_str = f"\n    💬 {comment}" if comment else ""
             lines.append(
                 f"  • {code}{name_str}  スコア:{score:.1f}\n"
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
+                f"{comment_str}"
             )
         else:
             price_chg = s.get("price_change_pct", 0)

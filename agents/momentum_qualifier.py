@@ -43,6 +43,7 @@ PRICE_SUSTAIN_RATIO = 0.97
 SUSTAIN_CHECK_DAYS = 3
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
+MOMENTUM_COMMENT_CACHE_PATH = Path(__file__).parent.parent / "data" / "processed" / "momentum_comments_cache.json"
 
 # フェーズ3: 結果記録の基準（何営業日後に検証するか）
 OUTCOME_CHECK_DAYS = 10
@@ -535,6 +536,103 @@ def get_outcome_stats() -> dict:
             result[label] = {"count": 0, "win_rate": None, "avg_return": None}
 
     return result
+
+
+# ========================================
+# モメンタムシグナル: コメント生成（永続キャッシュ付き）
+# ========================================
+
+def generate_and_cache_momentum_comments(signals: list) -> dict:
+    """
+    MOメンタムシグナル銘柄に「なぜ今トレンドか」コメントをClaude APIで生成し、
+    永続キャッシュに保存する。キャッシュ済みの銘柄はAPIを呼ばずに再利用。
+
+    キャッシュ: data/processed/momentum_comments_cache.json
+    キー: stockCode（有効期限なし。中長期トレンドのコメントは使い回し可）
+
+    Returns:
+        dict: {stockCode: comment}
+    """
+    from agents.utils import get_anthropic_key
+    api_key = get_anthropic_key()
+    if not api_key or not signals:
+        return {}
+
+    # キャッシュ読み込み
+    cache = {}
+    if MOMENTUM_COMMENT_CACHE_PATH.exists():
+        try:
+            with open(MOMENTUM_COMMENT_CACHE_PATH, "r", encoding="utf-8") as f:
+                cache = json.load(f)
+        except Exception:
+            cache = {}
+
+    # キャッシュにない銘柄だけ抽出
+    new_signals = [s for s in signals if s.get("stockCode", "") not in cache]
+
+    if new_signals:
+        stocks_text = ""
+        for s in new_signals:
+            code = s.get("stockCode", "")
+            name = s.get("companyName", "")
+            rsi = s.get("rsi14", 0)
+            high_ratio = s.get("priceToHighRatio", 0)
+            new_high = s.get("newHighCount", 0)
+            vol_trend = s.get("volumeTrend", 1.0)
+            stocks_text += (
+                f"【{code} {name}】"
+                f"RSI:{rsi:.0f} / 52週高値比:{high_ratio:.1f}% / 新高値:{new_high}回/20日 / 出来高トレンド:{vol_trend:.2f}x\n"
+            )
+
+        prompt = f"""あなたはモメンタム投資の専門家です。以下の銘柄のトレンド指標を見て、
+各銘柄に「なぜ今モメンタムがあるか」を40文字以内で簡潔にコメントしてください。
+学習済み知識のみで判断してください。
+
+{stocks_text}
+必ず以下のJSON形式のみで回答してください：
+{{
+  "comments": [
+    {{
+      "stockCode": "<銘柄コード>",
+      "comment": "<40文字以内>"
+    }}
+  ]
+}}"""
+
+        try:
+            import anthropic
+            import re as _re
+            client = anthropic.Anthropic(api_key=api_key)
+            resp = client.messages.create(
+                model=CLAUDE_MODEL,
+                max_tokens=400,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            raw = resp.content[0].text.strip()
+            raw = _re.sub(r'```(?:json)?', '', raw)
+            s_idx = raw.find("{"); e_idx = raw.rfind("}") + 1
+            if s_idx >= 0 and e_idx > s_idx:
+                raw = raw[s_idx:e_idx]
+            parsed = json.loads(raw)
+            for item in parsed.get("comments", []):
+                code = str(item.get("stockCode", ""))
+                if code:
+                    cache[code] = item.get("comment", "")
+            logger.info(f"モメンタムコメント生成: {len(new_signals)}銘柄（新規） → キャッシュ保存")
+        except Exception as e:
+            logger.warning(f"モメンタムコメント生成エラー: {e}")
+
+        # キャッシュ保存
+        try:
+            MOMENTUM_COMMENT_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(MOMENTUM_COMMENT_CACHE_PATH, "w", encoding="utf-8") as f:
+                json.dump(cache, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.warning(f"コメントキャッシュ保存エラー: {e}")
+    else:
+        logger.info(f"モメンタムコメント: 全{len(signals)}銘柄キャッシュ済み → API呼び出しなし")
+
+    return {s.get("stockCode", ""): cache.get(s.get("stockCode", ""), "") for s in signals}
 
 
 # ========================================

@@ -253,6 +253,16 @@ def run_scan_mode(args):
                     notify_new_signal(results, mode=mode, profit_factor=0.0)
                 continue
 
+            # MOMENTUMはキャッシュ付きコメント生成（新規銘柄のみAPI呼び出し）
+            if mode == "MOMENTUM":
+                try:
+                    from agents.momentum_qualifier import generate_and_cache_momentum_comments
+                    comment_map = generate_and_cache_momentum_comments(results)
+                    for r in results:
+                        r["comment"] = comment_map.get(r.get("stockCode", ""), "")
+                except Exception as e:
+                    logger.warning(f"モメンタムコメント生成エラー（スキップ）: {e}")
+
             # SHORT_TERM・MOMENTUMはバックテストでPFを計算してSlack通知
             # CSVの最終日から15営業日前の日付でスキャン→バックテスト→PF計算
             pf = _calc_pf_for_mode(mode)
