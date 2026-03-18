@@ -20,6 +20,8 @@ from pathlib import Path
 
 import yaml
 
+from agents.momentum_qualifier import normalize_qualify_label
+
 logger = logging.getLogger(__name__)
 
 
@@ -819,7 +821,7 @@ def notify_cross_signals(cross_signals: list) -> bool:
         if st:
             pct = st.get("priceChangePct", 0)
             vol = st.get("volumeRatio", 0)
-            qr = st.get("qualifyResult", "")
+            qr = normalize_qualify_label(st.get("qualifyResult", ""))
             reason = st.get("surgeReason", "")
             row = f"  📈 急騰 +{pct:.1f}% / 出来高 {vol:.1f}倍 [{qr}]"
             if reason:
@@ -1017,7 +1019,7 @@ def notify_noon_scan(results: list) -> bool:
         scan_close = r.get("scanClose", 0)
         current = intra.get("current_price", 0)
         mode_label = {"SHORT_TERM": "急騰", "MOMENTUM": "モメンタム", "EARNINGS": "決算"}.get(r["mode"], r["mode"])
-        qualify_label = r.get("qualifyResult", "")
+        qualify_label = normalize_qualify_label(r.get("qualifyResult", ""))
 
         header = f"*{code} {name}* （{mode_label}・{qualify_label}）"
         price_str = (

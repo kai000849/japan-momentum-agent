@@ -282,7 +282,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
     for result in qualify_results:
         stock_code = result.get("stockCode", "")
         company_name = result.get("companyName", "")
-        qualify_result = result.get("qualifyResult", "ノイズ")
+        qualify_result = normalize_qualify_label(result.get("qualifyResult", "ノイズ"))
         mode = result.get("mode", "SHORT_TERM")
         current_price = result.get("close", 0)
         pf = pf_map.get(mode, 0)
@@ -337,9 +337,9 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         # ---- STRONG過去勝率チェック ----
         if strong_wr is not None:
             if strong_wr >= 60:
-                reasons.append(f"✅ STRONG実績勝率 {strong_wr:.0f}%")
+                reasons.append(f"✅ 継続実績勝率 {strong_wr:.0f}%")
             else:
-                cautions.append(f"⚠️ STRONG実績勝率 {strong_wr:.0f}%（参考値）")
+                cautions.append(f"⚠️ 継続実績勝率 {strong_wr:.0f}%（参考値）")
 
         # ---- 総合推奨判定 ----
         is_strong = qualify_result == "継続"
