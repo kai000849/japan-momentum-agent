@@ -507,7 +507,7 @@ def get_outcome_stats() -> dict:
 
     stats = {
         label: {"count": 0, "wins": 0, "returns": []}
-        for label in ["STRONG", "WATCH", "WEAK", "NOISE"]
+        for label in ["継続", "様子見", "一時的", "ノイズ"]
     }
     total_recorded = 0
 
@@ -516,7 +516,7 @@ def get_outcome_stats() -> dict:
         if not outcome or outcome.get("status") != "recorded":
             continue
 
-        label = entry.get("qualifyResult", "NOISE")
+        label = entry.get("qualifyResult", "ノイズ")
         if label not in stats:
             continue
 
@@ -841,22 +841,22 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         structural_change = stage2.get("structuralChange")
 
         if stage1_pass and structural_change is True:
-            result["qualifyResult"] = "STRONG"
+            result["qualifyResult"] = "継続"
         elif stage1_pass and structural_change is None:
-            result["qualifyResult"] = "WATCH"
+            result["qualifyResult"] = "様子見"
         elif stage1_pass and structural_change is False:
-            result["qualifyResult"] = "WEAK"
+            result["qualifyResult"] = "一時的"
         else:
-            result["qualifyResult"] = "NOISE"
+            result["qualifyResult"] = "ノイズ"
 
         result["outcome"] = None
         results.append(result)
 
     _save_qualify_log(results)
 
-    strong = sum(1 for r in results if r["qualifyResult"] == "STRONG")
-    watch = sum(1 for r in results if r["qualifyResult"] == "WATCH")
-    logger.info(f"モメンタム判定完了: STRONG={strong}件 / WATCH={watch}件 / 計{len(results)}件")
+    strong = sum(1 for r in results if r["qualifyResult"] == "継続")
+    watch = sum(1 for r in results if r["qualifyResult"] == "様子見")
+    logger.info(f"モメンタム判定完了: 継続={strong}件 / 様子見={watch}件 / 計{len(results)}件")
 
     return results
 
@@ -897,8 +897,8 @@ def _save_qualify_log(results: list):
 
 def format_qualify_result_for_slack(results: list) -> str:
     """判定結果をSlack通知用のテキストにフォーマットする。"""
-    strong_results = [r for r in results if r["qualifyResult"] == "STRONG"]
-    watch_results = [r for r in results if r["qualifyResult"] == "WATCH"]
+    strong_results = [r for r in results if r["qualifyResult"] == "継続"]
+    watch_results = [r for r in results if r["qualifyResult"] == "様子見"]
 
     if not strong_results and not watch_results:
         return "🔍 構造的モメンタム候補なし（全シグナルがノイズ/短期加熱と判定）"
@@ -906,7 +906,7 @@ def format_qualify_result_for_slack(results: list) -> str:
     lines = ["🔥 *構造的モメンタム判定結果*\n"]
 
     if strong_results:
-        lines.append("*【STRONG】構造的変化あり*")
+        lines.append("*【継続】構造的変化あり*")
         for r in strong_results:
             s1 = r.get("stage1", {})
             s2 = r.get("stage2", {})
@@ -934,7 +934,7 @@ def format_qualify_result_for_slack(results: list) -> str:
             )
 
     if watch_results:
-        lines.append("\n*【WATCH】要観察（APIキー未設定）*")
+        lines.append("\n*【様子見】要観察（APIキー未設定）*")
         for r in watch_results:
             s1 = r.get("stage1", {})
             vol_rate = s1.get("volumeSustainRate", 0)
@@ -956,7 +956,7 @@ def format_qualify_result_for_slack(results: list) -> str:
         total = stats.get("total_recorded", 0)
         if total >= 5:
             lines.append(f"\n📊 *判定精度サマリー（{total}件記録済み）*")
-            for label in ["STRONG", "WEAK", "NOISE"]:
+            for label in ["継続", "一時的", "ノイズ"]:
                 s = stats.get(label, {})
                 if s.get("count", 0) > 0:
                     lines.append(

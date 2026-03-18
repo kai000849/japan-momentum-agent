@@ -885,7 +885,7 @@ def main():
                 print("   （10営業日後に自動記録されます）")
             else:
                 print(f"📈 判定精度サマリー（{total_recorded}件記録済み）")
-                for label in ["STRONG", "WEAK", "WATCH", "NOISE"]:
+                for label in ["継続", "一時的", "様子見", "ノイズ"]:
                     s = stats.get(label, {})
                     count = s.get("count", 0)
                     if count > 0:
@@ -898,7 +898,7 @@ def main():
                 if args.notify:
                     from agents.slack_notifier import send_slack_message
                     lines = [f"📊 *判定精度レポート（{total_recorded}件記録済み）*"]
-                    for label in ["STRONG", "WEAK", "WATCH", "NOISE"]:
+                    for label in ["継続", "一時的", "様子見", "ノイズ"]:
                         s = stats.get(label, {})
                         count = s.get("count", 0)
                         if count > 0:

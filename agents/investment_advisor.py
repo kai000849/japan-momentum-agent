@@ -108,7 +108,7 @@ def _get_strong_win_rate() -> Optional[float]:
 
     recorded = [
         e for e in entries
-        if e.get("qualifyResult") == "STRONG"
+        if e.get("qualifyResult") == "継続"
         and e.get("outcome", {}) is not None
         and e.get("outcome", {}).get("status") == "recorded"
     ]
@@ -276,7 +276,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
     for result in qualify_results:
         stock_code = result.get("stockCode", "")
         company_name = result.get("companyName", "")
-        qualify_result = result.get("qualifyResult", "NOISE")
+        qualify_result = result.get("qualifyResult", "ノイズ")
         mode = result.get("mode", "SHORT_TERM")
         current_price = result.get("close", 0)
         pf = pf_map.get(mode, 0)
@@ -285,14 +285,14 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         cautions = []
 
         # ---- STRONG/WATCH/WEAK/NOISE 判定 ----
-        if qualify_result == "STRONG":
-            reasons.append(f"✅ STRONG判定（{result.get('stage2', {}).get('comment', '')}）")
-        elif qualify_result == "WATCH":
-            cautions.append("⚠️ WATCH（Claude判定未実行）")
-        elif qualify_result == "WEAK":
-            cautions.append(f"❌ WEAK（{result.get('stage2', {}).get('comment', '')}）")
+        if qualify_result == "継続":
+            reasons.append(f"✅ 継続判定（{result.get('stage2', {}).get('comment', '')}）")
+        elif qualify_result == "様子見":
+            cautions.append("⚠️ 様子見（Claude判定未実行）")
+        elif qualify_result == "一時的":
+            cautions.append(f"❌ 一時的（{result.get('stage2', {}).get('comment', '')}）")
         else:
-            cautions.append("❌ NOISE（ステージ1不通過）")
+            cautions.append("❌ ノイズ（ステージ1不通過）")
 
         # ---- PF チェック ----
         if pf >= MIN_PF:
@@ -328,7 +328,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
                 cautions.append(f"⚠️ STRONG実績勝率 {strong_wr:.0f}%（参考値）")
 
         # ---- 総合推奨判定 ----
-        is_strong = qualify_result == "STRONG"
+        is_strong = qualify_result == "継続"
         pf_ok = pf >= MIN_PF
         has_capacity = portfolio["has_capacity"]
 
@@ -395,7 +395,7 @@ def find_cross_signals(all_results: dict) -> list:
     st_map = {
         _norm(r["stockCode"]): r
         for r in all_results.get("SHORT_TERM", [])
-        if r.get("qualifyResult") in ("STRONG", "WATCH")
+        if r.get("qualifyResult") in ("継続", "様子見")
     }
 
     # MOMENTUM: 全銘柄対象

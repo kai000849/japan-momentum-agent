@@ -180,7 +180,7 @@ def _load_qualify_log_latest() -> list:
         return [
             e for e in entries
             if e.get("scanDate") == latest_date
-            and e.get("qualifyResult") in ("STRONG", "WATCH")
+            and e.get("qualifyResult") in ("継続", "様子見")
         ]
     except Exception as e:
         logger.warning(f"qualify_log読み込みエラー: {e}")
@@ -319,7 +319,7 @@ def run_noon_scan(scan_date: Optional[str] = None) -> list:
             mode = entry.get("mode", "SHORT_TERM")
             company = entry.get("companyName", "")
             scan_close = entry.get("close", 0)
-            qualify_result = entry.get("qualifyResult", "WATCH")
+            qualify_result = entry.get("qualifyResult", "様子見")
         elif code in momentum_map:
             entry = momentum_map[code]
             mode = "MOMENTUM"
