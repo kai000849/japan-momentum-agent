@@ -348,7 +348,10 @@ def analyze_earnings_pdf(
   "structural_comment": "<structural_changeがtrueの場合のみ、変化の内容を1文で>",
   "revenue_yoy": "<売上の前年同期比。例: +12.3%、-5.1%、不明>",
   "profit_yoy": "<営業利益の前年同期比。例: +34.2%、-41.0%、不明>",
-  "vs_forecast": "<会社予想比または市場予想比。例: 上振れ+8%、下振れ-12%、概ね一致、不明>"
+  "vs_forecast": "<会社予想比または市場予想比。例: 上振れ+8%、下振れ-12%、概ね一致、不明>",
+  "momentum_potential": "<high/medium/low。この開示を受けて株価の上昇モメンタムが中長期(1〜3ヶ月)で継続する可能性>",
+  "entry_timing": "<寄り付き反応確認後がベスト / 材料出尽くし注意 / 見送り推奨 のいずれか>",
+  "catalyst_type": "<上方修正 / 増収増益 / 新規事業・提携 / 自社株買い・増配 / 復配・特別配当 / その他 のいずれか>"
 }}
 
 【スコア基準】
@@ -359,6 +362,11 @@ def analyze_earnings_pdf(
 -10〜-39: 軽微なネガティブ
 -40〜-79: 減益・下方修正・懸念あり
 -80〜-100: 大幅下振れ・業績悪化・構造的問題
+
+【momentum_potential 判定基準】
+high: 業績の上方修正幅が大きい・ガイダンスが強気・構造的変化あり・新規大型契約
+medium: 小幅増益・予想超え・方向感ポジティブだが継続性は不確か
+low: 一時的要因による増益・横ばい・下方修正懸念残り
 """
 
     try:
@@ -531,6 +539,9 @@ def analyze_earnings_batch(earnings_list: list) -> list:
             "revenue_yoy": analysis.get("revenue_yoy", "不明"),
             "profit_yoy": analysis.get("profit_yoy", "不明"),
             "vs_forecast": analysis.get("vs_forecast", "不明"),
+            "momentum_potential": analysis.get("momentum_potential", "medium"),
+            "entry_timing": analysis.get("entry_timing", ""),
+            "catalyst_type": analysis.get("catalyst_type", ""),
             "analyzed": "error" not in analysis,
             "from_cache": False,
             "error": analysis.get("error", "")

@@ -234,6 +234,7 @@ def run_scan_mode(args):
             if mode == "EARNINGS":
                 try:
                     from agents.edinet_analyzer import analyze_earnings_batch
+                    from agents.earnings_momentum_scanner import save_watchlist
                     print("  決算書類をClaude APIで分析中...")
                     analyzed = analyze_earnings_batch(results)
                     analyzed_map = {r.get("stockCode"): r for r in analyzed}
@@ -245,6 +246,8 @@ def run_scan_mode(args):
                         else:
                             merged.append(r)
                     notify_new_signal(merged, mode=mode, profit_factor=0.0)
+                    # 翌朝ザラ場スキャン用ウォッチリストを保存
+                    save_watchlist(merged)
                 except Exception as e:
                     print(f"  決算分析エラー（簡易通知に切り替え）: {e}")
                     notify_new_signal(results, mode=mode, profit_factor=0.0)
@@ -564,8 +567,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report"],
-        help="実行モード: fetch(データ取得) / scan(スキャン) / backtest(バックテスト) / full(全実行) / status(状況表示) / us_scan(米市場スキャン) / qualify_report(判定精度レポート)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday"],
+        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場決算モメンタムスキャン)"
     )
 
     # オプション: スキャンタイプ
@@ -687,6 +690,43 @@ def main():
             print(f"キーワード抽出: {kw_count}件")
             notify_us_theme_extraction(theme_result)
             print("✓ キーワード通知送信")
+
+        elif args.mode == "earnings_intraday":
+            # ザラ場決算モメンタムスキャン（10:30 JST頃に実行）
+            print("【ザラ場決算モメンタムスキャン】")
+            print("前日決算発表銘柄の前場反応を確認してエントリー判断します...\n")
+            from agents.earnings_momentum_scanner import (
+                run_intraday_earnings_scan, record_earnings_outcomes,
+                get_earnings_accuracy_stats
+            )
+            from agents.slack_notifier import notify_intraday_earnings_scan
+            from agents.jquants_fetcher import load_latest_quotes
+
+            # 学習ループ: 過去シグナルの結果を記録
+            try:
+                df_all = load_latest_quotes()
+                if not df_all.empty:
+                    updated = record_earnings_outcomes(df_all)
+                    if updated > 0:
+                        print(f"  過去シグナルの結果記録: {updated}件更新")
+            except Exception as e:
+                logger.warning(f"結果記録エラー（スキップ）: {e}")
+
+            # ザラ場スキャン実行
+            scan_results = run_intraday_earnings_scan()
+            print(f"  スキャン完了: {len(scan_results)}銘柄")
+            for r in scan_results[:5]:
+                intra = r.get("intradayData", {})
+                print(
+                    f"  {r['entryJudgment']:15s}  {r['stockCode']} {r['companyName'][:10]}"
+                    f"  総合:{r['totalScore']:.0f}"
+                    f"  ギャップ:{intra.get('opening_gap_pct', 0):+.1f}%"
+                    f"  前場:{intra.get('intraday_momentum_pct', 0):+.1f}%"
+                )
+
+            stats = get_earnings_accuracy_stats()
+            notify_intraday_earnings_scan(scan_results, stats)
+            print("✓ Slack通知送信完了")
 
         elif args.mode == "qualify_report":
             # 判定精度レポートモード

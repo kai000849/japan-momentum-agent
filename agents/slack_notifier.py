@@ -322,10 +322,17 @@ def notify_earnings_signal(signals: list) -> bool:
 
         struct_str = f"\n    🔄 {structural_comment}" if structural and structural_comment else ""
 
+        mom_pot = s.get("momentum_potential", "")
+        entry_tim = s.get("entry_timing", "")
+        catalyst = s.get("catalyst_type", "")
+        mom_icon = {"high": "🚀", "medium": "📈", "low": "➡️"}.get(mom_pot, "")
+        catalyst_str = f"  [{catalyst}]" if catalyst else ""
+        mom_str = f"\n    {mom_icon} モメンタム:{mom_pot} / {entry_tim}" if mom_pot else ""
+
         best_lines.append(
-            f"{icon} *{i}位 +{score}点* {code} {name}\n"
+            f"{icon} *{i}位 +{score}点* {code} {name}{catalyst_str}\n"
             f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
-            f"    💬 {summary}{struct_str}"
+            f"    💬 {summary}{struct_str}{mom_str}"
         )
 
     # ========== ワースト部分 ==========
@@ -629,6 +636,84 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
 {japan_text}
 
 ⚠️ *リスクワード*: {risk_text}
+━━━━━━━━━━━━━━━━━━
+""".strip()
+
+    return send_slack_message(text)
+
+
+def notify_intraday_earnings_scan(scan_results: list, stats: dict = None) -> bool:
+    """
+    ザラ場モメンタムスキャン結果をSlackに通知する。
+
+    Args:
+        scan_results: earnings_momentum_scanner.run_intraday_earnings_scan()の戻り値
+        stats: get_earnings_accuracy_stats()の戻り値（学習統計）
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
+
+    if not scan_results:
+        text = f"🎯 *ザラ場モメンタムスキャン* {now}\n対象銘柄なし（前日ウォッチリストが空）"
+        return send_slack_message(text)
+
+    lines = []
+    for i, r in enumerate(scan_results[:8], 1):
+        code = r.get("stockCode", "")
+        name = (r.get("companyName") or "")[:12]
+        edinet_score = r.get("edinetScore", 0)
+        intra = r.get("intradayData", {})
+        total = r.get("totalScore", 0)
+        judgment = r.get("entryJudgment", "")
+        catalyst = r.get("catalystType", "")
+        summary = r.get("summary", "")[:40]
+
+        gap = intra.get("opening_gap_pct", 0)
+        momentum = intra.get("intraday_momentum_pct", 0)
+        vol = intra.get("volume_ratio", 0)
+        new_highs = intra.get("is_making_new_highs", False)
+
+        sign_g = "+" if gap >= 0 else ""
+        sign_m = "+" if momentum >= 0 else ""
+        highs_str = " 📶新高値更新中" if new_highs else ""
+        catalyst_str = f"[{catalyst}] " if catalyst else ""
+
+        if not intra:
+            detail = "（前場データ取得不可）"
+        else:
+            detail = (
+                f"寄り:{sign_g}{gap:.1f}% / 前場継続:{sign_m}{momentum:.1f}%"
+                f" / 出来高:{vol:.1f}x{highs_str}"
+            )
+
+        lines.append(
+            f"{judgment}\n"
+            f"*{i}. {code} {name}*  総合:{total:.0f}  EDINET:{edinet_score:+d}点\n"
+            f"  {catalyst_str}{detail}\n"
+            f"  💬 {summary}"
+        )
+
+    results_text = "\n\n".join(lines)
+
+    # 学習統計
+    stats_text = ""
+    if stats and stats.get("total_signals", 0) >= 5:
+        s5 = stats.get("outcome5d", {})
+        s10 = stats.get("outcome10d", {})
+        stats_text = (
+            f"\n\n📊 *学習統計（{stats['total_signals']}件記録）*\n"
+            f"  5日後: 勝率{s5.get('win_rate', 0):.0f}% / 平均{s5.get('avg_return', 0):+.1f}%\n"
+            f"  10日後: 勝率{s10.get('win_rate', 0):.0f}% / 平均{s10.get('avg_return', 0):+.1f}%"
+        ) if s5 and s10 else ""
+
+    text = f"""
+🎯 *ザラ場モメンタムスキャン*  {now}
+決算・開示銘柄の前場反応ランキング
+
+━━━━━━━━━━━━━━━━━━
+{results_text}{stats_text}
 ━━━━━━━━━━━━━━━━━━
 """.strip()
 
