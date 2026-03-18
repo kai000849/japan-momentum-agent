@@ -295,16 +295,18 @@ def notify_earnings_signal(signals: list) -> bool:
 """.strip()
         return send_slack_message(text)
 
-    # ベスト/ワーストを抽出
-    best = sorted([s for s in analyzed if s.get("score", 0) > 0],
-                  key=lambda x: x.get("score", 0), reverse=True)[:10]
-    worst = sorted([s for s in analyzed if s.get("score", 0) < 0],
-                   key=lambda x: x.get("score", 0))[:10]
-    neutral = [s for s in analyzed if s.get("score", 0) == 0]
+    # スコア閾値: 30点以上のみ詳細表示（ウォッチリスト登録基準と統一）
+    MIN_NOTIFY_SCORE = 30
 
-    # ========== ベスト部分 ==========
-    best_lines = []
-    for i, s in enumerate(best, 1):
+    # 注目銘柄（スコア30以上）・低スコア・ネガティブに分類
+    top = sorted([s for s in analyzed if s.get("score", 0) >= MIN_NOTIFY_SCORE],
+                 key=lambda x: x.get("score", 0), reverse=True)[:8]
+    low_positive = [s for s in analyzed if 0 < s.get("score", 0) < MIN_NOTIFY_SCORE]
+    negative = [s for s in analyzed if s.get("score", 0) < 0]
+
+    # ========== 注目銘柄: 詳細表示（追加APIコールなし・summaryをそのまま使用） ==========
+    top_lines = []
+    for i, s in enumerate(top, 1):
         code = s.get("stockCode", "")
         name = (s.get("companyName") or "")[:15]
         score = s.get("score", 0)
@@ -312,81 +314,44 @@ def notify_earnings_signal(signals: list) -> bool:
         profit_yoy = s.get("profit_yoy", "不明")
         vs_forecast = s.get("vs_forecast", "不明")
         summary = s.get("summary", "")
-        structural = s.get("structural_change", False)
-        structural_comment = s.get("structural_comment", "")
 
-        # スコアに応じたアイコン
-        if score >= 80:
-            icon = "🔥"
-        elif score >= 50:
-            icon = "🟢"
-        else:
-            icon = "🔼"
-
-        struct_str = f"\n    🔄 {structural_comment}" if structural and structural_comment else ""
+        icon = "🔥" if score >= 80 else ("🟢" if score >= 50 else "🔼")
 
         mom_pot = s.get("momentum_potential", "")
         entry_tim = s.get("entry_timing", "")
         catalyst = s.get("catalyst_type", "")
         mom_icon = {"high": "🚀", "medium": "📈", "low": "➡️"}.get(mom_pot, "")
         catalyst_str = f"  [{catalyst}]" if catalyst else ""
-        mom_str = f"\n    {mom_icon} モメンタム:{mom_pot} / {entry_tim}" if mom_pot else ""
+        mom_str = f"\n    {mom_icon} {mom_pot} / {entry_tim}" if mom_pot else ""
 
-        best_lines.append(
+        top_lines.append(
             f"{icon} *{i}位 +{score}点* {code} {name}{catalyst_str}\n"
             f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
-            f"    💬 {summary}{struct_str}{mom_str}"
-        )
-
-    # ========== ワースト部分 ==========
-    worst_lines = []
-    for i, s in enumerate(worst, 1):
-        code = s.get("stockCode", "")
-        name = (s.get("companyName") or "")[:15]
-        score = s.get("score", 0)
-        revenue_yoy = s.get("revenue_yoy", "不明")
-        profit_yoy = s.get("profit_yoy", "不明")
-        vs_forecast = s.get("vs_forecast", "不明")
-        summary = s.get("summary", "")
-        structural = s.get("structural_change", False)
-        structural_comment = s.get("structural_comment", "")
-
-        if score <= -80:
-            icon = "💀"
-        elif score <= -50:
-            icon = "🔴"
-        else:
-            icon = "🔽"
-
-        struct_str = f"\n    ⚠️ {structural_comment}" if structural and structural_comment else ""
-
-        worst_lines.append(
-            f"{icon} *{i}位 {score}点* {code} {name}\n"
-            f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
-            f"    💬 {summary}{struct_str}"
+            f"    💬 {summary}{mom_str}"
         )
 
     # ========== メッセージ組み立て ==========
-    best_text = "\n\n".join(best_lines) if best_lines else "  ポジティブな決算なし"
-    worst_text = "\n\n".join(worst_lines) if worst_lines else "  ネガティブな決算なし"
+    top_text = "\n\n".join(top_lines) if top_lines else "  スコア30点以上の銘柄なし"
 
-    unanalyzed_str = ""
+    # 低スコア・ネガティブはコンパクトな件数表示のみ
+    footer_parts = []
+    if low_positive:
+        names = "・".join(f"{s.get('stockCode')}({s.get('score',0):+d})" for s in low_positive[:5])
+        footer_parts.append(f"📊 低スコア(1〜29点): {len(low_positive)}件  {names}")
+    if negative:
+        footer_parts.append(f"🔴 ネガティブ: {len(negative)}件")
     if unanalyzed:
-        unanalyzed_str = f"\n\n📄 未分析（PDF取得不可等）: {len(unanalyzed)}件"
+        footer_parts.append(f"📄 未分析: {len(unanalyzed)}件")
+    footer_str = ("\n" + "\n".join(footer_parts)) if footer_parts else ""
 
     text = f"""
 📊 *決算スコアリング {now}*
 分析済み: {len(analyzed)}件 | 総件数: {len(signals)}件
 
 ━━━━━━━━━━━━━━━━━━
-🟢 *ポジティブ TOP{len(best)}*
+🟢 *注目銘柄（30点以上） {len(top)}件*
 
-{best_text}
-
-━━━━━━━━━━━━━━━━━━
-🔴 *ネガティブ TOP{len(worst)}*
-
-{worst_text}{unanalyzed_str}
+{top_text}{footer_str}
 ━━━━━━━━━━━━━━━━━━
 """.strip()
 
