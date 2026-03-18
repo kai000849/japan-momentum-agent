@@ -133,7 +133,7 @@ japan-momentum-agent/
 | `edinet_analyzer.py` | 決算PDF分析・スコアリング | Haiku | 1500 | pdfplumber抽出テキストのみ渡す・結果キャッシュあり |
 | `us_theme_extractor.py` | RSSキーワード抽出 | Haiku | 1500 | ヘッドライン40件のみ |
 | `us_market_scanner.py` | ETFセクター分析 | Haiku | 1200 | ETF数値データのみ渡す |
-| `momentum_qualifier.py` | 構造的変化判定 | Haiku | 800 | ステージ1通過銘柄を一括1回呼び出し |
+| `momentum_qualifier.py` | 構造的変化判定 | Haiku | 1500 | ステージ1通過銘柄を上位15件まとめて1回呼び出し |
 
 **全箇所でweb_searchツールを削除済み（2026/03/17）。コスト削減を優先。**
 
@@ -276,6 +276,14 @@ python main.py --mode status
 - **利確ライン統一**: noon/advisor 共に+15%
 - **余力判定をペーパーのみに限定**: 実売買記録が戦略判断に影響しない設計
 
+### ✅ バグ修正・品質改善（2026/03/18 セッション2完了）
+- **Slack通知キー名不一致修正**: priceChangePct/volumeRatio（camelCase）をslack_notifier・momentum_qualifierで統一
+- **Stage2バッチ上限追加**: 上位15件に絞り込み・max_tokens 800→1500（JSON切れ防止）
+- **qualify_log上書き防止**: 朝の「継続」「一時的」を夕方の「様子見」で上書きしないよう保護
+- **qualifyラベル表示統一**: slack_notifier・investment_advisorの表示をnormalize_qualify_label経由に統一（旧英語ラベル残存対策）
+- **noon_scannerモード別閾値**: SHORT_TERM=97% / MOMENTUM=95% / EARNINGS=97%
+- **MOメンタムシグナル条件厳格化**: MAパーフェクトオーダー（MA5>MA25>MA75）追加・52週高値比率90%→95%・出来高フィルター追加（件数・PF改善目的）
+
 ### 🔲 フェーズ3継続（データ蓄積後）
 - qualify_logはデータ蓄積中。outcome自動記録が始まったら精度レポートで検証
 
@@ -333,7 +341,7 @@ git push
 
 ## 現在の状況（2026/03/18時点）
 - 5ジョブ構成（us-market-scan→morning-scan直列・前場10:30・正午12:15・夕方18:00）で稼働中
-- 大規模改修完了（判定ラベル日本語化・noon_scanner・実売買記録・役割分担・キャッシュ安定化など）
-- morning-scanがus-market-scan完了後に実行されるようになり、朝通知に米セクター情報が反映される
+- バグ修正・品質改善完了（Slackキー名不一致・Stage2切れ・qualify_log上書き・ラベル表示・noon閾値）
+- MOメンタムシグナル条件を厳格化（MAパーフェクトオーダー・高値比率95%・出来高フィルター）
 - qualify_logはデータ蓄積中。outcome記録が始まったら精度レポートで検証
 - 次のマイルストーン: 実際のシグナルで実売買記録を使い始める（add_tradeコマンド）
