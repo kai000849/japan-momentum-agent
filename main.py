@@ -739,9 +739,16 @@ def main():
             try:
                 df_all = load_latest_quotes()
                 if not df_all.empty:
-                    updated = record_earnings_outcomes(df_all)
+                    updated, newly_recorded = record_earnings_outcomes(df_all)
                     if updated > 0:
                         print(f"  過去シグナルの結果記録: {updated}件更新")
+                        # 新規記録分をSlack通知（フィードバックループ）
+                        if newly_recorded:
+                            try:
+                                from agents.slack_notifier import notify_earnings_outcomes_recorded
+                                notify_earnings_outcomes_recorded(newly_recorded)
+                            except Exception as e:
+                                logger.warning(f"結果通知エラー（スキップ）: {e}")
             except Exception as e:
                 logger.warning(f"結果記録エラー（スキップ）: {e}")
 
@@ -761,6 +768,13 @@ def main():
             notify_intraday_earnings_scan(scan_results, stats)
             print("✓ Slack通知送信完了")
 
+            # 中長期フォローアップリストに追加（エントリー検討銘柄のみ）
+            try:
+                from agents.earnings_momentum_scanner import save_followup_list
+                save_followup_list(scan_results, entry_type="intraday")
+            except Exception as e:
+                logger.warning(f"フォローアップリスト更新エラー（スキップ）: {e}")
+
         elif args.mode == "earnings_endofday":
             # 引け後決算モメンタム評価（18:00 JST頃に実行・J-Quants日足使用）
             print("【引け後決算モメンタム評価】")
@@ -779,9 +793,15 @@ def main():
 
             # 学習ループ: 過去シグナルの結果を記録
             try:
-                updated = record_earnings_outcomes(df_all)
+                updated, newly_recorded = record_earnings_outcomes(df_all)
                 if updated > 0:
                     print(f"  過去シグナルの結果記録: {updated}件更新")
+                    if newly_recorded:
+                        try:
+                            from agents.slack_notifier import notify_earnings_outcomes_recorded
+                            notify_earnings_outcomes_recorded(newly_recorded)
+                        except Exception as e:
+                            logger.warning(f"結果通知エラー（スキップ）: {e}")
             except Exception as e:
                 logger.warning(f"結果記録エラー（スキップ）: {e}")
 
@@ -800,6 +820,19 @@ def main():
             stats = get_earnings_accuracy_stats()
             notify_endofday_earnings_scan(scan_results, stats)
             print("✓ Slack通知送信完了")
+
+            # 中長期フォローアップリストに追加（エントリー検討銘柄のみ）
+            try:
+                from agents.earnings_momentum_scanner import save_followup_list, get_followup_status
+                from agents.slack_notifier import notify_earnings_followup_status
+                save_followup_list(scan_results, entry_type="endofday")
+                # フォローアップ中の全銘柄の現況を通知
+                followup_results = get_followup_status(df_all)
+                if followup_results:
+                    notify_earnings_followup_status(followup_results)
+                    print(f"  フォローアップ通知: {len(followup_results)}銘柄")
+            except Exception as e:
+                logger.warning(f"フォローアップ処理エラー（スキップ）: {e}")
 
         elif args.mode == "noon_scan":
             # 正午スキャン: 前場の値動きを確認して後場エントリー可否を通知

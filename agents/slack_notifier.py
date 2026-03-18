@@ -895,6 +895,99 @@ def send_test_message() -> bool:
     return send_slack_message(text)
 
 
+def notify_earnings_outcomes_recorded(newly_recorded: list) -> bool:
+    """
+    決算シグナルの5/10/20日後結果が新たに記録されたときにSlackへ通知する。
+
+    Args:
+        newly_recorded: record_earnings_outcomes()の第2戻り値リスト
+
+    Returns:
+        bool: 送信成功かどうか
+    """
+    if not newly_recorded:
+        return True
+
+    lines = ["📊 *決算シグナル フォローアップ結果*\n"]
+
+    # daysKey でグループ化（5d/10d/20d）
+    from collections import defaultdict
+    grouped: dict[str, list] = defaultdict(list)
+    for r in newly_recorded:
+        grouped[r["daysKey"]].append(r)
+
+    for days_key in ["outcome5d", "outcome10d", "outcome20d"]:
+        entries = grouped.get(days_key, [])
+        if not entries:
+            continue
+        label = days_key.replace("outcome", "").replace("d", "営業日後")
+        lines.append(f"*━━ {label} 結果 ━━*")
+        for r in sorted(entries, key=lambda x: x.get("returnPct", 0), reverse=True):
+            ret = r.get("returnPct", 0)
+            icon = "✅" if ret > 5 else ("⚠️" if ret > 0 else "❌")
+            lines.append(
+                f"{icon} *{r['stockCode']} {r['companyName']}*"
+                f"  {ret:+.1f}%"
+                f"  （エントリー¥{r['entryPrice']:,.0f} → ¥{r['exitPrice']:,.0f}）"
+                + (f"  [{r.get('catalystType', '')}]" if r.get("catalystType") else "")
+            )
+
+    return send_slack_message("\n".join(lines))
+
+
+def notify_earnings_followup_status(followup_results: list) -> bool:
+    """
+    フォローアップ中の決算銘柄の現在パフォーマンスをSlackに通知する。
+
+    Args:
+        followup_results: get_followup_status()の戻り値
+
+    Returns:
+        bool: 送信成功かどうか
+    """
+    if not followup_results:
+        return True
+
+    lines = ["📈 *決算後 中長期フォローアップ（現況）*\n"]
+
+    for r in followup_results:
+        ret = r.get("returnPct")
+        elapsed = r.get("bdays_elapsed", 0)
+        entry_price = r.get("entryPrice", 0)
+        current_price = r.get("currentPrice", 0)
+        max_days = r.get("followupMaxBdays", 20)
+        remaining = max_days - elapsed
+
+        if ret is None:
+            icon = "❓"
+            ret_str = "データなし"
+        elif ret >= 10:
+            icon = "🚀"
+            ret_str = f"{ret:+.1f}%"
+        elif ret >= 3:
+            icon = "✅"
+            ret_str = f"{ret:+.1f}%"
+        elif ret >= -3:
+            icon = "➡️"
+            ret_str = f"{ret:+.1f}%"
+        elif ret >= -8:
+            icon = "⚠️"
+            ret_str = f"{ret:+.1f}%"
+        else:
+            icon = "❌"
+            ret_str = f"{ret:+.1f}%"
+
+        lines.append(
+            f"{icon} *{r['stockCode']} {r['companyName']}*"
+            f"  {ret_str}"
+            f"  ¥{current_price:,.0f}（+{elapsed}日・残{remaining}日）"
+        )
+        if r.get("summary"):
+            lines.append(f"  _{r['summary'][:40]}_")
+
+    return send_slack_message("\n".join(lines))
+
+
 def notify_noon_scan(results: list) -> bool:
     """
     正午スキャン（後場エントリー判断）の結果をSlackに送信する。

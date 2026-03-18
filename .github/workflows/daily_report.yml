@@ -208,6 +208,12 @@ jobs:
           path: memory/earnings_watchlist.json
           key: earnings-watchlist-${{ github.run_number }}
 
+      - name: earnings_followup_list を保存（中長期追跡用）
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_followup_list.json
+          key: earnings-followup-${{ github.run_number }}
+
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
         env:
@@ -314,6 +320,14 @@ jobs:
           restore-keys: |
             earnings-signal-log-
 
+      - name: earnings_followup_list を復元（中長期追跡用）
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_followup_list.json
+          key: earnings-followup-${{ github.run_number }}
+          restore-keys: |
+            earnings-followup-
+
       - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
@@ -379,6 +393,12 @@ jobs:
         with:
           path: memory/earnings_signal_log.json
           key: earnings-signal-log-${{ github.run_number }}
+
+      - name: earnings_followup_list を保存（中長期追跡用）
+        uses: actions/cache@v4
+        with:
+          path: memory/earnings_followup_list.json
+          key: earnings-followup-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'

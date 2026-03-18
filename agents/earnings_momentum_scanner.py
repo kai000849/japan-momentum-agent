@@ -49,11 +49,20 @@ WATCHLIST_PATH = Path(__file__).parent.parent / "memory" / "earnings_watchlist.j
 # 学習ログ保存先
 SIGNAL_LOG_PATH = Path(__file__).parent.parent / "memory" / "earnings_signal_log.json"
 
+# 中長期フォローアップリスト保存先（初動反応良好銘柄を最大20営業日追跡）
+FOLLOWUP_LIST_PATH = Path(__file__).parent.parent / "memory" / "earnings_followup_list.json"
+
 # ザラ場スキャン対象の最低EDINETスコア閾値
 MIN_EDINET_SCORE = 30
 
 # 学習ループ: 何日後に結果を記録するか
 OUTCOME_CHECK_DAYS = [5, 10, 20]
+
+# フォローアップ継続営業日数
+FOLLOWUP_MAX_BDAYS = 20
+
+# フォローアップ追加の最低スコア
+FOLLOWUP_MIN_TOTAL_SCORE = 30.0
 
 
 # ========================================
@@ -700,25 +709,30 @@ def _record_earnings_signal(scan_result: dict) -> None:
         json.dump(log, f, ensure_ascii=False, indent=2)
 
 
-def record_earnings_outcomes(df_all: pd.DataFrame) -> int:
+def record_earnings_outcomes(df_all: pd.DataFrame) -> tuple[int, list]:
     """
     earnings_signal_log.json の中で「N営業日経過・outcome未記録」のエントリに
     実際のリターンを記録する。
 
     Returns:
-        int: 更新件数
+        tuple[int, list]:
+          - 更新件数
+          - 新規記録したエントリのリスト（Slack通知用）
+            各要素: {"stockCode", "companyName", "disclosureDate",
+                     "entryPrice", "daysKey", "returnPct", "exitPrice"}
     """
     if not SIGNAL_LOG_PATH.exists():
-        return 0
+        return 0, []
     try:
         with open(SIGNAL_LOG_PATH, "r", encoding="utf-8") as f:
             log = json.load(f)
     except Exception:
-        return 0
+        return 0, []
 
     code_col = "Code" if "Code" in df_all.columns else "code"
     today = pd.Timestamp.now().normalize()
     updated = 0
+    newly_recorded = []
 
     for entry in log:
         code = entry.get("stockCode", "")
@@ -748,13 +762,171 @@ def record_earnings_outcomes(df_all: pd.DataFrame) -> int:
             ret = round((exit_price - entry_price) / entry_price * 100, 2) if entry_price > 0 else 0
             entry[key] = {"returnPct": ret, "exitPrice": exit_price, "recordedAt": datetime.now().isoformat()}
             updated += 1
+            newly_recorded.append({
+                "stockCode": code,
+                "companyName": entry.get("companyName", ""),
+                "disclosureDate": disc_date_str,
+                "entryPrice": entry_price,
+                "daysKey": key,
+                "returnPct": ret,
+                "exitPrice": exit_price,
+                "edinetScore": entry.get("edinetScore", 0),
+                "catalystType": entry.get("catalystType", ""),
+            })
 
     if updated > 0:
         with open(SIGNAL_LOG_PATH, "w", encoding="utf-8") as f:
             json.dump(log, f, ensure_ascii=False, indent=2)
         logger.info(f"決算シグナル結果記録: {updated}件更新")
 
-    return updated
+    return updated, newly_recorded
+
+
+# ========================================
+# 中長期フォローアップ管理
+# ========================================
+
+def save_followup_list(scan_results: list, entry_type: str = "intraday") -> None:
+    """
+    ザラ場/引け後スキャンで良好なスコアを示した銘柄を中長期フォローアップリストに追加する。
+    同一銘柄の重複登録は上書き（最新の追加日時を保持）。
+
+    Args:
+        scan_results: run_intraday_earnings_scan() or run_endofday_earnings_scan() の戻り値
+        entry_type: "intraday" or "endofday"
+    """
+    targets = [
+        r for r in scan_results
+        if r.get("totalScore", 0) >= FOLLOWUP_MIN_TOTAL_SCORE
+        and "エントリー検討" in r.get("entryJudgment", "")
+    ]
+    if not targets:
+        return
+
+    # 既存リストを読み込む
+    followup = _load_followup_list()
+    entries = {e["stockCode"]: e for e in followup.get("entries", [])}
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    for r in targets:
+        code = r.get("stockCode", "")
+        if not code:
+            continue
+        # エントリー価格: ザラ場はcurrent_price、引け後はclose_price
+        if entry_type == "intraday":
+            entry_price = r.get("intradayData", {}).get("current_price", r.get("entryPrice", 0))
+        else:
+            entry_price = r.get("eodData", {}).get("close_price", r.get("entryPrice", 0))
+
+        entries[code] = {
+            "stockCode": code,
+            "companyName": r.get("companyName", ""),
+            "addedDate": today_str,
+            "addedReason": f"決算後{entry_type}急騰（スコア:{r.get('totalScore', 0):.0f}）",
+            "edinetScore": r.get("edinetScore", 0),
+            "catalystType": r.get("catalystType", ""),
+            "summary": r.get("summary", "")[:60],
+            "entryPrice": entry_price,
+            "entryType": entry_type,
+            "followupMaxBdays": FOLLOWUP_MAX_BDAYS,
+        }
+
+    followup["entries"] = list(entries.values())
+    followup["updatedAt"] = datetime.now().isoformat()
+
+    FOLLOWUP_LIST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(FOLLOWUP_LIST_PATH, "w", encoding="utf-8") as f:
+        json.dump(followup, f, ensure_ascii=False, indent=2)
+    logger.info(f"フォローアップリスト更新: {len(entries)}銘柄 → {FOLLOWUP_LIST_PATH}")
+
+
+def _load_followup_list() -> dict:
+    """フォローアップリストを読み込む。"""
+    if not FOLLOWUP_LIST_PATH.exists():
+        return {"entries": [], "updatedAt": ""}
+    try:
+        with open(FOLLOWUP_LIST_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f"フォローアップリスト読み込みエラー: {e}")
+        return {"entries": [], "updatedAt": ""}
+
+
+def get_followup_status(df_all: pd.DataFrame) -> list:
+    """
+    フォローアップリストの銘柄について現在の株価パフォーマンスを返す。
+    追加日から FOLLOWUP_MAX_BDAYS 営業日を超えた銘柄はリストから削除する。
+
+    Args:
+        df_all: load_latest_quotes()で取得した全銘柄DataFrame
+
+    Returns:
+        list: 現在フォロー中の銘柄リスト（return_pct付き）
+    """
+    followup = _load_followup_list()
+    entries = followup.get("entries", [])
+    if not entries:
+        return []
+
+    code_col = "Code" if "Code" in df_all.columns else "code"
+    today = datetime.now().date()
+    active = []
+    expired_codes = []
+
+    for e in entries:
+        code = e.get("stockCode", "")
+        added_date_str = e.get("addedDate", "")
+        entry_price = e.get("entryPrice", 0)
+
+        if not code or not added_date_str or not entry_price:
+            continue
+
+        try:
+            added_dt = datetime.strptime(added_date_str, "%Y-%m-%d").date()
+        except Exception:
+            continue
+
+        # 経過営業日数
+        bdays_elapsed = len(pd.bdate_range(
+            start=pd.Timestamp(added_dt),
+            end=pd.Timestamp(today)
+        )) - 1
+
+        if bdays_elapsed > FOLLOWUP_MAX_BDAYS:
+            expired_codes.append(code)
+            continue
+
+        # 現在株価を取得
+        df_stock = (
+            df_all[df_all[code_col].astype(str) == code]
+            .sort_values("Date")
+            .reset_index(drop=True)
+        )
+        if df_stock.empty:
+            current_price = 0.0
+            return_pct = None
+        else:
+            current_price = float(df_stock.iloc[-1]["Close"])
+            return_pct = round((current_price - entry_price) / entry_price * 100, 2) if entry_price > 0 else None
+
+        active.append({
+            **e,
+            "bdays_elapsed": bdays_elapsed,
+            "currentPrice": current_price,
+            "returnPct": return_pct,
+        })
+
+    # 期限切れ銘柄を削除して保存
+    if expired_codes:
+        followup["entries"] = [e for e in entries if e["stockCode"] not in expired_codes]
+        followup["updatedAt"] = datetime.now().isoformat()
+        with open(FOLLOWUP_LIST_PATH, "w", encoding="utf-8") as f:
+            json.dump(followup, f, ensure_ascii=False, indent=2)
+        logger.info(f"フォローアップリスト: {len(expired_codes)}銘柄を期限切れで削除")
+
+    # return_pct の高い順にソート
+    active.sort(key=lambda x: (x.get("returnPct") or -999), reverse=True)
+    return active
 
 
 def get_earnings_accuracy_stats() -> dict:
