@@ -895,6 +895,74 @@ def send_test_message() -> bool:
     return send_slack_message(text)
 
 
+def notify_noon_scan(results: list) -> bool:
+    """
+    正午スキャン（後場エントリー判断）の結果をSlackに送信する。
+
+    Args:
+        results: noon_scanner.run_noon_scan() の戻り値
+
+    Returns:
+        bool: 送信成功かどうか
+    """
+    now_str = datetime.now().strftime("%H:%M")
+    go_list   = [r for r in results if r["judgment"] == "GO"]
+    watch_list = [r for r in results if r["judgment"] == "WATCH"]
+    skip_list  = [r for r in results if r["judgment"] == "SKIP"]
+
+    lines = [f"🕐 *後場エントリー判断レポート（{now_str}現在）*\n"]
+
+    def _fmt(r: dict) -> str:
+        intra = r.get("intradayData") or {}
+        code = r["stockCode"]
+        name = r.get("companyName", "")
+        scan_close = r.get("scanClose", 0)
+        current = intra.get("current_price", 0)
+        mode_label = {"SHORT_TERM": "急騰", "MOMENTUM": "モメンタム", "EARNINGS": "決算"}.get(r["mode"], r["mode"])
+        qualify_label = r.get("qualifyResult", "")
+
+        header = f"*{code} {name}* （{mode_label}・{qualify_label}）"
+        price_str = (
+            f"  前日終値: ¥{scan_close:,.0f} → 現在: ¥{current:,.0f}"
+            f"  （{(current - scan_close) / scan_close * 100:+.1f}%）"
+            if scan_close > 0 and current > 0 else ""
+        )
+        reasons_str = "\n".join(f"  {reason}" for reason in r.get("reasons", []))
+        return "\n".join(filter(None, [header, price_str, reasons_str]))
+
+    if go_list:
+        lines.append("*━━ 後場エントリー推奨 ━━*")
+        for r in go_list:
+            lines.append(_fmt(r))
+            intra = r.get("intradayData") or {}
+            current = intra.get("current_price", 0)
+            if current > 0:
+                stop = round(current * 0.95)
+                tp   = round(current * 1.12)
+                lines.append(f"  📌 後場12:30エントリー目安 損切: ¥{stop:,}  利確: ¥{tp:,}")
+            lines.append("")
+
+    if watch_list:
+        lines.append("*━━ 様子見（後場前半を確認） ━━*")
+        for r in watch_list:
+            lines.append(_fmt(r))
+            lines.append("")
+
+    if skip_list:
+        lines.append("*━━ 一旦見送り（前場で失速） ━━*")
+        for r in skip_list:
+            code = r["stockCode"]
+            name = r.get("companyName", "")
+            top_reason = r["reasons"][0] if r["reasons"] else ""
+            lines.append(f"{code} {name} — {top_reason}")
+
+    if not results:
+        lines.append("今日は対象銘柄なし（朝スキャンでシグナルなし）")
+
+    text = "\n".join(lines)
+    return send_slack_message(text)
+
+
 if __name__ == "__main__":
     print("Slack接続テストを実行します...")
     success = send_test_message()

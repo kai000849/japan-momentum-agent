@@ -600,8 +600,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday"],
-        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場) / earnings_endofday(引け後)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan"],
+        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday(ザラ場) / earnings_endofday(引け後) / noon_scan(正午・後場判断)"
     )
 
     # オプション: スキャンタイプ
@@ -799,6 +799,29 @@ def main():
 
             stats = get_earnings_accuracy_stats()
             notify_endofday_earnings_scan(scan_results, stats)
+            print("✓ Slack通知送信完了")
+
+        elif args.mode == "noon_scan":
+            # 正午スキャン: 前場の値動きを確認して後場エントリー可否を通知
+            print("【正午スキャン】")
+            print("前場データ（yfinance）を取得して後場エントリー可否を判定します...\n")
+            from agents.noon_scanner import run_noon_scan
+            from agents.slack_notifier import notify_noon_scan
+
+            scan_date = getattr(args, "date", None)
+            results = run_noon_scan(scan_date=scan_date)
+
+            print(f"  スキャン完了: {len(results)}銘柄")
+            for r in results:
+                intra = r.get("intradayData") or {}
+                current = intra.get("current_price", 0)
+                mret = intra.get("morning_return", 0)
+                print(
+                    f"  {r['judgment']:5s}  {r['stockCode']} {r['companyName'][:12]}"
+                    f"  現在: ¥{current:,.0f}  前場: {mret:+.1f}%"
+                )
+
+            notify_noon_scan(results)
             print("✓ Slack通知送信完了")
 
         elif args.mode == "qualify_report":

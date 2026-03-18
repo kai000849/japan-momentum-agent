@@ -14,6 +14,10 @@ on:
     # 前日決算発表銘柄の寄り付き反応を確認してエントリー判断
     - cron: '30 1 * * 1-5'    # 月〜金（日本時間の平日前場中盤10:30）
 
+    # 【正午】後場エントリー判断 12:15 JST (UTC 3:15)
+    # 前場の値動きをyfinanceで確認（15分遅延・無料）→ 後場12:30エントリー可否をSlack通知
+    - cron: '15 3 * * 1-5'    # 月〜金（日本時間の平日正午12:15）
+
     # 【夕方】メイン通知 18:00 JST (UTC 09:00)
     # 夕方のシグナル確認＆保有状況通知（米市場スキャンなし・朝の結果を参照）
     - cron: '0 9 * * 1-5'     # 月〜金（日本時間の平日夕方18:00）
@@ -482,3 +486,71 @@ jobs:
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"⚠️ *ザラ場決算スキャンでエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+
+  # ===========================
+  # 正午ジョブ: 後場エントリー判断
+  # 前場の値動きをyfinanceで確認 JST 12:15頃に実行
+  # ===========================
+  noon-scan:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '15 3 * * 1-5' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 必要パッケージをインストール
+        run: |
+          pip install -r requirements.txt
+
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      - name: qualify_log を復元（STRONG/WATCH対象銘柄の取得）
+        uses: actions/cache@v4
+        with:
+          path: memory/qualify_log.json
+          key: qualify-log-${{ github.run_number }}
+          restore-keys: |
+            qualify-log-
+
+      - name: スキャン結果キャッシュを復元（朝スキャンの結果）
+        uses: actions/cache@v4
+        with:
+          path: data/processed/scans
+          key: scans-${{ github.run_number }}
+          restore-keys: |
+            scans-
+
+      - name: 正午スキャン実行（前場値動き確認・後場エントリー判断）
+        id: noon
+        run: |
+          python main.py --mode noon_scan
+        continue-on-error: true
+
+      - name: エラー通知
+        if: steps.noon.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *正午スキャンでエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
