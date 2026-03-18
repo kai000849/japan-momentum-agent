@@ -79,34 +79,49 @@ def _fetch_stock_news(company_name: str, stock_code: str, max_items: int = 4) ->
         return []
 
 
-def _generate_surge_reasons_batch(stocks_with_news: list) -> dict:
+def _generate_surge_reasons_batch(stocks_with_info: list) -> dict:
     """
-    銘柄とニュースヘッドラインからClaude APIで急騰理由を一括生成する。
-    ニュースがある銘柄は実際のニュースから、ない銘柄は事業内容から推測（推測）表記付き。
+    銘柄の TDnet 開示 + Google News ニュースから Claude API で急騰理由を一括生成する。
+    情報源の優先度: TDnet適時開示 > Google News > 推測（推測）表記付き
 
     Returns:
         dict: {stockCode: surgeReason}
     """
     from agents.utils import get_anthropic_key
     api_key = get_anthropic_key()
-    if not api_key or not stocks_with_news:
+    if not api_key or not stocks_with_info:
         return {}
 
     stocks_text = ""
-    for s in stocks_with_news:
+    for s in stocks_with_info:
+        tdnet_list = s.get("tdnet_disclosures", [])
         news_list = s.get("news", [])
+
+        info_lines = []
+        if tdnet_list:
+            info_lines.append("  【TDnet適時開示（最重要・優先使用）】")
+            for d in tdnet_list[:3]:
+                info_lines.append(f"  ・{d['time']} {d['title']}")
         if news_list:
-            news_str = "\n".join([f"  ・{n}" for n in news_list[:3]])
-        else:
-            news_str = "  （ニュース取得なし）"
+            info_lines.append("  【Google Newsヘッドライン】")
+            for n in news_list[:2]:
+                info_lines.append(f"  ・{n}")
+        if not info_lines:
+            info_lines.append("  （情報取得なし）")
+
         stocks_text += (
             f"【{s['stockCode']} {s['companyName']}】"
             f" 前日比+{s.get('price_change_pct', 0):.1f}% / 出来高{s.get('volume_ratio', 0):.1f}倍\n"
-            f"{news_str}\n\n"
+            + "\n".join(info_lines) + "\n\n"
         )
 
-    prompt = f"""以下の日本株が急騰しました。各銘柄の関連ニュースをもとに、急騰の主因を50文字以内で答えてください。
-ニュースがない銘柄は事業内容から推測し、末尾に「（推測）」と付けてください。
+    prompt = f"""以下の日本株が急騰しました。各銘柄の情報をもとに急騰の主因を50文字以内で答えてください。
+
+【重要な指示】
+- TDnet適時開示がある場合は必ずそれを主因として使用してください（最も信頼性の高い情報源）
+- Google Newsヘッドラインのみの場合はそこから判断してください
+- 情報取得なしの場合は会社名・事業内容から推測し、末尾に「（推測）」と付けてください
+- 冒頭に「[TDnet]」「[ニュース]」「[推測]」のいずれかのタグを付けてください
 
 {stocks_text}
 必ず以下のJSON形式のみで回答してください：
@@ -114,7 +129,7 @@ def _generate_surge_reasons_batch(stocks_with_news: list) -> dict:
   "results": [
     {{
       "stockCode": "<銘柄コード>",
-      "surgeReason": "<急騰の主因を50文字以内で>"
+      "surgeReason": "<[タグ] 急騰の主因を50文字以内で>"
     }}
   ]
 }}"""
@@ -546,25 +561,43 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     results = []
     code_col = "Code" if "Code" in df_all.columns else "code"
 
-    # ---- 急騰理由生成: Google News RSS → Claude API（全銘柄対象） ----
+    # ---- 急騰理由生成: TDnet適時開示 + Google News RSS → Claude API（全銘柄対象） ----
     surge_reason_map = {}
     try:
-        logger.info("  Google News RSSから銘柄ニュースを取得中...")
-        stocks_with_news = []
+        from agents.tdnet_fetcher import get_disclosures_for_stock
+
+        # 急騰日（スキャン日 or scanDate）を特定
+        # 複数日ある場合も考慮して各銘柄ごとに取得
+        logger.info("  TDnet適時開示を取得中...")
+        stocks_with_info = []
         for s in signals:
             code = s.get("stockCode", "")
             name = s.get("companyName", "")
-            news = _fetch_stock_news(name, code)
-            stocks_with_news.append({
+            surge_date = s.get("scanDate", datetime.now().strftime("%Y-%m-%d"))
+
+            # TDnet: 当日 + 直前2日分を検索
+            tdnet_matches = get_disclosures_for_stock(code, surge_date, look_back_days=2)
+
+            # Google News: TDnet で情報が得られなかった銘柄のみフォールバック
+            news = []
+            if not tdnet_matches:
+                news = _fetch_stock_news(name, code)
+                time.sleep(0.3)
+
+            stocks_with_info.append({
                 "stockCode": code,
                 "companyName": name,
                 "price_change_pct": s.get("price_change_pct", 0),
                 "volume_ratio": s.get("volume_ratio", 0),
+                "tdnet_disclosures": tdnet_matches,
                 "news": news,
             })
-            time.sleep(0.4)
-        logger.info(f"  ニュース取得完了: {sum(1 for s in stocks_with_news if s['news'])}件取得")
-        surge_reason_map = _generate_surge_reasons_batch(stocks_with_news)
+
+        tdnet_hit = sum(1 for s in stocks_with_info if s["tdnet_disclosures"])
+        news_hit = sum(1 for s in stocks_with_info if s["news"])
+        logger.info(f"  情報取得完了: TDnet={tdnet_hit}件 / Google News={news_hit}件")
+
+        surge_reason_map = _generate_surge_reasons_batch(stocks_with_info)
         logger.info(f"  急騰理由生成完了: {len(surge_reason_map)}銘柄")
     except Exception as e:
         logger.warning(f"急騰理由生成エラー（スキップ）: {e}")
