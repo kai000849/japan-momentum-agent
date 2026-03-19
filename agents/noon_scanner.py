@@ -333,13 +333,13 @@ def run_noon_scan(scan_date: Optional[str] = None) -> list:
             mode = "MOMENTUM"
             company = entry.get("companyName", "")
             scan_close = entry.get("close", 0)
-            qualify_result = "MOMENTUM"
+            qualify_result = ""  # MOメンタムはqualify判定なし
         else:
             entry = earnings_map.get(code, {})
             mode = "EARNINGS"
             company = entry.get("companyName", "")
             scan_close = entry.get("close", 0)
-            qualify_result = "EARNINGS"
+            qualify_result = ""  # 決算はqualify判定なし
 
         # yfinanceで前場データ取得
         intraday = fetch_intraday(code)

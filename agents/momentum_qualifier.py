@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 VOLUME_SUSTAIN_RATIO = 0.5
 PRICE_SUSTAIN_RATIO = 0.97
 SUSTAIN_CHECK_DAYS = 3
-CLAUDE_MODEL = "claude-haiku-4-5-20251001"
+CLAUDE_MODEL = "claude-sonnet-4-5-20241022"
 QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
 MOMENTUM_COMMENT_CACHE_PATH = Path(__file__).parent.parent / "data" / "processed" / "momentum_comments_cache.json"
 
@@ -384,7 +384,34 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
         for s in stocks
     ])
 
-    prompt = f"""あなたはモメンタム投資専門の日本株アナリストです。
+    # 過去判定精度フィードバック（5件以上のoutcomeがある場合のみ追加）
+    accuracy_context = ""
+    try:
+        stats = get_outcome_stats()
+        patterns = get_outcome_patterns()
+        if stats.get("total_recorded", 0) >= 5:
+            lines = [f"参考情報：過去の判定精度（{stats['total_recorded']}件記録済み）"]
+            for label in ["継続", "一時的", "ノイズ"]:
+                s = stats.get(label, {})
+                if s.get("count", 0) > 0:
+                    lines.append(
+                        f"  {label}: 上昇率{s['win_rate']}% / 平均リターン{s['avg_return']:+.1f}%（{s['count']}件）"
+                    )
+            # 多軸パターン（情報源別・確信度別）
+            if patterns.get("by_surge_tag"):
+                parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_surge_tag"].items()]
+                lines.append(f"  情報源別勝率: {' / '.join(parts)}")
+            if patterns.get("by_confidence"):
+                parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_confidence"].items()]
+                lines.append(f"  確信度別勝率: {' / '.join(parts)}")
+            if patterns.get("by_volume_rate"):
+                parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_volume_rate"].items()]
+                lines.append(f"  出来高維持率別勝率: {' / '.join(parts)}")
+            accuracy_context = "\n".join(lines) + "\n\n"
+    except Exception:
+        pass
+
+    prompt = f"""{accuracy_context}あなたはモメンタム投資専門の日本株アナリストです。
 以下の銘柄が急騰し、出来高・株価ともに急騰後も継続しています。
 「この急騰が中長期的な上昇トレンドの初動か、短期的な加熱で終わるか」を判断してください。
 
@@ -639,6 +666,100 @@ def get_outcome_stats() -> dict:
             result[label] = {"count": 0, "win_rate": None, "avg_return": None}
 
     return result
+
+
+def get_outcome_patterns() -> dict:
+    """
+    qualify_logのoutcomeデータから外れパターンを多軸分析する。
+    surgeReasonタグ別・出来高維持率別・Stage2確信度別の勝率を返す。
+    3件以上のデータがある軸のみ集計する。
+
+    Returns:
+        dict: {
+            "total_recorded": int,
+            "by_surge_tag":    {タグ名: {"count", "win_rate", "avg_return"}},
+            "by_volume_rate":  {バケット名: {...}},
+            "by_confidence":   {確信度名: {...}},
+        }
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return {}
+
+    try:
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            entries = json.load(f)
+    except Exception:
+        return {}
+
+    recorded = [
+        e for e in entries
+        if isinstance(e.get("outcome"), dict) and e["outcome"].get("status") == "recorded"
+    ]
+
+    if not recorded:
+        return {"total_recorded": 0}
+
+    def _get_surge_tag(reason: str) -> str:
+        r = reason or ""
+        if r.startswith("[TDnet]"):
+            return "TDnet"
+        if r.startswith("[ニュース]"):
+            return "ニュース"
+        if r.startswith("[推測]"):
+            return "推測"
+        return "不明"
+
+    def _vol_bucket(rate: float) -> str:
+        if rate >= 0.70:
+            return "70%以上"
+        elif rate >= 0.60:
+            return "60-70%"
+        else:
+            return "50-60%"
+
+    buckets: dict = {
+        "by_surge_tag":   {},
+        "by_volume_rate": {},
+        "by_confidence":  {},
+    }
+
+    for e in recorded:
+        outcome = e["outcome"]
+        is_win = outcome.get("isWin", False)
+        ret = outcome.get("returnPct", 0)
+
+        def _add(group: str, key: str) -> None:
+            if key not in buckets[group]:
+                buckets[group][key] = {"count": 0, "wins": 0, "returns": []}
+            buckets[group][key]["count"] += 1
+            buckets[group][key]["returns"].append(ret)
+            if is_win:
+                buckets[group][key]["wins"] += 1
+
+        _add("by_surge_tag",   _get_surge_tag(e.get("surgeReason", "")))
+        _add("by_volume_rate", _vol_bucket(e.get("stage1", {}).get("volumeSustainRate", 0.0)))
+        conf = (e.get("stage2") or {}).get("confidence") or "不明"
+        _add("by_confidence", conf)
+
+    MIN_SAMPLES = 3
+
+    def _summarize(group_dict: dict) -> dict:
+        result = {}
+        for key, s in group_dict.items():
+            if s["count"] >= MIN_SAMPLES:
+                result[key] = {
+                    "count":      s["count"],
+                    "win_rate":   round(s["wins"] / s["count"] * 100, 1),
+                    "avg_return": round(sum(s["returns"]) / len(s["returns"]), 2),
+                }
+        return result
+
+    return {
+        "total_recorded":  len(recorded),
+        "by_surge_tag":    _summarize(buckets["by_surge_tag"]),
+        "by_volume_rate":  _summarize(buckets["by_volume_rate"]),
+        "by_confidence":   _summarize(buckets["by_confidence"]),
+    }
 
 
 # ========================================

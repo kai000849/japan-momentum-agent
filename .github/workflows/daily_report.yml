@@ -22,6 +22,9 @@ on:
     # 夕方のシグナル確認＆保有状況通知（米市場スキャンなし・朝の結果を参照）
     - cron: '0 9 * * 1-5'     # 月〜金（日本時間の平日夕方18:00）
 
+    # 【週次】金曜パフォーマンスレポート 18:00 JST (UTC 09:00)
+    - cron: '0 9 * * 5'   # 毎週金曜（日本時間18:00・夕方スキャンと同時刻）
+
   workflow_dispatch:           # 手動実行も可能
 
 jobs:
@@ -623,3 +626,71 @@ jobs:
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"⚠️ *正午スキャンでエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
+
+  # ===========================
+  # 週次ジョブ: パフォーマンスレポート
+  # 毎週金曜18:00 JST (UTC 09:00)に実行
+  # ===========================
+  weekly-report:
+    runs-on: ubuntu-latest
+    if: (github.event.schedule == '0 9 * * 5') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 必要パッケージをインストール
+        run: |
+          pip install -r requirements.txt
+
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      - name: trade_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/trade_log.json
+          key: trade-log-${{ github.run_number }}
+          restore-keys: |
+            trade-log-
+
+      - name: qualify_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/qualify_log.json
+          key: qualify-log-${{ github.run_number }}
+          restore-keys: |
+            qualify-log-
+
+      - name: 週次レポート送信
+        id: weekly
+        run: |
+          python main.py --mode weekly_report
+        continue-on-error: true
+
+      - name: エラー通知
+        if: steps.weekly.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"⚠️ *週次レポートでエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"

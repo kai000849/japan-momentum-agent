@@ -37,7 +37,7 @@ EDINET_BASE_URL = "https://api.edinet-fsa.go.jp/api/v2"
 
 # Claude APIエンドポイント
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
-CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト効率優先
+CLAUDE_MODEL = "claude-sonnet-4-5-20241022"  # 複雑な文脈理解が必要なためSonnet使用
 MAX_TOKENS = 1500
 
 # PDFから抽出するページ数の上限（決算短信の重要数字は冒頭に集中）

@@ -243,7 +243,7 @@ PF: *{profit_factor:.2f}*  |  対象: *{len(signals)}銘柄*
 
 {signals_text}
 
-{"⚠️ PF < 1.2のため発注見送り" if profit_factor < 1.2 else "✅ 発注条件クリア → ペーパートレード追加"}
+{"⚠️ PF < 1.2のため発注見送り" if profit_factor < 1.2 else "✅ 発注条件クリア → qualify判定後に自動追加"}
 """.strip()
 
     return send_slack_message(text)
@@ -1021,7 +1021,7 @@ def notify_noon_scan(results: list) -> bool:
         mode_label = {"SHORT_TERM": "急騰", "MOMENTUM": "モメンタム", "EARNINGS": "決算"}.get(r["mode"], r["mode"])
         qualify_label = normalize_qualify_label(r.get("qualifyResult", ""))
 
-        header = f"*{code} {name}* （{mode_label}・{qualify_label}）"
+        header = f"*{code} {name}* （{mode_label}{('・' + qualify_label) if qualify_label else ''}）"
         price_str = (
             f"  前日終値: ¥{scan_close:,.0f} → 現在: ¥{current:,.0f}"
             f"  （{(current - scan_close) / scan_close * 100:+.1f}%）"
@@ -1095,6 +1095,225 @@ def notify_actual_positions(positions: list) -> bool:
 
     total_sign = "+" if total_pnl >= 0 else ""
     lines.append(f"\n合計含み損益: {total_sign}{total_pnl:,.0f}円（{len(positions)}銘柄）")
+    return send_slack_message("\n".join(lines))
+
+
+def _generate_weekly_observations(
+    stats: dict,
+    patterns: dict,
+    week_signals: list,
+    open_positions: list,
+) -> list:
+    """週次レポートの注目点・提言を自動生成する。"""
+    obs = []
+    total = stats.get("total_recorded", 0)
+
+    if total < 5:
+        obs.append("📊 データ蓄積中（5件で精度分析開始・10件で本格稼働）")
+        return obs
+
+    # 継続判定の勝率チェック
+    strong_stat = stats.get("継続", {})
+    if strong_stat.get("count", 0) >= 3:
+        wr = strong_stat.get("win_rate", 0)
+        if wr < 40:
+            obs.append(f"⚠️ 継続判定の勝率が低め({wr}%) → Stage1閾値の見直しを検討")
+        elif wr >= 65:
+            obs.append(f"✅ 継続判定の精度良好({wr}%) → 現行ロジック維持")
+
+    # 情報源別パターン
+    by_tag = patterns.get("by_surge_tag", {})
+    if len(by_tag) >= 2:
+        best_tag = max(by_tag.items(), key=lambda x: x[1]["win_rate"])
+        worst_tag = min(by_tag.items(), key=lambda x: x[1]["win_rate"])
+        if best_tag[0] != worst_tag[0]:
+            diff = best_tag[1]["win_rate"] - worst_tag[1]["win_rate"]
+            if diff >= 20:
+                obs.append(
+                    f"💡 {best_tag[0]}情報の精度が高い({best_tag[1]['win_rate']}%) "
+                    f"vs {worst_tag[0]}({worst_tag[1]['win_rate']}%) "
+                    f"→ TDnet開示あり銘柄を優先"
+                )
+
+    # 確信度別パターン
+    by_conf = patterns.get("by_confidence", {})
+    if "high" in by_conf and "low" in by_conf:
+        high_wr = by_conf["high"]["win_rate"]
+        low_wr = by_conf["low"]["win_rate"]
+        if high_wr - low_wr >= 20:
+            obs.append(
+                f"💡 Claude high確信度({high_wr}%) vs low({low_wr}%)で大差 "
+                f"→ low確信度は見送り検討"
+            )
+
+    # 今週のシグナル数
+    strong_this_week = sum(
+        1 for e in week_signals
+        if normalize_qualify_label(e.get("qualifyResult", "")) == "継続"
+    )
+    if strong_this_week == 0:
+        obs.append("📉 今週は継続判定ゼロ → 地合い弱含みか条件が厳しすぎる可能性")
+    elif strong_this_week >= 5:
+        obs.append(f"📈 今週は継続判定{strong_this_week}件 → 積極的な相場環境")
+
+    # 保有ポジション数
+    if len(open_positions) >= 7:
+        obs.append(f"⚠️ 保有ポジション{len(open_positions)}件 → 新規追加は慎重に（余力限界近い）")
+    elif len(open_positions) == 0:
+        obs.append("📭 現在保有なし → エントリーチャンスを積極的に狙える状態")
+
+    if not obs:
+        obs.append("特記事項なし（継続的なデータ蓄積を進めてください）")
+
+    return obs
+
+
+def notify_weekly_report() -> bool:
+    """
+    週次パフォーマンスレポートをSlackに送信する。
+    直近7日間のシグナル精度・ペーパートレード状況・累計パターン分析を集計して通知。
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    import json
+    from datetime import date, timedelta
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).parent.parent
+    qualify_log_path = BASE_DIR / "memory" / "qualify_log.json"
+    trade_log_path   = BASE_DIR / "memory" / "trade_log.json"
+
+    today      = date.today()
+    week_start = (today - timedelta(days=7)).isoformat()
+    now_str    = datetime.now().strftime("%Y年%m月%d日")
+
+    # ---- qualify_log 集計 ----
+    week_signals:  list = []
+    week_outcomes: list = []
+    try:
+        with open(qualify_log_path, "r", encoding="utf-8") as f:
+            all_qualify = json.load(f)
+        week_signals = [e for e in all_qualify if e.get("scanDate", "") >= week_start]
+        week_outcomes = [
+            e for e in all_qualify
+            if isinstance(e.get("outcome"), dict)
+            and e["outcome"].get("status") == "recorded"
+            and (e["outcome"].get("recordedAt") or "") >= week_start
+        ]
+    except Exception:
+        pass
+
+    signal_count = len(week_signals)
+    strong_count = sum(1 for e in week_signals if normalize_qualify_label(e.get("qualifyResult", "")) == "継続")
+    watch_count  = sum(1 for e in week_signals if normalize_qualify_label(e.get("qualifyResult", "")) == "様子見")
+    noise_count  = sum(1 for e in week_signals if normalize_qualify_label(e.get("qualifyResult", "")) in ("ノイズ", "一時的"))
+
+    outcome_count = len(week_outcomes)
+    outcome_wins  = sum(1 for e in week_outcomes if e["outcome"].get("isWin", False))
+    outcome_wr    = round(outcome_wins / outcome_count * 100, 1) if outcome_count > 0 else None
+    outcome_avg   = (
+        round(sum(e["outcome"].get("returnPct", 0) for e in week_outcomes) / outcome_count, 2)
+        if outcome_count > 0 else None
+    )
+
+    # ---- trade_log 集計（ペーパーのみ） ----
+    paper_entered: list = []
+    paper_closed:  list = []
+    paper_open:    list = []
+    try:
+        with open(trade_log_path, "r", encoding="utf-8") as f:
+            trade_log = json.load(f)
+        paper_entered = [
+            p for p in trade_log.get("positions", [])
+            if p.get("tradeType", "paper") != "actual"
+            and p.get("entryDate", "") >= week_start
+        ]
+        paper_closed = [
+            t for t in trade_log.get("closed_trades", [])
+            if t.get("tradeType", "paper") != "actual"
+            and (t.get("exitDate") or "") >= week_start
+        ]
+        paper_open = [
+            p for p in trade_log.get("positions", [])
+            if p.get("tradeType", "paper") != "actual"
+        ]
+    except Exception:
+        pass
+
+    closed_wins = sum(1 for t in paper_closed if t.get("pnl", 0) > 0)
+    closed_wr   = round(closed_wins / len(paper_closed) * 100, 1) if paper_closed else None
+
+    # ---- 累計パターン分析 ----
+    from agents.momentum_qualifier import get_outcome_stats, get_outcome_patterns
+    all_stats    = get_outcome_stats()
+    all_patterns = get_outcome_patterns()
+    total_rec    = all_stats.get("total_recorded", 0)
+
+    # ---- メッセージ組み立て ----
+    lines = [
+        f"📊 *週次パフォーマンスレポート* {now_str}",
+        f"（対象期間: {week_start} 〜 {today.isoformat()}）",
+        "━━━━━━━━━━━━━━━━━━",
+    ]
+
+    # シグナル統計
+    lines.append(f"🔍 *今週のシグナル（{signal_count}件）*")
+    if signal_count > 0:
+        lines.append(f"  継続: {strong_count}件 / 様子見: {watch_count}件 / ノイズ・一時的: {noise_count}件")
+    else:
+        lines.append("  シグナルなし（稼働日なし or データ蓄積中）")
+
+    # 今週のoutcome
+    lines.append(f"\n📈 *今週の判定実績（記録分: {outcome_count}件）*")
+    if outcome_count > 0:
+        wr_str  = f"{outcome_wr}%" if outcome_wr is not None else "N/A"
+        ret_str = f"{outcome_avg:+.2f}%" if outcome_avg is not None else "N/A"
+        lines.append(f"  勝率: {wr_str} / 平均リターン: {ret_str}")
+    else:
+        lines.append("  まだ記録なし（10営業日後に自動記録）")
+
+    # ペーパートレード
+    lines.append(f"\n💼 *ペーパートレード*")
+    lines.append(
+        f"  今週エントリー: {len(paper_entered)}件 / 決済: {len(paper_closed)}件 / 現在保有: {len(paper_open)}件"
+    )
+    if paper_closed:
+        wr_str      = f"{closed_wr}%" if closed_wr is not None else "N/A"
+        closed_pnl  = sum(t.get("pnl", 0) for t in paper_closed)
+        sign        = "+" if closed_pnl >= 0 else ""
+        lines.append(f"  決済結果: 勝率{wr_str} / 損益合計{sign}¥{closed_pnl:,.0f}")
+
+    # 累計パターン分析
+    lines.append(f"\n🧠 *累計パターン分析（{total_rec}件記録済み）*")
+    if total_rec >= 5:
+        for label in ["継続", "一時的", "ノイズ"]:
+            s = all_stats.get(label, {})
+            if s.get("count", 0) > 0:
+                lines.append(
+                    f"  {label}: 勝率{s['win_rate']}% / 平均{s['avg_return']:+.1f}%（{s['count']}件）"
+                )
+        if all_patterns.get("by_surge_tag"):
+            lines.append("  【情報源別勝率】")
+            for tag, s in sorted(all_patterns["by_surge_tag"].items(), key=lambda x: -x[1]["win_rate"]):
+                lines.append(f"    {tag}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+        if all_patterns.get("by_confidence"):
+            lines.append("  【Claude確信度別勝率】")
+            for conf, s in sorted(all_patterns["by_confidence"].items(), key=lambda x: -x[1]["win_rate"]):
+                lines.append(f"    {conf}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+        if all_patterns.get("by_volume_rate"):
+            lines.append("  【出来高維持率別勝率】")
+            for bucket, s in sorted(all_patterns["by_volume_rate"].items(), key=lambda x: -x[1]["win_rate"]):
+                lines.append(f"    {bucket}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+    else:
+        lines.append(f"  蓄積中（{total_rec}件 / 5件で分析開始）")
+
+    # 注目点
+    lines.append("\n📌 *注目点*")
+    for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, paper_open):
+        lines.append(f"  {obs}")
+
+    lines.append("━━━━━━━━━━━━━━━━━━")
     return send_slack_message("\n".join(lines))
 
 

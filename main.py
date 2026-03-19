@@ -334,6 +334,30 @@ def run_scan_mode(args):
 
             if qualify_entries:
                 advices = generate_advice(qualify_entries, pf_map)
+
+                # ---- エントリー推奨銘柄をペーパートレードに自動追加 ----
+                try:
+                    from agents.paper_trader import PaperTrader
+                    trader = PaperTrader()
+                    added_codes = []
+                    for adv in advices:
+                        if adv.get("recommendation") == "エントリー" and adv.get("entryPrice", 0) > 0:
+                            success = trader.add_position(
+                                stock_code=adv["stockCode"],
+                                entry_price=adv["entryPrice"],
+                                reason=f"{adv.get('mode', 'SHORT_TERM')}シグナル（継続）PF{adv.get('pf', 0):.1f}",
+                                company_name=adv.get("companyName", ""),
+                                profit_factor=adv.get("pf"),
+                            )
+                            if success:
+                                added_codes.append(adv["stockCode"])
+                    if added_codes:
+                        logger.info(f"ペーパートレード自動追加: {len(added_codes)}件 → {added_codes}")
+                    else:
+                        logger.info("ペーパートレード自動追加: 0件（エントリー推奨なし or 余力なし）")
+                except Exception as e:
+                    logger.warning(f"ペーパートレード自動追加エラー（スキップ）: {e}")
+
                 advice_text = format_advice_for_slack(advices)
                 if advice_text:
                     send_slack_message(advice_text)
@@ -630,7 +654,7 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade"],
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade", "weekly_report"],
         help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday / earnings_endofday / noon_scan / add_trade(実売買記録) / close_trade(実売買決済)"
     )
 
@@ -893,6 +917,15 @@ def main():
 
             notify_noon_scan(results)
             print("✓ Slack通知送信完了")
+
+        elif args.mode == "weekly_report":
+            from agents.slack_notifier import notify_weekly_report
+            logger.info("週次パフォーマンスレポートを生成中...")
+            success = notify_weekly_report()
+            if success:
+                print("✅ 週次レポートをSlackに送信しました。")
+            else:
+                print("❌ Slack送信失敗。")
 
         elif args.mode == "add_trade":
             # 実売買エントリー記録
