@@ -1191,7 +1191,7 @@ def format_qualify_result_for_slack(results: list) -> str:
             )
 
     if watch_results:
-        lines.append("\n*【様子見】要観察（APIキー未設定）*")
+        lines.append("\n*【様子見】要観察*")
         for r in watch_results:
             s1 = r.get("stage1", {})
             vol_rate = s1.get("volumeSustainRate", 0)
