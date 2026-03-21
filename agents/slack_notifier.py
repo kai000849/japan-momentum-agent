@@ -1103,6 +1103,7 @@ def _generate_weekly_observations(
     patterns: dict,
     week_signals: list,
     open_positions: list,
+    weekly_trend: list = None,
 ) -> list:
     """週次レポートの注目点・提言を自動生成する。"""
     obs = []
@@ -1161,6 +1162,32 @@ def _generate_weekly_observations(
         obs.append(f"⚠️ 保有ポジション{len(open_positions)}件 → 新規追加は慎重に（余力限界近い）")
     elif len(open_positions) == 0:
         obs.append("📭 現在保有なし → エントリーチャンスを積極的に狙える状態")
+
+    # 戦略有効性アラート（4週推移ベース）
+    if weekly_trend and len(weekly_trend) >= 2:
+        # シグナル枯渇の長期化チェック（直近3週以上ゼロ）
+        recent_3w_strong = [w["strong_count"] for w in weekly_trend[-3:]]
+        if len(recent_3w_strong) >= 3 and all(s == 0 for s in recent_3w_strong):
+            obs.append(
+                "🚨 3週連続で継続判定ゼロ → モメンタム相場の終了を検討。"
+                "バリュー・ディフェンシブへの切替を視野に"
+            )
+
+        # 勝率の下降トレンド検出
+        recent_wr = [w["win_rate"] for w in weekly_trend if w["win_rate"] is not None]
+        if len(recent_wr) >= 3:
+            if recent_wr[-1] < recent_wr[-2] < recent_wr[-3]:
+                obs.append(
+                    f"📉 勝率が3週連続低下中（{recent_wr[-3]}%→{recent_wr[-2]}%→{recent_wr[-1]}%）"
+                    f" → 戦略の見直し時期かもしれません"
+                )
+
+        # 平均リターンの悪化チェック
+        recent_ret = [w["avg_return"] for w in weekly_trend if w["avg_return"] is not None]
+        if len(recent_ret) >= 2 and all(r < 0 for r in recent_ret[-2:]):
+            obs.append(
+                "⚠️ 直近2週の平均リターンがマイナス → ポジションサイズ縮小を検討"
+            )
 
     if not obs:
         obs.append("特記事項なし（継続的なデータ蓄積を進めてください）")
@@ -1250,6 +1277,47 @@ def notify_weekly_report() -> bool:
     all_patterns = get_outcome_patterns()
     total_rec    = all_stats.get("total_recorded", 0)
 
+    # ---- 戦略有効性モニター（4週分の週別集計） ----
+    weekly_trend = []  # [{week_label, signal_count, strong_count, outcome_count, win_rate, avg_return}, ...]
+    try:
+        for weeks_ago in range(3, -1, -1):  # 3週前→2週前→1週前→今週
+            w_end   = today - timedelta(days=7 * weeks_ago)
+            w_start = w_end - timedelta(days=7)
+            w_label = w_end.strftime("%m/%d")
+
+            w_signals = [
+                e for e in all_qualify
+                if w_start.isoformat() <= e.get("scanDate", "") < w_end.isoformat()
+            ]
+            w_strong = sum(
+                1 for e in w_signals
+                if normalize_qualify_label(e.get("qualifyResult", "")) == "継続"
+            )
+            w_outcomes = [
+                e for e in all_qualify
+                if isinstance(e.get("outcome"), dict)
+                and e["outcome"].get("status") == "recorded"
+                and w_start.isoformat() <= e.get("scanDate", "") < w_end.isoformat()
+            ]
+            w_oc_count = len(w_outcomes)
+            w_wins     = sum(1 for e in w_outcomes if e["outcome"].get("isWin", False))
+            w_wr       = round(w_wins / w_oc_count * 100, 1) if w_oc_count > 0 else None
+            w_avg_ret  = (
+                round(sum(e["outcome"].get("returnPct", 0) for e in w_outcomes) / w_oc_count, 2)
+                if w_oc_count > 0 else None
+            )
+
+            weekly_trend.append({
+                "week_label": w_label,
+                "signal_count": len(w_signals),
+                "strong_count": w_strong,
+                "outcome_count": w_oc_count,
+                "win_rate": w_wr,
+                "avg_return": w_avg_ret,
+            })
+    except Exception:
+        weekly_trend = []
+
     # ---- メッセージ組み立て ----
     lines = [
         f"📊 *週次パフォーマンスレポート* {now_str}",
@@ -1308,9 +1376,46 @@ def notify_weekly_report() -> bool:
     else:
         lines.append(f"  蓄積中（{total_rec}件 / 5件で分析開始）")
 
+    # 戦略有効性モニター
+    lines.append(f"\n🎯 *戦略有効性モニター（直近4週推移）*")
+    if weekly_trend:
+        has_any_outcome = any(w["outcome_count"] > 0 for w in weekly_trend)
+        # ヘッダー行
+        labels = [w["week_label"] for w in weekly_trend]
+        lines.append(f"  週末日:     {' → '.join(labels)}")
+        # シグナル数の推移
+        sig_vals = [str(w["signal_count"]) for w in weekly_trend]
+        lines.append(f"  シグナル数:  {' → '.join(sig_vals)}")
+        # 継続判定数の推移
+        str_vals = [str(w["strong_count"]) for w in weekly_trend]
+        lines.append(f"  継続判定数:  {' → '.join(str_vals)}")
+        # 勝率の推移（outcomeがある場合のみ表示）
+        if has_any_outcome:
+            wr_vals = [f"{w['win_rate']}%" if w["win_rate"] is not None else "-" for w in weekly_trend]
+            lines.append(f"  勝率:       {' → '.join(wr_vals)}")
+            ret_vals = [f"{w['avg_return']:+.2f}%" if w["avg_return"] is not None else "-" for w in weekly_trend]
+            lines.append(f"  平均ﾘﾀｰﾝ:   {' → '.join(ret_vals)}")
+        else:
+            lines.append("  勝率・ﾘﾀｰﾝ: outcome蓄積待ち")
+
+        # トレンド判定
+        recent_strong = [w["strong_count"] for w in weekly_trend[-2:]]
+        recent_wr = [w["win_rate"] for w in weekly_trend[-2:] if w["win_rate"] is not None]
+
+        if all(s == 0 for s in recent_strong):
+            lines.append("  ⚠️ 2週連続で継続判定ゼロ → モメンタム不在の可能性")
+        elif len(recent_wr) >= 2 and all(wr < 50 for wr in recent_wr):
+            lines.append("  ⚠️ 2週連続で勝率50%割れ → 戦略有効性の低下兆候")
+        elif len(recent_wr) >= 2 and all(wr >= 60 for wr in recent_wr):
+            lines.append("  ✅ モメンタム戦略が機能中")
+        else:
+            lines.append("  📊 データ蓄積中（推移を引き続き監視）")
+    else:
+        lines.append("  データ不足（qualify_log蓄積中）")
+
     # 注目点
     lines.append("\n📌 *注目点*")
-    for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, paper_open):
+    for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, paper_open, weekly_trend):
         lines.append(f"  {obs}")
 
     lines.append("━━━━━━━━━━━━━━━━━━")
