@@ -175,9 +175,9 @@ def extract_hot_keywords(headlines: list) -> dict:
 
 【重要な指示】
 - 「AI」「半導体」などの大きすぎるカテゴリではなく、
-  "Optical Interconnect"・"HBM4"・"Nuclear Data Center"・"GLP-1" のような
+  「光インターコネクト」「HBM4」「原子力データセンター」「GLP-1薬」のような
   具体的・細分化されたキーワードを優先して抽出してください
-- hot_keywordsのkeywordフィールドは必ず英語で出力してください（日本語不可）
+- hot_keywordsのkeywordフィールドは必ず日本語で出力してください（英語不可）
 - 米国での注目テーマが日本株のどの銘柄に波及するかを具体的に示してください
 - japan_playsのstocksは必ず「銘柄名(証券コード4桁)」の形式で記載してください
   例: ["東京エレクトロン(8035)", "アドバンテスト(6857)", "レーザーテック(6920)"]
