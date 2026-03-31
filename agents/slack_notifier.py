@@ -822,8 +822,10 @@ def notify_cross_signals(cross_signals: list) -> bool:
             pct = st.get("priceChangePct", 0)
             vol = st.get("volumeRatio", 0)
             qr = normalize_qualify_label(st.get("qualifyResult", ""))
+            vp = st.get("volume_pattern", "unknown")
+            vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             reason = st.get("surgeReason", "")
-            row = f"  📈 急騰 +{pct:.1f}% / 出来高 {vol:.1f}倍 [{qr}]"
+            row = f"  📈 急騰 +{pct:.1f}% / 出来高 {vol:.1f}倍 [{qr}]{vp_tag}"
             if reason:
                 row += f"\n     💡 {reason}"
             rows.append(row)
@@ -1020,8 +1022,10 @@ def notify_noon_scan(results: list) -> bool:
         current = intra.get("current_price", 0)
         mode_label = {"SHORT_TERM": "急騰", "MOMENTUM": "モメンタム", "EARNINGS": "決算"}.get(r["mode"], r["mode"])
         qualify_label = normalize_qualify_label(r.get("qualifyResult", ""))
+        vp = r.get("volume_pattern", "unknown")
+        vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
 
-        header = f"*{code} {name}* （{mode_label}{('・' + qualify_label) if qualify_label else ''}）"
+        header = f"*{code} {name}* （{mode_label}{('・' + qualify_label) if qualify_label else ''}{vp_tag}）"
         price_str = (
             f"  前日終値: ¥{scan_close:,.0f} → 現在: ¥{current:,.0f}"
             f"  （{(current - scan_close) / scan_close * 100:+.1f}%）"
@@ -1228,8 +1232,12 @@ def notify_weekly_report() -> bool:
             and e["outcome"].get("status") == "recorded"
             and (e["outcome"].get("recordedAt") or "") >= week_start
         ]
-    except Exception:
-        pass
+    except FileNotFoundError:
+        logger.warning("qualify_log.json が見つかりません。週次レポートの判定集計をスキップします。")
+        send_slack_message("⚠️ 週次レポート: qualify_log.json が見つからないため判定集計をスキップしました。")
+    except Exception as e:
+        logger.error(f"qualify_log.json の読み込みに失敗しました: {e}")
+        send_slack_message(f"⚠️ 週次レポート: qualify_log.json の読み込みエラー（{e}）")
 
     signal_count = len(week_signals)
     strong_count = sum(1 for e in week_signals if normalize_qualify_label(e.get("qualifyResult", "")) == "継続")
