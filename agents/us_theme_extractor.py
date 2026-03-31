@@ -213,7 +213,7 @@ def extract_hot_keywords(headlines: list) -> dict:
   "risk_keywords": ["<リスクワード1>", "<リスクワード2>", "<リスクワード3>"]
 }}
 
-hot_keywordsは上位8件、sector_narrativesは上位5件、japan_playsは上位5件を出力してください。
+hot_keywordsは上位5件、sector_narrativesは上位3件、japan_playsは上位3件を出力してください。
 """
 
     try:

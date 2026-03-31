@@ -554,7 +554,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
     # ========== ホットキーワード ==========
     mention_icons = {"high": "🔥", "medium": "📈", "low": "💡"}
     keyword_lines = []
-    for i, kw in enumerate(hot_keywords[:8], 1):
+    for i, kw in enumerate(hot_keywords[:5], 1):
         icon = mention_icons.get(kw.get("mention_level", "medium"), "📈")
         keyword_lines.append(
             f"  {icon} *{i}. {kw.get('keyword', '')}*  [{kw.get('sector', '')}]\n"
@@ -565,7 +565,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
     # ========== セクター別サブテーマ ==========
     momentum_icons = {"rising": "⬆️", "stable": "➡️", "falling": "⬇️"}
     narrative_lines = []
-    for s in sector_narratives[:5]:
+    for s in sector_narratives[:3]:
         icon = momentum_icons.get(s.get("momentum", "stable"), "➡️")
         narrative_lines.append(
             f"  {icon} *{s.get('sector', '')}* › {s.get('sub_theme', '')}\n"
@@ -575,7 +575,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
 
     # ========== 日本株への波及 ==========
     japan_lines = []
-    for jp in japan_plays[:5]:
+    for jp in japan_plays[:3]:
         stocks = "・".join(jp.get("stocks", [])[:3])
         japan_lines.append(
             f"  🇯🇵 *{jp.get('theme', '')}*\n"
@@ -585,7 +585,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
     japan_text = "\n\n".join(japan_lines) if japan_lines else "  なし"
 
     # ========== リスク ==========
-    risk_text = "・".join(risk_keywords[:3]) if risk_keywords else "なし"
+    risk_text = "・".join(risk_keywords[:2]) if risk_keywords else "なし"
 
     text = f"""
 🔍 *米市場 ホットキーワード*  {scan_date}
@@ -596,7 +596,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
   {macro_narrative}
 
 ━━━━━━━━━━━━━━━━━━
-🔥 *注目キーワード TOP8*
+🔥 *注目キーワード TOP5*
 
 {keywords_text}
 
