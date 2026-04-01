@@ -526,12 +526,14 @@ def notify_us_market_scan(scan_result: dict) -> bool:
     return send_slack_message(text)
 
 
-def notify_us_theme_extraction(theme_result: dict) -> bool:
+def notify_us_theme_extraction(theme_result: dict, sector_ranking: list = None) -> bool:
     """
     米市場ホットキーワード・テーマ抽出結果をSlackに通知する。
 
     Args:
         theme_result (dict): us_theme_extractor.run_theme_extraction()の戻り値
+        sector_ranking (list): us_market_scanner のセクターランキング（任意）。
+                               指定時はTOP3/弱セクターTOP2をコンパクト表示する。
 
     Returns:
         bool: 送信成功はTrue
@@ -587,6 +589,34 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
     # ========== リスク ==========
     risk_text = "・".join(risk_keywords[:2]) if risk_keywords else "なし"
 
+    # ========== セクターランキング（当日モメンタム速報） ==========
+    sector_section = ""
+    if sector_ranking:
+        top3 = [s for s in sector_ranking[:3]]
+        weak2 = [s for s in sector_ranking if s.get("score", 0) < 0][-2:]
+
+        top_lines = []
+        for i, s in enumerate(top3, 1):
+            m1 = s.get("mom1d", 0)
+            m5 = s.get("mom5d", 0)
+            s1 = "+" if m1 >= 0 else ""
+            s5 = "+" if m5 >= 0 else ""
+            top_lines.append(
+                f"  {i}. *{s['name']}*  当日:{s1}{m1:.1f}% / 5日:{s5}{m5:.1f}%"
+            )
+        weak_lines = []
+        for s in weak2:
+            m1 = s.get("mom1d", 0)
+            s1 = "+" if m1 >= 0 else ""
+            weak_lines.append(f"  🔻 {s['name']}  当日:{s1}{m1:.1f}%")
+
+        sector_section = (
+            "\n━━━━━━━━━━━━━━━━━━\n"
+            "📊 *セクター強弱（当日モメンタム）*\n"
+            + "\n".join(top_lines)
+            + ("\n" + "\n".join(weak_lines) if weak_lines else "")
+        )
+
     text = f"""
 🔍 *米市場 ホットキーワード*  {scan_date}
 （ニュース{headline_count}件を分析）
@@ -610,7 +640,7 @@ def notify_us_theme_extraction(theme_result: dict) -> bool:
 
 {japan_text}
 
-⚠️ *リスクワード*: {risk_text}
+⚠️ *リスクワード*: {risk_text}{sector_section}
 ━━━━━━━━━━━━━━━━━━
 """.strip()
 

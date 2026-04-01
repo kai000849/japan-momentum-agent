@@ -186,6 +186,38 @@ def run_scan_mode(args):
 
     all_results = {}
 
+    # ---- 既通知シグナルのロード（重複通知防止）----
+    # 同日に既にスキャンが実行済みの場合（朝→夕のジョブ連携）、
+    # 既通知の銘柄を除外して差分のみSlack通知する
+    import json as _json
+    from pathlib import Path as _Path
+    from datetime import date as _date
+
+    _scans_dir = _Path(__file__).parent / "data" / "processed" / "scans"
+    _today_str = (scan_date or _date.today().isoformat()).replace("-", "")
+    _prev_notified: dict = {}
+
+    for _m in modes_to_run:
+        _fname = _scans_dir / f"scan_{_today_str}_{_m}.json"
+        if _fname.exists():
+            try:
+                _prev_data = _json.loads(_fname.read_text(encoding="utf-8"))
+                _prev_results = _prev_data.get("results", [])
+                if _m == "EARNINGS":
+                    _prev_notified[_m] = {
+                        f"{r.get('stockCode')}::{r.get('docID', '')}"
+                        for r in _prev_results
+                    }
+                else:
+                    _prev_notified[_m] = {r.get("stockCode", "") for r in _prev_results}
+                if _prev_notified[_m]:
+                    logger.info(f"{_m}: 既通知シグナル {len(_prev_notified[_m])}件をロード（重複通知防止）")
+            except Exception as _e:
+                logger.debug(f"既通知シグナルロードエラー({_m}): {_e}")
+                _prev_notified[_m] = set()
+        else:
+            _prev_notified[_m] = set()
+
     for mode in modes_to_run:
         print(f"--- {mode} スキャン開始 ---")
         try:
@@ -245,10 +277,19 @@ def run_scan_mode(args):
                             merged.append({**r, **analyzed_map[code]})
                         else:
                             merged.append(r)
-                    notify_new_signal(merged, mode=mode, profit_factor=0.0)
-                    # 分析済み結果をクロスシグナル照合のために保存
+                    # 重複排除: 朝スキャン済みの開示（stockCode+docID一致）を除外して通知
+                    _prev_e = _prev_notified.get(mode, set())
+                    merged_to_notify = [
+                        r for r in merged
+                        if f"{r.get('stockCode')}::{r.get('docID', '')}" not in _prev_e
+                    ] if _prev_e else merged
+                    if merged_to_notify:
+                        notify_new_signal(merged_to_notify, mode=mode, profit_factor=0.0)
+                    else:
+                        logger.info("EARNINGS: 新規開示なし（朝スキャン済みと同一）→ 通知スキップ")
+                    # 分析済み結果をクロスシグナル照合のために保存（フルリスト）
                     all_results["EARNINGS"] = merged
-                    # 翌朝ザラ場スキャン用ウォッチリストを保存
+                    # 翌朝ザラ場スキャン用ウォッチリストを保存（フルリスト）
                     save_watchlist(merged)
                     # 決算・業績開示があった銘柄のモメンタムコメントを失効（再点検対象に）
                     try:
@@ -275,8 +316,16 @@ def run_scan_mode(args):
 
             # SHORT_TERM・MOMENTUMはバックテストでPFを計算してSlack通知
             # CSVの最終日から15営業日前の日付でスキャン→バックテスト→PF計算
+            # 重複排除: 朝スキャン済みの銘柄を除外して差分のみ通知
+            _prev_s = _prev_notified.get(mode, set())
+            results_to_notify = [
+                r for r in results if r.get("stockCode", "") not in _prev_s
+            ] if _prev_s else results
+            if not results_to_notify:
+                logger.info(f"{mode}: 新規シグナルなし（朝スキャン済みと同一）→ 通知スキップ")
+                continue
             pf = _calc_pf_for_mode(mode)
-            notify_new_signal(results, mode=mode, profit_factor=pf)
+            notify_new_signal(results_to_notify, mode=mode, profit_factor=pf)
 
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
@@ -300,9 +349,18 @@ def run_scan_mode(args):
             from agents.momentum_qualifier import format_qualify_result_for_slack
             from agents.slack_notifier import send_slack_message
 
-            slack_text = format_qualify_result_for_slack(qualify_results)
-            send_slack_message(slack_text)
-            logger.info("モメンタム判定結果をSlackに送信しました。")
+            # 重複排除: 朝スキャン済み銘柄のqualify結果は再送しない
+            _prev_q = _prev_notified.get("SHORT_TERM", set())
+            qualify_to_notify = [
+                r for r in qualify_results if r.get("stockCode", "") not in _prev_q
+            ] if _prev_q else qualify_results
+
+            if qualify_to_notify:
+                slack_text = format_qualify_result_for_slack(qualify_to_notify)
+                send_slack_message(slack_text)
+                logger.info("モメンタム判定結果をSlackに送信しました。")
+            else:
+                logger.info("モメンタム判定: 新規シグナルなし（朝スキャン済みと同一）→ 通知スキップ")
         except Exception as e:
             logger.warning(f"モメンタム判定Slack送信エラー（スキップ）: {e}")
 
@@ -782,7 +840,7 @@ def main():
             theme_result = run_theme_extraction()
             kw_count = len(theme_result.get("keywords", {}).get("hot_keywords", []))
             print(f"キーワード抽出: {kw_count}件")
-            notify_us_theme_extraction(theme_result)
+            notify_us_theme_extraction(theme_result, sector_ranking=ranking)
             print("✓ キーワード通知送信")
 
         elif args.mode == "earnings_intraday":

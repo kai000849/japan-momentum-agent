@@ -355,6 +355,62 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
 
 
 # ========================================
+# 出来高パターン判定
+# ========================================
+
+def classify_volume_pattern(df_stock: pd.DataFrame, surge_date: str) -> str:
+    """
+    出来高パターンを判定する。
+
+    Args:
+        df_stock: 株価DataFrame（Date, Volume カラムが必要）
+        surge_date: シグナル発生日（"YYYY-MM-DD"）
+
+    Returns:
+        "late"（バズ型）/ "early"（ジワジワ型）/ "unknown"（データ不足）
+
+    判定基準（lateの両条件を満たす場合はlate、それ以外はearly）:
+        - シグナル日の出来高 >= 20日移動平均の2倍
+        - 直近5日（シグナル日を含む）の平均出来高 >= 20日移動平均の1.5倍
+    """
+    try:
+        if "Volume" not in df_stock.columns:
+            return "unknown"
+
+        df = df_stock.sort_values("Date").reset_index(drop=True)
+        surge_dt = pd.to_datetime(surge_date)
+        surge_mask = df["Date"] == surge_dt
+
+        if not surge_mask.any():
+            return "unknown"
+
+        surge_idx = int(df[surge_mask].index[-1])
+
+        # 20日移動平均（シグナル日より前の最大20日分）
+        pre_data = df.loc[:surge_idx - 1] if surge_idx > 0 else pd.DataFrame()
+        if len(pre_data) < 10:
+            return "unknown"
+
+        vol_20 = float(pre_data["Volume"].astype(float).tail(20).mean())
+        if vol_20 <= 0:
+            return "unknown"
+
+        surge_volume = float(df.loc[surge_idx, "Volume"] or 0)
+        if surge_volume <= 0:
+            return "unknown"
+
+        # 直近5日（シグナル日を含む）の平均出来高
+        start_idx = max(0, surge_idx - 4)
+        avg_recent_5 = float(df.loc[start_idx:surge_idx, "Volume"].astype(float).mean())
+
+        is_late = (surge_volume >= vol_20 * 2.0) and (avg_recent_5 >= vol_20 * 1.5)
+        return "late" if is_late else "early"
+
+    except Exception:
+        return "unknown"
+
+
+# ========================================
 # ステージ2: Claude APIによる構造的変化判定（一括処理）
 # ========================================
 
@@ -1007,15 +1063,18 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
 
     # ---- ステージ1: 全銘柄の出来高継続チェック ----
     stage1_map = {}
+    volume_pattern_map = {}
     for signal in signals:
         stock_code = signal.get("stockCode", "")
         surge_date = signal.get("scanDate", "")
         try:
             df_stock = df_all[df_all[code_col].astype(str) == stock_code].copy()
             stage1 = _check_volume_sustain(df_stock, surge_date)
+            volume_pattern_map[stock_code] = classify_volume_pattern(df_stock, surge_date)
         except Exception as e:
             logger.debug(f"{stock_code} ステージ1エラー: {e}")
             stage1 = {"stage1Pass": False, "reason": f"エラー: {e}"}
+            volume_pattern_map[stock_code] = "unknown"
         stage1_map[stock_code] = stage1
 
     # ---- ステージ2: ステージ1通過銘柄を一括でClaude判定（API呼び出し1回） ----
@@ -1090,6 +1149,7 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
             result["qualifyResult"] = "ノイズ"
 
         result["outcome"] = None
+        result["volume_pattern"] = volume_pattern_map.get(stock_code, "unknown")
         results.append(result)
 
     _save_qualify_log(results)
@@ -1175,6 +1235,8 @@ def format_qualify_result_for_slack(results: list) -> str:
             surge_reason = r.get("surgeReason", "")
             vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
+            vp = r.get("volume_pattern", "unknown")
+            vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             if days_checked == 0:
                 vol_str = "出来高:最新日（翌日以降確認）"
                 price_str = "急騰後:継続確認中"
@@ -1183,7 +1245,7 @@ def format_qualify_result_for_slack(results: list) -> str:
                 price_str = f"急騰後株価:{price_chg:+.1f}%"
             reason_line = f"\n  💡 急騰理由: {surge_reason}" if surge_reason else ""
             lines.append(
-                f"• *{r.get('stockCode')} {r.get('companyName', '')}*\n"
+                f"• *{r.get('stockCode')} {r.get('companyName', '')}*{vp_tag}\n"
                 f"  {vol_emoji} {vol_str}  "
                 f"{price_emoji} {price_str}\n"
                 f"  🤖 Claude({confidence}): {comment}"
@@ -1197,6 +1259,8 @@ def format_qualify_result_for_slack(results: list) -> str:
             vol_rate = s1.get("volumeSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
             days_checked = s1.get("daysChecked", -1)
+            vp = r.get("volume_pattern", "unknown")
+            vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             if days_checked == 0:
                 vol_str = "最新日（翌日以降確認）"
                 price_str = "継続確認中"
@@ -1204,7 +1268,7 @@ def format_qualify_result_for_slack(results: list) -> str:
                 vol_str = f"{vol_rate:.0%}"
                 price_str = f"{price_chg:+.1f}%"
             lines.append(
-                f"• {r.get('stockCode')} {r.get('companyName', '')} "
+                f"• {r.get('stockCode')} {r.get('companyName', '')}{vp_tag} "
                 f"出来高維持:{vol_str} 株価:{price_str}"
             )
 
