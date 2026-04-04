@@ -463,6 +463,10 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
             if patterns.get("by_volume_rate"):
                 parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_volume_rate"].items()]
                 lines.append(f"  出来高維持率別勝率: {' / '.join(parts)}")
+            if patterns.get("by_volume_pattern"):
+                vp_labels = {"late": "バズ型(late)", "early": "ジワジワ型(early)"}
+                parts = [f"{vp_labels.get(k, k)}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_volume_pattern"].items()]
+                lines.append(f"  出来高パターン別勝率: {' / '.join(parts)}")
             accuracy_context = "\n".join(lines) + "\n\n"
     except Exception:
         pass
@@ -638,11 +642,13 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
                 updated_count += 1
                 continue
 
-            entry_price = float(surge_row.iloc[0]["Close"])
-
             future_df = df_stock[df_stock["Date"] > surge_dt].reset_index(drop=True)
             if len(future_df) < OUTCOME_CHECK_DAYS:
                 continue
+
+            # C: entry_price = 翌日始値（夕方検出→翌日寄り付きエントリーの実態に合わせる）
+            next_day_open = float(future_df.iloc[0].get("Open") or future_df.iloc[0]["Close"])
+            entry_price = next_day_open if next_day_open > 0 else float(future_df.iloc[0]["Close"])
 
             exit_row = future_df.iloc[OUTCOME_CHECK_DAYS - 1]
             exit_price = float(exit_row["Close"])
@@ -652,6 +658,7 @@ def record_outcomes(df_all: pd.DataFrame) -> int:
             entry["outcome"] = {
                 "status": "recorded",
                 "entryPrice": entry_price,
+                "entryDate": future_df.iloc[0]["Date"].strftime("%Y-%m-%d"),
                 "exitPrice": exit_price,
                 "exitDate": exit_date,
                 "returnPct": return_pct,
@@ -776,9 +783,10 @@ def get_outcome_patterns() -> dict:
             return "50-60%"
 
     buckets: dict = {
-        "by_surge_tag":   {},
-        "by_volume_rate": {},
-        "by_confidence":  {},
+        "by_surge_tag":      {},
+        "by_volume_rate":    {},
+        "by_confidence":     {},
+        "by_volume_pattern": {},
     }
 
     for e in recorded:
@@ -794,10 +802,19 @@ def get_outcome_patterns() -> dict:
             if is_win:
                 buckets[group][key]["wins"] += 1
 
-        _add("by_surge_tag",   _get_surge_tag(e.get("surgeReason", "")))
+        # B: surgeReasonが空のエントリは情報源別分析から除外（ノイズ防止）
+        surge_reason = e.get("surgeReason", "")
+        if surge_reason:
+            _add("by_surge_tag", _get_surge_tag(surge_reason))
+
         _add("by_volume_rate", _vol_bucket(e.get("stage1", {}).get("volumeSustainRate", 0.0)))
         conf = (e.get("stage2") or {}).get("confidence") or "不明"
         _add("by_confidence", conf)
+
+        # A: volume_pattern（late/early）を学習軸に追加
+        vp = e.get("volume_pattern") or "unknown"
+        if vp != "unknown":
+            _add("by_volume_pattern", vp)
 
     MIN_SAMPLES = 3
 
@@ -813,10 +830,11 @@ def get_outcome_patterns() -> dict:
         return result
 
     return {
-        "total_recorded":  len(recorded),
-        "by_surge_tag":    _summarize(buckets["by_surge_tag"]),
-        "by_volume_rate":  _summarize(buckets["by_volume_rate"]),
-        "by_confidence":   _summarize(buckets["by_confidence"]),
+        "total_recorded":    len(recorded),
+        "by_surge_tag":      _summarize(buckets["by_surge_tag"]),
+        "by_volume_rate":    _summarize(buckets["by_volume_rate"]),
+        "by_confidence":     _summarize(buckets["by_confidence"]),
+        "by_volume_pattern": _summarize(buckets["by_volume_pattern"]),
     }
 
 
