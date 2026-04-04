@@ -238,9 +238,11 @@ def _generate_surge_reasons_batch(stocks_with_info: list) -> dict:
     try:
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
+        # 銘柄数に応じてmax_tokensを動的調整（1銘柄≒120トークン + オーバーヘッド200）
+        dynamic_max_tokens = min(200 + len(stocks_with_info) * 120, 2000)
         response = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=600,
+            max_tokens=dynamic_max_tokens,
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -765,12 +767,19 @@ def get_outcome_patterns() -> dict:
         return {"total_recorded": 0}
 
     def _get_surge_tag(reason: str) -> str:
-        r = reason or ""
+        r = (reason or "").strip().lstrip('"').lstrip("'")
         if r.startswith("[TDnet]"):
             return "TDnet"
         if r.startswith("[ニュース]"):
             return "ニュース"
         if r.startswith("[推測]"):
+            return "推測"
+        # タグが[]なしでも含まれていれば拾う（Claudeの出力ブレ対応）
+        if "TDnet" in r[:15]:
+            return "TDnet"
+        if "ニュース" in r[:15]:
+            return "ニュース"
+        if "推測" in r[:15]:
             return "推測"
         return "不明"
 
