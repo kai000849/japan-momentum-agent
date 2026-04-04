@@ -610,9 +610,10 @@ def notify_us_theme_extraction(theme_result: dict, sector_ranking: list = None) 
 
         sector_section = (
             "\n━━━━━━━━━━━━━━━━━━\n"
-            "📊 *セクター当日騰落 ベスト5 / ワースト3*\n"
+            "🔥 *強いセクター TOP5（当日）*\n"
             + "\n".join(top_lines)
-            + "\n" + "\n".join(weak_lines)
+            + "\n🔻 *弱いセクター（当日）*\n"
+            + "\n".join(weak_lines)
         )
 
     text = f"""
