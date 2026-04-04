@@ -250,6 +250,26 @@ def run_scan_mode(args):
         except Exception as e:
             logger.warning(f"outcome記録エラー（スキップ）: {e}")
 
+        # ---- MOアウトカム記録（20営業日経過エントリを記録） ----
+        try:
+            from agents.momentum_log_manager import record_momentum_outcomes
+            mo_recorded = record_momentum_outcomes(df_all_cache)
+            if mo_recorded > 0:
+                logger.info(f"MOoutcome自動記録: {mo_recorded}件更新")
+        except Exception as e:
+            logger.warning(f"MOoutcome記録エラー（スキップ）: {e}")
+
+    # ---- MOシグナルをmomentum_logに記録 ----
+    momentum_results = all_results.get("MOMENTUM", [])
+    if momentum_results:
+        try:
+            from agents.momentum_log_manager import log_momentum_signals
+            mo_added = log_momentum_signals(momentum_results)
+            if mo_added > 0:
+                logger.info(f"momentum_log: {mo_added}件記録")
+        except Exception as e:
+            logger.warning(f"momentum_log記録エラー（スキップ）: {e}")
+
     # ---- モメンタム判定（SHORT_TERMシグナルを先に実行 → surgeReasonを通知に含める） ----
     short_term_results = all_results.get("SHORT_TERM", [])
     qualify_results = []

@@ -1456,6 +1456,39 @@ def notify_weekly_report() -> bool:
     else:
         lines.append("  データ不足（qualify_log蓄積中）")
 
+    # ---- MOメンタム学習ループ（momentum_log.json） ----
+    lines.append(f"\n📈 *MOメンタム学習ループ*")
+    try:
+        from agents.momentum_log_manager import get_momentum_patterns, get_momentum_log_summary
+        mo_summary = get_momentum_log_summary()
+        mo_total_rec = mo_summary.get("total_recorded", 0)
+        mo_total_log = mo_summary.get("total_logged", 0)
+        mo_pending = mo_summary.get("total_pending", 0)
+        lines.append(f"  記録: {mo_total_log}件（outcome待ち: {mo_pending}件 / 確定: {mo_total_rec}件）")
+
+        mo_patterns = get_momentum_patterns()
+        if mo_patterns.get("insufficient"):
+            lines.append(f"  蓄積中（{mo_total_rec}件 / 5件で分析開始）")
+        elif mo_patterns.get("overall"):
+            ov = mo_patterns["overall"]
+            lines.append(f"  全体: 勝率{ov['win_rate']}% / 平均{ov['avg_return']:+.1f}% / {ov['count']}件")
+            if mo_patterns.get("by_ma_gap"):
+                lines.append("  【MAギャップ別勝率（5-25MA）】")
+                for k, s in sorted(mo_patterns["by_ma_gap"].items(), key=lambda x: -x[1]["win_rate"]):
+                    lines.append(f"    {k}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+            if mo_patterns.get("by_high52w_ratio"):
+                lines.append("  【52週高値比別勝率】")
+                for k, s in sorted(mo_patterns["by_high52w_ratio"].items(), key=lambda x: -x[1]["win_rate"]):
+                    lines.append(f"    {k}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+            if mo_patterns.get("by_volume_trend"):
+                lines.append("  【出来高トレンド別勝率】")
+                for k, s in sorted(mo_patterns["by_volume_trend"].items(), key=lambda x: -x[1]["win_rate"]):
+                    lines.append(f"    {k}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+        else:
+            lines.append("  データなし")
+    except Exception as e:
+        lines.append(f"  ⚠️ momentum_log読み込みエラー（{e}）")
+
     # 注目点
     lines.append("\n📌 *注目点*")
     for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, paper_open, weekly_trend):

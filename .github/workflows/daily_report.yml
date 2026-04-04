@@ -226,13 +226,13 @@ jobs:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
 
-      - name: qualify_log.json を Git コミット（学習ループ永続化）
+      - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin main
-          git add memory/qualify_log.json
-          git diff --staged --quiet || git commit -m "chore: qualify_log更新（朝スキャン） [skip ci]"
+          git add memory/qualify_log.json memory/momentum_log.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: qualify_log/momentum_log更新（朝スキャン） [skip ci]"
           git push
         continue-on-error: true
 
@@ -422,13 +422,13 @@ jobs:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
 
-      - name: qualify_log.json を Git コミット（学習ループ永続化）
+      - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin main
-          git add memory/qualify_log.json
-          git diff --staged --quiet || git commit -m "chore: qualify_log更新（夕方スキャン） [skip ci]"
+          git add memory/qualify_log.json memory/momentum_log.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: qualify_log/momentum_log更新（夕方スキャン） [skip ci]"
           git push
         continue-on-error: true
 

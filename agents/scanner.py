@@ -322,6 +322,17 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
 
+            # ---- A: MAギャップ率（パーフェクトオーダーの厚み） ----
+            ma_gap_5_25 = round((ma5_val - ma25_val) / ma25_val * 100, 2) if ma25_val > 0 else 0.0
+            ma_gap_25_75 = round((ma25_val - ma75_val) / ma75_val * 100, 2) if ma75_val > 0 else 0.0
+
+            # ---- D: 過去20日リターン（シグナル時点の勢いの強さ） ----
+            return_20d_signal = None
+            if len(closes) > 20:
+                close_20d_ago = float(closes.iloc[-21])
+                if close_20d_ago > 0:
+                    return_20d_signal = round((current_close / close_20d_ago - 1) * 100, 2)
+
             results.append({
                 "stockCode": str(stock_code),
                 "companyName": company_name,
@@ -329,13 +340,19 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 "scanDate": scan_date,
                 "close": current_close,
                 "high52w": high_52w,
+                "high52w_ratio": round(price_to_high_ratio, 2),
                 "priceToHighRatio": round(price_to_high_ratio, 2),
                 "rsi14": round(current_rsi, 2),
                 "ma5": round(ma_data["ma5"]["current"], 2),
                 "ma25": round(ma_data["ma25"]["current"], 2),
                 "ma75": round(ma75_val, 2) if ma75_val is not None else None,
+                "ma_gap_5_25": ma_gap_5_25,
+                "ma_gap_25_75": ma_gap_25_75,
+                "new_high_days": new_high_count,
                 "newHighCount": new_high_count,
+                "volume_trend_ratio": round(volume_trend, 2),
                 "volumeTrend": round(volume_trend, 2),
+                "return_20d_signal": return_20d_signal,
                 "score": round(momentum_score, 2),
             })
 
