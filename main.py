@@ -232,19 +232,34 @@ def run_scan_mode(args):
     total_hits = sum(len(r) for r in all_results.values())
     print(f"\n【スキャン完了】合計ヒット数: {total_hits}銘柄")
 
+    # ---- 株価データ取得（qualify・outcome記録に共用） ----
+    df_all_cache = None
+    try:
+        from agents.jquants_fetcher import load_latest_quotes
+        df_all_cache = load_latest_quotes()
+    except Exception as e:
+        logger.warning(f"株価データ取得エラー（スキップ）: {e}")
+
+    # ---- outcome記録: シグナル有無に関わらず毎回実行（10営業日経過エントリを記録） ----
+    if df_all_cache is not None and not df_all_cache.empty:
+        try:
+            from agents.momentum_qualifier import record_outcomes
+            recorded = record_outcomes(df_all_cache)
+            if recorded > 0:
+                logger.info(f"outcome自動記録: {recorded}件更新")
+        except Exception as e:
+            logger.warning(f"outcome記録エラー（スキップ）: {e}")
+
     # ---- モメンタム判定（SHORT_TERMシグナルを先に実行 → surgeReasonを通知に含める） ----
     short_term_results = all_results.get("SHORT_TERM", [])
     qualify_results = []
-    df_all_cache = None
     if short_term_results:
         try:
             from agents.momentum_qualifier import qualify_signals, format_qualify_result_for_slack
-            from agents.jquants_fetcher import load_latest_quotes
 
             logger.info("モメンタム判定を開始します...")
-            df_all_cache = load_latest_quotes()
 
-            if not df_all_cache.empty:
+            if df_all_cache is not None and not df_all_cache.empty:
                 qualify_results = qualify_signals(short_term_results, df_all_cache)
                 # 急騰シグナル通知にsurgeReasonを含めるため結果を差し替え
                 all_results["SHORT_TERM"] = qualify_results

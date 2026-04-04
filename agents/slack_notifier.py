@@ -1411,6 +1411,11 @@ def notify_weekly_report() -> bool:
             lines.append("  【出来高維持率別勝率】")
             for bucket, s in sorted(all_patterns["by_volume_rate"].items(), key=lambda x: -x[1]["win_rate"]):
                 lines.append(f"    {bucket}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
+        if all_patterns.get("by_volume_pattern"):
+            vp_labels = {"late": "📈バズ型", "early": "🐸ジワジワ型"}
+            lines.append("  【出来高パターン別勝率】")
+            for vp, s in sorted(all_patterns["by_volume_pattern"].items(), key=lambda x: -x[1]["win_rate"]):
+                lines.append(f"    {vp_labels.get(vp, vp)}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
     else:
         lines.append(f"  蓄積中（{total_rec}件 / 5件で分析開始）")
 

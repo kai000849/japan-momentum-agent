@@ -422,12 +422,12 @@ def find_cross_signals(all_results: dict) -> list:
         c = str(code).strip()
         return c[:4] if (len(c) == 5 and c.endswith("0")) else c
 
-    # SHORT_TERM: 継続/様子見のみ（旧英語ラベル含む後方互換）
+    # SHORT_TERM: 継続のみ（様子見=不確実なので除外）
     from agents.momentum_qualifier import normalize_qualify_label
     st_map = {
         _norm(r["stockCode"]): r
         for r in all_results.get("SHORT_TERM", [])
-        if normalize_qualify_label(r.get("qualifyResult", "")) in ("継続", "様子見")
+        if normalize_qualify_label(r.get("qualifyResult", "")) == "継続"
     }
 
     # MOMENTUM: 全銘柄対象

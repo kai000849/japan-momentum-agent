@@ -807,7 +807,10 @@ def get_outcome_patterns() -> dict:
         if surge_reason:
             _add("by_surge_tag", _get_surge_tag(surge_reason))
 
-        _add("by_volume_rate", _vol_bucket(e.get("stage1", {}).get("volumeSustainRate", 0.0)))
+        # daysChecked=0（最新日のため翌日以降データなし）は volumeSustainRate=0 になりノイズ → 除外
+        s1 = e.get("stage1", {})
+        if s1.get("daysChecked", 0) >= 1:
+            _add("by_volume_rate", _vol_bucket(s1.get("volumeSustainRate", 0.0)))
         conf = (e.get("stage2") or {}).get("confidence") or "不明"
         _add("by_confidence", conf)
 
