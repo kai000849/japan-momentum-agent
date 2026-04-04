@@ -43,7 +43,8 @@
 
 ### 育成の設計思想
 - **記録→分析→フィードバックの一貫性**: 判定を記録するだけでなく、実績パターンを次回の判定に還元する
-- **3軸パターン学習**: 情報源タグ別・出来高維持率別・Stage2確信度別の勝率を蓄積
+- **3軸パターン学習（SHORT_TERM）**: 情報源タグ別・出来高維持率別・Stage2確信度別の勝率を蓄積
+- **3軸パターン学習（MOMENTUM）**: MAギャップ別・52週高値比別・出来高トレンド別の勝率を蓄積（momentum_log.json）
 - **週次可視化でドリフト防止**: Slackの週次レポートで「エージェントが賢くなっているか」を人間が確認
 - **戦略有効性モニター**: 4週推移でモメンタム戦略自体の有効性を監視（シグナル頻度・勝率・リターン推移＋自動アラート）
 - **コストは精度向上にだけ**: qualify・edinet分析はSonnet（高精度）、頻度の高い情報収集はHaiku（低コスト）
@@ -82,6 +83,7 @@ japan-momentum-agent/
 │   ├── jquants_fetcher.py           # 株価データ取得
 │   ├── edinet_fetcher.py / edinet_analyzer.py  # 決算取得・分析
 │   ├── momentum_qualifier.py        # モメンタム判定（qualify_log管理・ラベル移行・自動クリーンアップ）
+│   ├── momentum_log_manager.py      # MOメンタム学習ループ（momentum_log.json管理・20日アウトカム記録）
 │   ├── investment_advisor.py        # 投資判断エージェント
 │   ├── noon_scanner.py              # 正午スキャン（後場エントリー判断）
 │   ├── earnings_momentum_scanner.py # 決算中長期フォローアップ
@@ -90,7 +92,7 @@ japan-momentum-agent/
 │   ├── slack_notifier.py            # Slack通知
 │   └── utils.py                     # 共通ユーティリティ
 ├── data/                            # CSV・スキャン結果・キャッシュ（日付キーで管理）
-└── memory/                          # trade_log / qualify_log / watchlist / followup_list
+└── memory/                          # trade_log / qualify_log / momentum_log / watchlist / followup_list
 ```
 
 ---
@@ -126,7 +128,8 @@ GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `AN
 ## 主要な設計判断（条件詳細はコード参照）
 
 - **スクリーニング条件**: scanner.py参照（SHORT_TERM=急騰+出来高、MOMENTUM=パーフェクトオーダー+52週高値、EARNINGS=EDINET+Claudeスコア）
-- **qualify判定**: momentum_qualifier.py参照（ステージ1=数値、ステージ2=Claude API）。結果ラベルは日本語（継続/様子見/一時的/ノイズ）
+- **qualify判定**: momentum_qualifier.py参照（ステージ1=数値、ステージ2=Claude API）。結果ラベルは日本語（継続/様子見/一時的/ノイズ）。「様子見」=Stage2未実行のみ（翌日再判定対象）
+- **MOメンタム学習**: momentum_log_manager.py参照。MOシグナルを毎スキャン記録し、20営業日後にリターン/最大DD/トレンド継続を自動記録。アウトカム期間が10日（SHORT_TERM）と異なるため別ファイル管理
 - **投資判断**: investment_advisor.py参照（qualify結果+PF+余力+米セクターを統合）。PF閾値はSHORT_TERM/EARNINGS=1.2、MOMENTUM=1.5
 - **正午スキャン**: noon_scanner.py参照（前場データで後場GO/様子見/見送りを判定）
 - **ペーパートレード**: 仮想資金300万円 / 1銘柄最大50万円 / 最大10銘柄 / 損切-5% / 利確+15%
@@ -183,15 +186,20 @@ git add . && git commit -m "メモ" && git push
 - 2026/03/31: 米市場テーマ通知のボリュームが大きすぎた → キーワードTOP8→5件・セクター5→3件・日本株波及5→3件・リスクワード3→2件に削減。プロンプト側の指定件数も同様に変更。
 - 2026/04/01: 米市場テーマ通知にセクター強弱速報を追加 → `notify_us_theme_extraction`に`sector_ranking`引数追加。テーマ通知末尾に強いセクターTOP3・弱いセクターTOP2（当日・5日騰落率）を表示。ETFスキャン結果を流用するため追加APIコストなし。
 - 2026/04/01: 朝夕スキャンの重複通知を排除 → `main.py`のスキャン通知前に`scan_{今日}_{MODE}.json`を読み込んで既通知セットを構築。SHORT_TERM/MOMENTUM=stockCode一致で重複判定、EARNINGS=stockCode::docID一致（同日新規開示は別物として通知）。qualifyサマリーも同様フィルター。クロスシグナル・投資判断・watchlist保存はフルリスト維持。
+- 2026/04/04: 学習ループ品質改善（問題1〜4）→ outcome記録をシグナルなしの日も毎スキャン実行。by_volume_rateのゼロ件除外。週次レポートにby_volume_pattern表示追加。find_cross_signalsを「継続」のみに絞る（様子見除外）。
+- 2026/04/04: MOメンタム学習ループ実装 → `momentum_log_manager.py`新規作成。MOシグナルを毎スキャン記録し20営業日後のリターン/最大DD/トレンド継続を自動記録。MAギャップ/高値比/出来高トレンド別の勝率分析を週次レポートに追加。qualify_logと別ファイル管理（アウトカム期間が異なるため）。
+- 2026/04/04: 米テーマ抽出のJSONパースエラー対策 → `us_theme_extractor.py`のmax_tokens 3000→4000。JSONDecodeError時に1回自動リトライを追加。
+- 2026/04/04: surgeReasonタグ全件「不明」問題を修正 → `_generate_surge_reasons_batch`のmax_tokens固定600→銘柄数×120で動的調整（13銘柄で切断されていた）。`_get_surge_tag`でClaudeの出力ブレ（[]なし・先頭空白等）を吸収するよう強化。
+- 2026/04/04: 米テーマ通知のセクター当日騰落を再設計 → ソート基準を中長期スコアから`mom1d`（当日騰落率）に変更。件数をベスト5/ワースト3に統一（中長期セクションと合わせる）。見出しを「🔥 強いセクター TOP5（当日）/🔻 弱いセクター（当日）」に変更。
 
 ---
 
-## 現在の状況（2026/04/01時点）
+## 現在の状況（2026/04/04時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
-- 出来高パターンタグ（late/early）をqualify判定に追加済み。Slack通知にも表示
-- 朝夕スキャンの重複通知を排除済み（新規シグナルのみ夕方に通知）
-- 米市場テーマ通知にセクター強弱速報（当日モメンタム）を追加済み
-- 手動アップデート運用フロー確定（知見発見→Claude.ai整理→反映→効果検証）
-- qualify_logはデータ蓄積中。outcome記録が始まったら精度レポートで検証
-- 次のマイルストーン①: qualify_log 5件蓄積→フィードバックループ自動発動確認
-- 次のマイルストーン②: volume_pattern と outcome の相関分析（5件蓄積後）→ 効果ありなら利確ルール分岐を実装
+- qualify_log / momentum_log ともにgit commitで永続化済み（キャッシュ揮発問題解消）
+- SHORT_TERM学習ループ: surgeReasonタグ修正・翌日フォローアップ・outcome毎日記録が整備済み
+- MOメンタム学習ループ: momentum_log_manager.py新設。毎スキャン記録・20日後アウトカム自動記録・週次レポートにパターン表示
+- 米テーマ通知: JSONパースエラー対策（max_tokens増・リトライ）＋当日セクター騰落を`mom1d`基準に再設計
+- 次のマイルストーン①: qualify_log / momentum_log 5件蓄積 → パターン分析自動発動確認
+- 次のマイルストーン②: surgeReasonタグ修正後の情報源別勝率（TDnet/ニュース/推測）を週次レポートで確認（2〜3週後）
+- 次のマイルストーン③: volume_pattern / momentum_log の outcome と入力特徴量の相関分析（蓄積後）
