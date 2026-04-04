@@ -589,32 +589,30 @@ def notify_us_theme_extraction(theme_result: dict, sector_ranking: list = None) 
     # ========== リスク ==========
     risk_text = "・".join(risk_keywords[:2]) if risk_keywords else "なし"
 
-    # ========== セクターランキング（当日モメンタム速報） ==========
+    # ========== セクター当日騰落（mom1d基準でソート・best5/worst3） ==========
     sector_section = ""
     if sector_ranking:
-        top3 = [s for s in sector_ranking[:3]]
-        weak2 = [s for s in sector_ranking if s.get("score", 0) < 0][-2:]
+        sorted_by_day = sorted(sector_ranking, key=lambda x: x.get("mom1d", 0), reverse=True)
+        best5 = sorted_by_day[:5]
+        worst3 = sorted_by_day[-3:]
 
         top_lines = []
-        for i, s in enumerate(top3, 1):
+        for i, s in enumerate(best5, 1):
             m1 = s.get("mom1d", 0)
-            m5 = s.get("mom5d", 0)
             s1 = "+" if m1 >= 0 else ""
-            s5 = "+" if m5 >= 0 else ""
-            top_lines.append(
-                f"  {i}. *{s['name']}*  当日:{s1}{m1:.1f}% / 5日:{s5}{m5:.1f}%"
-            )
+            top_lines.append(f"  {i}. *{s['name']}*  {s1}{m1:.1f}%")
+
         weak_lines = []
-        for s in weak2:
+        for s in worst3:
             m1 = s.get("mom1d", 0)
             s1 = "+" if m1 >= 0 else ""
-            weak_lines.append(f"  🔻 {s['name']}  当日:{s1}{m1:.1f}%")
+            weak_lines.append(f"  🔻 {s['name']}  {s1}{m1:.1f}%")
 
         sector_section = (
             "\n━━━━━━━━━━━━━━━━━━\n"
-            "📊 *セクター強弱（当日モメンタム）*\n"
+            "📊 *セクター当日騰落 ベスト5 / ワースト3*\n"
             + "\n".join(top_lines)
-            + ("\n" + "\n".join(weak_lines) if weak_lines else "")
+            + "\n" + "\n".join(weak_lines)
         )
 
     text = f"""
