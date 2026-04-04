@@ -104,6 +104,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: us-market-scan
     if: always() && (github.event.schedule == '30 21 * * 0-5' || github.event_name == 'workflow_dispatch')
+    permissions:
+      contents: write
     steps:
       - name: 今日の日付を設定（クロスジョブキャッシュキー用）
         id: date
@@ -224,6 +226,16 @@ jobs:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
 
+      - name: qualify_log.json を Git コミット（学習ループ永続化）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          git add memory/qualify_log.json
+          git diff --staged --quiet || git commit -m "chore: qualify_log更新（朝スキャン） [skip ci]"
+          git push
+        continue-on-error: true
+
       - name: スキャン結果キャッシュを保存（日付キー・noon-scan受け渡し用）
         uses: actions/cache@v4
         with:
@@ -274,6 +286,8 @@ jobs:
   evening-scan:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 9 * * 1-5' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
     steps:
       - name: 今日の日付を設定（クロスジョブキャッシュキー用）
         id: date
@@ -407,6 +421,16 @@ jobs:
         with:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
+
+      - name: qualify_log.json を Git コミット（学習ループ永続化）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          git add memory/qualify_log.json
+          git diff --staged --quiet || git commit -m "chore: qualify_log更新（夕方スキャン） [skip ci]"
+          git push
+        continue-on-error: true
 
       - name: スキャン結果キャッシュを保存
         uses: actions/cache@v4

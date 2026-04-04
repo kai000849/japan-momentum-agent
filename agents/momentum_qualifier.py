@@ -492,7 +492,9 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
   ]
 }}
 
-resultsには対象の全{len(stocks)}銘柄を含めてください。"""
+resultsには対象の全{len(stocks)}銘柄を含めてください。
+
+重要: structuralChange は必ず true か false のどちらかを返してください。null・省略は禁止です。情報が不十分な場合は業種・テーマ・事業内容から推測して判断してください。"""
 
     try:
         import anthropic
@@ -982,6 +984,130 @@ def invalidate_momentum_cache_for_codes(stock_codes: list) -> int:
 
 
 # ========================================
+# 翌日フォローアップ判定
+# ========================================
+
+_last_requalified: list = []
+
+
+def requalify_watch_signals(df_all: pd.DataFrame) -> list:
+    """
+    qualify_log の「様子見」エントリを翌日以降のデータで再判定する。
+    Stage2未実行（APIエラー or バッチ上限超過）でscanDate < 今日のものが対象。
+
+    Returns:
+        list: 更新したエントリ（再判定後の全フィールド）
+    """
+    if not QUALIFY_LOG_PATH.exists():
+        return []
+
+    try:
+        with open(QUALIFY_LOG_PATH, "r", encoding="utf-8") as f:
+            log_entries = json.load(f)
+    except Exception as e:
+        logger.warning(f"requalify: qualify_log読み込みエラー: {e}")
+        return []
+
+    today = datetime.now().date()
+    code_col = "Code" if "Code" in df_all.columns else "code"
+
+    # 再判定対象: 様子見 AND scanDate < today AND outcome未記録
+    targets = []
+    for entry in log_entries:
+        if entry.get("qualifyResult") != "様子見":
+            continue
+        if entry.get("outcome") is not None:
+            continue
+        scan_date_str = entry.get("scanDate", "")
+        try:
+            scan_date = datetime.strptime(scan_date_str, "%Y-%m-%d").date()
+        except Exception:
+            continue
+        if scan_date >= today:
+            continue  # 今日のシグナルはスキップ
+
+        stock_code = entry.get("stockCode", "")
+        try:
+            df_stock = df_all[df_all[code_col].astype(str) == stock_code].copy()
+            stage1 = _check_volume_sustain(df_stock, scan_date_str)
+            volume_pattern = classify_volume_pattern(df_stock, scan_date_str)
+        except Exception as e:
+            logger.debug(f"requalify Stage1エラー {stock_code}: {e}")
+            continue
+
+        targets.append({"entry": entry, "stage1": stage1, "volume_pattern": volume_pattern})
+
+    if not targets:
+        return []
+
+    logger.info(f"翌日フォローアップ対象: {len(targets)}件")
+
+    # Stage1通過かつdaysChecked>=1のものだけStage2へ
+    stage1_pass_targets = [
+        t for t in targets
+        if t["stage1"].get("stage1Pass") and t["stage1"].get("daysChecked", 0) >= 1
+    ]
+
+    stage2_map = {}
+    if stage1_pass_targets:
+        stocks_for_batch = [
+            {
+                "stockCode": t["entry"].get("stockCode", ""),
+                "companyName": t["entry"].get("companyName", ""),
+                "surgeReason": t["entry"].get("surgeReason", ""),
+            }
+            for t in stage1_pass_targets[:STAGE2_BATCH_LIMIT]
+        ]
+        logger.info(f"  翌日Stage2バッチ判定: {len(stocks_for_batch)}銘柄")
+        stage2_map = _analyze_structural_change_batch(stocks_for_batch)
+
+    updated_entries = []
+    for t in targets:
+        entry = t["entry"]
+        stage1 = t["stage1"]
+        stock_code = entry.get("stockCode", "")
+
+        entry["stage1"] = stage1
+        entry["volume_pattern"] = t["volume_pattern"]
+
+        if not stage1.get("stage1Pass"):
+            # 翌日データで出来高/株価が崩れた
+            entry["qualifyResult"] = "一時的"
+            entry["requalifiedAt"] = datetime.now().isoformat()
+            updated_entries.append(entry)
+            continue
+
+        if stage1.get("daysChecked", 0) == 0:
+            # 翌日データがまだない（祝日・データ遅延等）→ スキップ
+            continue
+
+        stage2 = stage2_map.get(stock_code, {
+            "structuralChange": False,
+            "confidence": "low",
+            "comment": "再判定結果なし",
+            "stage2Available": False,
+        })
+        entry["stage2"] = stage2
+
+        structural_change = stage2.get("structuralChange")
+        entry["qualifyResult"] = "継続" if structural_change is True else "一時的"
+        entry["requalifiedAt"] = datetime.now().isoformat()
+        updated_entries.append(entry)
+
+    if updated_entries:
+        with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
+            json.dump(log_entries, f, ensure_ascii=False, indent=2)
+
+        upgraded = [e for e in updated_entries if e.get("qualifyResult") == "継続"]
+        logger.info(
+            f"翌日フォローアップ完了: {len(updated_entries)}件更新"
+            f"（継続昇格: {len(upgraded)}件 / 一時的: {len(updated_entries) - len(upgraded)}件）"
+        )
+
+    return updated_entries
+
+
+# ========================================
 # メイン判定関数
 # ========================================
 
@@ -994,6 +1120,16 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         return []
 
     logger.info(f"モメンタム判定開始: {len(signals)}銘柄")
+
+    # ---- 前日以前の「様子見」エントリを翌日データで再判定 ----
+    global _last_requalified
+    _last_requalified = []
+    try:
+        _last_requalified = requalify_watch_signals(df_all)
+        if _last_requalified:
+            logger.info(f"翌日フォローアップ: {len(_last_requalified)}件を再判定")
+    except Exception as e:
+        logger.warning(f"翌日フォローアップエラー（スキップ）: {e}")
 
     # 旧英語ラベルが残っていれば自動移行 + 古いエントリを自動クリーンアップ
     try:
@@ -1141,9 +1277,13 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
 
         if stage1_pass and structural_change is True:
             result["qualifyResult"] = "継続"
-        elif stage1_pass and structural_change is None:
-            result["qualifyResult"] = "様子見"
         elif stage1_pass and structural_change is False:
+            result["qualifyResult"] = "一時的"
+        elif stage1_pass and not stage2.get("stage2Available", True):
+            # Stage2未実行（APIエラー or バッチ上限超過）→ 翌日フォローアップ対象
+            result["qualifyResult"] = "様子見"
+        elif stage1_pass:
+            # structuralChange=NoneだがStage2実行済み → 不確実=一時的
             result["qualifyResult"] = "一時的"
         else:
             result["qualifyResult"] = "ノイズ"
@@ -1271,6 +1411,24 @@ def format_qualify_result_for_slack(results: list) -> str:
                 f"• {r.get('stockCode')} {r.get('companyName', '')}{vp_tag} "
                 f"出来高維持:{vol_str} 株価:{price_str}"
             )
+
+    # 翌日フォローアップ再判定結果を表示
+    if _last_requalified:
+        upgraded = [r for r in _last_requalified if r.get("qualifyResult") == "継続"]
+        downgraded = [r for r in _last_requalified if r.get("qualifyResult") == "一時的"]
+        lines.append("\n*【前日様子見 → 翌日再判定】*")
+        for r in upgraded:
+            s1 = r.get("stage1", {})
+            vol_rate = s1.get("volumeSustainRate", 0)
+            price_chg = s1.get("priceChangeAfterSurge", 0)
+            lines.append(
+                f"✅ *{r.get('stockCode')} {r.get('companyName', '')}* → *継続*\n"
+                f"  出来高維持率:{vol_rate:.0%} / 急騰後株価:{price_chg:+.1f}%"
+            )
+        for r in downgraded:
+            s1 = r.get("stage1", {})
+            reason = s1.get("reason", "")
+            lines.append(f"🔻 {r.get('stockCode')} {r.get('companyName', '')} → 一時的（{reason}）")
 
     try:
         stats = get_outcome_stats()
