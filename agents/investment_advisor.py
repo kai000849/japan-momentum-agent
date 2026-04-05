@@ -272,6 +272,8 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
             }
         ]
     """
+    from agents.momentum_qualifier import normalize_qualify_label
+
     portfolio = _get_portfolio_status()
     us_context = _get_us_sector_context()
     hot_keywords = _get_us_hot_keywords()

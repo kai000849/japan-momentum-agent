@@ -428,26 +428,26 @@ def run_scan_mode(args):
             if qualify_entries:
                 advices = generate_advice(qualify_entries, pf_map)
 
-                # ---- エントリー推奨銘柄をペーパートレードに自動追加 ----
+                # ---- 継続判定銘柄をペーパートレードに自動追加（PFゲートなし・学習ループ優先） ----
                 try:
                     from agents.paper_trader import PaperTrader
                     trader = PaperTrader()
                     added_codes = []
                     for adv in advices:
-                        if adv.get("recommendation") == "エントリー" and adv.get("entryPrice", 0) > 0:
+                        if adv.get("qualifyResult") == "継続" and adv.get("entryPrice", 0) > 0:
                             success = trader.add_position(
                                 stock_code=adv["stockCode"],
                                 entry_price=adv["entryPrice"],
                                 reason=f"{adv.get('mode', 'SHORT_TERM')}シグナル（継続）PF{adv.get('pf', 0):.1f}",
                                 company_name=adv.get("companyName", ""),
-                                profit_factor=adv.get("pf"),
+                                profit_factor=None,  # PFゲートなし（全継続シグナルを発注してoutcomeデータを蓄積）
                             )
                             if success:
                                 added_codes.append(adv["stockCode"])
                     if added_codes:
                         logger.info(f"ペーパートレード自動追加: {len(added_codes)}件 → {added_codes}")
                     else:
-                        logger.info("ペーパートレード自動追加: 0件（エントリー推奨なし or 余力なし）")
+                        logger.info("ペーパートレード自動追加: 0件（継続シグナルなし or 余力なし）")
                 except Exception as e:
                     logger.warning(f"ペーパートレード自動追加エラー（スキップ）: {e}")
 
