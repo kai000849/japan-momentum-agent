@@ -132,7 +132,7 @@ GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `AN
 - **MOメンタム学習**: momentum_log_manager.py参照。MOシグナルを毎スキャン記録し、20営業日後にリターン/最大DD/トレンド継続を自動記録。アウトカム期間が10日（SHORT_TERM）と異なるため別ファイル管理
 - **投資判断**: investment_advisor.py参照（qualify結果+PF+余力+米セクターを統合）。PF閾値はSHORT_TERM/EARNINGS=1.2、MOMENTUM=1.5
 - **正午スキャン**: noon_scanner.py参照（前場データで後場GO/様子見/見送りを判定）
-- **ペーパートレード**: 仮想資金300万円 / 1銘柄最大50万円 / 最大10銘柄 / 損切-5% / 利確+15%
+- **ペーパートレード**: 無効（学習ループには不要と判断・2026/04/05無効化）。`paper_trader.py`は実売買記録専用として残存
 - **実売買**: tradeType:"actual"でペーパーと区別。余力判定はペーパーのみカウント
 
 ---
@@ -191,15 +191,21 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/04: 米テーマ抽出のJSONパースエラー対策 → `us_theme_extractor.py`のmax_tokens 3000→4000。JSONDecodeError時に1回自動リトライを追加。
 - 2026/04/04: surgeReasonタグ全件「不明」問題を修正 → `_generate_surge_reasons_batch`のmax_tokens固定600→銘柄数×120で動的調整（13銘柄で切断されていた）。`_get_surge_tag`でClaudeの出力ブレ（[]なし・先頭空白等）を吸収するよう強化。
 - 2026/04/04: 米テーマ通知のセクター当日騰落を再設計 → ソート基準を中長期スコアから`mom1d`（当日騰落率）に変更。件数をベスト5/ワースト3に統一（中長期セクションと合わせる）。見出しを「🔥 強いセクター TOP5（当日）/🔻 弱いセクター（当日）」に変更。
+- 2026/04/05: ペーパートレード無効化 → 自動追加ブロック（`main.py`）を削除。学習ループに不要と判断。`investment_advisor.py`の`normalize_qualify_label`NameErrorも同時修正（毎回サイレントスキップしていた）。
+- 2026/04/05: MOフィードバックループ接続 → `momentum_log_manager.py`に`score_signals_by_patterns()`追加。MOシグナルに期待勝率・パターン注を付与してソート。`momentum_qualifier.py`のStage2プロンプトに過去パターン（MAギャップ/高値比/出来高トレンド別勝率）を注入。
+- 2026/04/05: 決算フィードバックループ接続 → `earnings_momentum_scanner.py`に`get_earnings_patterns()`/`score_earnings_signal_by_patterns()`追加（3軸: catalyst_type/momentum_potential/edinet_score_band）。`edinet_analyzer.py`のプロンプトにmomentum_potential実績を注入（Claudeの自己改善ループ）。`main.py`でスコアリングを呼び出し。
+- 2026/04/05: EDINET日次サマリー通知を追加 → `slack_notifier.py`に`notify_edinet_daily_summary()`追加。毎スキャン時に全書類数・決算関連シグナル数・Claude分析完了数・PDF失敗数をSlack通知。閑散期か否かが一目で分かる。
 
 ---
 
-## 現在の状況（2026/04/04時点）
+## 現在の状況（2026/04/05時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
-- qualify_log / momentum_log ともにgit commitで永続化済み（キャッシュ揮発問題解消）
-- SHORT_TERM学習ループ: surgeReasonタグ修正・翌日フォローアップ・outcome毎日記録が整備済み
-- MOメンタム学習ループ: momentum_log_manager.py新設。毎スキャン記録・20日後アウトカム自動記録・週次レポートにパターン表示
-- 米テーマ通知: JSONパースエラー対策（max_tokens増・リトライ）＋当日セクター騰落を`mom1d`基準に再設計
-- 次のマイルストーン①: qualify_log / momentum_log 5件蓄積 → パターン分析自動発動確認
+- **3つの学習ループがすべて記録→フィードバックまで接続済み**
+  - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
+  - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
+  - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
+- EDINET日次サマリー通知: 毎スキャン時にEDINET取得状況をSlack通知（閑散期可視化）
+- ペーパートレード: 無効化済み
+- 次のマイルストーン①: 各ログ5件蓄積 → パターン分析自動発動確認（5月決算シーズンが本番）
 - 次のマイルストーン②: surgeReasonタグ修正後の情報源別勝率（TDnet/ニュース/推測）を週次レポートで確認（2〜3週後）
-- 次のマイルストーン③: volume_pattern / momentum_log の outcome と入力特徴量の相関分析（蓄積後）
+- 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
