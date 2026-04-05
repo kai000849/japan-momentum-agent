@@ -956,3 +956,156 @@ def get_earnings_accuracy_stats() -> dict:
 
     stats["total_signals"] = len(log)
     return stats
+
+
+# ========================================
+# パターン分析（学習ループ②③共通の仕組み）
+# ========================================
+
+def _normalize_catalyst(catalyst: str) -> str:
+    """catalystTypeを正規カテゴリに正規化する（Claudeの出力ブレ吸収）。"""
+    c = (catalyst or "").strip()
+    for canon in ["上方修正", "増収増益", "新規事業・提携", "自社株買い・増配", "復配・特別配当"]:
+        if canon in c:
+            return canon
+    return "その他" if c else "不明"
+
+
+def get_earnings_patterns() -> dict:
+    """
+    earnings_signal_logのoutcome10dデータから3軸パターン分析する。
+
+    3軸:
+    - by_catalyst_type:       catalystType別10日後勝率
+    - by_momentum_potential:  Claude自身のmomentum_potential予測の精度（自己改善ループ）
+    - by_edinet_score_band:   EDINETスコア帯別10日後勝率
+
+    Returns:
+        dict: {
+            "total": int,
+            "insufficient": bool,  # 5件未満はTrue
+            "by_catalyst_type": {...},
+            "by_momentum_potential": {...},
+            "by_edinet_score_band": {...},
+        }
+    """
+    if not SIGNAL_LOG_PATH.exists():
+        return {"total": 0, "insufficient": True}
+    try:
+        with open(SIGNAL_LOG_PATH, "r", encoding="utf-8") as f:
+            log = json.load(f)
+    except Exception:
+        return {"total": 0, "insufficient": True}
+
+    # outcome10dが記録済みのエントリのみ対象
+    recorded = [
+        e for e in log
+        if e.get("outcome10d") and e["outcome10d"].get("returnPct") is not None
+    ]
+    if len(recorded) < 5:
+        return {"total": len(recorded), "insufficient": True}
+
+    def _stats(entries: list) -> dict | None:
+        if not entries:
+            return None
+        wins = sum(1 for e in entries if e["outcome10d"]["returnPct"] > 0)
+        returns = [e["outcome10d"]["returnPct"] for e in entries]
+        return {
+            "count": len(entries),
+            "win_rate": round(wins / len(entries) * 100, 1),
+            "avg_return": round(sum(returns) / len(returns), 2),
+        }
+
+    # A: catalystType別
+    by_catalyst: dict[str, list] = {}
+    for e in recorded:
+        by_catalyst.setdefault(_normalize_catalyst(e.get("catalystType", "")), []).append(e)
+
+    # B: momentum_potential別（Claude自己改善ループの核心）
+    by_mp: dict[str, list] = {}
+    for e in recorded:
+        k = (e.get("momentumPotential") or "不明").strip()
+        by_mp.setdefault(k, []).append(e)
+
+    # C: EDINETスコア帯別
+    by_band: dict[str, list] = {}
+    for e in recorded:
+        score = e.get("edinetScore", 0) or 0
+        k = "80以上" if score >= 80 else ("50-79" if score >= 50 else "30-49")
+        by_band.setdefault(k, []).append(e)
+
+    MIN_SAMPLES = 3
+
+    def _summarize(d: dict) -> dict:
+        return {
+            k: v for k, v in {k: _stats(v) for k, v in d.items()}.items()
+            if v and v["count"] >= MIN_SAMPLES
+        }
+
+    return {
+        "total": len(recorded),
+        "insufficient": False,
+        "by_catalyst_type": _summarize(by_catalyst),
+        "by_momentum_potential": _summarize(by_mp),
+        "by_edinet_score_band": _summarize(by_band),
+    }
+
+
+def score_earnings_signal_by_patterns(signal: dict, patterns: dict = None) -> dict:
+    """
+    過去のパターン分析から1シグナルの期待勝率を計算する。
+    momentum_potential軸を優先（Claudeの自己改善ループ）。
+
+    Args:
+        signal: EARNINGSシグナル辞書（score/catalyst_type/momentum_potential を含む）
+        patterns: get_earnings_patterns()の結果（Noneなら内部で取得）
+
+    Returns:
+        dict: {
+            "expected_win_rate": float | None,
+            "pattern_notes": str,
+            "data_sufficient": bool,
+        }
+    """
+    if patterns is None:
+        patterns = get_earnings_patterns()
+
+    if patterns.get("insufficient", True):
+        return {"expected_win_rate": None, "pattern_notes": "", "data_sufficient": False}
+
+    MIN_BUCKET = 3
+    rates = []
+    notes = []
+
+    # A: momentum_potential（最重要: Claudeの自己予測精度）
+    mp = (signal.get("momentum_potential") or signal.get("momentumPotential") or "").strip()
+    stats_mp = patterns.get("by_momentum_potential", {}).get(mp)
+    if stats_mp and stats_mp.get("count", 0) >= MIN_BUCKET:
+        rates.append(stats_mp["win_rate"])
+        notes.append(f"momentum={mp}:{stats_mp['win_rate']:.0f}%({stats_mp['count']}件)")
+
+    # B: catalystType
+    catalyst = _normalize_catalyst(
+        signal.get("catalyst_type") or signal.get("catalystType") or ""
+    )
+    stats_ct = patterns.get("by_catalyst_type", {}).get(catalyst)
+    if stats_ct and stats_ct.get("count", 0) >= MIN_BUCKET:
+        rates.append(stats_ct["win_rate"])
+        notes.append(f"{catalyst}:{stats_ct['win_rate']:.0f}%({stats_ct['count']}件)")
+
+    # C: EDINETスコア帯
+    edinet_score = signal.get("score", signal.get("edinetScore", 0)) or 0
+    band = "80以上" if edinet_score >= 80 else ("50-79" if edinet_score >= 50 else "30-49")
+    stats_band = patterns.get("by_edinet_score_band", {}).get(band)
+    if stats_band and stats_band.get("count", 0) >= MIN_BUCKET:
+        rates.append(stats_band["win_rate"])
+        notes.append(f"EDINET{band}:{stats_band['win_rate']:.0f}%({stats_band['count']}件)")
+
+    if not rates:
+        return {"expected_win_rate": None, "pattern_notes": "", "data_sufficient": True}
+
+    return {
+        "expected_win_rate": round(sum(rates) / len(rates), 1),
+        "pattern_notes": " / ".join(notes),
+        "data_sufficient": True,
+    }

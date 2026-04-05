@@ -336,11 +336,17 @@ def notify_earnings_signal(signals: list) -> bool:
         mom_icon = {"high": "🚀", "medium": "📈", "low": "➡️"}.get(mom_pot, "")
         catalyst_str = f"  [{catalyst}]" if catalyst else ""
         mom_str = f"\n    {mom_icon} {mom_pot} / {entry_tim}" if mom_pot else ""
+        expected_wr = s.get("expected_win_rate")
+        pattern_notes = s.get("pattern_notes", "")
+        pattern_str = (
+            f"\n    📊 過去勝率: {expected_wr:.0f}%  ({pattern_notes})"
+            if expected_wr is not None else ""
+        )
 
         top_lines.append(
             f"{icon} *{i}位 +{score}点* {code} {name}{catalyst_str}\n"
             f"    売上:{revenue_yoy} / 営利:{profit_yoy} / 予想比:{vs_forecast}\n"
-            f"    💬 {summary}{mom_str}"
+            f"    💬 {summary}{mom_str}{pattern_str}"
         )
 
     # ========== メッセージ組み立て ==========

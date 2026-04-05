@@ -325,7 +325,37 @@ def analyze_earnings_pdf(
     if not pdf_text:
         return {"error": "PDFテキスト抽出失敗", "score": 0}
 
-    prompt = f"""あなたは日本株投資の決算分析専門家です。
+    # 過去精度フィードバック（5件以上のoutcome10dがある場合のみ追加）
+    accuracy_context = ""
+    try:
+        from agents.earnings_momentum_scanner import get_earnings_patterns
+        patterns = get_earnings_patterns()
+        if not patterns.get("insufficient", True) and patterns.get("total", 0) >= 5:
+            lines = [
+                f"参考情報：過去の決算シグナル判定実績（{patterns['total']}件・10日後リターン基準）"
+            ]
+            mp_data = patterns.get("by_momentum_potential", {})
+            if mp_data:
+                parts = [
+                    f"{k}→勝率{v['win_rate']:.0f}%/平均{v['avg_return']:+.1f}%({v['count']}件)"
+                    for k, v in mp_data.items()
+                ]
+                lines.append(f"  momentum_potential別: {' / '.join(parts)}")
+            ct_data = patterns.get("by_catalyst_type", {})
+            if ct_data:
+                parts = [
+                    f"{k}→勝率{v['win_rate']:.0f}%({v['count']}件)"
+                    for k, v in sorted(ct_data.items(), key=lambda x: x[1]["win_rate"], reverse=True)
+                ]
+                lines.append(f"  catalystType別: {' / '.join(parts)}")
+            lines.append(
+                "→ 上記の実績を踏まえて momentum_potential と score の判断を行ってください。"
+            )
+            accuracy_context = "\n".join(lines) + "\n\n"
+    except Exception:
+        pass
+
+    prompt = f"""{accuracy_context}あなたは日本株投資の決算分析専門家です。
 以下の決算書類テキスト（{company_name} / {doc_description}）を読み、投資判断に役立つ分析を行ってください。
 
 【決算書類テキスト（先頭{PDF_MAX_PAGES}ページ抜粋）】

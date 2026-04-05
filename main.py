@@ -318,6 +318,25 @@ def run_scan_mode(args):
                             merged.append({**r, **analyzed_map[code]})
                         else:
                             merged.append(r)
+                    # パターンスコアリング（過去実績から期待勝率を付与）
+                    try:
+                        from agents.earnings_momentum_scanner import (
+                            get_earnings_patterns, score_earnings_signal_by_patterns
+                        )
+                        ep = get_earnings_patterns()
+                        for r in merged:
+                            sr = score_earnings_signal_by_patterns(r, ep)
+                            r["expected_win_rate"] = sr["expected_win_rate"]
+                            r["pattern_notes"] = sr["pattern_notes"]
+                        scored = [r for r in merged if r.get("expected_win_rate") is not None]
+                        if scored:
+                            logger.info(
+                                f"EARNINGSパターンスコア付与: {len(scored)}件"
+                                f"（最高期待勝率: {max(r['expected_win_rate'] for r in scored):.0f}%）"
+                            )
+                    except Exception as e:
+                        logger.warning(f"EARNINGSパターンスコアリングエラー（スキップ）: {e}")
+
                     # 重複排除: 朝スキャン済みの開示（stockCode+docID一致）を除外して通知
                     _prev_e = _prev_notified.get(mode, set())
                     merged_to_notify = [
