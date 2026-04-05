@@ -931,6 +931,47 @@ def notify_error(error_message: str, context: str = "") -> bool:
     return send_slack_message(text)
 
 
+def notify_edinet_daily_summary(stats: dict) -> bool:
+    """
+    EDINET日次サマリーをSlackに送信する。
+
+    Args:
+        stats (dict):
+            date           : 日付文字列（YYYY-MM-DD）
+            total_fetched  : EDINET全書類取得件数（int|None）
+            earnings_signals: 決算関連シグナル件数
+            analyzed_ok    : Claude分析完了件数
+            pdf_failed     : PDF取得失敗件数
+            other_skipped  : その他スキップ件数
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    date_str = stats.get("date", datetime.now().strftime("%Y-%m-%d"))
+    total = stats.get("total_fetched")
+    earnings_signals = stats.get("earnings_signals", 0)
+    analyzed_ok = stats.get("analyzed_ok", 0)
+    pdf_failed = stats.get("pdf_failed", 0)
+    other_skipped = stats.get("other_skipped", 0)
+
+    total_str = f"{total}件" if total is not None else "取得中"
+
+    lines = [
+        f"📋 *EDINET 今日の取得状況* （{date_str}）",
+        f"  全書類: {total_str}",
+        f"  決算関連シグナル: {earnings_signals}件",
+        f"  Claude分析完了: {analyzed_ok}件",
+    ]
+    if pdf_failed > 0:
+        lines.append(f"  ⚠️ PDF取得失敗: {pdf_failed}件")
+    if other_skipped > 0:
+        lines.append(f"  スキップ（訂正等）: {other_skipped}件")
+    if earnings_signals == 0:
+        lines.append("  ℹ️ 本日は決算シーズン外（閑散期）")
+
+    return send_slack_message("\n".join(lines))
+
+
 # ========================================
 # テスト送信
 # ========================================

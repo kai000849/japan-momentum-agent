@@ -359,6 +359,30 @@ def run_scan_mode(args):
                             invalidate_momentum_cache_for_codes(analyzed_codes)
                     except Exception as e:
                         logger.warning(f"モメンタムキャッシュ失効エラー（スキップ）: {e}")
+
+                    # EDINET日次サマリー通知
+                    try:
+                        import json as _json
+                        from pathlib import Path as _Path
+                        _today_raw = datetime.now().strftime("%Y%m%d")
+                        _raw_path = _Path("data/raw/edinet") / f"{_today_raw}.json"
+                        _total_fetched = None
+                        if _raw_path.exists():
+                            with open(_raw_path, "r", encoding="utf-8") as _f:
+                                _total_fetched = len(_json.load(_f))
+                        _edinet_stats = {
+                            "date": datetime.now().strftime("%Y-%m-%d"),
+                            "total_fetched": _total_fetched,
+                            "earnings_signals": len(results),
+                            "analyzed_ok": len([r for r in analyzed if r.get("analyzed")]),
+                            "pdf_failed": len([r for r in analyzed if not r.get("analyzed") and "PDF取得失敗" in r.get("summary", "")]),
+                            "other_skipped": len([r for r in analyzed if not r.get("analyzed") and "PDF取得失敗" not in r.get("summary", "")]),
+                        }
+                        from agents.slack_notifier import notify_edinet_daily_summary
+                        notify_edinet_daily_summary(_edinet_stats)
+                    except Exception as e:
+                        logger.warning(f"EDINET日次サマリー通知エラー（スキップ）: {e}")
+
                 except Exception as e:
                     print(f"  決算分析エラー（簡易通知に切り替え）: {e}")
                     notify_new_signal(results, mode=mode, profit_factor=0.0)
