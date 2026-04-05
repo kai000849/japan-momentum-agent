@@ -259,14 +259,20 @@ def run_scan_mode(args):
         except Exception as e:
             logger.warning(f"MOoutcome記録エラー（スキップ）: {e}")
 
-    # ---- MOシグナルをmomentum_logに記録 ----
+    # ---- MOシグナルをmomentum_logに記録 → パターンスコアリング ----
     momentum_results = all_results.get("MOMENTUM", [])
     if momentum_results:
         try:
-            from agents.momentum_log_manager import log_momentum_signals
+            from agents.momentum_log_manager import log_momentum_signals, score_signals_by_patterns
             mo_added = log_momentum_signals(momentum_results)
             if mo_added > 0:
                 logger.info(f"momentum_log: {mo_added}件記録")
+            # 過去パターンから期待勝率を付与してソート（データ不足時は元順序のまま）
+            momentum_results = score_signals_by_patterns(momentum_results)
+            all_results["MOMENTUM"] = momentum_results
+            scored = [r for r in momentum_results if r.get("expected_win_rate") is not None]
+            if scored:
+                logger.info(f"MOパターンスコア付与: {len(scored)}件（最高期待勝率: {scored[0]['expected_win_rate']:.0f}%）")
         except Exception as e:
             logger.warning(f"momentum_log記録エラー（スキップ）: {e}")
 
@@ -427,29 +433,6 @@ def run_scan_mode(args):
 
             if qualify_entries:
                 advices = generate_advice(qualify_entries, pf_map)
-
-                # ---- 継続判定銘柄をペーパートレードに自動追加（PFゲートなし・学習ループ優先） ----
-                try:
-                    from agents.paper_trader import PaperTrader
-                    trader = PaperTrader()
-                    added_codes = []
-                    for adv in advices:
-                        if adv.get("qualifyResult") == "継続" and adv.get("entryPrice", 0) > 0:
-                            success = trader.add_position(
-                                stock_code=adv["stockCode"],
-                                entry_price=adv["entryPrice"],
-                                reason=f"{adv.get('mode', 'SHORT_TERM')}シグナル（継続）PF{adv.get('pf', 0):.1f}",
-                                company_name=adv.get("companyName", ""),
-                                profit_factor=None,  # PFゲートなし（全継続シグナルを発注してoutcomeデータを蓄積）
-                            )
-                            if success:
-                                added_codes.append(adv["stockCode"])
-                    if added_codes:
-                        logger.info(f"ペーパートレード自動追加: {len(added_codes)}件 → {added_codes}")
-                    else:
-                        logger.info("ペーパートレード自動追加: 0件（継続シグナルなし or 余力なし）")
-                except Exception as e:
-                    logger.warning(f"ペーパートレード自動追加エラー（スキップ）: {e}")
 
                 advice_text = format_advice_for_slack(advices)
                 if advice_text:

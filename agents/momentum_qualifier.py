@@ -908,12 +908,30 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
             high_ratio = s.get("priceToHighRatio", 0)
             new_high = s.get("newHighCount", 0)
             vol_trend = s.get("volumeTrend", 1.0)
+            expected_wr = s.get("expected_win_rate")
+            wr_str = f" / 期待勝率:{expected_wr:.0f}%" if expected_wr is not None else ""
             stocks_text += (
                 f"【{code} {name}】"
-                f"RSI:{rsi:.0f} / 52週高値比:{high_ratio:.1f}% / 新高値:{new_high}回/20日 / 出来高トレンド:{vol_trend:.2f}x\n"
+                f"RSI:{rsi:.0f} / 52週高値比:{high_ratio:.1f}% / 新高値:{new_high}回/20日 / 出来高トレンド:{vol_trend:.2f}x{wr_str}\n"
             )
 
-        prompt = f"""あなたはモメンタム投資の専門家です。以下の銘柄のトレンド指標を見て、
+        # 過去パターン学習データを文脈として追加（5件以上のoutcomeがある場合のみ）
+        pattern_context = ""
+        try:
+            from agents.momentum_log_manager import get_momentum_patterns
+            patterns = get_momentum_patterns()
+            if not patterns.get("insufficient", True) and patterns.get("total", 0) >= 5:
+                lines = [f"【過去学習データ: {patterns['total']}件のoutcome記録済み】"]
+                for axis, label in [("by_ma_gap", "MAギャップ"), ("by_high52w_ratio", "52週高値比"), ("by_volume_trend", "出来高トレンド")]:
+                    axis_data = patterns.get(axis, {})
+                    if axis_data:
+                        parts = [f"{k}→勝率{v['win_rate']:.0f}%({v['count']}件)" for k, v in axis_data.items()]
+                        lines.append(f"  {label}: {' / '.join(parts)}")
+                pattern_context = "\n".join(lines) + "\n\n"
+        except Exception:
+            pass
+
+        prompt = f"""{pattern_context}あなたはモメンタム投資の専門家です。以下の銘柄のトレンド指標を見て、
 各銘柄に「なぜ今モメンタムがあるか」を40文字以内で簡潔にコメントしてください。
 学習済み知識のみで判断してください。
 

@@ -215,10 +215,16 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
             vol_icon = "📶" if vol_trend >= 1.2 else ("➡️" if vol_trend >= 0.9 else "📉")
             comment = s.get("comment", "")
             comment_str = f"\n    💬 {comment}" if comment else ""
+            expected_wr = s.get("expected_win_rate")
+            pattern_notes = s.get("pattern_notes", "")
+            pattern_str = (
+                f"\n    📊 過去勝率: {expected_wr:.0f}%  ({pattern_notes})"
+                if expected_wr is not None else ""
+            )
             lines.append(
                 f"  • {code}{name_str}  スコア:{score:.1f}\n"
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
-                f"{comment_str}"
+                f"{comment_str}{pattern_str}"
             )
         else:
             price_chg = s.get("priceChangePct", 0)
@@ -243,7 +249,7 @@ PF: *{profit_factor:.2f}*  |  対象: *{len(signals)}銘柄*
 
 {signals_text}
 
-{"⚠️ PF < 1.2のため発注見送り" if profit_factor < 1.2 else "✅ 発注条件クリア → qualify判定後に自動追加"}
+{"⚠️ PF < 1.2（参考値）" if profit_factor > 0 and profit_factor < 1.2 else ""}
 """.strip()
 
     return send_slack_message(text)

@@ -314,6 +314,90 @@ def get_momentum_patterns() -> dict:
     }
 
 
+def score_signal_by_patterns(signal: dict, patterns: dict = None) -> dict:
+    """
+    過去のパターン分析から1シグナルの期待勝率を計算する。
+
+    3軸（MAギャップ / 52週高値比 / 出来高トレンド）の該当バケットを参照し、
+    3件以上のoutcomeがある軸のみ平均して期待勝率を算出する。
+
+    Args:
+        signal: MOシグナル辞書
+        patterns: get_momentum_patterns()の結果（Noneなら内部で取得）
+
+    Returns:
+        dict: {
+            "expected_win_rate": float | None,  # 期待勝率（%）、データ不足はNone
+            "pattern_notes": str,               # Slack表示用テキスト
+            "data_sufficient": bool,            # 5件以上のoutcomeがあるか
+        }
+    """
+    if patterns is None:
+        patterns = get_momentum_patterns()
+
+    if patterns.get("insufficient", True) or patterns.get("total", 0) < 5:
+        return {"expected_win_rate": None, "pattern_notes": "", "data_sufficient": False}
+
+    MIN_BUCKET_SAMPLES = 3
+    rates = []
+    notes = []
+
+    # A: MAギャップ5-25
+    ma_gap = signal.get("ma_gap_5_25") or 0
+    bucket_a = "大(>5%)" if ma_gap >= 5 else ("中(2-5%)" if ma_gap >= 2 else "小(<2%)")
+    stats_a = patterns.get("by_ma_gap", {}).get(bucket_a)
+    if stats_a and stats_a.get("count", 0) >= MIN_BUCKET_SAMPLES:
+        rates.append(stats_a["win_rate"])
+        notes.append(f"MAギャップ{bucket_a}:{stats_a['win_rate']:.0f}%({stats_a['count']}件)")
+
+    # B: 52週高値比
+    high_ratio = signal.get("high52w_ratio") or signal.get("priceToHighRatio") or 0
+    bucket_b = "99%以上" if high_ratio >= 99 else ("97-99%" if high_ratio >= 97 else "95-97%")
+    stats_b = patterns.get("by_high52w_ratio", {}).get(bucket_b)
+    if stats_b and stats_b.get("count", 0) >= MIN_BUCKET_SAMPLES:
+        rates.append(stats_b["win_rate"])
+        notes.append(f"高値比{bucket_b}:{stats_b['win_rate']:.0f}%({stats_b['count']}件)")
+
+    # C: 出来高トレンド
+    vol_trend = signal.get("volume_trend_ratio") or signal.get("volumeTrend") or 1.0
+    bucket_c = "1.2x以上" if vol_trend >= 1.2 else ("1.1-1.2x" if vol_trend >= 1.1 else "1.0-1.1x")
+    stats_c = patterns.get("by_volume_trend", {}).get(bucket_c)
+    if stats_c and stats_c.get("count", 0) >= MIN_BUCKET_SAMPLES:
+        rates.append(stats_c["win_rate"])
+        notes.append(f"出来高{bucket_c}:{stats_c['win_rate']:.0f}%({stats_c['count']}件)")
+
+    if not rates:
+        return {"expected_win_rate": None, "pattern_notes": "", "data_sufficient": True}
+
+    return {
+        "expected_win_rate": round(sum(rates) / len(rates), 1),
+        "pattern_notes": " / ".join(notes),
+        "data_sufficient": True,
+    }
+
+
+def score_signals_by_patterns(signals: list) -> list:
+    """
+    MOシグナルリストに期待勝率スコアを付与し、降順ソートして返す。
+    データ不足時は元の順序のまま返す（expected_win_rate=Noneを付与）。
+
+    Returns:
+        list: expected_win_rate / pattern_notes フィールドが追加されたリスト
+    """
+    patterns = get_momentum_patterns()
+    has_data = not patterns.get("insufficient", True) and patterns.get("total", 0) >= 5
+
+    for signal in signals:
+        result = score_signal_by_patterns(signal, patterns)
+        signal["expected_win_rate"] = result["expected_win_rate"]
+        signal["pattern_notes"] = result["pattern_notes"]
+
+    if has_data:
+        # 期待勝率でソート（Noneは末尾）
+        return sorted(signals, key=lambda x: x.get("expected_win_rate") or -1, reverse=True)
+    return signals
+
+
 def get_momentum_log_summary() -> dict:
     """週次レポート用のサマリー情報を返す"""
     log = _load_log()
