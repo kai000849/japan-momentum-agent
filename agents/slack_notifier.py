@@ -175,7 +175,7 @@ def notify_daily_report(trade_log: dict, initial_capital: float) -> bool:
     return send_slack_message(text)
 
 
-def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
+def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_count: int = 0) -> bool:
     """
     新規シグナル検出をSlackに通知する。
 
@@ -183,6 +183,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
         signals (list): シグナル銘柄リスト
         mode (str): スキャンモード（SHORT_TERM / MOMENTUM / EARNINGS）
         profit_factor (float): バックテストのプロフィットファクター
+        skipped_count (int): 朝スキャン済みで除外した件数（0なら表示しない）
 
     Returns:
         bool: 送信成功はTrue
@@ -241,6 +242,8 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float) -> bool:
     signals_text = "\n".join(lines)
     now = datetime.now().strftime("%Y年%m月%d日 %H:%M")
 
+    skipped_str = f"\n_（朝スキャン済みを{skipped_count}件除外）_" if skipped_count > 0 else ""
+
     text = f"""
 🔔 *{mode_label} 検出！*
 {now}
@@ -249,7 +252,7 @@ PF: *{profit_factor:.2f}*  |  対象: *{len(signals)}銘柄*
 
 {signals_text}
 
-{"⚠️ PF < 1.2（参考値）" if profit_factor > 0 and profit_factor < 1.2 else ""}
+{"⚠️ PF < 1.2（参考値）" if profit_factor > 0 and profit_factor < 1.2 else ""}{skipped_str}
 """.strip()
 
     return send_slack_message(text)
@@ -355,8 +358,7 @@ def notify_earnings_signal(signals: list) -> bool:
     # 低スコア・ネガティブはコンパクトな件数表示のみ
     footer_parts = []
     if low_positive:
-        names = "・".join(f"{s.get('stockCode')}({s.get('score',0):+d})" for s in low_positive[:5])
-        footer_parts.append(f"📊 低スコア(1〜29点): {len(low_positive)}件  {names}")
+        footer_parts.append(f"📊 低スコア(1〜29点): {len(low_positive)}件")
     if negative:
         footer_parts.append(f"🔴 ネガティブ: {len(negative)}件")
     if unanalyzed:
@@ -409,6 +411,167 @@ def notify_position_exit(stock_code: str, company_name: str,
 取得: ¥{entry_price:,.0f} → 決済: ¥{exit_price:,.0f}
 損益: *{sign}¥{pnl_yen:,.0f} ({sign}{pnl_pct:.2f}%)*
 理由: {exit_reason}
+""".strip()
+
+    return send_slack_message(text)
+
+
+def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
+    """
+    米市場スキャン＋テーマ抽出を1通にまとめて通知する。
+    目的: 市場の関心・動向把握と次のモメンタム候補への当たりつけ。
+
+    構成:
+      - マクロ指数
+      - セクター強弱: 当日TOP5/WORST3（mom1d）＋中長期TOP5/WORST3（score）
+      - 両軸一致セクター: US注目銘柄＋関連日本銘柄
+      - 注目テーマ TOP3
+      - リスク
+
+    Args:
+        scan_result (dict): run_us_market_scan() の戻り値
+        theme_result (dict): run_theme_extraction() の戻り値
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    scan_date = scan_result.get("scan_date", datetime.now().strftime("%Y年%m月%d日 %H:%M"))
+    headline_count = theme_result.get("headline_count", 0)
+    keywords_data = theme_result.get("keywords", {}) or {}
+    analysis = scan_result.get("analysis", {}) or {}
+
+    # ========== マクロ指数 ==========
+    macro = scan_result.get("macro", {})
+    macro_narrative = keywords_data.get("macro_narrative", "") if isinstance(keywords_data, dict) else ""
+    macro_lines = []
+    for _sym, data in macro.items():
+        change1d = data.get("change1d", 0)
+        change5d = data.get("change5d", 0)
+        icon = "📈" if change1d >= 0.5 else ("📉" if change1d <= -0.5 else "➡️")
+        s1 = "+" if change1d >= 0 else ""
+        s5 = "+" if change5d >= 0 else ""
+        macro_lines.append(f"  {icon} {data['name']}: 当日{s1}{change1d:.1f}% / 5日{s5}{change5d:.1f}%")
+    macro_text = "\n".join(macro_lines) if macro_lines else "  データなし"
+    if macro_narrative:
+        macro_text = f"  {macro_narrative}\n{macro_text}"
+
+    # ========== セクター強弱（2軸） ==========
+    sector_ranking = scan_result.get("sector_ranking", [])
+    daily_section = "  データなし"
+    score_section = "  データなし"
+    both_sectors = []  # 両軸一致セクター
+
+    if sector_ranking:
+        # 当日軸（mom1d）
+        sorted_day = sorted(sector_ranking, key=lambda x: x.get("mom1d", 0), reverse=True)
+        day_top5 = sorted_day[:5]
+        day_worst3 = sorted_day[-3:]
+
+        def _fmt_day(s):
+            m = s.get("mom1d", 0)
+            return f"{s['name']}({s['ticker']}){'+' if m >= 0 else ''}{m:.1f}%"
+
+        top_str = "  ".join(f"{i}.{_fmt_day(s)}" for i, s in enumerate(day_top5, 1))
+        worst_str = "  ".join(_fmt_day(s) for s in day_worst3)
+        daily_section = f"🔥 強: {top_str}\n🔻 弱: {worst_str}"
+
+        # 中長期軸（score = mom5d×0.5 + mom20d×0.3 + mom60d×0.2）
+        sorted_score = sorted(sector_ranking, key=lambda x: x.get("score", 0), reverse=True)
+        sc_top5 = sorted_score[:5]
+        sc_worst3 = sorted_score[-3:]
+
+        def _fmt_score(s):
+            sc = s.get("score", 0)
+            return f"{s['name']}({s['ticker']}){'+' if sc >= 0 else ''}{sc:.1f}"
+
+        sc_top_str = "  ".join(f"{i}.{_fmt_score(s)}" for i, s in enumerate(sc_top5, 1))
+        sc_worst_str = "  ".join(_fmt_score(s) for s in sc_worst3)
+        score_section = f"📈 強: {sc_top_str}\n🔻 弱: {sc_worst_str}"
+
+        # 両軸一致セクター（当日TOP5 ∩ 中長期TOP5）
+        day_top_tickers = {s["ticker"] for s in day_top5}
+        sc_top_tickers = {s["ticker"] for s in sc_top5}
+        match_tickers = day_top_tickers & sc_top_tickers
+        # 中長期スコア順で並べる
+        both_sectors = [s for s in sc_top5 if s["ticker"] in match_tickers]
+
+    # ========== 両軸一致セクター: US銘柄＋日本銘柄 ==========
+    # japan_playsをテーマ名でセクター名に紐づけ（部分一致）
+    japan_plays = keywords_data.get("japan_plays") or [] if isinstance(keywords_data, dict) else []
+
+    def _find_jp_stocks(sector_name: str, japan_theme_str: str) -> str:
+        """セクター名に対応する日本銘柄を探す。japan_plays優先、なければjapan_themeを使用。"""
+        name_lower = sector_name.lower()
+        for jp in japan_plays:
+            th = jp.get("theme", "").lower()
+            if any(kw in th or kw in name_lower for kw in [th[:4], name_lower[:4]]):
+                stocks = "・".join(jp.get("stocks", [])[:3])
+                if stocks:
+                    return stocks
+        # フォールバック: sector_rankingのjapan_themeフィールド
+        return japan_theme_str or "—"
+
+    both_lines = []
+    for s in both_sectors:
+        us_stocks = s.get("top_stocks", "—")
+        jp_stocks = _find_jp_stocks(s["name"], s.get("japan_theme", ""))
+        m1 = s.get("mom1d", 0)
+        sc = s.get("score", 0)
+        both_lines.append(
+            f"  ⭐ *{s['name']}({s['ticker']})*  当日{'+' if m1>=0 else ''}{m1:.1f}% / スコア{'+' if sc>=0 else ''}{sc:.1f}\n"
+            f"    🇺🇸 {us_stocks}\n"
+            f"    🇯🇵 {jp_stocks}"
+        )
+    both_text = "\n\n".join(both_lines) if both_lines else "  （当日・中長期で一致するセクターなし）"
+
+    # ========== 注目テーマ TOP3 ==========
+    hot_keywords = keywords_data.get("hot_keywords", []) if isinstance(keywords_data, dict) else []
+    mention_icons = {"high": "🔥", "medium": "📈", "low": "💡"}
+    theme_lines = []
+    for i, kw in enumerate(hot_keywords[:5], 1):
+        icon = mention_icons.get(kw.get("mention_level", "medium"), "📈")
+        theme_lines.append(
+            f"  {icon} {i}. *{kw.get('keyword', '')}* [{kw.get('sector', '')}]\n"
+            f"     {kw.get('context', '')}"
+        )
+    if not theme_lines:
+        for t in (analysis.get("theme_analysis") or [])[:3]:
+            theme_lines.append(f"  📈 *{t.get('sector', '')}*  {t.get('reason', '')}")
+    themes_text = "\n\n".join(theme_lines) if theme_lines else "  データなし"
+
+    # ========== リスク ==========
+    risk_keywords = keywords_data.get("risk_keywords") or [] if isinstance(keywords_data, dict) else []
+    analysis_risks = analysis.get("risk_factors") or []
+    all_risks = list(dict.fromkeys(risk_keywords[:2] + analysis_risks[:2]))
+    risk_text = "・".join(all_risks[:3]) if all_risks else "特になし"
+
+    # ========== メッセージ組み立て ==========
+    headline_str = f"（ニュース{headline_count}件分析）" if headline_count else ""
+    text = f"""
+🌏 *米市場まとめ*  {scan_date}  {headline_str}
+
+━━━━━━━━━━━━━━━━━━
+📊 *マクロ指数*
+{macro_text}
+
+━━━━━━━━━━━━━━━━━━
+🏭 *セクター強弱 — 当日（mom1d）*
+{daily_section}
+
+📈 *セクター強弱 — 中長期（5日×0.5+20日×0.3+60日×0.2）*
+{score_section}
+
+━━━━━━━━━━━━━━━━━━
+⭐ *両軸一致セクター（確信度高・モメンタム候補）*
+{both_text}
+
+━━━━━━━━━━━━━━━━━━
+📌 *注目テーマ TOP5*
+
+{themes_text}
+
+⚠️ *リスク*: {risk_text}
+━━━━━━━━━━━━━━━━━━
 """.strip()
 
     return send_slack_message(text)
@@ -848,7 +1011,7 @@ def notify_cross_signals(cross_signals: list) -> bool:
 
     label_map = {
         "SHORT_TERM": "急騰",
-        "MOMENTUM": "中長期MO",
+        "MOMENTUM": "中長期モメンタム",
         "EARNINGS": "決算",
     }
 
@@ -931,7 +1094,7 @@ def notify_error(error_message: str, context: str = "") -> bool:
     return send_slack_message(text)
 
 
-def notify_edinet_daily_summary(stats: dict) -> bool:
+def notify_edinet_daily_summary(stats: dict, force_send: bool = False) -> bool:
     """
     EDINET日次サマリーをSlackに送信する。
 
@@ -943,6 +1106,7 @@ def notify_edinet_daily_summary(stats: dict) -> bool:
             analyzed_ok    : Claude分析完了件数
             pdf_failed     : PDF取得失敗件数
             other_skipped  : その他スキップ件数
+        force_send (bool): Trueのとき earnings_signals=0 でも送信する（夕方用）
 
     Returns:
         bool: 送信成功はTrue
@@ -953,6 +1117,11 @@ def notify_edinet_daily_summary(stats: dict) -> bool:
     analyzed_ok = stats.get("analyzed_ok", 0)
     pdf_failed = stats.get("pdf_failed", 0)
     other_skipped = stats.get("other_skipped", 0)
+
+    # 閑散期（シグナルなし）かつ強制送信でなければスキップ
+    if earnings_signals == 0 and not force_send:
+        logger.info("EDINET日次サマリー: シグナルなし（閑散期）のため通知スキップ")
+        return True
 
     total_str = f"{total}件" if total is not None else "取得中"
 
@@ -1295,7 +1464,6 @@ def notify_weekly_report() -> bool:
 
     BASE_DIR = Path(__file__).parent.parent
     qualify_log_path = BASE_DIR / "memory" / "qualify_log.json"
-    trade_log_path   = BASE_DIR / "memory" / "trade_log.json"
 
     today      = date.today()
     week_start = (today - timedelta(days=7)).isoformat()
@@ -1333,33 +1501,6 @@ def notify_weekly_report() -> bool:
         round(sum(e["outcome"].get("returnPct", 0) for e in week_outcomes) / outcome_count, 2)
         if outcome_count > 0 else None
     )
-
-    # ---- trade_log 集計（ペーパーのみ） ----
-    paper_entered: list = []
-    paper_closed:  list = []
-    paper_open:    list = []
-    try:
-        with open(trade_log_path, "r", encoding="utf-8") as f:
-            trade_log = json.load(f)
-        paper_entered = [
-            p for p in trade_log.get("positions", [])
-            if p.get("tradeType", "paper") != "actual"
-            and p.get("entryDate", "") >= week_start
-        ]
-        paper_closed = [
-            t for t in trade_log.get("closed_trades", [])
-            if t.get("tradeType", "paper") != "actual"
-            and (t.get("exitDate") or "") >= week_start
-        ]
-        paper_open = [
-            p for p in trade_log.get("positions", [])
-            if p.get("tradeType", "paper") != "actual"
-        ]
-    except Exception:
-        pass
-
-    closed_wins = sum(1 for t in paper_closed if t.get("pnl", 0) > 0)
-    closed_wr   = round(closed_wins / len(paper_closed) * 100, 1) if paper_closed else None
 
     # ---- 累計パターン分析 ----
     from agents.momentum_qualifier import get_outcome_stats, get_outcome_patterns
@@ -1431,17 +1572,6 @@ def notify_weekly_report() -> bool:
     else:
         lines.append("  まだ記録なし（10営業日後に自動記録）")
 
-    # ペーパートレード
-    lines.append(f"\n💼 *ペーパートレード*")
-    lines.append(
-        f"  今週エントリー: {len(paper_entered)}件 / 決済: {len(paper_closed)}件 / 現在保有: {len(paper_open)}件"
-    )
-    if paper_closed:
-        wr_str      = f"{closed_wr}%" if closed_wr is not None else "N/A"
-        closed_pnl  = sum(t.get("pnl", 0) for t in paper_closed)
-        sign        = "+" if closed_pnl >= 0 else ""
-        lines.append(f"  決済結果: 勝率{wr_str} / 損益合計{sign}¥{closed_pnl:,.0f}")
-
     # 累計パターン分析
     lines.append(f"\n🧠 *累計パターン分析（{total_rec}件記録済み）*")
     if total_rec >= 5:
@@ -1508,8 +1638,8 @@ def notify_weekly_report() -> bool:
     else:
         lines.append("  データ不足（qualify_log蓄積中）")
 
-    # ---- MOメンタム学習ループ（momentum_log.json） ----
-    lines.append(f"\n📈 *MOメンタム学習ループ*")
+    # ---- モメンタム学習ループ（momentum_log.json） ----
+    lines.append(f"\n📈 *モメンタム学習ループ*")
     try:
         from agents.momentum_log_manager import get_momentum_patterns, get_momentum_log_summary
         mo_summary = get_momentum_log_summary()
@@ -1543,7 +1673,7 @@ def notify_weekly_report() -> bool:
 
     # 注目点
     lines.append("\n📌 *注目点*")
-    for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, paper_open, weekly_trend):
+    for obs in _generate_weekly_observations(all_stats, all_patterns, week_signals, [], weekly_trend):
         lines.append(f"  {obs}")
 
     lines.append("━━━━━━━━━━━━━━━━━━")

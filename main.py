@@ -344,7 +344,8 @@ def run_scan_mode(args):
                         if f"{r.get('stockCode')}::{r.get('docID', '')}" not in _prev_e
                     ] if _prev_e else merged
                     if merged_to_notify:
-                        notify_new_signal(merged_to_notify, mode=mode, profit_factor=0.0)
+                        _skipped_e = len(merged) - len(merged_to_notify)
+                        notify_new_signal(merged_to_notify, mode=mode, profit_factor=0.0, skipped_count=_skipped_e)
                     else:
                         logger.info("EARNINGS: 新規開示なし（朝スキャン済みと同一）→ 通知スキップ")
                     # 分析済み結果をクロスシグナル照合のために保存（フルリスト）
@@ -379,7 +380,8 @@ def run_scan_mode(args):
                             "other_skipped": len([r for r in analyzed if not r.get("analyzed") and "PDF取得失敗" not in r.get("summary", "")]),
                         }
                         from agents.slack_notifier import notify_edinet_daily_summary
-                        notify_edinet_daily_summary(_edinet_stats)
+                        _is_evening = datetime.now().hour >= 17
+                        notify_edinet_daily_summary(_edinet_stats, force_send=_is_evening)
                     except Exception as e:
                         logger.warning(f"EDINET日次サマリー通知エラー（スキップ）: {e}")
 
@@ -408,8 +410,9 @@ def run_scan_mode(args):
             if not results_to_notify:
                 logger.info(f"{mode}: 新規シグナルなし（朝スキャン済みと同一）→ 通知スキップ")
                 continue
+            skipped = len(results) - len(results_to_notify)
             pf = _calc_pf_for_mode(mode)
-            notify_new_signal(results_to_notify, mode=mode, profit_factor=pf)
+            notify_new_signal(results_to_notify, mode=mode, profit_factor=pf, skipped_count=skipped)
 
     except Exception as e:
         logger.warning(f"Slack通知送信失敗: {e}")
@@ -701,7 +704,7 @@ def run_status_mode(args):
     Args:
         args: コマンドライン引数
     """
-    from agents.paper_trader import display_portfolio_status, PaperTrader, get_actual_positions
+    from agents.paper_trader import get_actual_positions
 
     # ---- 実売買ポジション ----
     actual = get_actual_positions()
@@ -723,20 +726,19 @@ def run_status_mode(args):
     else:
         print("【実売買ポジション】 なし\n")
 
-    print("【ペーパートレード状況】")
-    display_portfolio_status()
-
-    # Slack通知: 朝次レポート送信（--notify オプション指定時）
+    # Slack通知: 実売買ポジション送信（--notify オプション指定時）
     notify = getattr(args, "notify", False)
     if notify:
         try:
-            from agents.slack_notifier import notify_daily_report
-            trader = PaperTrader()
-            success = notify_daily_report(trader.trade_log, trader.initial_capital)
-            if success:
-                print("✅ Slackに朝次レポートを送信しました。")
+            from agents.slack_notifier import notify_actual_positions
+            if actual:
+                success = notify_actual_positions(actual)
+                if success:
+                    print("✅ Slackに実売買ポジションを送信しました。")
+                else:
+                    print("❌ Slack送信失敗。config.yaml のWebhook URLを確認してください。")
             else:
-                print("❌ Slack送信失敗。config.yaml のWebhook URLを確認してください。")
+                print("実売買ポジションなし（Slack通知スキップ）")
         except Exception as e:
             print(f"Slack通知エラー: {e}")
 
@@ -881,7 +883,7 @@ def main():
             print("② 米国財務メディアからホットキーワード抽出\n")
             from agents.us_market_scanner import run_us_market_scan
             from agents.us_theme_extractor import run_theme_extraction
-            from agents.slack_notifier import notify_us_market_scan, notify_us_theme_extraction
+            from agents.slack_notifier import notify_us_combined
 
             # ETFモメンタムスキャン
             print("--- ETFモメンタム取得中 ---")
@@ -893,16 +895,16 @@ def main():
                     print(f"  {s['name']}({s['ticker']}): "
                           f"スコア{'+' if s['score']>=0 else ''}{s['score']:.1f} "
                           f"[5日:{'+' if s['mom5d']>=0 else ''}{s['mom5d']:.1f}%]")
-            notify_us_market_scan(scan_result)
-            print("✓ ETFスキャン通知送信\n")
 
             # テーマ・キーワード抽出
             print("--- ホットキーワード抽出中 ---")
             theme_result = run_theme_extraction()
             kw_count = len(theme_result.get("keywords", {}).get("hot_keywords", []))
             print(f"キーワード抽出: {kw_count}件")
-            notify_us_theme_extraction(theme_result, sector_ranking=ranking)
-            print("✓ キーワード通知送信")
+
+            # 統合通知（1通にまとめて送信）
+            notify_us_combined(scan_result, theme_result)
+            print("✓ 米市場まとめ通知送信")
 
         elif args.mode == "earnings_intraday":
             # ザラ場決算モメンタムスキャン（10:30 JST頃に実行）
