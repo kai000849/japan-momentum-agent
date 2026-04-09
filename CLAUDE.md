@@ -199,6 +199,7 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/09: Claudeモデル廃止対応 → `claude-sonnet-4-5-20241022`が廃止済みのため`claude-sonnet-4-6`に更新（`momentum_qualifier.py` / `edinet_analyzer.py`）。Stage2が全件「様子見」になっていた問題・EDINET分析0件問題が解消。
 - 2026/04/09: 正午スキャン通知の時刻表示バグ修正 → `slack_notifier.py`の`datetime.now()`をJST対応に（UTC表示「05:22現在」→「14:22現在」）。
 - 2026/04/09: 米市場通知を改善 → セクター強弱（当日・中長期）の各セクターに米国・日本代表銘柄3つずつ表示。両軸一致セクターセクションを削除（意義薄）。注目テーマTOP5にも米国・日本代表銘柄3つずつ追加。`us_theme_extractor.py`プロンプトに`us_stocks`/`jp_stocks`フィールドを追加。セクターラベル「強/弱」→「TOP/WORST」に変更。
+- 2026/04/09: 米市場セクターの日本銘柄に証券コードを追加 → `us_market_scanner.py`のSECTOR_ETFSの全17セクターの`japan_theme`を「銘柄名(4桁コード)」形式に統一。カテゴリ説明（「半導体・IT・ソフトウェア」等）から具体的な銘柄+コードに変更。
 
 ---
 
