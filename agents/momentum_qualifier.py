@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 VOLUME_SUSTAIN_RATIO = 0.5
 PRICE_SUSTAIN_RATIO = 0.97
 SUSTAIN_CHECK_DAYS = 3
-CLAUDE_MODEL = "claude-sonnet-4-5-20241022"
+CLAUDE_MODEL = "claude-sonnet-4-6"
 QUALIFY_LOG_PATH = Path(__file__).parent.parent / "memory" / "qualify_log.json"
 MOMENTUM_COMMENT_CACHE_PATH = Path(__file__).parent.parent / "data" / "processed" / "momentum_comments_cache.json"
 

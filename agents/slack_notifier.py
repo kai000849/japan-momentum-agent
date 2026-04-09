@@ -15,7 +15,7 @@ import logging
 import sys
 import urllib.request
 import urllib.error
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 import yaml
@@ -1258,7 +1258,8 @@ def notify_noon_scan(results: list) -> bool:
     Returns:
         bool: 送信成功かどうか
     """
-    now_str = datetime.now().strftime("%H:%M")
+    jst = timezone(timedelta(hours=9))
+    now_str = datetime.now(tz=jst).strftime("%H:%M")
     go_list   = [r for r in results if r["judgment"] == "後場GO"]
     watch_list = [r for r in results if r["judgment"] == "様子見"]
     skip_list  = [r for r in results if r["judgment"] == "見送り"]
