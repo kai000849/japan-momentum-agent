@@ -423,9 +423,8 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
 
     構成:
       - マクロ指数
-      - セクター強弱: 当日TOP5/WORST3（mom1d）＋中長期TOP5/WORST3（score）
-      - 両軸一致セクター: US注目銘柄＋関連日本銘柄
-      - 注目テーマ TOP3
+      - セクター強弱: 当日TOP5/WORST3（mom1d）＋中長期TOP5/WORST3（score）、各セクターに米国・日本代表銘柄3つずつ
+      - 注目テーマ TOP5、各テーマに米国・日本代表銘柄3つずつ
       - リスク
 
     Args:
@@ -459,7 +458,17 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
     sector_ranking = scan_result.get("sector_ranking", [])
     daily_section = "  データなし"
     score_section = "  データなし"
-    both_sectors = []  # 両軸一致セクター
+
+    def _fmt_sector_with_stocks(s, value_str: str) -> str:
+        """セクター1件を銘柄付きで整形する。"""
+        us = s.get("top_stocks", "")
+        jp = s.get("japan_theme", "")
+        line = f"{s['name']}({s['ticker']}){value_str}"
+        if us:
+            line += f"\n    🇺🇸 {us}"
+        if jp:
+            line += f"\n    🇯🇵 {jp}"
+        return line
 
     if sector_ranking:
         # 当日軸（mom1d）
@@ -467,73 +476,50 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
         day_top5 = sorted_day[:5]
         day_worst3 = sorted_day[-3:]
 
-        def _fmt_day(s):
-            m = s.get("mom1d", 0)
-            return f"{s['name']}({s['ticker']}){'+' if m >= 0 else ''}{m:.1f}%"
-
-        top_str = "  ".join(f"{i}.{_fmt_day(s)}" for i, s in enumerate(day_top5, 1))
-        worst_str = "  ".join(_fmt_day(s) for s in day_worst3)
-        daily_section = f"🔥 強: {top_str}\n🔻 弱: {worst_str}"
+        top_lines = "\n".join(
+            f"  {i}. " + _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%")
+            for i, s in enumerate(day_top5, 1)
+        )
+        worst_lines = "\n".join(
+            "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%")
+            for s in day_worst3
+        )
+        daily_section = f"🔥 強:\n{top_lines}\n🔻 弱:\n{worst_lines}"
 
         # 中長期軸（score = mom5d×0.5 + mom20d×0.3 + mom60d×0.2）
         sorted_score = sorted(sector_ranking, key=lambda x: x.get("score", 0), reverse=True)
         sc_top5 = sorted_score[:5]
         sc_worst3 = sorted_score[-3:]
 
-        def _fmt_score(s):
-            sc = s.get("score", 0)
-            return f"{s['name']}({s['ticker']}){'+' if sc >= 0 else ''}{sc:.1f}"
-
-        sc_top_str = "  ".join(f"{i}.{_fmt_score(s)}" for i, s in enumerate(sc_top5, 1))
-        sc_worst_str = "  ".join(_fmt_score(s) for s in sc_worst3)
-        score_section = f"📈 強: {sc_top_str}\n🔻 弱: {sc_worst_str}"
-
-        # 両軸一致セクター（当日TOP5 ∩ 中長期TOP5）
-        day_top_tickers = {s["ticker"] for s in day_top5}
-        sc_top_tickers = {s["ticker"] for s in sc_top5}
-        match_tickers = day_top_tickers & sc_top_tickers
-        # 中長期スコア順で並べる
-        both_sectors = [s for s in sc_top5 if s["ticker"] in match_tickers]
-
-    # ========== 両軸一致セクター: US銘柄＋日本銘柄 ==========
-    # japan_playsをテーマ名でセクター名に紐づけ（部分一致）
-    japan_plays = keywords_data.get("japan_plays") or [] if isinstance(keywords_data, dict) else []
-
-    def _find_jp_stocks(sector_name: str, japan_theme_str: str) -> str:
-        """セクター名に対応する日本銘柄を探す。japan_plays優先、なければjapan_themeを使用。"""
-        name_lower = sector_name.lower()
-        for jp in japan_plays:
-            th = jp.get("theme", "").lower()
-            if any(kw in th or kw in name_lower for kw in [th[:4], name_lower[:4]]):
-                stocks = "・".join(jp.get("stocks", [])[:3])
-                if stocks:
-                    return stocks
-        # フォールバック: sector_rankingのjapan_themeフィールド
-        return japan_theme_str or "—"
-
-    both_lines = []
-    for s in both_sectors:
-        us_stocks = s.get("top_stocks", "—")
-        jp_stocks = _find_jp_stocks(s["name"], s.get("japan_theme", ""))
-        m1 = s.get("mom1d", 0)
-        sc = s.get("score", 0)
-        both_lines.append(
-            f"  ⭐ *{s['name']}({s['ticker']})*  当日{'+' if m1>=0 else ''}{m1:.1f}% / スコア{'+' if sc>=0 else ''}{sc:.1f}\n"
-            f"    🇺🇸 {us_stocks}\n"
-            f"    🇯🇵 {jp_stocks}"
+        sc_top_lines = "\n".join(
+            f"  {i}. " + _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}")
+            for i, s in enumerate(sc_top5, 1)
         )
-    both_text = "\n\n".join(both_lines) if both_lines else "  （当日・中長期で一致するセクターなし）"
+        sc_worst_lines = "\n".join(
+            "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}")
+            for s in sc_worst3
+        )
+        score_section = f"📈 強:\n{sc_top_lines}\n🔻 弱:\n{sc_worst_lines}"
 
-    # ========== 注目テーマ TOP3 ==========
+    # ========== 注目テーマ TOP5（US・JP銘柄付き） ==========
     hot_keywords = keywords_data.get("hot_keywords", []) if isinstance(keywords_data, dict) else []
     mention_icons = {"high": "🔥", "medium": "📈", "low": "💡"}
     theme_lines = []
     for i, kw in enumerate(hot_keywords[:5], 1):
         icon = mention_icons.get(kw.get("mention_level", "medium"), "📈")
-        theme_lines.append(
+        us_stocks = kw.get("us_stocks", [])
+        jp_stocks = kw.get("jp_stocks", [])
+        us_str = " / ".join(us_stocks[:3]) if us_stocks else ""
+        jp_str = " / ".join(jp_stocks[:3]) if jp_stocks else ""
+        line = (
             f"  {icon} {i}. *{kw.get('keyword', '')}* [{kw.get('sector', '')}]\n"
             f"     {kw.get('context', '')}"
         )
+        if us_str:
+            line += f"\n     🇺🇸 {us_str}"
+        if jp_str:
+            line += f"\n     🇯🇵 {jp_str}"
+        theme_lines.append(line)
     if not theme_lines:
         for t in (analysis.get("theme_analysis") or [])[:3]:
             theme_lines.append(f"  📈 *{t.get('sector', '')}*  {t.get('reason', '')}")
@@ -558,12 +544,9 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
 🏭 *セクター強弱 — 当日（mom1d）*
 {daily_section}
 
+━━━━━━━━━━━━━━━━━━
 📈 *セクター強弱 — 中長期（5日×0.5+20日×0.3+60日×0.2）*
 {score_section}
-
-━━━━━━━━━━━━━━━━━━
-⭐ *両軸一致セクター（確信度高・モメンタム候補）*
-{both_text}
 
 ━━━━━━━━━━━━━━━━━━
 📌 *注目テーマ TOP5*

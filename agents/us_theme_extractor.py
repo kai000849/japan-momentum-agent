@@ -181,6 +181,10 @@ def extract_hot_keywords(headlines: list) -> dict:
 - 米国での注目テーマが日本株のどの銘柄に波及するかを具体的に示してください
 - japan_playsのstocksは必ず「銘柄名(証券コード4桁)」の形式で記載してください
   例: ["東京エレクトロン(8035)", "アドバンテスト(6857)", "レーザーテック(6920)"]
+- hot_keywordsのus_stocksは「銘柄名(ティッカー)」形式で3銘柄
+  例: ["エヌビディア(NVDA)", "ブロードコム(AVGO)", "TSMC(TSM)"]
+- hot_keywordsのjp_stocksは「銘柄名(証券コード4桁)」形式で3銘柄
+  例: ["東京エレクトロン(8035)", "アドバンテスト(6857)", "レーザーテック(6920)"]
 
 【出力形式】
 必ず以下のJSON形式のみで回答してください。前置き・説明不要。
@@ -191,7 +195,9 @@ def extract_hot_keywords(headlines: list) -> dict:
       "keyword": "<具体的なキーワード>",
       "mention_level": "<high/medium/low>",
       "context": "<なぜ今注目されているか1文で>",
-      "sector": "<関連セクター>"
+      "sector": "<関連セクター>",
+      "us_stocks": ["<銘柄名(ティッカー)>", "<銘柄名(ティッカー)>", "<銘柄名(ティッカー)>"],
+      "jp_stocks": ["<銘柄名(証券コード4桁)>", "<銘柄名(証券コード4桁)>", "<銘柄名(証券コード4桁)>"]
     }}
   ],
   "sector_narratives": [
