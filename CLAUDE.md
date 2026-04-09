@@ -196,10 +196,13 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/05: 決算フィードバックループ接続 → `earnings_momentum_scanner.py`に`get_earnings_patterns()`/`score_earnings_signal_by_patterns()`追加（3軸: catalyst_type/momentum_potential/edinet_score_band）。`edinet_analyzer.py`のプロンプトにmomentum_potential実績を注入（Claudeの自己改善ループ）。`main.py`でスコアリングを呼び出し。
 - 2026/04/05: EDINET日次サマリー通知を追加 → `slack_notifier.py`に`notify_edinet_daily_summary()`追加。毎スキャン時に全書類数・決算関連シグナル数・Claude分析完了数・PDF失敗数をSlack通知。閑散期か否かが一目で分かる。
 - 2026/04/08: Slack通知を全面整理 → ①週次レポートのペーパートレードセクション削除 ②EDINET日次サマリーを閑散期はサイレントに（夕方17時以降はforce_send=Trueで常時送信） ③米市場通知を2通→1通に統合（`notify_us_combined`新規追加。セクター強弱を当日/中長期2軸表示、両軸一致セクターにUS・日本銘柄ピック追加、注目テーマTOP5） ④夕方シグナル通知に重複除外件数を末尾表示 ⑤決算低スコア表示を件数のみに簡略化 ⑥`notify_daily_report`（ペーパー300万円ベース）を`notify_actual_positions`に差し替え ⑦表記統一（「MOメンタム」→「モメンタム」「中長期MO」→「中長期モメンタム」）
+- 2026/04/09: Claudeモデル廃止対応 → `claude-sonnet-4-5-20241022`が廃止済みのため`claude-sonnet-4-6`に更新（`momentum_qualifier.py` / `edinet_analyzer.py`）。Stage2が全件「様子見」になっていた問題・EDINET分析0件問題が解消。
+- 2026/04/09: 正午スキャン通知の時刻表示バグ修正 → `slack_notifier.py`の`datetime.now()`をJST対応に（UTC表示「05:22現在」→「14:22現在」）。
+- 2026/04/09: 米市場通知を改善 → セクター強弱（当日・中長期）の各セクターに米国・日本代表銘柄3つずつ表示。両軸一致セクターセクションを削除（意義薄）。注目テーマTOP5にも米国・日本代表銘柄3つずつ追加。`us_theme_extractor.py`プロンプトに`us_stocks`/`jp_stocks`フィールドを追加。セクターラベル「強/弱」→「TOP/WORST」に変更。
 
 ---
 
-## 現在の状況（2026/04/08時点）
+## 現在の状況（2026/04/09時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
 - **3つの学習ループがすべて記録→フィードバックまで接続済み**
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
@@ -207,7 +210,8 @@ git add . && git commit -m "メモ" && git push
   - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
-- 米市場通知: 2通→1通に統合済み（当日/中長期2軸＋両軸一致セクターの銘柄ピック）
+- 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。両軸一致セクションは廃止。
+- Claudeモデル: Sonnet系は`claude-sonnet-4-6`、Haiku系は`claude-haiku-4-5-20251001`を使用
 - 次のマイルストーン①: 各ログ5件蓄積 → パターン分析自動発動確認（5月決算シーズンが本番）
 - 次のマイルストーン②: surgeReasonタグ修正後の情報源別勝率（TDnet/ニュース/推測）を週次レポートで確認（2〜3週後）
 - 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
