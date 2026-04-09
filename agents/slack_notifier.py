@@ -484,7 +484,7 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
             "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%")
             for s in day_worst3
         )
-        daily_section = f"🔥 強:\n{top_lines}\n🔻 弱:\n{worst_lines}"
+        daily_section = f"🔥 TOP:\n{top_lines}\n🔻 WORST:\n{worst_lines}"
 
         # 中長期軸（score = mom5d×0.5 + mom20d×0.3 + mom60d×0.2）
         sorted_score = sorted(sector_ranking, key=lambda x: x.get("score", 0), reverse=True)
@@ -499,7 +499,7 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
             "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}")
             for s in sc_worst3
         )
-        score_section = f"📈 強:\n{sc_top_lines}\n🔻 弱:\n{sc_worst_lines}"
+        score_section = f"🔥 TOP:\n{sc_top_lines}\n🔻 WORST:\n{sc_worst_lines}"
 
     # ========== 注目テーマ TOP5（US・JP銘柄付き） ==========
     hot_keywords = keywords_data.get("hot_keywords", []) if isinstance(keywords_data, dict) else []
