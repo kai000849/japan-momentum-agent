@@ -80,15 +80,16 @@ japan-momentum-agent/
 ├── .github/workflows/daily_report.yml
 ├── agents/
 │   ├── scanner.py                   # スクリーニング（SHORT_TERM/MOMENTUM/EARNINGS）
-│   ├── jquants_fetcher.py           # 株価データ取得
-│   ├── edinet_fetcher.py / edinet_analyzer.py  # 決算取得・分析
+│   ├── jquants_fetcher.py           # 株価データ取得・決算速報取得（get_todays_earnings）
+│   ├── jquants_earnings_analyzer.py # J-Quants決算速報Haiku分析（YoY・進捗率・正サプライズ判定）
+│   ├── edinet_fetcher.py / edinet_analyzer.py  # 決算取得・分析（翌朝照合用・遅延あり）
 │   ├── momentum_qualifier.py        # モメンタム判定（qualify_log管理・ラベル移行・自動クリーンアップ）
 │   ├── momentum_log_manager.py      # MOメンタム学習ループ（momentum_log.json管理・20日アウトカム記録）
 │   ├── investment_advisor.py        # 投資判断エージェント
 │   ├── noon_scanner.py              # 正午スキャン（後場エントリー判断）
 │   ├── earnings_momentum_scanner.py # 決算中長期フォローアップ
 │   ├── us_market_scanner.py / us_theme_extractor.py  # 米市場スキャン
-│   ├── paper_trader.py              # ペーパートレード＋実売買記録
+│   ├── paper_trader.py              # 実売買記録専用（ペーパー機能は無効化済み）
 │   ├── slack_notifier.py            # Slack通知
 │   └── utils.py                     # 共通ユーティリティ
 ├── data/                            # CSV・スキャン結果・キャッシュ（日付キーで管理）
@@ -105,8 +106,8 @@ japan-momentum-agent/
 | 6:40〜 | morning-scan | us-market-scan完了後に自動起動。米結果反映済みの朝通知 |
 | 10:30 | midmorning-scan | ザラ場決算スキャン |
 | 12:15 | noon-scan | 後場エントリー判断（yfinance前場データ） |
-| 18:00 | evening-scan | メイン通知＋保有状況＋決算評価＋実売買損益 |
-| 金曜18:00 | weekly-report | 週次パフォーマンスレポート |
+| 18:30 | evening-scan | メイン通知＋J-Quants決算速報＋保有状況＋実売買損益（18:00速報を30分待って取り込む） |
+| 金曜18:30 | weekly-report | 週次パフォーマンスレポート |
 
 GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `ANTHROPIC_API_KEY`（全登録済み）
 
@@ -118,6 +119,7 @@ GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `AN
 |---|---|---|---|
 | edinet_analyzer.py | 決算PDF分析 | Sonnet | pdfplumber抽出・結果キャッシュあり |
 | momentum_qualifier.py | 構造的変化判定 | Sonnet | 上位15件バッチ・過去精度フィードバック付 |
+| jquants_earnings_analyzer.py | 決算速報正サプライズ判定 | Haiku | 数値データ（YoY・進捗率）で定量フィルタ後に判定 |
 | us_theme_extractor.py | RSSキーワード抽出 | Haiku | ヘッドライン40件 |
 | us_market_scanner.py | ETFセクター分析 | Haiku | 数値データのみ |
 
@@ -200,19 +202,23 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/09: 正午スキャン通知の時刻表示バグ修正 → `slack_notifier.py`の`datetime.now()`をJST対応に（UTC表示「05:22現在」→「14:22現在」）。
 - 2026/04/09: 米市場通知を改善 → セクター強弱（当日・中長期）の各セクターに米国・日本代表銘柄3つずつ表示。両軸一致セクターセクションを削除（意義薄）。注目テーマTOP5にも米国・日本代表銘柄3つずつ追加。`us_theme_extractor.py`プロンプトに`us_stocks`/`jp_stocks`フィールドを追加。セクターラベル「強/弱」→「TOP/WORST」に変更。
 - 2026/04/09: 米市場セクターの日本銘柄に証券コードを追加 → `us_market_scanner.py`のSECTOR_ETFSの全17セクターの`japan_theme`を「銘柄名(4桁コード)」形式に統一。カテゴリ説明（「半導体・IT・ソフトウェア」等）から具体的な銘柄+コードに変更。
+- 2026/04/10: momentum_log.jsonのキャッシュ配線を修正 → evening-scanのキャッシュ復元ステップにmomentum_logが欠落していた。`daily_report.yml`に追加。合わせて`memory/momentum_log.json`を`[]`で初期化してgitにコミット。
+- 2026/04/10: 週次レポートの実売買ポジション表示バグ修正 → `slack_notifier.py`の`_generate_weekly_observations`が`[]`ハードコードだったため「現在保有なし」常時表示。`get_actual_positions()`を呼ぶように修正。
+- 2026/04/10: J-Quants決算速報（/fins/summary）をHaikuで分析する仕組みを追加 → `jquants_earnings_analyzer.py`新規作成。夕方18:30スキャンに統合（EDINETは数日遅延のため同日検知に不向きと判明）。定量フィルタ（OP YoY +20%以上 or 通期進捗70%以上）→ Haiku判定 → Slack通知「📊 決算速報 正サプライズ」の流れ。EDINETベースの翌朝照合+Sonnet qualifyパイプラインは維持。夕方cronを18:00→18:30に変更（速報配信30分待ち）。
 
 ---
 
-## 現在の状況（2026/04/09時点）
+## 現在の状況（2026/04/10時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
 - **3つの学習ループがすべて記録→フィードバックまで接続済み**
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
   - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
   - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
+- **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知。EDINETは翌朝照合用として継続。
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
 - 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。両軸一致セクションは廃止。
 - Claudeモデル: Sonnet系は`claude-sonnet-4-6`、Haiku系は`claude-haiku-4-5-20251001`を使用
 - 次のマイルストーン①: 各ログ5件蓄積 → パターン分析自動発動確認（5月決算シーズンが本番）
-- 次のマイルストーン②: surgeReasonタグ修正後の情報源別勝率（TDnet/ニュース/推測）を週次レポートで確認（2〜3週後）
+- 次のマイルストーン②: J-Quants速報シグナルと翌朝急騰の照合精度を確認（2〜3週後）
 - 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
