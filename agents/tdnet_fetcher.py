@@ -15,11 +15,13 @@ TDnet は 5桁コード（例: "80110"）を使用。末尾の "0" を除いた 
 
 import json
 import logging
+import os
 import re
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import anthropic
 import requests
 
 logger = logging.getLogger(__name__)
@@ -185,3 +187,147 @@ def get_disclosures_for_stock(
     # 重要度の高い開示を先頭に
     all_matches.sort(key=lambda x: (not x["is_high_value"], x["disclosure_date"]))
     return all_matches
+
+
+# ========================================
+# Haiku による適時開示タイトル分類
+# ========================================
+
+HAIKU_MODEL = "claude-haiku-4-5-20251001"
+HAIKU_BATCH_SIZE = 30
+
+
+def analyze_disclosures_with_haiku(disclosures: list, date_str: str) -> list:
+    """
+    当日の適時開示タイトルをClaude Haikuで分類し、
+    モメンタム候補・要確認銘柄を返す。
+
+    処理フロー:
+    1. HIGH_VALUE_KEYWORDSでキーワードフィルタ（is_high_value=True）
+    2. Haikuでタイトルを3値分類: STRONG / WATCH / SKIP
+    3. SKIP を除外して返す
+
+    Args:
+        disclosures: fetch_disclosures()が返す開示リスト
+        date_str: "YYYY-MM-DD" 形式
+
+    Returns:
+        list of dict: STRONG / WATCH 判定の開示リスト
+                      各dict: code, company, title, time, pdf_url,
+                               is_high_value, label, reason
+    """
+    if not disclosures:
+        return []
+
+    # キーワードフィルタで高価値候補に絞る
+    candidates = [d for d in disclosures if d.get("is_high_value")]
+    if not candidates:
+        logger.info(f"TDnet Haiku分析: 高価値候補なし（全{len(disclosures)}件）→ スキップ")
+        return []
+
+    logger.info(f"TDnet Haiku分析: 全{len(disclosures)}件 → キーワード該当{len(candidates)}件")
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if not api_key:
+        # APIキーなし → キーワード該当をそのままWATCHとして返す
+        logger.warning("ANTHROPIC_API_KEY未設定 → Haiku分析スキップ（キーワード候補をそのまま返却）")
+        return [{**d, "label": "WATCH", "reason": "キーワード該当（Haiku未分析）"} for d in candidates]
+
+    client = anthropic.Anthropic(api_key=api_key)
+    results = []
+
+    for i in range(0, len(candidates), HAIKU_BATCH_SIZE):
+        batch = candidates[i:i + HAIKU_BATCH_SIZE]
+        batch_results = _run_tdnet_haiku_batch(client, batch, date_str)
+        results.extend(batch_results)
+
+    filtered = [r for r in results if r.get("label") != "SKIP"]
+    strong_count = sum(1 for r in filtered if r.get("label") == "STRONG")
+    watch_count = sum(1 for r in filtered if r.get("label") == "WATCH")
+    logger.info(
+        f"TDnet Haiku分析完了: {len(candidates)}件 → "
+        f"◎STRONG {strong_count}件 / ○WATCH {watch_count}件"
+    )
+    return filtered
+
+
+def _run_tdnet_haiku_batch(client: anthropic.Anthropic, batch: list, date_str: str) -> list:
+    """1バッチ分のHaiku分類を実行する。"""
+    items = [
+        {"code": d["code"], "company": d["company"], "title": d["title"], "time": d["time"]}
+        for d in batch
+    ]
+
+    prompt = f"""{date_str}の東証適時開示タイトル一覧です。各タイトルを翌営業日以降の株価モメンタム（上昇トレンド）への影響度で分類してください。
+
+開示タイトル一覧:
+{json.dumps(items, ensure_ascii=False, indent=2)}
+
+分類ラベル:
+- STRONG: 株価上昇モメンタムに直結しやすい開示
+  例: 通期・四半期業績の上方修正、大幅増益・黒字転換、大型受注・採択、MBO・TOB・買収、自社株買い、増配・特別配当
+- WATCH: 内容次第でモメンタムにつながる可能性がある開示
+  例: 資本業務提携、新規契約・合意、業績予想の開示（修正ではない）、新事業・新製品発表
+- SKIP: モメンタムと無関係またはネガティブな開示
+  例: 定款変更、役員人事、株主総会招集、下方修正、損失計上、訴訟・罰則、その他定型開示
+
+各開示に対して以下のJSON形式で回答してください:
+[
+  {{
+    "code": "銘柄コード",
+    "label": "STRONG" | "WATCH" | "SKIP",
+    "reason": "判定理由を1文で（日本語）"
+  }}
+]
+
+必ず全{len(batch)}件に対して回答してください。"""
+
+    try:
+        response = client.messages.create(
+            model=HAIKU_MODEL,
+            max_tokens=len(batch) * 80 + 200,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        content = response.content[0].text.strip()
+        parsed = _extract_json_list(content)
+        if not isinstance(parsed, list):
+            logger.warning(f"TDnet Haiku: JSONリスト取得失敗 → キーワード候補をWATCHとして返却")
+            return [{**d, "label": "WATCH", "reason": "Haiku解析失敗"} for d in batch]
+
+        code_to_disc = {d["code"]: d for d in batch}
+        results = []
+        for item in parsed:
+            code = str(item.get("code", ""))
+            disc = code_to_disc.get(code)
+            if disc is None:
+                continue
+            results.append({
+                **disc,
+                "label": item.get("label", "WATCH"),
+                "reason": item.get("reason", ""),
+            })
+        # Haikuが返さなかった銘柄はWATCHとして補完
+        returned_codes = {str(item.get("code", "")) for item in parsed}
+        for d in batch:
+            if d["code"] not in returned_codes:
+                results.append({**d, "label": "WATCH", "reason": "Haiku未返却"})
+        return results
+
+    except Exception as e:
+        logger.warning(f"TDnet Haikuバッチエラー: {e}")
+        return [{**d, "label": "WATCH", "reason": "Haiku APIエラー"} for d in batch]
+
+
+def _extract_json_list(text: str) -> list:
+    """テキストからJSONリストを抽出する。"""
+    text = re.sub(r"```(?:json)?", "", text).strip()
+    m = re.search(r"\[.*\]", text, re.DOTALL)
+    if m:
+        try:
+            return json.loads(m.group(0))
+        except json.JSONDecodeError:
+            pass
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return []

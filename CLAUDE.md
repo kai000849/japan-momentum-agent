@@ -205,20 +205,23 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/10: momentum_log.jsonのキャッシュ配線を修正 → evening-scanのキャッシュ復元ステップにmomentum_logが欠落していた。`daily_report.yml`に追加。合わせて`memory/momentum_log.json`を`[]`で初期化してgitにコミット。
 - 2026/04/10: 週次レポートの実売買ポジション表示バグ修正 → `slack_notifier.py`の`_generate_weekly_observations`が`[]`ハードコードだったため「現在保有なし」常時表示。`get_actual_positions()`を呼ぶように修正。
 - 2026/04/10: J-Quants決算速報（/fins/summary）をHaikuで分析する仕組みを追加 → `jquants_earnings_analyzer.py`新規作成。夕方18:30スキャンに統合（EDINETは数日遅延のため同日検知に不向きと判明）。定量フィルタ（OP YoY +20%以上 or 通期進捗70%以上）→ Haiku判定 → Slack通知「📊 決算速報 正サプライズ」の流れ。EDINETベースの翌朝照合+Sonnet qualifyパイプラインは維持。夕方cronを18:00→18:30に変更（速報配信30分待ち）。
+- 2026/04/11: TDnet適時開示タイトルスキャンをHaikuで分類する仕組みを追加 → `tdnet_fetcher.py`に`analyze_disclosures_with_haiku()`追加。全開示をキーワードフィルタ後Haikuで STRONG/WATCH/SKIP に分類し18:30通知。J-Quantsサプライズと同一銘柄が一致した場合は🚨ダブルシグナルとして別途通知（`notify_double_signals()`）。TDnetのSTRONGのみダブルシグナル対象（WATCHはノイズ除去）。18:30の通知順序: ①J-Quants速報 → ②TDnet開示 → ③ダブルシグナル。翌日モメンタム候補の事前スクリーニングが目的。
 
 ---
 
-## 現在の状況（2026/04/10時点）
+## 現在の状況（2026/04/11時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
 - **3つの学習ループがすべて記録→フィードバックまで接続済み**
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
   - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
   - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
 - **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知。EDINETは翌朝照合用として継続。
+- **TDnet適時開示スキャン（2026/04/11〜）**: 全開示タイトルをHaikuで分類 → 18:30通知。J-Quantsとのダブルシグナル検出で翌日モメンタム候補を事前スクリーニング。
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
 - 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。両軸一致セクションは廃止。
 - Claudeモデル: Sonnet系は`claude-sonnet-4-6`、Haiku系は`claude-haiku-4-5-20251001`を使用
 - 次のマイルストーン①: 各ログ5件蓄積 → パターン分析自動発動確認（5月決算シーズンが本番）
 - 次のマイルストーン②: J-Quants速報シグナルと翌朝急騰の照合精度を確認（2〜3週後）
-- 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
+- 次のマイルストーン③: TDnetダブルシグナルと翌日モメンタムの照合精度を確認（2〜3週後）
+- 次のマイルストーン④: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証

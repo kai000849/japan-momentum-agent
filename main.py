@@ -5,7 +5,7 @@ import argparse
 import io
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -22,6 +22,25 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 logger = logging.getLogger(__name__)
+
+# ========================================
+# JST時刻ユーティリティ
+# ========================================
+
+_JST = timezone(timedelta(hours=9))
+
+
+def _jst_now() -> datetime:
+    """現在のJST時刻を返す（GitHub Actions はUTCのため変換が必要）。"""
+    return datetime.now(timezone.utc).astimezone(_JST)
+
+
+def _get_prev_business_day(date_str: str) -> str:
+    """前営業日（土日を除く）を返す。"""
+    dt = datetime.strptime(date_str, "%Y-%m-%d") - timedelta(days=1)
+    while dt.weekday() >= 5:  # 土=5, 日=6
+        dt -= timedelta(days=1)
+    return dt.strftime("%Y-%m-%d")
 
 # ========================================
 # バナー表示
@@ -501,26 +520,183 @@ def run_scan_mode(args):
     except Exception as e:
         logger.warning(f"実売買ポジション通知エラー（スキップ）: {e}")
 
-    # ---- J-Quants決算速報分析（18:00配信・夕方スキャン統合） ----
-    # J-Quantsが18:00頃に配信する当日の決算速報（/fins/summary）をHaikuで分析。
-    # EDINETより大幅に早く、構造化データとして取得可能。
-    # 18:30スキャンの場合は速報が出揃っている想定。
-    if datetime.now().hour >= 17:
+    # ---- J-Quants決算速報/確報 ＋ TDnet適時開示スキャン ----
+    # 【夕方 JST 17:00〜】速報（18:00配信）を取得。シグナルコードを保存して翌朝の差分用に使う。
+    # 【朝  JST 05:00〜10:00】前営業日の確報（24:30頃更新）を再取得し速報との差分を通知。
+    #                          TDnetは18:30以降に提出された引け後開示も合わせて通知。
+    import json as _json_ev
+    _jst = _jst_now()
+    _jst_hour = _jst.hour
+    _jst_today = _jst.strftime("%Y-%m-%d")
+    _scans_dir_ev = Path(__file__).parent / "data" / "processed" / "scans"
+    _scans_dir_ev.mkdir(parents=True, exist_ok=True)
+
+    if _jst_hour >= 17:
+        # ================================================================
+        # 夕方ブロック: J-Quants 速報 + TDnet + ダブルシグナル
+        # ================================================================
+        _jq_signals = []
+        _tdnet_signals = []
+
+        # J-Quants 速報分析
         try:
             from agents.jquants_fetcher import get_todays_earnings
             from agents.jquants_earnings_analyzer import analyze_todays_earnings
             from agents.slack_notifier import notify_jquants_earnings_summary
 
-            today_str = datetime.now().strftime("%Y-%m-%d")
             logger.info("J-Quants決算速報分析を開始...")
-            df_earnings = get_todays_earnings(today_str)
+            df_earnings = get_todays_earnings(_jst_today)
             if df_earnings is not None and not df_earnings.empty:
-                jq_signals = analyze_todays_earnings(df_earnings, target_date=today_str)
-                notify_jquants_earnings_summary(jq_signals)
+                _jq_signals = analyze_todays_earnings(df_earnings, target_date=_jst_today)
+                notify_jquants_earnings_summary(_jq_signals)
             else:
                 logger.info("J-Quants決算速報: 本日の開示データなし（閑散期または取得失敗）")
         except Exception as e:
             logger.warning(f"J-Quants決算速報エラー（スキップ）: {e}")
+
+        # 速報シグナルコードを保存（翌朝の確報diff用）
+        try:
+            _sokuhoh_path = _scans_dir_ev / f"jquants_evening_{_jst_today.replace('-', '')}.json"
+            _sokuhoh_codes = [s["stockCode"] for s in _jq_signals]
+            _sokuhoh_path.write_text(
+                _json_ev.dumps(_sokuhoh_codes, ensure_ascii=False),
+                encoding="utf-8"
+            )
+            logger.info(f"速報シグナルコード保存: {len(_sokuhoh_codes)}件 → {_sokuhoh_path.name}")
+        except Exception as e:
+            logger.warning(f"速報コード保存エラー（スキップ）: {e}")
+
+        # TDnet 適時開示スキャン
+        try:
+            from agents.tdnet_fetcher import fetch_disclosures, analyze_disclosures_with_haiku
+            from agents.slack_notifier import notify_tdnet_signals
+
+            logger.info("TDnet適時開示スキャンを開始...")
+            disclosures = fetch_disclosures(_jst_today)
+            if disclosures:
+                _tdnet_signals = analyze_disclosures_with_haiku(disclosures, _jst_today)
+                notify_tdnet_signals(_tdnet_signals)
+            else:
+                logger.info("TDnet適時開示: 本日の開示なし（休場日または取得失敗）")
+        except Exception as e:
+            logger.warning(f"TDnet適時開示スキャンエラー（スキップ）: {e}")
+
+        # ダブルシグナル検出（J-Quants速報 × TDnet STRONG）
+        if _jq_signals and _tdnet_signals:
+            try:
+                from agents.slack_notifier import notify_double_signals
+                jq_codes = {s["stockCode"]: s for s in _jq_signals}
+                tdnet_strong = {s["code"]: s for s in _tdnet_signals if s.get("label") == "STRONG"}
+                doubles = [
+                    {"jq": jq_codes[code], "tdnet": tdnet_strong[code]}
+                    for code in jq_codes
+                    if code in tdnet_strong
+                ]
+                if doubles:
+                    notify_double_signals(doubles)
+                    logger.info(f"ダブルシグナル: {len(doubles)}銘柄検出")
+                else:
+                    logger.info("ダブルシグナル: 該当なし")
+            except Exception as e:
+                logger.warning(f"ダブルシグナル検出エラー（スキップ）: {e}")
+
+    elif 5 <= _jst_hour <= 10:
+        # ================================================================
+        # 朝ブロック: J-Quants 確報（前営業日）差分 + TDnet 引け後開示
+        # ================================================================
+        _prev_day = _get_prev_business_day(_jst_today)
+        logger.info(f"確報フォロー開始: 対象日={_prev_day}（前営業日）")
+
+        # 前日の速報シグナルコードをロード（差分用）
+        _prev_sokuhoh_path = _scans_dir_ev / f"jquants_evening_{_prev_day.replace('-', '')}.json"
+        _sokuhoh_codes_set: set = set()
+        if _prev_sokuhoh_path.exists():
+            try:
+                _sokuhoh_codes_set = set(_json_ev.loads(_prev_sokuhoh_path.read_text(encoding="utf-8")))
+                logger.info(f"前日速報コード読み込み: {len(_sokuhoh_codes_set)}件")
+            except Exception as e:
+                logger.warning(f"速報コード読み込みエラー（差分なしで続行）: {e}")
+        else:
+            logger.info("前日速報コードなし（初回 or キャッシュ欠落）→ 全件を確報として通知")
+
+        # J-Quants 確報（前営業日のデータを再取得 → 24:30頃に更新済み）
+        _kakuho_new_signals = []
+        try:
+            from agents.jquants_fetcher import get_todays_earnings
+            from agents.jquants_earnings_analyzer import analyze_todays_earnings
+
+            logger.info("J-Quants確報分析を開始...")
+            df_kakuho = get_todays_earnings(_prev_day)
+            if df_kakuho is not None and not df_kakuho.empty:
+                _kakuho_all = analyze_todays_earnings(df_kakuho, target_date=_prev_day)
+                # 差分: 速報に含まれていなかったコードのみ
+                _kakuho_new_signals = [
+                    s for s in _kakuho_all
+                    if s["stockCode"] not in _sokuhoh_codes_set
+                ]
+                logger.info(
+                    f"J-Quants確報: 全{len(_kakuho_all)}件 → "
+                    f"速報からの新規 {len(_kakuho_new_signals)}件"
+                )
+            else:
+                logger.info(f"J-Quants確報: {_prev_day} のデータなし")
+        except Exception as e:
+            logger.warning(f"J-Quants確報エラー（スキップ）: {e}")
+
+        # TDnet 引け後開示（前営業日の18:30以降に提出された開示）
+        _late_tdnet_signals = []
+        try:
+            from agents.tdnet_fetcher import fetch_disclosures, analyze_disclosures_with_haiku
+
+            logger.info("TDnet引け後開示スキャンを開始...")
+            # use_cache=False で再取得し、引け後提出分を含む完全なリストを得る
+            all_prev_disclosures = fetch_disclosures(_prev_day, use_cache=False)
+            # 18:30以降の開示のみに絞る（タイムスタンプ文字列の辞書順比較）
+            late_disclosures = [
+                d for d in all_prev_disclosures
+                if d.get("time", "00:00") > "18:30"
+            ]
+            logger.info(
+                f"TDnet引け後開示: 全{len(all_prev_disclosures)}件 → "
+                f"18:30以降 {len(late_disclosures)}件"
+            )
+            if late_disclosures:
+                _late_tdnet_signals = analyze_disclosures_with_haiku(late_disclosures, _prev_day)
+        except Exception as e:
+            logger.warning(f"TDnet引け後開示スキャンエラー（スキップ）: {e}")
+
+        # 確報 × TDnet引け後のダブルシグナル
+        _kakuho_doubles = []
+        if _kakuho_new_signals and _late_tdnet_signals:
+            try:
+                jq_map = {s["stockCode"]: s for s in _kakuho_new_signals}
+                tdnet_strong_map = {
+                    s["code"]: s for s in _late_tdnet_signals
+                    if s.get("label") == "STRONG"
+                }
+                _kakuho_doubles = [
+                    {"jq": jq_map[code], "tdnet": tdnet_strong_map[code]}
+                    for code in jq_map
+                    if code in tdnet_strong_map
+                ]
+                logger.info(f"確報ダブルシグナル: {len(_kakuho_doubles)}銘柄")
+            except Exception as e:
+                logger.warning(f"確報ダブルシグナル検出エラー（スキップ）: {e}")
+
+        # まとめてSlack通知（新規シグナルがなければスキップ）
+        if _kakuho_new_signals or _late_tdnet_signals:
+            try:
+                from agents.slack_notifier import notify_kakuho_update
+                notify_kakuho_update(
+                    new_jq_signals=_kakuho_new_signals,
+                    new_tdnet_signals=_late_tdnet_signals,
+                    doubles=_kakuho_doubles,
+                    prev_day_str=_prev_day,
+                )
+            except Exception as e:
+                logger.warning(f"確報アップデート通知エラー（スキップ）: {e}")
+        else:
+            logger.info("確報フォロー: 新規シグナルなし → 通知スキップ")
 
     return all_results
 

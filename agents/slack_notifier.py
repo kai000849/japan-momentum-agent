@@ -1181,6 +1181,204 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
     return send_slack_message("\n".join(lines))
 
 
+def notify_tdnet_signals(signals: list) -> bool:
+    """
+    TDnet適時開示のHaiku分類結果をSlackに通知する。
+
+    Args:
+        signals: tdnet_fetcher.analyze_disclosures_with_haiku() が返すリスト
+                 各dict: code, company, title, time, label, reason
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    strong = [s for s in signals if s.get("label") == "STRONG"]
+    watch = [s for s in signals if s.get("label") == "WATCH"]
+
+    if not strong and not watch:
+        logger.info("TDnet適時開示: モメンタム候補なし → 通知スキップ")
+        return True
+
+    lines = [
+        f"📋 *TDnet適時開示スキャン* （{datetime.now().strftime('%m/%d %H:%M')}）",
+        f"  ◎強気候補 {len(strong)}件 / ○要確認 {len(watch)}件",
+        "",
+    ]
+
+    if strong:
+        lines.append("*◎ モメンタム候補*")
+        for s in strong:
+            lines.append(f"  🔥 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
+            lines.append(f"  　{s.get('title', '')}")
+            if s.get("reason"):
+                lines.append(f"  　💬 {s['reason']}")
+        lines.append("")
+
+    if watch:
+        lines.append("*○ 要確認*")
+        for s in watch:
+            lines.append(f"  📌 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
+            lines.append(f"  　{s.get('title', '')}")
+            if s.get("reason"):
+                lines.append(f"  　💬 {s['reason']}")
+        lines.append("")
+
+    lines.append("_※ 翌朝モメンタムスキャンと照合して候補を絞り込んでください_")
+
+    return send_slack_message("\n".join(lines))
+
+
+def notify_double_signals(doubles: list) -> bool:
+    """
+    J-Quants数値サプライズ ＋ TDnet STRONG開示のダブルシグナルをSlackに通知する。
+
+    Args:
+        doubles: [{"jq": jq_signal_dict, "tdnet": tdnet_signal_dict}, ...] のリスト
+                 jq: jquants_earnings_analyzer が返すシグナル
+                 tdnet: tdnet_fetcher.analyze_disclosures_with_haiku が返すシグナル
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    if not doubles:
+        return True
+
+    # J-Quantsスコア降順でソート
+    doubles_sorted = sorted(doubles, key=lambda x: x["jq"].get("score", 0), reverse=True)
+
+    lines = [
+        f"🚨 *ダブルシグナル検出* （{datetime.now().strftime('%m/%d %H:%M')}）",
+        f"  数値サプライズ＋業績開示が同一銘柄で一致: {len(doubles)}銘柄",
+        "",
+    ]
+
+    doctype_label = {"120": "通期", "130": "四半期", "140": "業績修正"}
+
+    for d in doubles_sorted:
+        jq = d["jq"]
+        td = d["tdnet"]
+
+        code = jq.get("stockCode", "?")
+        score = jq.get("score", "-")
+        op_yoy = jq.get("op_yoy")
+        progress = jq.get("progress_rate")
+        doc = doctype_label.get(jq.get("docType", ""), jq.get("docType", ""))
+        jq_reason = jq.get("reason", "")
+
+        metrics = []
+        if op_yoy is not None:
+            metrics.append(f"営業利益{op_yoy:+.1f}%")
+        if progress is not None:
+            metrics.append(f"進捗{progress:.0f}%")
+        metrics_str = " / ".join(metrics) if metrics else ""
+
+        lines.append(f"🔥🔥 *{code}*  J-Quantsスコア {score}/5")
+        lines.append(f"  📊 数値（{doc}）: {metrics_str}")
+        if jq_reason:
+            lines.append(f"  　💬 {jq_reason}")
+        lines.append(f"  📋 TDnet: {td.get('title', '')}  ({td.get('time', '')})")
+        if td.get("reason"):
+            lines.append(f"  　💬 {td['reason']}")
+        lines.append("")
+
+    lines.append("_※ 数値＋開示の両面一致。翌朝モメンタムスキャンの最優先確認銘柄_")
+
+    return send_slack_message("\n".join(lines))
+
+
+def notify_kakuho_update(
+    new_jq_signals: list,
+    new_tdnet_signals: list,
+    doubles: list,
+    prev_day_str: str,
+) -> bool:
+    """
+    確報アップデート通知（06:30 JST）。
+
+    前営業日の速報から差分のあったJ-Quants確報シグナル、
+    TDnet引け後開示（18:30以降）、ダブルシグナルをまとめてSlack通知する。
+
+    Args:
+        new_jq_signals: 速報になかった新規確報シグナル（jquants_earnings_analyzerの出力）
+        new_tdnet_signals: 18:30以降の引け後TDnet開示（Haiku分類済み）
+        doubles: 確報×TDnet引け後ダブルシグナル
+        prev_day_str: 対象日 "YYYY-MM-DD"
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    if not new_jq_signals and not new_tdnet_signals:
+        logger.info("確報アップデート: 新規シグナルなし → 通知スキップ")
+        return True
+
+    lines = [
+        f"📊 *確報アップデート* （{prev_day_str} 引け後）",
+        "",
+    ]
+
+    # ---- J-Quants 確報（速報から新規追加分）----
+    if new_jq_signals:
+        lines.append(f"*🆕 J-Quants確報 新規 {len(new_jq_signals)}件*（速報に未掲載）")
+        doctype_label = {"120": "通期", "130": "四半期", "140": "業績修正"}
+        for s in sorted(new_jq_signals, key=lambda x: x.get("score", 0), reverse=True):
+            code = s.get("stockCode", "?")
+            score = s.get("score", "-")
+            doc = doctype_label.get(s.get("docType", ""), s.get("docType", ""))
+            op_yoy = s.get("op_yoy")
+            progress = s.get("progress_rate")
+            metrics = []
+            if op_yoy is not None:
+                metrics.append(f"営業利益{op_yoy:+.1f}%")
+            if progress is not None:
+                metrics.append(f"進捗{progress:.0f}%")
+            metrics_str = " / ".join(metrics) if metrics else ""
+            lines.append(f"  • *{code}* [{doc}] スコア{score}  {metrics_str}")
+            if s.get("reason"):
+                lines.append(f"  　💬 {s['reason']}")
+        lines.append("")
+
+    # ---- TDnet 引け後開示（18:30以降）----
+    strong = [s for s in new_tdnet_signals if s.get("label") == "STRONG"]
+    watch = [s for s in new_tdnet_signals if s.get("label") == "WATCH"]
+    if new_tdnet_signals:
+        lines.append(
+            f"*📋 TDnet引け後開示  ◎{len(strong)}件 / ○{len(watch)}件*（18:30以降提出）"
+        )
+        for s in strong:
+            lines.append(
+                f"  🔥 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}"
+            )
+            lines.append(f"  　{s.get('title', '')}")
+            if s.get("reason"):
+                lines.append(f"  　💬 {s['reason']}")
+        for s in watch:
+            lines.append(
+                f"  📌 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}"
+            )
+            lines.append(f"  　{s.get('title', '')}")
+            if s.get("reason"):
+                lines.append(f"  　💬 {s['reason']}")
+        lines.append("")
+
+    # ---- 確報 × TDnet引け後 ダブルシグナル ----
+    if doubles:
+        lines.append(f"*🚨 確報ダブルシグナル {len(doubles)}銘柄*")
+        for d in sorted(doubles, key=lambda x: x["jq"].get("score", 0), reverse=True):
+            jq = d["jq"]
+            td = d["tdnet"]
+            lines.append(
+                f"  🔥🔥 *{jq.get('stockCode', '?')}*  J-Quantsスコア {jq.get('score', '-')}/5"
+            )
+            lines.append(f"  　📋 {td.get('title', '')}  ({td.get('time', '')})")
+            if td.get("reason"):
+                lines.append(f"  　💬 {td['reason']}")
+        lines.append("")
+
+    lines.append("_※ 朝スキャン前の最終確認。モメンタム候補の優先度を上げてください_")
+
+    return send_slack_message("\n".join(lines))
+
+
 # ========================================
 # テスト送信
 # ========================================

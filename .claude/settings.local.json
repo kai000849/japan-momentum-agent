@@ -1,15 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)",
-      "Bash(pip install:*)",
-      "Bash(python3 -m pip install:*)",
-      "WebFetch(domain:jpx-jquants.com)",
+      "Bash(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
       "WebSearch",
-      "Bash(source:*)",
-      "Bash(pip show:*)",
-      "Bash(venv/Scripts/python.exe -m pip show:*)",
-      "Bash(venv/Scripts/python.exe:*)"
+      "WebFetch(*)",
+      "mcp__claude_ai_Slack__*",
+      "mcp__claude_ai_Gmail__*",
+      "mcp__claude_ai_Google_Calendar__*"
     ]
   }
 }
