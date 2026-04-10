@@ -1124,6 +1124,63 @@ def notify_edinet_daily_summary(stats: dict, force_send: bool = False) -> bool:
     return send_slack_message("\n".join(lines))
 
 
+def notify_jquants_earnings_summary(signals: list) -> bool:
+    """
+    J-Quants決算速報の正サプライズシグナルをSlackに通知する。
+
+    Args:
+        signals (list): jquants_earnings_analyzer.analyze_todays_earnings() が返すシグナルリスト
+
+    Returns:
+        bool: 送信成功はTrue
+    """
+    if not signals:
+        logger.info("J-Quants決算速報: 正サプライズなし → 通知スキップ")
+        return True
+
+    # スコア降順でソート
+    signals_sorted = sorted(signals, key=lambda x: x.get("score", 0), reverse=True)
+
+    lines = [
+        f"📊 *決算速報 正サプライズ* （{datetime.now().strftime('%m/%d %H:%M')}）",
+        f"  J-Quants /fins/summary より {len(signals)}銘柄を検出",
+        "",
+    ]
+
+    # DocTypeの日本語ラベル
+    doctype_label = {"120": "通期", "130": "四半期", "140": "業績修正"}
+    # シグナルの絵文字
+    signal_emoji = {"STRONG_POSITIVE": "🔥", "POSITIVE": "📈", "NEUTRAL": "➡️", "NEGATIVE": "📉"}
+
+    for s in signals_sorted:
+        code = s.get("stockCode", "?")
+        score = s.get("score", "-")
+        sig = s.get("signal", "POSITIVE")
+        reason = s.get("reason", "")
+        op_yoy = s.get("op_yoy")
+        progress = s.get("progress_rate")
+        doc = doctype_label.get(s.get("docType", ""), s.get("docType", ""))
+        emoji = signal_emoji.get(sig, "📈")
+
+        metrics = []
+        if op_yoy is not None:
+            metrics.append(f"営業利益{op_yoy:+.1f}%")
+        if progress is not None:
+            metrics.append(f"進捗{progress:.0f}%")
+        metrics_str = " / ".join(metrics) if metrics else ""
+
+        lines.append(f"{emoji} *{code}* （{doc}） スコア{score}/5")
+        if metrics_str:
+            lines.append(f"  {metrics_str}")
+        if reason:
+            lines.append(f"  💬 {reason}")
+        lines.append("")
+
+    lines.append("_※ 翌朝の急騰シグナルと照合してqualifyパイプラインに接続予定_")
+
+    return send_slack_message("\n".join(lines))
+
+
 # ========================================
 # テスト送信
 # ========================================

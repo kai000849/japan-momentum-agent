@@ -563,4 +563,37 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"\nエラーが発生しました: {e}")
+
+
+# ========================================
+# 決算速報データ取得（/fins/summary）
+# ========================================
+
+def get_todays_earnings(date_str: str) -> pd.DataFrame:
+    """
+    J-Quants /fins/summary から指定日の決算速報データを取得する。
+
+    J-Quantsは当日18:00頃に速報（1Q/2Q/3Q/通期）を配信する。
+    EDINETより大幅に早く、構造化データとして取得できる。
+
+    Args:
+        date_str (str): "YYYY-MM-DD" 形式の日付
+
+    Returns:
+        pd.DataFrame: 決算速報データ。空の場合は空DataFrame。
+                      主要列: Code, DiscDate, DiscTime, DocType, CurPerType,
+                              Sales, OP, NP, NCSales, NCOP, NCNP, FSales, FOP
+    """
+    try:
+        client = _get_client()
+        date_compact = date_str.replace("-", "")
+        df = client.get_fin_summary(date_yyyymmdd=date_compact)
+        if df is None or df.empty:
+            logger.info(f"決算速報: {date_str} のデータなし（決算発表なし）")
+            return pd.DataFrame()
+        logger.info(f"決算速報取得完了: {date_str} → {len(df)}件")
+        return df
+    except Exception as e:
+        logger.warning(f"決算速報取得エラー ({date_str}): {e}")
+        return pd.DataFrame()
         print("\nconfig.yaml の jquants.api_key を確認してください。")

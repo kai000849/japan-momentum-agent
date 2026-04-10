@@ -501,6 +501,27 @@ def run_scan_mode(args):
     except Exception as e:
         logger.warning(f"実売買ポジション通知エラー（スキップ）: {e}")
 
+    # ---- J-Quants決算速報分析（18:00配信・夕方スキャン統合） ----
+    # J-Quantsが18:00頃に配信する当日の決算速報（/fins/summary）をHaikuで分析。
+    # EDINETより大幅に早く、構造化データとして取得可能。
+    # 18:30スキャンの場合は速報が出揃っている想定。
+    if datetime.now().hour >= 17:
+        try:
+            from agents.jquants_fetcher import get_todays_earnings
+            from agents.jquants_earnings_analyzer import analyze_todays_earnings
+            from agents.slack_notifier import notify_jquants_earnings_summary
+
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            logger.info("J-Quants決算速報分析を開始...")
+            df_earnings = get_todays_earnings(today_str)
+            if df_earnings is not None and not df_earnings.empty:
+                jq_signals = analyze_todays_earnings(df_earnings, target_date=today_str)
+                notify_jquants_earnings_summary(jq_signals)
+            else:
+                logger.info("J-Quants決算速報: 本日の開示データなし（閑散期または取得失敗）")
+        except Exception as e:
+            logger.warning(f"J-Quants決算速報エラー（スキップ）: {e}")
+
     return all_results
 
 

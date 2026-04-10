@@ -18,12 +18,12 @@ on:
     # 前場の値動きをyfinanceで確認（15分遅延・無料）→ 後場12:30エントリー可否をSlack通知
     - cron: '15 3 * * 1-5'    # 月〜金（日本時間の平日正午12:15）
 
-    # 【夕方】メイン通知 18:00 JST (UTC 09:00)
-    # 夕方のシグナル確認＆保有状況通知（米市場スキャンなし・朝の結果を参照）
-    - cron: '0 9 * * 1-5'     # 月〜金（日本時間の平日夕方18:00）
+    # 【夕方】メイン通知 18:30 JST (UTC 09:30)
+    # J-Quants決算速報（18:00配信）を取り込んで18:30に統合通知
+    - cron: '30 9 * * 1-5'    # 月〜金（日本時間の平日夕方18:30）
 
-    # 【週次】金曜パフォーマンスレポート 18:00 JST (UTC 09:00)
-    - cron: '0 9 * * 5'   # 毎週金曜（日本時間18:00・夕方スキャンと同時刻）
+    # 【週次】金曜パフォーマンスレポート 18:30 JST (UTC 09:30)
+    - cron: '30 9 * * 5'  # 毎週金曜（日本時間18:30・夕方スキャンと同時刻）
 
   workflow_dispatch:           # 手動実行も可能
 
@@ -291,7 +291,7 @@ jobs:
   # ===========================
   evening-scan:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 9 * * 1-5' || github.event_name == 'workflow_dispatch'
+    if: github.event.schedule == '30 9 * * 1-5' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     steps:
@@ -343,6 +343,14 @@ jobs:
           key: qualify-log-${{ github.run_number }}
           restore-keys: |
             qualify-log-
+
+      - name: momentum_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/momentum_log.json
+          key: momentum-log-${{ github.run_number }}
+          restore-keys: |
+            momentum-log-
 
       - name: スキャン結果キャッシュを復元
         uses: actions/cache@v4
@@ -669,7 +677,7 @@ jobs:
   # ===========================
   weekly-report:
     runs-on: ubuntu-latest
-    if: (github.event.schedule == '0 9 * * 5') || github.event_name == 'workflow_dispatch'
+    if: (github.event.schedule == '30 9 * * 5') || github.event_name == 'workflow_dispatch'
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
