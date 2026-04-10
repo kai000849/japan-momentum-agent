@@ -226,6 +226,12 @@ jobs:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
 
+      - name: momentum_log.json を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/momentum_log.json
+          key: momentum-log-${{ github.run_number }}
+
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         run: |
           git config user.name "github-actions[bot]"
@@ -421,6 +427,12 @@ jobs:
         with:
           path: memory/qualify_log.json
           key: qualify-log-${{ github.run_number }}
+
+      - name: momentum_log.json を保存
+        uses: actions/cache@v4
+        with:
+          path: memory/momentum_log.json
+          key: momentum-log-${{ github.run_number }}
 
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         run: |
@@ -703,6 +715,14 @@ jobs:
           key: qualify-log-${{ github.run_number }}
           restore-keys: |
             qualify-log-
+
+      - name: momentum_log.json を復元
+        uses: actions/cache@v4
+        with:
+          path: memory/momentum_log.json
+          key: momentum-log-${{ github.run_number }}
+          restore-keys: |
+            momentum-log-
 
       - name: 週次レポート送信
         id: weekly

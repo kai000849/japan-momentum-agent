@@ -1396,11 +1396,16 @@ def _generate_weekly_observations(
     elif strong_this_week >= 5:
         obs.append(f"📈 今週は継続判定{strong_this_week}件 → 積極的な相場環境")
 
-    # 保有ポジション数
-    if len(open_positions) >= 7:
-        obs.append(f"⚠️ 保有ポジション{len(open_positions)}件 → 新規追加は慎重に（余力限界近い）")
-    elif len(open_positions) == 0:
-        obs.append("📭 現在保有なし → エントリーチャンスを積極的に狙える状態")
+    # 実売買ポジション数（ペーパートレード廃止のため実売買のみ参照）
+    try:
+        from agents.paper_trader import get_actual_positions
+        actual = get_actual_positions()
+        if len(actual) >= 7:
+            obs.append(f"⚠️ 実売買ポジション{len(actual)}件 → 新規追加は慎重に（余力限界近い）")
+        elif len(actual) == 0:
+            obs.append("📭 現在実売買ポジションなし → エントリーチャンスを積極的に狙える状態")
+    except Exception:
+        pass
 
     # 戦略有効性アラート（4週推移ベース）
     if weekly_trend and len(weekly_trend) >= 2:
