@@ -206,6 +206,7 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/10: 週次レポートの実売買ポジション表示バグ修正 → `slack_notifier.py`の`_generate_weekly_observations`が`[]`ハードコードだったため「現在保有なし」常時表示。`get_actual_positions()`を呼ぶように修正。
 - 2026/04/10: J-Quants決算速報（/fins/summary）をHaikuで分析する仕組みを追加 → `jquants_earnings_analyzer.py`新規作成。夕方18:30スキャンに統合（EDINETは数日遅延のため同日検知に不向きと判明）。定量フィルタ（OP YoY +20%以上 or 通期進捗70%以上）→ Haiku判定 → Slack通知「📊 決算速報 正サプライズ」の流れ。EDINETベースの翌朝照合+Sonnet qualifyパイプラインは維持。夕方cronを18:00→18:30に変更（速報配信30分待ち）。
 - 2026/04/11: TDnet適時開示タイトルスキャンをHaikuで分類する仕組みを追加 → `tdnet_fetcher.py`に`analyze_disclosures_with_haiku()`追加。全開示をキーワードフィルタ後Haikuで STRONG/WATCH/SKIP に分類し18:30通知。J-Quantsサプライズと同一銘柄が一致した場合は🚨ダブルシグナルとして別途通知（`notify_double_signals()`）。TDnetのSTRONGのみダブルシグナル対象（WATCHはノイズ除去）。18:30の通知順序: ①J-Quants速報 → ②TDnet開示 → ③ダブルシグナル。翌日モメンタム候補の事前スクリーニングが目的。
+- 2026/04/11: JST時刻バグ修正 + 確報フォロー（06:30）実装 → `main.py`の`datetime.now().hour >= 17`がUTC評価のため夕方/朝が逆転していた（夕方スキャンで動かず・朝スキャンで誤動作）。`_jst_now()`ヘルパーでUTC→JST変換に修正。夕方ブロック（JST 17:00〜）: 速報シグナルコードを`jquants_evening_{date}.json`に保存。朝ブロック（JST 05:00〜10:00）: 前営業日の確報（24:30更新）を再取得し速報との差分を通知。TDnetは`use_cache=False`で再取得し18:30以降の引け後開示のみHaiku分析。確報×引け後TDnetのダブルシグナルも検出。`notify_kakuho_update()`で1通にまとめてSlack通知。
 
 ---
 
@@ -217,6 +218,7 @@ git add . && git commit -m "メモ" && git push
   - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
 - **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知。EDINETは翌朝照合用として継続。
 - **TDnet適時開示スキャン（2026/04/11〜）**: 全開示タイトルをHaikuで分類 → 18:30通知。J-Quantsとのダブルシグナル検出で翌日モメンタム候補を事前スクリーニング。
+- **確報フォロー（2026/04/11〜）**: 06:30に前営業日の確報差分＋TDnet引け後開示（18:30以降）をHaiku分析してSlack通知。速報との差分のみ表示。
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
 - 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。両軸一致セクションは廃止。
