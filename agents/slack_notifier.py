@@ -1045,13 +1045,11 @@ def notify_cross_signals(cross_signals: list) -> bool:
 
     if triple:
         lines.append(f"> 🔀 トリプル確認（3シグナル全一致）  {len(triple)}銘柄")
-        for c in triple:
-            lines.append(_fmt(c))
+        lines.append("\n\n".join(_fmt(c) for c in triple))
 
     if double:
         lines.append(f"\n> 🔀 ダブル確認（2シグナル一致）  {len(double)}銘柄")
-        for c in double:
-            lines.append(_fmt(c))
+        lines.append("\n\n".join(_fmt(c) for c in double))
 
     return send_slack_message("\n".join(lines))
 
