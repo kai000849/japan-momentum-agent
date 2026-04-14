@@ -212,6 +212,8 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/14: Slack通知のビジュアル改善（情報量は変えず） → ①qualify判定フォーマット全面改修（`> `blockquote見出し・★★★確信度バッジ・出来高/株価継続確認を1行表示）②急騰/MOシグナルの証券コードをバッククォートで分離③正午スキャン通知を6行/銘柄→3行/銘柄に圧縮（価格を1行目末尾、reasonsを`|`区切り1行）④全通知のセクション見出しを`> `blockquote+件数付きに統一
 - 2026/04/14: 米市場セクター強弱のデザイン改善 → セクター名を太字化・ティッカーを括弧外に分離・WORSTを番号付きに統一（`slack_notifier.py`）。銘柄間に空行を追加（TOP/WORST両軸）。急騰/MOシグナル一覧は件数が多いため空行なし維持。
 - 2026/04/14: クロスシグナル・qualify判定（継続）の銘柄間に空行を追加 → `slack_notifier.py` / `momentum_qualifier.py`。ルール: 1銘柄3行以上かつ件数10件以下のブロックに空行を入れる。後場エントリー判断は元から空行あり。
+- 2026/04/14: 決算速報通知に銘柄名を追加 → `main.py`でJ-Quantsシグナル取得後に`get_listed_stocks()`で名前マップを作り事後エンリッチ（4桁/5桁コードゆれ対応）。`notify_jquants_earnings_summary`で銘柄コードの隣に社名を表示。
+- 2026/04/14: J-Quants×TDnetダブルヒットを各通知に🚨バッジで明示 → ダブルコード計算を通知前に移動し両通知関数に渡す構造に変更（`main.py`）。`notify_jquants_earnings_summary`/`notify_tdnet_signals`に`double_codes`引数追加。ダブル銘柄を先頭ソート・ヘッダーに件数・各行に🚨バッジを表示。
 
 ---
 
@@ -221,8 +223,8 @@ git add . && git commit -m "メモ" && git push
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
   - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
   - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
-- **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知。EDINETは翌朝照合用として継続。
-- **TDnet適時開示スキャン（2026/04/11〜）**: 全開示タイトルをHaikuで分類 → 18:30通知。J-Quantsとのダブルシグナル検出で翌日モメンタム候補を事前スクリーニング。
+- **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知（社名付き）。EDINETは翌朝照合用として継続。
+- **TDnet適時開示スキャン（2026/04/11〜）**: 全開示タイトルをHaikuで分類 → 18:30通知。J-Quantsとのダブルシグナルは各通知に🚨バッジで明示＋`notify_double_signals`で詳細通知。
 - **確報フォロー（2026/04/11〜）**: 06:30に前営業日の確報差分＋TDnet引け後開示（18:30以降）をHaiku分析してSlack通知。速報との差分のみ表示。
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
