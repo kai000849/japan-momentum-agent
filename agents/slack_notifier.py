@@ -477,30 +477,30 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
         day_top5 = sorted_day[:5]
         day_worst3 = sorted_day[-3:]
 
-        top_lines = "\n".join(
+        top_lines = "\n\n".join(
             _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%", rank=i)
             for i, s in enumerate(day_top5, 1)
         )
-        worst_lines = "\n".join(
+        worst_lines = "\n\n".join(
             _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%", rank=i)
             for i, s in enumerate(day_worst3, 1)
         )
-        daily_section = f"🔥 TOP:\n{top_lines}\n🔻 WORST:\n{worst_lines}"
+        daily_section = f"🔥 TOP:\n{top_lines}\n\n🔻 WORST:\n{worst_lines}"
 
         # 中長期軸（score = mom5d×0.5 + mom20d×0.3 + mom60d×0.2）
         sorted_score = sorted(sector_ranking, key=lambda x: x.get("score", 0), reverse=True)
         sc_top5 = sorted_score[:5]
         sc_worst3 = sorted_score[-3:]
 
-        sc_top_lines = "\n".join(
+        sc_top_lines = "\n\n".join(
             _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}", rank=i)
             for i, s in enumerate(sc_top5, 1)
         )
-        sc_worst_lines = "\n".join(
+        sc_worst_lines = "\n\n".join(
             _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}", rank=i)
             for i, s in enumerate(sc_worst3, 1)
         )
-        score_section = f"🔥 TOP:\n{sc_top_lines}\n🔻 WORST:\n{sc_worst_lines}"
+        score_section = f"🔥 TOP:\n{sc_top_lines}\n\n🔻 WORST:\n{sc_worst_lines}"
 
     # ========== 注目テーマ TOP5（US・JP銘柄付き） ==========
     hot_keywords = keywords_data.get("hot_keywords", []) if isinstance(keywords_data, dict) else []
