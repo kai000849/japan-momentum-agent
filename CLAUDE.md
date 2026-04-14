@@ -207,10 +207,13 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/10: J-Quants決算速報（/fins/summary）をHaikuで分析する仕組みを追加 → `jquants_earnings_analyzer.py`新規作成。夕方18:30スキャンに統合（EDINETは数日遅延のため同日検知に不向きと判明）。定量フィルタ（OP YoY +20%以上 or 通期進捗70%以上）→ Haiku判定 → Slack通知「📊 決算速報 正サプライズ」の流れ。EDINETベースの翌朝照合+Sonnet qualifyパイプラインは維持。夕方cronを18:00→18:30に変更（速報配信30分待ち）。
 - 2026/04/11: TDnet適時開示タイトルスキャンをHaikuで分類する仕組みを追加 → `tdnet_fetcher.py`に`analyze_disclosures_with_haiku()`追加。全開示をキーワードフィルタ後Haikuで STRONG/WATCH/SKIP に分類し18:30通知。J-Quantsサプライズと同一銘柄が一致した場合は🚨ダブルシグナルとして別途通知（`notify_double_signals()`）。TDnetのSTRONGのみダブルシグナル対象（WATCHはノイズ除去）。18:30の通知順序: ①J-Quants速報 → ②TDnet開示 → ③ダブルシグナル。翌日モメンタム候補の事前スクリーニングが目的。
 - 2026/04/11: JST時刻バグ修正 + 確報フォロー（06:30）実装 → `main.py`の`datetime.now().hour >= 17`がUTC評価のため夕方/朝が逆転していた（夕方スキャンで動かず・朝スキャンで誤動作）。`_jst_now()`ヘルパーでUTC→JST変換に修正。夕方ブロック（JST 17:00〜）: 速報シグナルコードを`jquants_evening_{date}.json`に保存。朝ブロック（JST 05:00〜10:00）: 前営業日の確報（24:30更新）を再取得し速報との差分を通知。TDnetは`use_cache=False`で再取得し18:30以降の引け後開示のみHaiku分析。確報×引け後TDnetのダブルシグナルも検出。`notify_kakuho_update()`で1通にまとめてSlack通知。
+- 2026/04/14: J-Quants決算速報のDocTypeフィルタをV2形式に修正 → V1（数値コード`"120"/"130"/"140"`）→V2（`"FinancialStatements"`含む文字列）。全件0件になっていた問題を解消。Sales単位も百万円→円に修正。
+- 2026/04/14: TDnet適時開示スキャンのノイズ削減 → キーワードを厳格化（「決算」「配当」「契約」等の汎用ワードを除外）し190件→30件程度に削減。config.yaml経由のAPIキー取得を追加（GitHub ActionsでHaikuがスキップされていた問題を解消）。
+- 2026/04/14: Slack通知のビジュアル改善（情報量は変えず） → ①qualify判定フォーマット全面改修（`> `blockquote見出し・★★★確信度バッジ・出来高/株価継続確認を1行表示）②急騰/MOシグナルの証券コードをバッククォートで分離③正午スキャン通知を6行/銘柄→3行/銘柄に圧縮（価格を1行目末尾、reasonsを`|`区切り1行）④全通知のセクション見出しを`> `blockquote+件数付きに統一
 
 ---
 
-## 現在の状況（2026/04/11時点）
+## 現在の状況（2026/04/14時点）
 - 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
 - **3つの学習ループがすべて記録→フィードバックまで接続済み**
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入

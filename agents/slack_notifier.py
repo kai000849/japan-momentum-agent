@@ -1043,12 +1043,12 @@ def notify_cross_signals(cross_signals: list) -> bool:
     lines = [f"🔀 *クロスシグナル検出* — {now}\n"]
 
     if triple:
-        lines.append("*━━ トリプル確認（3シグナル全一致・最高確信度）━━*")
+        lines.append(f"> 🔀 トリプル確認（3シグナル全一致）  {len(triple)}銘柄")
         for c in triple:
             lines.append(_fmt(c))
 
     if double:
-        lines.append("\n*━━ ダブル確認（2シグナル一致）━━*")
+        lines.append(f"\n> 🔀 ダブル確認（2シグナル一致）  {len(double)}銘柄")
         for c in double:
             lines.append(_fmt(c))
 
@@ -1206,7 +1206,7 @@ def notify_tdnet_signals(signals: list) -> bool:
     ]
 
     if strong:
-        lines.append("*◎ モメンタム候補*")
+        lines.append(f"> 🔥 モメンタム候補（STRONG）  {len(strong)}件")
         for s in strong[:10]:  # 上限10件
             lines.append(f"  🔥 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
             lines.append(f"  　{s.get('title', '')}")
@@ -1222,7 +1222,8 @@ def notify_tdnet_signals(signals: list) -> bool:
             f"{s.get('code', '?')} {s.get('company', '')[:8]}" for s in watch[:15]
         )
         suffix = f" 他{len(watch)-15}件" if len(watch) > 15 else ""
-        lines.append(f"*○ 要確認*  {watch_codes}{suffix}")
+        lines.append(f"> 👀 要確認（WATCH）  {len(watch)}件")
+        lines.append(f"  {watch_codes}{suffix}")
         lines.append("")
 
     lines.append("_※ 翌朝モメンタムスキャンと照合して候補を絞り込んでください_")
@@ -1320,7 +1321,7 @@ def notify_kakuho_update(
 
     # ---- J-Quants 確報（速報から新規追加分）----
     if new_jq_signals:
-        lines.append(f"*🆕 J-Quants確報 新規 {len(new_jq_signals)}件*（速報に未掲載）")
+        lines.append(f"> 🆕 J-Quants確報 新規  {len(new_jq_signals)}件（速報未掲載）")
         doctype_label = {"120": "通期", "130": "四半期", "140": "業績修正"}
         for s in sorted(new_jq_signals, key=lambda x: x.get("score", 0), reverse=True):
             code = s.get("stockCode", "?")
@@ -1344,7 +1345,7 @@ def notify_kakuho_update(
     watch = [s for s in new_tdnet_signals if s.get("label") == "WATCH"]
     if new_tdnet_signals:
         lines.append(
-            f"*📋 TDnet引け後開示  ◎{len(strong)}件 / ○{len(watch)}件*（18:30以降提出）"
+            f"> 📋 TDnet引け後開示  🔥{len(strong)}件 / 👀{len(watch)}件（18:30以降）"
         )
         for s in strong:
             lines.append(
@@ -1364,7 +1365,7 @@ def notify_kakuho_update(
 
     # ---- 確報 × TDnet引け後 ダブルシグナル ----
     if doubles:
-        lines.append(f"*🚨 確報ダブルシグナル {len(doubles)}銘柄*")
+        lines.append(f"> 🚨 確報ダブルシグナル  {len(doubles)}銘柄")
         for d in sorted(doubles, key=lambda x: x["jq"].get("score", 0), reverse=True):
             jq = d["jq"]
             td = d["tdnet"]
@@ -1421,7 +1422,7 @@ def notify_earnings_outcomes_recorded(newly_recorded: list) -> bool:
         if not entries:
             continue
         label = days_key.replace("outcome", "").replace("d", "営業日後")
-        lines.append(f"*━━ {label} 結果 ━━*")
+        lines.append(f"> 📈 {label}結果  {len(entries)}件")
         for r in sorted(entries, key=lambda x: x.get("returnPct", 0), reverse=True):
             ret = r.get("returnPct", 0)
             icon = "✅" if ret > 5 else ("⚠️" if ret > 0 else "❌")
@@ -1517,17 +1518,17 @@ def notify_noon_scan(results: list) -> bool:
         vp = r.get("volume_pattern", "unknown")
         vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
 
-        header = f"*{code} {name}* （{mode_label}{('・' + qualify_label) if qualify_label else ''}{vp_tag}）"
-        price_str = (
-            f"  前日終値: ¥{scan_close:,.0f} → 現在: ¥{current:,.0f}"
-            f"  （{(current - scan_close) / scan_close * 100:+.1f}%）"
+        price_part = (
+            f"  ¥{current:,.0f}  {(current - scan_close) / scan_close * 100:+.1f}%"
             if scan_close > 0 and current > 0 else ""
         )
-        reasons_str = "\n".join(f"  {reason}" for reason in r.get("reasons", []))
-        return "\n".join(filter(None, [header, price_str, reasons_str]))
+        header = f"`{code}` *{name}* （{mode_label}{('・' + qualify_label) if qualify_label else ''}{vp_tag}）{price_part}"
+        reasons = r.get("reasons", [])
+        reasons_str = "  " + "  |  ".join(reasons) if reasons else ""
+        return "\n".join(filter(None, [header, reasons_str]))
 
     if go_list:
-        lines.append("*━━ 後場エントリー推奨 ━━*")
+        lines.append(f"> ✅ 後場エントリー推奨  {len(go_list)}銘柄")
         for r in go_list:
             lines.append(_fmt(r))
             intra = r.get("intradayData") or {}
@@ -1535,22 +1536,22 @@ def notify_noon_scan(results: list) -> bool:
             if current > 0:
                 stop = round(current * 0.95)
                 tp   = round(current * 1.15)
-                lines.append(f"  📌 後場12:30エントリー目安 損切: ¥{stop:,}  利確: ¥{tp:,}")
+                lines.append(f"  📌 損切¥{stop:,}  利確¥{tp:,}")
             lines.append("")
 
     if watch_list:
-        lines.append("*━━ 様子見（後場前半を確認） ━━*")
+        lines.append(f"> ⏸ 様子見（後場前半を確認）  {len(watch_list)}銘柄")
         for r in watch_list:
             lines.append(_fmt(r))
             lines.append("")
 
     if skip_list:
-        lines.append("*━━ 一旦見送り（前場で失速） ━━*")
+        lines.append(f"> ❌ 一旦見送り（前場で失速）  {len(skip_list)}銘柄")
         for r in skip_list:
             code = r["stockCode"]
             name = r.get("companyName", "")
             top_reason = r["reasons"][0] if r["reasons"] else ""
-            lines.append(f"{code} {name} — {top_reason}")
+            lines.append(f"  • `{code}` {name} — {top_reason}")
 
     if not results:
         lines.append("今日は対象銘柄なし（朝スキャンでシグナルなし）")
