@@ -1415,6 +1415,7 @@ def format_qualify_result_for_slack(results: list) -> str:
 
     if strong_results:
         lines.append(f"> ✅ 継続（構造的変化あり）  {len(strong_results)}銘柄")
+        items = []
         for r in strong_results:
             s1 = r.get("stage1", {})
             s2 = r.get("stage2", {})
@@ -1441,11 +1442,12 @@ def format_qualify_result_for_slack(results: list) -> str:
                 )
 
             reason_line = f"\n  💡 {surge_reason}" if surge_reason else ""
-            lines.append(
+            items.append(
                 f"• `{r.get('stockCode')}` *{r.get('companyName', '')}*{badge_str}{vp_tag}{status_str}\n"
                 f"  🤖 {comment}"
                 f"{reason_line}"
             )
+        lines.append("\n\n".join(items))
 
     if watch_results:
         lines.append(f"\n> ⏸ 様子見（要観察）  {len(watch_results)}銘柄")
