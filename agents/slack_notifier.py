@@ -1123,12 +1123,13 @@ def notify_edinet_daily_summary(stats: dict, force_send: bool = False) -> bool:
     return send_slack_message("\n".join(lines))
 
 
-def notify_jquants_earnings_summary(signals: list) -> bool:
+def notify_jquants_earnings_summary(signals: list, double_codes: set = None) -> bool:
     """
     J-Quants決算速報の正サプライズシグナルをSlackに通知する。
 
     Args:
         signals (list): jquants_earnings_analyzer.analyze_todays_earnings() が返すシグナルリスト
+        double_codes (set): TDnet STRONGとも一致した銘柄コードのセット（あれば🚨バッジを表示）
 
     Returns:
         bool: 送信成功はTrue
@@ -1137,12 +1138,21 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
         logger.info("J-Quants決算速報: 正サプライズなし → 通知スキップ")
         return True
 
-    # スコア降順でソート
-    signals_sorted = sorted(signals, key=lambda x: x.get("score", 0), reverse=True)
+    double_codes = double_codes or set()
+
+    # スコア降順でソート（ダブルヒット銘柄を先頭に）
+    signals_sorted = sorted(
+        signals,
+        key=lambda x: (x.get("stockCode", "") in double_codes, x.get("score", 0)),
+        reverse=True,
+    )
+
+    double_count = sum(1 for s in signals if s.get("stockCode", "") in double_codes)
+    header_suffix = f"  🚨 うちTDnetダブルヒット {double_count}銘柄" if double_count else ""
 
     lines = [
         f"📊 *決算速報 正サプライズ* （{datetime.now().strftime('%m/%d %H:%M')}）",
-        f"  J-Quants /fins/summary より {len(signals)}銘柄を検出",
+        f"  J-Quants /fins/summary より {len(signals)}銘柄を検出{header_suffix}",
         "",
     ]
 
@@ -1153,6 +1163,8 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
 
     for s in signals_sorted:
         code = s.get("stockCode", "?")
+        name = (s.get("companyName") or "")[:12]
+        name_str = f" {name}" if name else ""
         score = s.get("score", "-")
         sig = s.get("signal", "POSITIVE")
         reason = s.get("reason", "")
@@ -1160,6 +1172,7 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
         progress = s.get("progress_rate")
         doc = doctype_label.get(s.get("docType", ""), s.get("docType", ""))
         emoji = signal_emoji.get(sig, "📈")
+        double_badge = " 🚨*TDnetダブル*" if code in double_codes else ""
 
         metrics = []
         if op_yoy is not None:
@@ -1168,7 +1181,7 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
             metrics.append(f"進捗{progress:.0f}%")
         metrics_str = " / ".join(metrics) if metrics else ""
 
-        lines.append(f"{emoji} *{code}* （{doc}） スコア{score}/5")
+        lines.append(f"{emoji} *{code}*{name_str}（{doc}） スコア{score}/5{double_badge}")
         if metrics_str:
             lines.append(f"  {metrics_str}")
         if reason:
@@ -1180,17 +1193,19 @@ def notify_jquants_earnings_summary(signals: list) -> bool:
     return send_slack_message("\n".join(lines))
 
 
-def notify_tdnet_signals(signals: list) -> bool:
+def notify_tdnet_signals(signals: list, double_codes: set = None) -> bool:
     """
     TDnet適時開示のHaiku分類結果をSlackに通知する。
 
     Args:
         signals: tdnet_fetcher.analyze_disclosures_with_haiku() が返すリスト
                  各dict: code, company, title, time, label, reason
+        double_codes (set): J-Quants速報とも一致した銘柄コードのセット（あれば🚨バッジを表示）
 
     Returns:
         bool: 送信成功はTrue
     """
+    double_codes = double_codes or set()
     strong = [s for s in signals if s.get("label") == "STRONG"]
     watch = [s for s in signals if s.get("label") == "WATCH"]
 
@@ -1198,16 +1213,21 @@ def notify_tdnet_signals(signals: list) -> bool:
         logger.info("TDnet適時開示: モメンタム候補なし → 通知スキップ")
         return True
 
+    double_strong_count = sum(1 for s in strong if s.get("code", "") in double_codes)
+    header_suffix = f"  🚨 うちJ-Quantsダブルヒット {double_strong_count}銘柄" if double_strong_count else ""
+
     lines = [
         f"📋 *TDnet適時開示スキャン* （{datetime.now().strftime('%m/%d %H:%M')}）",
-        f"  ◎強気候補 {len(strong)}件 / ○要確認 {len(watch)}件",
+        f"  ◎強気候補 {len(strong)}件 / ○要確認 {len(watch)}件{header_suffix}",
         "",
     ]
 
     if strong:
         lines.append(f"> 🔥 モメンタム候補（STRONG）  {len(strong)}件")
         for s in strong[:10]:  # 上限10件
-            lines.append(f"  🔥 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
+            code = s.get("code", "?")
+            double_badge = " 🚨*J-Quantsダブル*" if code in double_codes else ""
+            lines.append(f"  🔥 *{code}* {s.get('company', '')}  {s.get('time', '')}{double_badge}")
             lines.append(f"  　{s.get('title', '')}")
             if s.get("reason"):
                 lines.append(f"  　💬 {s['reason']}")

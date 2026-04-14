@@ -542,17 +542,34 @@ def run_scan_mode(args):
         try:
             from agents.jquants_fetcher import get_todays_earnings
             from agents.jquants_earnings_analyzer import analyze_todays_earnings
-            from agents.slack_notifier import notify_jquants_earnings_summary
 
             logger.info("J-Quants決算速報分析を開始...")
             df_earnings = get_todays_earnings(_jst_today)
             if df_earnings is not None and not df_earnings.empty:
                 _jq_signals = analyze_todays_earnings(df_earnings, target_date=_jst_today)
-                notify_jquants_earnings_summary(_jq_signals)
             else:
                 logger.info("J-Quants決算速報: 本日の開示データなし（閑散期または取得失敗）")
         except Exception as e:
             logger.warning(f"J-Quants決算速報エラー（スキップ）: {e}")
+
+        # J-Quantsシグナルに銘柄名をエンリッチ（get_listed_stocks はキャッシュ済みなので低コスト）
+        if _jq_signals:
+            try:
+                from agents.jquants_fetcher import get_listed_stocks
+                df_list = get_listed_stocks()
+                if df_list is not None and not df_list.empty:
+                    # コードは4桁（"7203"）と末尾ゼロ付き5桁（"72030"）の両方で登録
+                    _name_map = {}
+                    for code_raw, name in zip(df_list["Code"].astype(str), df_list["CompanyName"]):
+                        c = code_raw.strip()
+                        _name_map[c] = name
+                        _name_map[c.rstrip("0")] = name  # 末尾ゼロなし形式も登録
+                    for sig in _jq_signals:
+                        if not sig.get("companyName"):
+                            sc = sig["stockCode"]
+                            sig["companyName"] = _name_map.get(sc) or _name_map.get(sc.rstrip("0"), "")
+            except Exception as e:
+                logger.debug(f"銘柄名エンリッチ スキップ: {e}")
 
         # 速報シグナルコードを保存（翌朝の確報diff用）
         try:
@@ -569,36 +586,51 @@ def run_scan_mode(args):
         # TDnet 適時開示スキャン
         try:
             from agents.tdnet_fetcher import fetch_disclosures, analyze_disclosures_with_haiku
-            from agents.slack_notifier import notify_tdnet_signals
 
             logger.info("TDnet適時開示スキャンを開始...")
             disclosures = fetch_disclosures(_jst_today)
             if disclosures:
                 _tdnet_signals = analyze_disclosures_with_haiku(disclosures, _jst_today)
-                notify_tdnet_signals(_tdnet_signals)
             else:
                 logger.info("TDnet適時開示: 本日の開示なし（休場日または取得失敗）")
         except Exception as e:
             logger.warning(f"TDnet適時開示スキャンエラー（スキップ）: {e}")
 
-        # ダブルシグナル検出（J-Quants速報 × TDnet STRONG）
+        # ダブルシグナルのコードセットを先に計算（各通知にバッジを付けるため）
+        _double_codes: set = set()
+        _doubles_list: list = []
         if _jq_signals and _tdnet_signals:
             try:
-                from agents.slack_notifier import notify_double_signals
-                jq_codes = {s["stockCode"]: s for s in _jq_signals}
-                tdnet_strong = {s["code"]: s for s in _tdnet_signals if s.get("label") == "STRONG"}
-                doubles = [
-                    {"jq": jq_codes[code], "tdnet": tdnet_strong[code]}
-                    for code in jq_codes
-                    if code in tdnet_strong
+                jq_codes_map = {s["stockCode"]: s for s in _jq_signals}
+                tdnet_strong_map = {s["code"]: s for s in _tdnet_signals if s.get("label") == "STRONG"}
+                _double_codes = set(jq_codes_map) & set(tdnet_strong_map)
+                _doubles_list = [
+                    {"jq": jq_codes_map[code], "tdnet": tdnet_strong_map[code]}
+                    for code in _double_codes
                 ]
-                if doubles:
-                    notify_double_signals(doubles)
-                    logger.info(f"ダブルシグナル: {len(doubles)}銘柄検出")
-                else:
-                    logger.info("ダブルシグナル: 該当なし")
+                logger.info(f"ダブルシグナル: {len(_double_codes)}銘柄検出")
             except Exception as e:
-                logger.warning(f"ダブルシグナル検出エラー（スキップ）: {e}")
+                logger.warning(f"ダブルシグナル計算エラー（スキップ）: {e}")
+
+        # 各通知にダブルコードを渡して送信
+        try:
+            from agents.slack_notifier import notify_jquants_earnings_summary
+            notify_jquants_earnings_summary(_jq_signals, double_codes=_double_codes)
+        except Exception as e:
+            logger.warning(f"J-Quants速報通知エラー（スキップ）: {e}")
+
+        try:
+            from agents.slack_notifier import notify_tdnet_signals
+            notify_tdnet_signals(_tdnet_signals, double_codes=_double_codes)
+        except Exception as e:
+            logger.warning(f"TDnet通知エラー（スキップ）: {e}")
+
+        if _doubles_list:
+            try:
+                from agents.slack_notifier import notify_double_signals
+                notify_double_signals(_doubles_list)
+            except Exception as e:
+                logger.warning(f"ダブルシグナル通知エラー（スキップ）: {e}")
 
     elif 5 <= _jst_hour <= 10:
         # ================================================================
