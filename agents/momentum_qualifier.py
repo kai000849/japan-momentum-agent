@@ -1410,8 +1410,11 @@ def format_qualify_result_for_slack(results: list) -> str:
 
     lines = ["🔥 *構造的モメンタム判定結果*\n"]
 
+    # confidence を視覚的なバッジに変換
+    conf_badge = {"high": "★★★", "medium": "★★", "low": "★"}
+
     if strong_results:
-        lines.append("*【継続】構造的変化あり*")
+        lines.append(f"> ✅ 継続（構造的変化あり）  {len(strong_results)}銘柄")
         for r in strong_results:
             s1 = r.get("stage1", {})
             s2 = r.get("stage2", {})
@@ -1425,23 +1428,27 @@ def format_qualify_result_for_slack(results: list) -> str:
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
             vp = r.get("volume_pattern", "unknown")
             vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
+            badge = conf_badge.get(confidence, "")
+            badge_str = f"  {badge}" if badge else ""
+
+            # 出来高・株価継続状況を1行目末尾にインライン表示
             if days_checked == 0:
-                vol_str = "出来高:最新日（翌日以降確認）"
-                price_str = "急騰後:継続確認中"
+                status_str = "  _（出来高・株価: 翌日確認）_"
             else:
-                vol_str = f"出来高維持率:{vol_rate:.0%}"
-                price_str = f"急騰後株価:{price_chg:+.1f}%"
-            reason_line = f"\n  💡 急騰理由: {surge_reason}" if surge_reason else ""
+                status_str = (
+                    f"  {vol_emoji} 出来高 {vol_rate:.0%}"
+                    f"  {price_emoji} 急騰後 {price_chg:+.1f}%"
+                )
+
+            reason_line = f"\n  💡 {surge_reason}" if surge_reason else ""
             lines.append(
-                f"• *{r.get('stockCode')} {r.get('companyName', '')}*{vp_tag}\n"
-                f"  {vol_emoji} {vol_str}  "
-                f"{price_emoji} {price_str}\n"
-                f"  🤖 Claude({confidence}): {comment}"
+                f"• `{r.get('stockCode')}` *{r.get('companyName', '')}*{badge_str}{vp_tag}{status_str}\n"
+                f"  🤖 {comment}"
                 f"{reason_line}"
             )
 
     if watch_results:
-        lines.append("\n*【様子見】要観察*")
+        lines.append(f"\n> ⏸ 様子見（要観察）  {len(watch_results)}銘柄")
         for r in watch_results:
             s1 = r.get("stage1", {})
             vol_rate = s1.get("volumeSustainRate", 0)
@@ -1450,33 +1457,30 @@ def format_qualify_result_for_slack(results: list) -> str:
             vp = r.get("volume_pattern", "unknown")
             vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             if days_checked == 0:
-                vol_str = "最新日（翌日以降確認）"
-                price_str = "継続確認中"
+                status_str = "翌日確認"
             else:
-                vol_str = f"{vol_rate:.0%}"
-                price_str = f"{price_chg:+.1f}%"
+                status_str = f"出来高 {vol_rate:.0%}  株価 {price_chg:+.1f}%"
             lines.append(
-                f"• {r.get('stockCode')} {r.get('companyName', '')}{vp_tag} "
-                f"出来高維持:{vol_str} 株価:{price_str}"
+                f"• `{r.get('stockCode')}` {r.get('companyName', '')}{vp_tag}  {status_str}"
             )
 
     # 翌日フォローアップ再判定結果を表示
     if _last_requalified:
         upgraded = [r for r in _last_requalified if r.get("qualifyResult") == "継続"]
         downgraded = [r for r in _last_requalified if r.get("qualifyResult") == "一時的"]
-        lines.append("\n*【前日様子見 → 翌日再判定】*")
+        lines.append("\n> 🔄 前日様子見 → 翌日再判定")
         for r in upgraded:
             s1 = r.get("stage1", {})
             vol_rate = s1.get("volumeSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
             lines.append(
-                f"✅ *{r.get('stockCode')} {r.get('companyName', '')}* → *継続*\n"
-                f"  出来高維持率:{vol_rate:.0%} / 急騰後株価:{price_chg:+.1f}%"
+                f"✅ `{r.get('stockCode')}` *{r.get('companyName', '')}* → *継続*"
+                f"  出来高 {vol_rate:.0%}  急騰後 {price_chg:+.1f}%"
             )
         for r in downgraded:
             s1 = r.get("stage1", {})
             reason = s1.get("reason", "")
-            lines.append(f"🔻 {r.get('stockCode')} {r.get('companyName', '')} → 一時的（{reason}）")
+            lines.append(f"🔻 `{r.get('stockCode')}` {r.get('companyName', '')} → 一時的（{reason}）")
 
     try:
         stats = get_outcome_stats()
