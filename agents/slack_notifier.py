@@ -1207,20 +1207,22 @@ def notify_tdnet_signals(signals: list) -> bool:
 
     if strong:
         lines.append("*◎ モメンタム候補*")
-        for s in strong:
+        for s in strong[:10]:  # 上限10件
             lines.append(f"  🔥 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
             lines.append(f"  　{s.get('title', '')}")
             if s.get("reason"):
                 lines.append(f"  　💬 {s['reason']}")
+        if len(strong) > 10:
+            lines.append(f"  … 他 {len(strong) - 10}件")
         lines.append("")
 
     if watch:
-        lines.append("*○ 要確認*")
-        for s in watch:
-            lines.append(f"  📌 *{s.get('code', '?')}* {s.get('company', '')}  {s.get('time', '')}")
-            lines.append(f"  　{s.get('title', '')}")
-            if s.get("reason"):
-                lines.append(f"  　💬 {s['reason']}")
+        # WATCHは件数＋銘柄コード一覧のみ（翌朝モメンタムスキャンとの照合用）
+        watch_codes = " / ".join(
+            f"{s.get('code', '?')} {s.get('company', '')[:8]}" for s in watch[:15]
+        )
+        suffix = f" 他{len(watch)-15}件" if len(watch) > 15 else ""
+        lines.append(f"*○ 要確認*  {watch_codes}{suffix}")
         lines.append("")
 
     lines.append("_※ 翌朝モメンタムスキャンと照合して候補を絞り込んでください_")

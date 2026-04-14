@@ -35,13 +35,31 @@ HEADERS = {
     "Accept-Language": "ja,en;q=0.9",
 }
 
-# 急騰原因として重要度が高い開示キーワード（タイトルに含まれると優先表示）
+# モメンタム・業績変化・思惑につながりやすい開示キーワード
+# 【設計方針】
+#   - 決算短信・四半期決算短信は J-Quants /fins/summary で既取得済みのため除外
+#   - 汎用すぎる「決算」「通期」「修正」「契約」「配当」は除外（ノイズが多い）
+#   - 明確にポジティブな株価インパクトが期待できる開示に絞る
 HIGH_VALUE_KEYWORDS = [
-    "業績", "上方修正", "下方修正", "増益", "増収", "黒字", "赤字",
-    "配当", "自己株", "自社株", "買付", "MBO", "TOB",
-    "合併", "買収", "子会社化", "資本業務提携", "提携",
-    "契約", "受注", "採択", "認可", "承認",
-    "決算", "四半期", "通期", "修正",
+    # M&A・支配権変動（最優先）
+    "MBO", "TOB", "合併", "買収", "子会社化", "株式交換", "株式移転",
+    # 業績の明確な変化（方向が明確なもの）
+    "上方修正", "下方修正", "黒字転換", "黒字化", "業績予想の修正", "業績予想の上方",
+    # 大型資本政策
+    "自己株式の取得", "自社株買い", "増配", "特別配当", "記念配当",
+    # 資本提携・大型契約（単なる「提携」「契約」は除外）
+    "資本業務提携", "資本提携",
+    # 大型受注・行政イベント（単なる「受注」「認可」は除外）
+    "大口受注", "大型受注", "優先交渉権", "採択", "承認取得", "薬事承認",
+    # 経営再編・事業変革
+    "事業譲受", "事業売却", "会社分割", "新規上場",
+]
+
+# タイトルに含まれると SKIP 扱いにする除外キーワード
+# （キーワード該当でも、これを含む場合は分析対象外）
+SKIP_TITLE_KEYWORDS = [
+    "株主総会", "定款", "役員", "監査", "訂正", "延期", "遅延", "取り下げ",
+    "決算短信", "四半期決算", "有価証券報告書", "半期報告書",
 ]
 
 
@@ -86,7 +104,10 @@ def _parse_tdnet_html(html: str) -> list:
             continue
 
         pdf_url = f"{TDNET_BASE}/{pdf_href}" if pdf_href and not pdf_href.startswith("http") else pdf_href
-        is_high = any(kw in title for kw in HIGH_VALUE_KEYWORDS)
+        is_high = (
+            any(kw in title for kw in HIGH_VALUE_KEYWORDS)
+            and not any(kw in title for kw in SKIP_TITLE_KEYWORDS)
+        )
 
         results.append({
             "code": code,
@@ -227,7 +248,7 @@ def analyze_disclosures_with_haiku(disclosures: list, date_str: str) -> list:
 
     logger.info(f"TDnet Haiku分析: 全{len(disclosures)}件 → キーワード該当{len(candidates)}件")
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    api_key = _get_api_key()
     if not api_key:
         # APIキーなし → キーワード該当をそのままWATCHとして返す
         logger.warning("ANTHROPIC_API_KEY未設定 → Haiku分析スキップ（キーワード候補をそのまま返却）")
@@ -331,3 +352,24 @@ def _extract_json_list(text: str) -> list:
         return json.loads(text)
     except json.JSONDecodeError:
         return []
+
+
+def _get_api_key() -> str:
+    """Anthropic APIキーを取得する（環境変数 → config.yaml の順で探す）。"""
+    # 1. 環境変数
+    key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if key:
+        return key
+    # 2. config.yaml（GitHub Actions は Secrets を config.yaml に書き出す）
+    try:
+        config_path = Path(__file__).parent.parent / "config.yaml"
+        if config_path.exists():
+            import yaml
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            key = str(config.get("anthropic", {}).get("api_key", "")).strip()
+            if key and key != "YOUR_ANTHROPIC_API_KEY":
+                return key
+    except Exception:
+        pass
+    return ""
