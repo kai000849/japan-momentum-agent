@@ -81,11 +81,15 @@ def analyze_todays_earnings(df: pd.DataFrame, target_date: Optional[str] = None)
     today_str = target_date or date.today().isoformat()
 
     # ---- Step 1: DocTypeフィルタ ----
-    # DocType: "120"=決算短信（通期）, "130"=四半期決算短信
-    # "140"=修正, "150"=配当修正 等は除外（モメンタム起点として不適）
-    VALID_DOC_TYPES = {"120", "130", "140"}  # 140=業績修正も含める
+    # V2 APIは文字列形式の DocType を返す（V1の数値コードとは異なる）
+    # 対象: FinancialStatements（決算短信）+ EarnForecastRevision（業績修正）
+    # 除外: DividendForecastRevision（配当修正のみ）等
     if "DocType" in df.columns:
-        df = df[df["DocType"].isin(VALID_DOC_TYPES)].copy()
+        mask = (
+            df["DocType"].str.contains("FinancialStatements", na=False)
+            | df["DocType"].eq("EarnForecastRevision")
+        )
+        df = df[mask].copy()
 
     if df.empty:
         logger.info("決算速報: 有効なDocTypeなし → スキップ")
@@ -125,9 +129,9 @@ def _compute_metrics(df: pd.DataFrame) -> list[dict]:
             if not code:
                 continue
 
-            # 売上（百万円）→ 億円換算でノイズ除去
+            # 売上（円単位）: 10億円未満の超零細株はノイズ除去
             sales = _to_float(row.get("Sales"))
-            if sales is None or sales < MIN_SALES_BILLION * 100:  # 百万円単位
+            if sales is None or sales < MIN_SALES_BILLION * 1e8:  # 円単位
                 continue
 
             # 営業利益YoY変化率
@@ -140,7 +144,9 @@ def _compute_metrics(df: pd.DataFrame) -> list[dict]:
                 op_yoy = 999.0  # 前期赤字→今期黒字転換
 
             # 通期進捗率（累計OP / 通期予想OP）
-            f_op = _to_float(row.get("FOP"))  # 通期予想
+            # 注: 通期決算(FY)では FOP が空のため NxFOP（翌期予想）は使わない
+            # 四半期(1Q/2Q/3Q)では FOP に通期予想が入る
+            f_op = _to_float(row.get("FOP"))  # 通期予想（四半期決算のみ有効）
             progress_rate = None
             if op is not None and f_op is not None and f_op > 0:
                 progress_rate = op / f_op * 100.0
