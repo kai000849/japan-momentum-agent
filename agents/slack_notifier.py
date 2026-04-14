@@ -459,11 +459,12 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
     daily_section = "  データなし"
     score_section = "  データなし"
 
-    def _fmt_sector_with_stocks(s, value_str: str) -> str:
+    def _fmt_sector_with_stocks(s, value_str: str, rank: int = None) -> str:
         """セクター1件を銘柄付きで整形する。"""
         us = s.get("top_stocks", "")
         jp = s.get("japan_theme", "")
-        line = f"{s['name']}({s['ticker']}){value_str}"
+        prefix = f"{rank}. " if rank is not None else "• "
+        line = f"  *{prefix}{s['name']}* ({s['ticker']}) {value_str}"
         if us:
             line += f"\n    🇺🇸 {us}"
         if jp:
@@ -477,12 +478,12 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
         day_worst3 = sorted_day[-3:]
 
         top_lines = "\n".join(
-            f"  {i}. " + _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%")
+            _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%", rank=i)
             for i, s in enumerate(day_top5, 1)
         )
         worst_lines = "\n".join(
-            "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%")
-            for s in day_worst3
+            _fmt_sector_with_stocks(s, f"{'+' if s.get('mom1d',0)>=0 else ''}{s.get('mom1d',0):.1f}%", rank=i)
+            for i, s in enumerate(day_worst3, 1)
         )
         daily_section = f"🔥 TOP:\n{top_lines}\n🔻 WORST:\n{worst_lines}"
 
@@ -492,12 +493,12 @@ def notify_us_combined(scan_result: dict, theme_result: dict) -> bool:
         sc_worst3 = sorted_score[-3:]
 
         sc_top_lines = "\n".join(
-            f"  {i}. " + _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}")
+            _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}", rank=i)
             for i, s in enumerate(sc_top5, 1)
         )
         sc_worst_lines = "\n".join(
-            "  • " + _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}")
-            for s in sc_worst3
+            _fmt_sector_with_stocks(s, f"{'+' if s.get('score',0)>=0 else ''}{s.get('score',0):.1f}", rank=i)
+            for i, s in enumerate(sc_worst3, 1)
         )
         score_section = f"🔥 TOP:\n{sc_top_lines}\n🔻 WORST:\n{sc_worst_lines}"
 
