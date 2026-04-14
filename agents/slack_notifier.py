@@ -223,7 +223,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
                 if expected_wr is not None else ""
             )
             lines.append(
-                f"  • {code}{name_str}  スコア:{score:.1f}\n"
+                f"  • `{code}`{name_str}  スコア:{score:.1f}\n"
                 f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
                 f"{comment_str}{pattern_str}"
             )
@@ -234,7 +234,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
             sign = "+" if price_chg >= 0 else ""
             reason_str = f"\n    💡 {surge_reason}" if surge_reason else ""
             lines.append(
-                f"  • {code}{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
+                f"  • `{code}`{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
                 f"    前日比:{sign}{price_chg:.1f}% / 出来高:{vol_ratio:.1f}x"
                 f"{reason_str}"
             )
