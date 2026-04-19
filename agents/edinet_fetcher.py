@@ -69,12 +69,12 @@ def load_config() -> dict:
 # EDINET API のベースURL
 EDINET_BASE_URL = "https://api.edinet-fsa.go.jp/api/v2"
 
-# 決算短信・四半期報告書の書類種別コード（決算発表の検出に使用）
+# EDINET書類種別コード（実測値に基づく正確なマッピング）
+# ※ 決算短信はEDINETに存在しない。TDnet（東証）に提出される。
+# ※ 以下は実際のEDINET V2 APIレスポンスで確認したコード体系。
 EARNINGS_DOC_TYPES = [
-    "180",  # 決算短信（最重要・四半期・通期の決算発表）
-    "130",  # 四半期報告書
-    "140",  # 半期報告書
-    "030",  # 有価証券報告書（年次）
+    "120",  # 有価証券報告書（年次・本決算。5〜7月に多数提出）
+    "180",  # 臨時報告書（M&A・業績修正・株主総会決議等の重要開示）
 ]
 
 # 大量保有報告書の書類種別コード
@@ -224,39 +224,37 @@ def get_earnings_announcements(date: str = None) -> list:
         logger.warning(f"{date}の開示書類が見つかりませんでした。")
         return []
 
-    # 決算関連書類を絞り込む
-    # ---- 臨時報告書フィルタ: 業績・決算関連のみ通す ----
-    # docTypeCode="180"（決算短信カテゴリ）には「臨時報告書」も含まれる。
-    # 役員異動・株式発行など業績と無関係な書類は除外し、
-    # 決算短信・業績予想修正・配当修正のみを対象にする。
-    EARNINGS_KEYWORDS = [
-        "決算", "業績", "配当", "経営成績", "財務諸表",
-        "四半期", "半期", "通期", "年度", "利益", "売上"
+    # ---- フィルタ設計（実測docTypeCodeに基づく）----
+    # code=120: 有価証券報告書（年次決算）→ secCodeありの上場企業分をすべて対象
+    # code=180: 臨時報告書 → docDescriptionが単に「臨時報告書」だけで
+    #           業績キーワードを含まないことが多い（役員変更・合併等も同じdesc）。
+    #           docDescriptionでは判別できないため「臨時報告書」を含む場合はすべて通す。
+    #           （内容が不明なものはClaudeに判断させる。PDFなしの場合は後段でスキップ）
+    # 有価証券届出書（組込方式・参照方式 etc）は増資・IPO目的で決算情報なし → スキップ
+    SKIP_DESC_KEYWORDS = [
+        "有価証券届出書", "確認書", "発行登録書", "訂正発行登録書", "変更報告書",
+        "大量保有", "訂正有価証券報告書", "内国投資信託",
     ]
-    # 臨時報告書でも業績修正は対象にする（上記キーワード含む場合はOK）
-    # 有価証券報告書・四半期報告書は無条件で対象（docType 030/130/140）
 
     earnings = []
     for doc in disclosures:
         doc_type = str(doc.get("docTypeCode", ""))
 
-        # 決算関連の書類種別コードに一致するものを抽出
+        # 対象コードに一致するものだけ処理
         if doc_type not in EARNINGS_DOC_TYPES:
             continue
 
-        # 有価証券コード（証券コード）を取得
+        # 有価証券コード（証券コード）を取得 → なければ投資信託等なのでスキップ
         sec_code = doc.get("secCode", "")
         if not sec_code:
             continue
 
-        doc_desc = doc.get("docDescription", "")
+        doc_desc = doc.get("docDescription", "") or ""
 
-        # docType "180" の場合、「臨時報告書」は業績関連キーワードを含む場合のみ通す
-        # （役員異動・合併・株式発行など業績と無関係な臨時報告書を除外）
-        if doc_type == "180" and "臨時報告書" in doc_desc:
-            if not any(kw in doc_desc for kw in EARNINGS_KEYWORDS):
-                logger.debug(f"非業績系臨時報告書をスキップ: {doc.get('filerName','')} [{doc_desc}]")
-                continue
+        # 決算情報と関係ない書類種別はスキップ
+        if any(kw in doc_desc for kw in SKIP_DESC_KEYWORDS):
+            logger.debug(f"非決算書類をスキップ: {doc.get('filerName','')} [{doc_desc}]")
+            continue
 
         earnings.append({
             "date": date,

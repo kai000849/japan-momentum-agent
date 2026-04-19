@@ -44,8 +44,8 @@ MAX_TOKENS = 1500
 PDF_MAX_PAGES = 15
 
 
-# スコアリング対象の書類種別（決算短信のみ）
-TARGET_DOC_TYPES = ["180", "130", "140", "030"]
+# スコアリング対象の書類種別（edinet_fetcher.pyのEARNINGS_DOC_TYPESと一致させること）
+TARGET_DOC_TYPES = ["120", "180"]
 
 # PDFダウンロード保存先
 PDF_CACHE_DIR = Path(__file__).parent.parent / "data" / "raw" / "edinet_pdfs"
