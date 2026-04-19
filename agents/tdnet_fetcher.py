@@ -184,13 +184,15 @@ def get_disclosures_for_stock(
     surge_date 当日 + 直前 look_back_days 日分を検索する。
 
     Args:
-        stock_code: 4桁証券コード
+        stock_code: J-Quants形式の証券コード（5桁 or 4桁）
         surge_date: "YYYY-MM-DD" 形式
         look_back_days: 何日前まで遡るか（デフォルト2日）
 
     Returns:
         list of dict: 関連開示のリスト（重要度降順）
     """
+    # J-Quants は5桁（例: "72030"）、TDnet は4桁（例: "7203"）→ 比較前に正規化
+    normalized_code = _normalize_code(str(stock_code))
     base_dt = datetime.strptime(surge_date, "%Y-%m-%d")
     all_matches = []
 
@@ -202,7 +204,7 @@ def get_disclosures_for_stock(
         date_str = check_dt.strftime("%Y-%m-%d")
         disclosures = fetch_disclosures(date_str)
         for d in disclosures:
-            if d["code"] == stock_code:
+            if d["code"] == normalized_code:
                 all_matches.append({**d, "disclosure_date": date_str})
 
     # 重要度の高い開示を先頭に
