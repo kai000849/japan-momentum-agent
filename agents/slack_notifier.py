@@ -231,10 +231,21 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
             price_chg = s.get("priceChangePct", 0)
             vol_ratio = s.get("volumeRatio", 0)
             surge_reason = s.get("surgeReason", "")
+            why_category = s.get("whyCategory", "")
+            entry_timing = s.get("entryTiming", "")
             sign = "+" if price_chg >= 0 else ""
+
+            _entry_badge = {
+                "day2_go":    "🟢 明日GO",
+                "day2_watch": "🟡 様子見",
+                "day2_skip":  "🔴 見送り",
+            }.get(entry_timing, "")
+            entry_str = f"  {_entry_badge}" if _entry_badge else ""
+            why_str = f"  [{why_category}]" if why_category and why_category != "不明" else ""
             reason_str = f"\n    💡 {surge_reason}" if surge_reason else ""
+
             lines.append(
-                f"  • `{code}`{name_str}  ¥{close:,.0f}  スコア:{score:.1f}\n"
+                f"  • `{code}`{name_str}  ¥{close:,.0f}  スコア:{score:.1f}{entry_str}{why_str}\n"
                 f"    前日比:{sign}{price_chg:.1f}% / 出来高:{vol_ratio:.1f}x"
                 f"{reason_str}"
             )

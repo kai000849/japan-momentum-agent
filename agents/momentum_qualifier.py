@@ -431,16 +431,40 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
                 "structuralChange": None,
                 "confidence": None,
                 "comment": "APIキー未設定のためスキップ",
+                "whyCategory": "不明",
+                "entryTiming": "day2_skip",
+                "surgeReason": "",
                 "stage2Available": False,
             }
             for code in stock_codes
         }
 
-    stocks_text = "\n".join([
-        f"- {s['stockCode']} {s['companyName']}"
-        + (f"  ／ 開示: {s['surgeReason']}" if s.get("surgeReason") else "  ／ 開示: 不明")
-        for s in stocks
-    ])
+    # 各銘柄の開示・ニュース情報をテキスト化
+    stocks_text = ""
+    for s in stocks:
+        tdnet_list = s.get("tdnet_disclosures", [])
+        news_list = s.get("news", [])
+        price_chg = s.get("price_change_pct", 0)
+        vol_ratio = s.get("volume_ratio", 0)
+
+        info_lines = []
+        if tdnet_list:
+            info_lines.append("  TDnet開示（最重要・優先）:")
+            for d in tdnet_list[:3]:
+                tag = " ★重要" if d.get("is_high_value") else ""
+                info_lines.append(f"    ・{d.get('time', '')} {d['title']}{tag} ({d.get('disclosure_date', '')})")
+        if news_list:
+            info_lines.append("  Google News:")
+            for n in news_list[:3]:
+                info_lines.append(f"    ・{n}")
+        if not info_lines:
+            info_lines.append("  開示・ニュースなし")
+
+        stocks_text += (
+            f"【{s['stockCode']} {s['companyName']}】"
+            f" 前日比+{price_chg:.1f}% / 出来高{vol_ratio:.1f}倍\n"
+            + "\n".join(info_lines) + "\n\n"
+        )
 
     # 過去判定精度フィードバック（5件以上のoutcomeがある場合のみ追加）
     accuracy_context = ""
@@ -455,7 +479,6 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
                     lines.append(
                         f"  {label}: 上昇率{s['win_rate']}% / 平均リターン{s['avg_return']:+.1f}%（{s['count']}件）"
                     )
-            # 多軸パターン（情報源別・確信度別）
             if patterns.get("by_surge_tag"):
                 parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_surge_tag"].items()]
                 lines.append(f"  情報源別勝率: {' / '.join(parts)}")
@@ -475,16 +498,19 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
 
     prompt = f"""{accuracy_context}あなたはモメンタム投資専門の日本株アナリストです。
 以下の銘柄が急騰し、出来高・株価ともに急騰後も継続しています。
-「この急騰が中長期的な上昇トレンドの初動か、短期的な加熱で終わるか」を判断してください。
+TDnet開示・ニュースの事実をもとに「急騰の理由」と「2日目エントリーの可否」を判断してください。
 
-【対象銘柄】
+【分析対象銘柄】
 {stocks_text}
-
-【判断基準（優先順位順）】
-1. 開示内容（最重要）: 業績上方修正・増益・受注・提携・自社株買いなど → 評価の構造的変化につながりやすい
-   ／ 開示なし・不明 → 業種と事業内容で推測
-2. 継続性: 一過性のイベント（単発受注・特需）か、継続的な収益改善か
-3. 業種・テーマ: AI・半導体・防衛・再エネ等の成長テーマとの関連
+【判断ルール】
+1. whyCategory（急騰理由）: TDnet開示があれば最優先。なければニュースから判断。どちらもなければ「不明」
+   選択肢: 決算 / 業績修正 / 自社株買い・増配 / 資本提携・M&A / 受注・契約 / テーマ相乗り / ニュース / 需給 / 不明
+2. entryTiming（翌日エントリー可否）:
+   - day2_go  : 明確な材料あり＋継続性高い → 積極エントリー推奨
+   - day2_watch: 材料はあるが継続性不明 → 寄り付き様子見
+   - day2_skip : 材料不明・弱い・過熱感あり → エントリー見送り
+3. structuralChange: 中長期的な上昇トレンドの初動か（true/false）
+4. surgeReason: [タグ]で始まる50文字以内の要約（タグ: [決算][開示][ニュース][需給][不明]）
 
 必ず以下のJSON形式のみで回答してください：
 {{
@@ -493,14 +519,16 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
       "stockCode": "<銘柄コード>",
       "structuralChange": true or false,
       "confidence": "high" or "medium" or "low",
-      "comment": "50文字以内（開示内容を踏まえた理由）"
+      "comment": "50文字以内",
+      "whyCategory": "<上記選択肢から1つ>",
+      "entryTiming": "day2_go" or "day2_watch" or "day2_skip",
+      "surgeReason": "[タグ] 50文字以内の要約"
     }}
   ]
 }}
 
 resultsには対象の全{len(stocks)}銘柄を含めてください。
-
-重要: structuralChange は必ず true か false のどちらかを返してください。null・省略は禁止です。情報が不十分な場合は業種・テーマ・事業内容から推測して判断してください。"""
+structuralChangeは必ずtrue/falseを返してください（null・省略禁止）。"""
 
     try:
         import anthropic
@@ -509,7 +537,7 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=1500,  # 15銘柄×コメント最大50字 → 約1200トークン必要
+            max_tokens=2500,  # 15銘柄×(comment+whyCategory+entryTiming+surgeReason) → 約2000トークン必要
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -553,6 +581,9 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。
                 "structuralChange": item.get("structuralChange"),
                 "confidence": item.get("confidence"),
                 "comment": item.get("comment", ""),
+                "whyCategory": item.get("whyCategory", "不明"),
+                "entryTiming": item.get("entryTiming", "day2_watch"),
+                "surgeReason": item.get("surgeReason", ""),
                 "stage2Available": True,
             }
 
@@ -563,6 +594,9 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。
                     "structuralChange": None,
                     "confidence": "low",
                     "comment": "判定結果なし",
+                    "whyCategory": "不明",
+                    "entryTiming": "day2_watch",
+                    "surgeReason": "",
                     "stage2Available": True,
                 }
 
@@ -572,14 +606,16 @@ resultsには対象の全{len(stocks)}銘柄を含めてください。
         logger.warning("バッチ判定: JSONパースエラー")
         return {
             code: {"structuralChange": None, "confidence": "low",
-                   "comment": "レスポンス解析エラー", "stage2Available": True}
+                   "comment": "レスポンス解析エラー", "whyCategory": "不明",
+                   "entryTiming": "day2_watch", "surgeReason": "", "stage2Available": True}
             for code in stock_codes
         }
     except Exception as e:
         logger.warning(f"バッチ判定: Claude API呼び出しエラー: {e}")
         return {
             code: {"structuralChange": None, "confidence": None,
-                   "comment": f"APIエラー: {str(e)[:30]}", "stage2Available": False}
+                   "comment": f"APIエラー: {str(e)[:30]}", "whyCategory": "不明",
+                   "entryTiming": "day2_skip", "surgeReason": "", "stage2Available": False}
             for code in stock_codes
         }
 
@@ -1102,7 +1138,11 @@ def requalify_watch_signals(df_all: pd.DataFrame) -> list:
             {
                 "stockCode": t["entry"].get("stockCode", ""),
                 "companyName": t["entry"].get("companyName", ""),
-                "surgeReason": t["entry"].get("surgeReason", ""),
+                "price_change_pct": 0,
+                "volume_ratio": 0,
+                # 翌日再判定: 前回のsurgeReasonをニュースとして渡して文脈を維持
+                "tdnet_disclosures": [],
+                "news": [t["entry"].get("surgeReason", "")] if t["entry"].get("surgeReason") else [],
             }
             for t in stage1_pass_targets[:STAGE2_BATCH_LIMIT]
         ]
@@ -1133,9 +1173,15 @@ def requalify_watch_signals(df_all: pd.DataFrame) -> list:
             "structuralChange": False,
             "confidence": "low",
             "comment": "再判定結果なし",
+            "whyCategory": "不明",
+            "entryTiming": "day2_watch",
+            "surgeReason": entry.get("surgeReason", ""),
             "stage2Available": False,
         })
         entry["stage2"] = stage2
+        entry["surgeReason"] = stage2.get("surgeReason") or entry.get("surgeReason", "")
+        entry["whyCategory"] = stage2.get("whyCategory", "不明")
+        entry["entryTiming"] = stage2.get("entryTiming", "day2_watch")
 
         structural_change = stage2.get("structuralChange")
         entry["qualifyResult"] = "継続" if structural_change is True else "一時的"
@@ -1196,21 +1242,18 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
     results = []
     code_col = "Code" if "Code" in df_all.columns else "code"
 
-    # ---- 急騰理由生成: TDnet適時開示 + Google News RSS → Claude API（全銘柄対象） ----
-    surge_reason_map = {}
+    # ---- コンテキスト収集: TDnet適時開示 + Google News RSS（全銘柄対象） ----
+    stocks_with_info = []
     try:
         from agents.tdnet_fetcher import get_disclosures_for_stock
 
-        # 急騰日（スキャン日 or scanDate）を特定
-        # 複数日ある場合も考慮して各銘柄ごとに取得
         logger.info("  TDnet適時開示を取得中...")
-        stocks_with_info = []
         for s in signals:
             code = s.get("stockCode", "")
             name = s.get("companyName", "")
             surge_date = s.get("scanDate", datetime.now().strftime("%Y-%m-%d"))
 
-            # TDnet: 当日 + 直前2日分を検索
+            # TDnet: 当日 + 直前2日分を検索（引け後決算は前日提出のため2日遡る）
             tdnet_matches = get_disclosures_for_stock(code, surge_date, look_back_days=2)
 
             # Google News: TDnet で情報が得られなかった銘柄のみフォールバック
@@ -1232,18 +1275,18 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         news_hit = sum(1 for s in stocks_with_info if s["news"])
         logger.info(f"  情報取得完了: TDnet={tdnet_hit}件 / Google News={news_hit}件")
 
-        # 重要な適時開示（業績・上方修正・決算等）があった銘柄のモメンタムコメントを失効
+        # 重要な適時開示（業績・上方修正等）があった銘柄のモメンタムコメントを失効
         high_value_codes = [
             s["stockCode"] for s in stocks_with_info
             if any(d.get("is_high_value") for d in s.get("tdnet_disclosures", []))
         ]
         if high_value_codes:
             invalidate_momentum_cache_for_codes(high_value_codes)
-
-        surge_reason_map = _generate_surge_reasons_batch(stocks_with_info)
-        logger.info(f"  急騰理由生成完了: {len(surge_reason_map)}銘柄")
     except Exception as e:
-        logger.warning(f"急騰理由生成エラー（スキップ）: {e}")
+        logger.warning(f"コンテキスト収集エラー（スキップ）: {e}")
+
+    # stockCodeをキーにした参照用マップ
+    info_map = {s["stockCode"]: s for s in stocks_with_info}
 
     # ---- ステージ1: 全銘柄の出来高継続チェック ----
     stage1_map = {}
@@ -1285,7 +1328,10 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
             {
                 "stockCode": s.get("stockCode", ""),
                 "companyName": s.get("companyName", ""),
-                "surgeReason": surge_reason_map.get(s.get("stockCode", ""), ""),
+                "price_change_pct": s.get("priceChangePct", 0),
+                "volume_ratio": s.get("volumeRatio", 0),
+                "tdnet_disclosures": info_map.get(s.get("stockCode", ""), {}).get("tdnet_disclosures", []),
+                "news": info_map.get(s.get("stockCode", ""), {}).get("news", []),
             }
             for s in batch_signals
         ]
@@ -1297,7 +1343,6 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
         stock_code = signal.get("stockCode", "")
         company_name = signal.get("companyName", "")
         result = {**signal}
-        result["surgeReason"] = surge_reason_map.get(stock_code, "")
 
         stage1 = stage1_map.get(stock_code, {"stage1Pass": False, "reason": "不明"})
         result["stage1"] = stage1
@@ -1307,6 +1352,9 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
                 "structuralChange": None,
                 "confidence": "low",
                 "comment": "判定結果なし",
+                "whyCategory": "不明",
+                "entryTiming": "day2_watch",
+                "surgeReason": "",
                 "stage2Available": False,
             })
         else:
@@ -1315,10 +1363,17 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
                 "structuralChange": False,
                 "confidence": None,
                 "comment": "ステージ1不通過のためスキップ",
+                "whyCategory": "不明",
+                "entryTiming": "day2_skip",
+                "surgeReason": "",
                 "stage2Available": False,
             }
 
         result["stage2"] = stage2
+        # Stage2の新フィールドをトップレベルにも展開（Slack通知・qualify_log用）
+        result["surgeReason"] = stage2.get("surgeReason", "")
+        result["whyCategory"] = stage2.get("whyCategory", "不明")
+        result["entryTiming"] = stage2.get("entryTiming", "day2_watch")
 
         stage1_pass = stage1.get("stage1Pass", False)
         structural_change = stage2.get("structuralChange")
@@ -1441,11 +1496,20 @@ def format_qualify_result_for_slack(results: list) -> str:
                     f"  {price_emoji} 急騰後 {price_chg:+.1f}%"
                 )
 
-            reason_line = f"\n  💡 {surge_reason}" if surge_reason else ""
+            why_category = r.get("whyCategory", "")
+            entry_timing = r.get("entryTiming", "")
+            _entry_badge = {
+                "day2_go":    "🟢 明日GO",
+                "day2_watch": "🟡 様子見",
+                "day2_skip":  "🔴 見送り",
+            }.get(entry_timing, "")
+            entry_line = f"\n  {_entry_badge}  [{why_category}]  {surge_reason}" if surge_reason else (
+                f"\n  {_entry_badge}  [{why_category}]" if _entry_badge else ""
+            )
             items.append(
                 f"• `{r.get('stockCode')}` *{r.get('companyName', '')}*{badge_str}{vp_tag}{status_str}\n"
                 f"  🤖 {comment}"
-                f"{reason_line}"
+                f"{entry_line}"
             )
         lines.append("\n\n".join(items))
 
