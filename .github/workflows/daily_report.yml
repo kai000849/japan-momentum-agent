@@ -15,7 +15,6 @@ on:
     - cron: '15 3 * * 1-5'    # 月〜金（日本時間の平日正午12:15）
 
     # 【夕方】メイン通知 18:30 JST (UTC 09:30)
-    # J-Quants決算速報（18:00配信）を取り込んで18:30に統合通知
     - cron: '30 9 * * 1-5'    # 月〜金（日本時間の平日夕方18:30）
 
     # 【週次】金曜パフォーマンスレポート 18:30 JST (UTC 09:30)
@@ -176,14 +175,6 @@ jobs:
           restore-keys: |
             scans-
 
-      - name: TDnet開示キャッシュを復元
-        uses: actions/cache@v4
-        with:
-          path: data/raw/tdnet
-          key: tdnet-${{ github.run_number }}
-          restore-keys: |
-            tdnet-
-
       - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
@@ -235,12 +226,6 @@ jobs:
         with:
           path: data/processed/scans
           key: scans-${{ steps.date.outputs.today }}
-
-      - name: TDnet開示キャッシュを保存
-        uses: actions/cache@v4
-        with:
-          path: data/raw/tdnet
-          key: tdnet-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
@@ -330,14 +315,6 @@ jobs:
           restore-keys: |
             scans-
 
-      - name: TDnet開示キャッシュを復元
-        uses: actions/cache@v4
-        with:
-          path: data/raw/tdnet
-          key: tdnet-${{ github.run_number }}
-          restore-keys: |
-            tdnet-
-
       - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
         run: |
@@ -389,12 +366,6 @@ jobs:
         with:
           path: data/processed/scans
           key: scans-${{ github.run_number }}
-
-      - name: TDnet開示キャッシュを保存
-        uses: actions/cache@v4
-        with:
-          path: data/raw/tdnet
-          key: tdnet-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
