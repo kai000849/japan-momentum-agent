@@ -1858,6 +1858,10 @@ def notify_weekly_report() -> bool:
                 lines.append(
                     f"  {label}: 勝率{s['win_rate']}% / 平均{s['avg_return']:+.1f}%（{s['count']}件）"
                 )
+        if all_patterns.get("by_why_category"):
+            lines.append("  【急騰理由別勝率】")
+            for cat, s in sorted(all_patterns["by_why_category"].items(), key=lambda x: -x[1]["win_rate"]):
+                lines.append(f"    {cat}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
         if all_patterns.get("by_surge_tag"):
             lines.append("  【情報源別勝率】")
             for tag, s in sorted(all_patterns["by_surge_tag"].items(), key=lambda x: -x[1]["win_rate"]):

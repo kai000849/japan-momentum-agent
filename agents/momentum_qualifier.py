@@ -479,6 +479,9 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
                     lines.append(
                         f"  {label}: 上昇率{s['win_rate']}% / 平均リターン{s['avg_return']:+.1f}%（{s['count']}件）"
                     )
+            if patterns.get("by_why_category"):
+                parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_why_category"].items()]
+                lines.append(f"  急騰理由別勝率: {' / '.join(parts)}")
             if patterns.get("by_surge_tag"):
                 parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_surge_tag"].items()]
                 lines.append(f"  情報源別勝率: {' / '.join(parts)}")
@@ -832,6 +835,7 @@ def get_outcome_patterns() -> dict:
         "by_volume_rate":    {},
         "by_confidence":     {},
         "by_volume_pattern": {},
+        "by_why_category":   {},
     }
 
     for e in recorded:
@@ -859,10 +863,15 @@ def get_outcome_patterns() -> dict:
         conf = (e.get("stage2") or {}).get("confidence") or "不明"
         _add("by_confidence", conf)
 
-        # A: volume_pattern（late/early）を学習軸に追加
+        # volume_pattern（late/early）
         vp = e.get("volume_pattern") or "unknown"
         if vp != "unknown":
             _add("by_volume_pattern", vp)
+
+        # whyCategory（急騰理由別）: 「不明」は分析対象外
+        why_cat = e.get("whyCategory") or "不明"
+        if why_cat != "不明":
+            _add("by_why_category", why_cat)
 
     MIN_SAMPLES = 3
 
@@ -883,6 +892,7 @@ def get_outcome_patterns() -> dict:
         "by_volume_rate":    _summarize(buckets["by_volume_rate"]),
         "by_confidence":     _summarize(buckets["by_confidence"]),
         "by_volume_pattern": _summarize(buckets["by_volume_pattern"]),
+        "by_why_category":   _summarize(buckets["by_why_category"]),
     }
 
 

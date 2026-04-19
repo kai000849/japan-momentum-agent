@@ -300,6 +300,18 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         elif mode == "EARNINGS":
             reasons.append("📋 決算シグナル（業績裏付けあり）")
 
+        # ---- Stage2 entryTiming / whyCategory ----
+        entry_timing = result.get("entryTiming", "day2_watch")
+        why_category = result.get("whyCategory", "不明")
+        why_str = f"（{why_category}）" if why_category and why_category != "不明" else ""
+
+        if entry_timing == "day2_go":
+            reasons.append(f"🟢 翌日GO{why_str}")
+        elif entry_timing == "day2_skip":
+            cautions.append(f"🔴 翌日見送り{why_str}")
+        else:
+            cautions.append(f"🟡 様子見{why_str}")
+
         # ---- STRONG/WATCH/WEAK/NOISE 判定 ----
         if qualify_result == "継続":
             reasons.append(f"✅ 継続判定（{result.get('stage2', {}).get('comment', '')}）")
@@ -353,10 +365,19 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         else:
             pf_ok = pf >= MIN_PF
 
-        if is_strong and pf_ok and has_capacity:
+        # entryTimingを第一判断軸とする
+        # day2_skip: Claudeが見送り推奨 → 構造的変化があっても翌日エントリーは見送り
+        # day2_go + 継続: 材料明確 + 中長期変化 → エントリー（PF・余力が揃えば）
+        # day2_go + 継続以外: 材料あるが継続性なし → 様子見
+        # day2_watch: 継続判定でも様子見（材料の継続性が不確か）
+        if entry_timing == "day2_skip":
+            recommendation = "見送り"
+        elif is_strong and pf_ok and has_capacity and entry_timing == "day2_go":
             recommendation = "エントリー"
         elif is_strong and (not pf_ok or not has_capacity):
             recommendation = "様子見"
+        elif entry_timing == "day2_go" and not is_strong:
+            recommendation = "様子見"  # 材料あり・構造的変化なし
         else:
             recommendation = "見送り"
 
