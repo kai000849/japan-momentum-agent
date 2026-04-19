@@ -18,9 +18,11 @@
 | **決算シグナル（EARNINGS）** | 決算・開示を起点とした**評価の変化や中長期モメンタムの始まり**を補足する | 業績の質・継続性・モメンタムへの移行可能性 |
 
 ### 構造的モメンタム判定（qualify）の位置づけ
-急騰・決算シグナルから「**中長期的な上昇トレンドの初動かどうか**」を見極めるフィルター。
-- ステージ1: 数値検証（出来高・株価継続性）→ ステージ2: Claude API判定（開示内容最重視）
-- 学習ループ: 判定結果と10営業日後の実績を照合して精度向上
+急騰シグナルから「**中長期的な上昇トレンドの初動かどうか**」を見極めるフィルター。
+- ステージ1: 数値検証（出来高・株価継続性）→ ステージ2: Claude API判定（TDnet開示＋Googleニュースを取得して分析）
+- Stage2出力: whyCategory（急騰理由分類）・entryTiming（day2_go/day2_watch/day2_skip）・structuralChange（構造的変化あり/なし）
+- **デイ2エントリー戦略**: シグナル当日18:30に検知→夜間に材料分析→翌日エントリー判断。entryTimingが投資判断の第一軸
+- 学習ループ: 判定結果と10営業日後の実績を照合して精度向上。qualify_logはgit管理（キャッシュ不使用）
 
 ### 設計思想
 - **早さと正確さの両立はAI学習で実現する**。今は精度が不十分でも、データを蓄積して継続改善する
@@ -43,7 +45,7 @@
 
 ### 育成の設計思想
 - **記録→分析→フィードバックの一貫性**: 判定を記録するだけでなく、実績パターンを次回の判定に還元する
-- **3軸パターン学習（SHORT_TERM）**: 情報源タグ別・出来高維持率別・Stage2確信度別の勝率を蓄積
+- **4軸パターン学習（SHORT_TERM）**: 急騰理由別（whyCategory）・情報源タグ別・出来高維持率別・Stage2確信度別の勝率を蓄積。whyCategoryが第一軸（材料の質で勝率差が最も大きいと仮説）
 - **3軸パターン学習（MOMENTUM）**: MAギャップ別・52週高値比別・出来高トレンド別の勝率を蓄積（momentum_log.json）
 - **週次可視化でドリフト防止**: Slackの週次レポートで「エージェントが賢くなっているか」を人間が確認
 - **戦略有効性モニター**: 4週推移でモメンタム戦略自体の有効性を監視（シグナル頻度・勝率・リターン推移＋自動アラート）
@@ -98,15 +100,14 @@ japan-momentum-agent/
 
 ---
 
-## GitHub Actions スケジュール（5ジョブ構成）
+## GitHub Actions スケジュール（4ジョブ構成）
 
 | 時刻（JST） | ジョブ名 | 内容 |
 |---|---|---|
 | 6:30 | us-market-scan | 米市場スキャン（ETFモメンタム＋テーマ抽出） |
-| 6:40〜 | morning-scan | us-market-scan完了後に自動起動。米結果反映済みの朝通知 |
-| 10:30 | midmorning-scan | ザラ場決算スキャン |
+| 6:40〜 | morning-scan | us-market-scan完了後に自動起動。米結果反映済みの朝通知＋前日確報差分＋TDnet引け後開示 |
 | 12:15 | noon-scan | 後場エントリー判断（yfinance前場データ） |
-| 18:30 | evening-scan | メイン通知＋J-Quants決算速報＋保有状況＋実売買損益（18:00速報を30分待って取り込む） |
+| 18:30 | evening-scan | メイン通知＋J-Quants決算速報＋TDnet開示＋ダブルシグナル＋保有状況＋実売買損益 |
 | 金曜18:30 | weekly-report | 週次パフォーマンスレポート |
 
 GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `ANTHROPIC_API_KEY`（全登録済み）
@@ -129,10 +130,10 @@ GitHub Secrets: `JQUANTS_API_KEY` / `EDINET_API_KEY` / `SLACK_WEBHOOK_URL` / `AN
 
 ## 主要な設計判断（条件詳細はコード参照）
 
-- **スクリーニング条件**: scanner.py参照（SHORT_TERM=急騰+出来高、MOMENTUM=パーフェクトオーダー+52週高値、EARNINGS=EDINET+Claudeスコア）
-- **qualify判定**: momentum_qualifier.py参照（ステージ1=数値、ステージ2=Claude API）。結果ラベルは日本語（継続/様子見/一時的/ノイズ）。「様子見」=Stage2未実行のみ（翌日再判定対象）
+- **スクリーニング条件**: scanner.py参照（SHORT_TERM=急騰+出来高、MOMENTUM=パーフェクトオーダー+52週高値）
+- **qualify判定**: momentum_qualifier.py参照（ステージ1=数値、ステージ2=Claude API）。結果ラベルは日本語（継続/様子見/一時的/ノイズ）。「様子見」=Stage2未実行のみ（翌日再判定対象）。Stage2はTDnet開示（4桁コードに正規化して照合）＋Googleニュース（ノイズパターン除去済み）を分析材料とする。開示・ニュースなしの銘柄は必ず不明/day2_skip/structuralChange=falseを返す（創作防止）
+- **投資判断**: investment_advisor.py参照。**entryTimingが第一軸**（day2_skip→即見送り、day2_go→構造的変化+PF+余力も満たせばエントリー）。qualify結果+PF+余力+米セクターを統合。PF閾値はSHORT_TERM=1.2、MOMENTUM=1.5
 - **MOメンタム学習**: momentum_log_manager.py参照。MOシグナルを毎スキャン記録し、20営業日後にリターン/最大DD/トレンド継続を自動記録。アウトカム期間が10日（SHORT_TERM）と異なるため別ファイル管理
-- **投資判断**: investment_advisor.py参照（qualify結果+PF+余力+米セクターを統合）。PF閾値はSHORT_TERM/EARNINGS=1.2、MOMENTUM=1.5
 - **正午スキャン**: noon_scanner.py参照（前場データで後場GO/様子見/見送りを判定）
 - **ペーパートレード**: 無効（学習ループには不要と判断・2026/04/05無効化）。`paper_trader.py`は実売買記録専用として残存
 - **実売買**: tradeType:"actual"でペーパーと区別。余力判定はペーパーのみカウント
@@ -214,23 +215,26 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/14: クロスシグナル・qualify判定（継続）の銘柄間に空行を追加 → `slack_notifier.py` / `momentum_qualifier.py`。ルール: 1銘柄3行以上かつ件数10件以下のブロックに空行を入れる。後場エントリー判断は元から空行あり。
 - 2026/04/14: 決算速報通知に銘柄名を追加 → `main.py`でJ-Quantsシグナル取得後に`get_listed_stocks()`で名前マップを作り事後エンリッチ（4桁/5桁コードゆれ対応）。`notify_jquants_earnings_summary`で銘柄コードの隣に社名を表示。
 - 2026/04/14: J-Quants×TDnetダブルヒットを各通知に🚨バッジで明示 → ダブルコード計算を通知前に移動し両通知関数に渡す構造に変更（`main.py`）。`notify_jquants_earnings_summary`/`notify_tdnet_signals`に`double_codes`引数追加。ダブル銘柄を先頭ソート・ヘッダーに件数・各行に🚨バッジを表示。
+- 2026/04/19: qualify_log/momentum_log永続化バグを修正 → GitHub ActionsのキャッシュステップをすべてGit pushに置き換え（`daily_report.yml`）。git add→commit→push（3回リトライ）順序に変更。continue-on-error廃止でエラーを可視化。旧qualify_log（8件・旧フォーマット）は`[]`にリセット。
+- 2026/04/19: entryTimingを投資判断の第一軸に統合 → `investment_advisor.py`に`entryTiming`/`whyCategory`の読み取りを追加。day2_skip→即見送り、day2_go+is_strong+pf_ok→エントリー、その他→様子見/見送りの優先順位に変更。
+- 2026/04/19: whyCategoryパターン学習を追加 → `momentum_qualifier.py`の`get_outcome_patterns()`に`by_why_category`バケット追加（急騰理由別勝率）。Stage2フィードバックプロンプトの第一項目に。`slack_notifier.py`の週次レポートに「急騰理由別勝率」セクション追加。
+- 2026/04/19: TDnetコードマッチングバグを修正 → `tdnet_fetcher.py`の`get_disclosures_for_stock()`で比較前に`_normalize_code()`を適用（J-Quants=5桁、TDnet=4桁の不一致）。修正前: 全件マッチ0件→全銘柄がGoogleニュース fallback。修正後: 正常に開示照合。
+- 2026/04/19: Stage2分析の情報品質を改善 → `momentum_qualifier.py`の`_fetch_stock_news()`に8パターンのノイズフィルタ追加（「AIが解説」「掲示板」「Google ニュース」等）。Stage2プロンプトに創作防止ルール追加（「開示・ニュースなし」→必ず不明/day2_skip/structuralChange=false）。
 
 ---
 
-## 現在の状況（2026/04/14更新）
-- 5ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
-- **3つの学習ループがすべて記録→フィードバックまで接続済み**
-  - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入
+## 現在の状況（2026/04/19更新）
+- 4ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
+- **学習ループの永続化**: qualify_log/momentum_logはgit管理（キャッシュ廃止）。morning-scan/evening-scan後に自動git pushでリセット耐性を確保
+- **2つの学習ループが記録→フィードバックまで接続済み**
+  - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入（whyCategoryが第一軸）
   - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
-  - EARNINGS: earnings_signal_log → 10日後outcome → score_earnings_signal_by_patterns → edinet_analyzerプロンプトへ注入
-- **決算速報パイプライン（2026/04/10〜）**: J-Quants 18:00速報 → Haiku分析 → 18:30通知（社名付き）。EDINETは翌朝照合用として継続。
-- **TDnet適時開示スキャン（2026/04/11〜）**: 全開示タイトルをHaikuで分類 → 18:30通知。J-Quantsとのダブルシグナルは各通知に🚨バッジで明示＋`notify_double_signals`で詳細通知。
-- **確報フォロー（2026/04/11〜）**: 06:30に前営業日の確報差分＋TDnet引け後開示（18:30以降）をHaiku分析してSlack通知。速報との差分のみ表示。
+- **デイ2エントリー戦略**: entryTimingが投資判断の第一軸。day2_go=翌日GO、day2_skip=見送り、day2_watch=様子見。whyCategoryで材料の質を分類
+- **Stage2分析の信頼性強化**: TDnetコード照合バグ修正（5桁→4桁正規化）＋Googleニュースノイズ除去（AIが解説/掲示板等8パターン）＋創作防止プロンプト（情報なし→必ず不明/day2_skip）
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
-- 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。両軸一致セクションは廃止。
+- 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。
 - Claudeモデル: Sonnet系は`claude-sonnet-4-6`、Haiku系は`claude-haiku-4-5-20251001`を使用
-- 次のマイルストーン①: 各ログ5件蓄積 → パターン分析自動発動確認（5月決算シーズンが本番）
-- 次のマイルストーン②: J-Quants速報シグナルと翌朝急騰の照合精度を確認（2〜3週後）
-- 次のマイルストーン③: TDnetダブルシグナルと翌日モメンタムの照合精度を確認（2〜3週後）
-- 次のマイルストーン④: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
+- 次のマイルストーン①: qualify_log 5件蓄積 → whyCategoryパターン分析自動発動確認（5月決算シーズンが本番）
+- 次のマイルストーン②: entryTimingの精度確認（day2_goシグナルと翌日株価の照合、2〜3週後）
+- 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
