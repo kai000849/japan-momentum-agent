@@ -173,7 +173,7 @@ def run_scan_mode(args):
     """
     from agents.scanner import (
         run_scan, display_top_results,
-        MODE_SHORT_TERM, MODE_MOMENTUM, MODE_EARNINGS
+        MODE_SHORT_TERM, MODE_MOMENTUM
     )
 
     # スキャンタイプに応じて実行するモードを決定
@@ -184,17 +184,16 @@ def run_scan_mode(args):
     type_to_mode = {
         "short": MODE_SHORT_TERM,
         "momentum": MODE_MOMENTUM,
-        "earnings": MODE_EARNINGS,
     }
 
     # 実行するモードリストを作成
     if scan_type == "all":
-        modes_to_run = [MODE_SHORT_TERM, MODE_MOMENTUM, MODE_EARNINGS]
+        modes_to_run = [MODE_SHORT_TERM, MODE_MOMENTUM]
     elif scan_type in type_to_mode:
         modes_to_run = [type_to_mode[scan_type]]
     else:
         print(f"エラー: 無効なスキャンタイプ '{scan_type}' です。")
-        print("有効な値: short, momentum, earnings, all")
+        print("有効な値: short, momentum, all")
         sys.exit(1)
 
     print(f"【スキャンモード】")
@@ -222,13 +221,7 @@ def run_scan_mode(args):
             try:
                 _prev_data = _json.loads(_fname.read_text(encoding="utf-8"))
                 _prev_results = _prev_data.get("results", [])
-                if _m == "EARNINGS":
-                    _prev_notified[_m] = {
-                        f"{r.get('stockCode')}::{r.get('docID', '')}"
-                        for r in _prev_results
-                    }
-                else:
-                    _prev_notified[_m] = {r.get("stockCode", "") for r in _prev_results}
+                _prev_notified[_m] = {r.get("stockCode", "") for r in _prev_results}
                 if _prev_notified[_m]:
                     logger.info(f"{_m}: 既通知シグナル {len(_prev_notified[_m])}件をロード（重複通知防止）")
             except Exception as _e:
@@ -320,93 +313,6 @@ def run_scan_mode(args):
 
         for mode, results in all_results.items():
             if not results:
-                continue
-
-            # EARNINGS（決算）モードはClaude APIで分析してスコアリング通知
-            if mode == "EARNINGS":
-                try:
-                    from agents.edinet_analyzer import analyze_earnings_batch
-                    from agents.earnings_momentum_scanner import save_watchlist
-                    print("  決算書類をClaude APIで分析中...")
-                    analyzed = analyze_earnings_batch(results)
-                    analyzed_map = {r.get("stockCode"): r for r in analyzed}
-                    merged = []
-                    for r in results:
-                        code = r.get("stockCode", "")
-                        if code in analyzed_map:
-                            merged.append({**r, **analyzed_map[code]})
-                        else:
-                            merged.append(r)
-                    # パターンスコアリング（過去実績から期待勝率を付与）
-                    try:
-                        from agents.earnings_momentum_scanner import (
-                            get_earnings_patterns, score_earnings_signal_by_patterns
-                        )
-                        ep = get_earnings_patterns()
-                        for r in merged:
-                            sr = score_earnings_signal_by_patterns(r, ep)
-                            r["expected_win_rate"] = sr["expected_win_rate"]
-                            r["pattern_notes"] = sr["pattern_notes"]
-                        scored = [r for r in merged if r.get("expected_win_rate") is not None]
-                        if scored:
-                            logger.info(
-                                f"EARNINGSパターンスコア付与: {len(scored)}件"
-                                f"（最高期待勝率: {max(r['expected_win_rate'] for r in scored):.0f}%）"
-                            )
-                    except Exception as e:
-                        logger.warning(f"EARNINGSパターンスコアリングエラー（スキップ）: {e}")
-
-                    # 重複排除: 朝スキャン済みの開示（stockCode+docID一致）を除外して通知
-                    _prev_e = _prev_notified.get(mode, set())
-                    merged_to_notify = [
-                        r for r in merged
-                        if f"{r.get('stockCode')}::{r.get('docID', '')}" not in _prev_e
-                    ] if _prev_e else merged
-                    if merged_to_notify:
-                        _skipped_e = len(merged) - len(merged_to_notify)
-                        notify_new_signal(merged_to_notify, mode=mode, profit_factor=0.0, skipped_count=_skipped_e)
-                    else:
-                        logger.info("EARNINGS: 新規開示なし（朝スキャン済みと同一）→ 通知スキップ")
-                    # 分析済み結果をクロスシグナル照合のために保存（フルリスト）
-                    all_results["EARNINGS"] = merged
-                    # 翌朝ザラ場スキャン用ウォッチリストを保存（フルリスト）
-                    save_watchlist(merged)
-                    # 決算・業績開示があった銘柄のモメンタムコメントを失効（再点検対象に）
-                    try:
-                        from agents.momentum_qualifier import invalidate_momentum_cache_for_codes
-                        analyzed_codes = [r.get("stockCode") for r in merged if r.get("analyzed")]
-                        if analyzed_codes:
-                            invalidate_momentum_cache_for_codes(analyzed_codes)
-                    except Exception as e:
-                        logger.warning(f"モメンタムキャッシュ失効エラー（スキップ）: {e}")
-
-                    # EDINET日次サマリー通知
-                    try:
-                        import json as _json
-                        from pathlib import Path as _Path
-                        _today_raw = datetime.now().strftime("%Y%m%d")
-                        _raw_path = _Path("data/raw/edinet") / f"{_today_raw}.json"
-                        _total_fetched = None
-                        if _raw_path.exists():
-                            with open(_raw_path, "r", encoding="utf-8") as _f:
-                                _total_fetched = len(_json.load(_f))
-                        _edinet_stats = {
-                            "date": datetime.now().strftime("%Y-%m-%d"),
-                            "total_fetched": _total_fetched,
-                            "earnings_signals": len(results),
-                            "analyzed_ok": len([r for r in analyzed if r.get("analyzed")]),
-                            "pdf_failed": len([r for r in analyzed if not r.get("analyzed") and "PDF取得失敗" in r.get("summary", "")]),
-                            "other_skipped": len([r for r in analyzed if not r.get("analyzed") and "PDF取得失敗" not in r.get("summary", "")]),
-                        }
-                        from agents.slack_notifier import notify_edinet_daily_summary
-                        _is_evening = datetime.now().hour >= 17
-                        notify_edinet_daily_summary(_edinet_stats, force_send=_is_evening)
-                    except Exception as e:
-                        logger.warning(f"EDINET日次サマリー通知エラー（スキップ）: {e}")
-
-                except Exception as e:
-                    print(f"  決算分析エラー（簡易通知に切り替え）: {e}")
-                    notify_new_signal(results, mode=mode, profit_factor=0.0)
                 continue
 
             # MOMENTUMはキャッシュ付きコメント生成（新規銘柄のみAPI呼び出し）

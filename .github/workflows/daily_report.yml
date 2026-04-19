@@ -10,10 +10,6 @@ on:
     # 米市場スキャン（朝1ジョブ）と同時刻に並行実行。
     # → us_scan結果は当日夕方通知で参照するため、並行でも問題なし。
 
-    # 【前場中盤】ザラ場決算モメンタムスキャン 10:30 JST (UTC 1:30)
-    # 前日決算発表銘柄の寄り付き反応を確認してエントリー判断
-    - cron: '30 1 * * 1-5'    # 月〜金（日本時間の平日前場中盤10:30）
-
     # 【正午】後場エントリー判断 12:15 JST (UTC 3:15)
     # 前場の値動きをyfinanceで確認（15分遅延・無料）→ 後場12:30エントリー可否をSlack通知
     - cron: '15 3 * * 1-5'    # 月〜金（日本時間の平日正午12:15）
@@ -180,14 +176,6 @@ jobs:
           restore-keys: |
             scans-
 
-      - name: EDINET分析キャッシュを復元
-        uses: actions/cache@v4
-        with:
-          path: data/processed/edinet_analysis_cache.json
-          key: edinet-cache-${{ github.run_number }}
-          restore-keys: |
-            edinet-cache-
-
       - name: TDnet開示キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -248,29 +236,11 @@ jobs:
           path: data/processed/scans
           key: scans-${{ steps.date.outputs.today }}
 
-      - name: EDINET分析キャッシュを保存
-        uses: actions/cache@v4
-        with:
-          path: data/processed/edinet_analysis_cache.json
-          key: edinet-cache-${{ github.run_number }}
-
       - name: TDnet開示キャッシュを保存
         uses: actions/cache@v4
         with:
           path: data/raw/tdnet
           key: tdnet-${{ github.run_number }}
-
-      - name: earnings_watchlist を保存（ザラ場・引け後スキャン用・日付キー）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ steps.date.outputs.today }}
-
-      - name: earnings_followup_list を保存（中長期追跡用）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_followup_list.json
-          key: earnings-followup-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
@@ -360,14 +330,6 @@ jobs:
           restore-keys: |
             scans-
 
-      - name: EDINET分析キャッシュを復元
-        uses: actions/cache@v4
-        with:
-          path: data/processed/edinet_analysis_cache.json
-          key: edinet-cache-${{ github.run_number }}
-          restore-keys: |
-            edinet-cache-
-
       - name: TDnet開示キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -375,30 +337,6 @@ jobs:
           key: tdnet-${{ github.run_number }}
           restore-keys: |
             tdnet-
-
-      - name: earnings_watchlist を復元（morning/midmorning-scanが当日保存したもの・日付キー）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ steps.date.outputs.today }}
-          restore-keys: |
-            earnings-watchlist-
-
-      - name: earnings_signal_log を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_signal_log.json
-          key: earnings-signal-log-${{ github.run_number }}
-          restore-keys: |
-            earnings-signal-log-
-
-      - name: earnings_followup_list を復元（中長期追跡用）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_followup_list.json
-          key: earnings-followup-${{ github.run_number }}
-          restore-keys: |
-            earnings-followup-
 
       - name: 株価データ取得（150日分・75日MA計算に必要）
         id: fetch
@@ -416,12 +354,6 @@ jobs:
         id: status
         run: |
           python main.py --mode status --notify
-        continue-on-error: true
-
-      - name: 引け後決算モメンタム評価（J-Quants日足・18:00通知）
-        id: endofday
-        run: |
-          python main.py --mode earnings_endofday
         continue-on-error: true
 
       - name: trade_log.json を保存
@@ -458,35 +390,11 @@ jobs:
           path: data/processed/scans
           key: scans-${{ github.run_number }}
 
-      - name: EDINET分析キャッシュを保存
-        uses: actions/cache@v4
-        with:
-          path: data/processed/edinet_analysis_cache.json
-          key: edinet-cache-${{ github.run_number }}
-
       - name: TDnet開示キャッシュを保存
         uses: actions/cache@v4
         with:
           path: data/raw/tdnet
           key: tdnet-${{ github.run_number }}
-
-      - name: earnings_watchlist を保存（翌朝ザラ場スキャン用）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ github.run_number }}
-
-      - name: earnings_signal_log を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_signal_log.json
-          key: earnings-signal-log-${{ github.run_number }}
-
-      - name: earnings_followup_list を保存（中長期追跡用）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_followup_list.json
-          key: earnings-followup-${{ github.run_number }}
 
       - name: エラー通知
         if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
@@ -500,104 +408,6 @@ jobs:
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"⚠️ *GitHub Actions 夕方ジョブでエラー発生*\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
-
-  # ===========================
-  # 前場中盤ジョブ: ザラ場決算モメンタムスキャン
-  # 前日決算発表銘柄の寄り付き反応を確認 JST 10:30頃に実行
-  # ===========================
-  midmorning-scan:
-    runs-on: ubuntu-latest
-    if: github.event.schedule == '30 1 * * 1-5' || github.event_name == 'workflow_dispatch'
-    steps:
-      - name: 今日の日付を設定（クロスジョブキャッシュキー用）
-        id: date
-        run: echo "today=$(date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
-
-      - name: コードを取得
-        uses: actions/checkout@v4
-
-      - name: Python 3.11 をセットアップ
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 必要パッケージをインストール
-        run: |
-          pip install -r requirements.txt
-
-      - name: config.yaml を生成
-        run: |
-          cat > config.yaml << 'EOF'
-          jquants:
-            api_key: "${{ secrets.JQUANTS_API_KEY }}"
-          edinet:
-            api_key: "${{ secrets.EDINET_API_KEY }}"
-          slack:
-            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
-          anthropic:
-            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
-          paper_trading:
-            initial_capital: 3000000
-            max_position_size: 300000
-            max_positions: 10
-          EOF
-
-      - name: earnings_watchlist を復元（morning-scanが当日保存したもの・日付キー）
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ steps.date.outputs.today }}
-          restore-keys: |
-            earnings-watchlist-
-
-      - name: earnings_signal_log を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_signal_log.json
-          key: earnings-signal-log-${{ github.run_number }}
-          restore-keys: |
-            earnings-signal-log-
-
-      - name: qualify_log を復元（結果記録用）
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
-
-      - name: 株価データ取得（学習ループ用・軽量版）
-        id: fetch
-        run: |
-          python main.py --mode fetch --days 30
-        continue-on-error: true
-
-      - name: ザラ場決算モメンタムスキャン実行
-        id: intraday
-        run: |
-          python main.py --mode earnings_intraday
-        continue-on-error: true
-
-      - name: earnings_watchlist を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_watchlist.json
-          key: earnings-watchlist-${{ github.run_number }}
-
-      - name: earnings_signal_log を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/earnings_signal_log.json
-          key: earnings-signal-log-${{ github.run_number }}
-
-      - name: エラー通知
-        if: steps.intraday.outcome == 'failure'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -s -X POST "$SLACK_WEBHOOK_URL" \
-            -H "Content-Type: application/json" \
-            -d "{\"text\":\"⚠️ *ザラ場決算スキャンでエラー発生*\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
 
   # ===========================
   # 正午ジョブ: 後場エントリー判断
