@@ -159,14 +159,6 @@ jobs:
           restore-keys: |
             trade-log-
 
-      - name: qualify_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
-
       - name: スキャン結果キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -199,27 +191,23 @@ jobs:
           path: memory/trade_log.json
           key: trade-log-${{ github.run_number }}
 
-      - name: qualify_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-
-      - name: momentum_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/momentum_log.json
-          key: momentum-log-${{ github.run_number }}
-
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
+        id: git_commit_logs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add memory/qualify_log.json memory/momentum_log.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore: qualify_log/momentum_log更新（朝スキャン） [skip ci]"
-          git push
-        continue-on-error: true
+          if git diff --staged --quiet; then
+            echo "変更なし・スキップ"
+            exit 0
+          fi
+          git commit -m "chore: qualify_log/momentum_log更新（朝スキャン） [skip ci]"
+          for i in 1 2 3; do
+            git push && break || {
+              echo "push失敗（試行${i}）、pullしてリトライ..."
+              git pull --rebase origin main
+            }
+          done
 
       - name: スキャン結果キャッシュを保存（日付キー・noon-scan受け渡し用）
         uses: actions/cache@v4
@@ -228,7 +216,7 @@ jobs:
           key: scans-${{ steps.date.outputs.today }}
 
       - name: エラー通知
-        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.git_commit_logs.outcome == 'failure'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
@@ -236,6 +224,7 @@ jobs:
           [ "${{ steps.fetch.outcome }}" = "failure" ] && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
           [ "${{ steps.scan.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・スキャン実行(scan)\n"
           [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
+          [ "${{ steps.git_commit_logs.outcome }}" = "failure" ] && ERRORS="${ERRORS}・qualify_log git push失敗（学習ループ停止中）\n"
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"⚠️ *GitHub Actions 朝2ジョブでエラー発生*\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
@@ -291,22 +280,6 @@ jobs:
           restore-keys: |
             trade-log-
 
-      - name: qualify_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
-
-      - name: momentum_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/momentum_log.json
-          key: momentum-log-${{ github.run_number }}
-          restore-keys: |
-            momentum-log-
-
       - name: スキャン結果キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -339,27 +312,23 @@ jobs:
           path: memory/trade_log.json
           key: trade-log-${{ github.run_number }}
 
-      - name: qualify_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-
-      - name: momentum_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/momentum_log.json
-          key: momentum-log-${{ github.run_number }}
-
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
+        id: git_commit_logs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add memory/qualify_log.json memory/momentum_log.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore: qualify_log/momentum_log更新（夕方スキャン） [skip ci]"
-          git push
-        continue-on-error: true
+          if git diff --staged --quiet; then
+            echo "変更なし・スキップ"
+            exit 0
+          fi
+          git commit -m "chore: qualify_log/momentum_log更新（夕方スキャン） [skip ci]"
+          for i in 1 2 3; do
+            git push && break || {
+              echo "push失敗（試行${i}）、pullしてリトライ..."
+              git pull --rebase origin main
+            }
+          done
 
       - name: スキャン結果キャッシュを保存
         uses: actions/cache@v4
@@ -368,7 +337,7 @@ jobs:
           key: scans-${{ github.run_number }}
 
       - name: エラー通知
-        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.git_commit_logs.outcome == 'failure'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
@@ -376,6 +345,7 @@ jobs:
           [ "${{ steps.fetch.outcome }}" = "failure" ] && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
           [ "${{ steps.scan.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・スキャン実行(scan)\n"
           [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
+          [ "${{ steps.git_commit_logs.outcome }}" = "failure" ] && ERRORS="${ERRORS}・qualify_log git push失敗（学習ループ停止中）\n"
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"⚠️ *GitHub Actions 夕方ジョブでエラー発生*\n失敗ステップ:\n${ERRORS}\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
@@ -420,14 +390,6 @@ jobs:
             max_position_size: 300000
             max_positions: 10
           EOF
-
-      - name: qualify_log を復元（morning-scanが当日保存したもの）
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
 
       - name: スキャン結果キャッシュを復元（morning-scanが当日保存したもの・日付キー）
         uses: actions/cache@v4
@@ -496,22 +458,6 @@ jobs:
           key: trade-log-${{ github.run_number }}
           restore-keys: |
             trade-log-
-
-      - name: qualify_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/qualify_log.json
-          key: qualify-log-${{ github.run_number }}
-          restore-keys: |
-            qualify-log-
-
-      - name: momentum_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/momentum_log.json
-          key: momentum-log-${{ github.run_number }}
-          restore-keys: |
-            momentum-log-
 
       - name: 週次レポート送信
         id: weekly
