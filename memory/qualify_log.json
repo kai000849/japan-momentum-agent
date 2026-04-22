@@ -2505,7 +2505,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "東京オフィス開設・採用サイト刷新のみで急騰理由として弱い",
+      "comment": "東京オフィス開設・採用サイト刷新のみで株価急騰の明確な材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -2517,7 +2517,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237939"
+    "qualifiedAt": "2026-04-22T22:25:23.832966"
   },
   {
     "stockCode": "36560",
@@ -2547,19 +2547,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "ドラクエ新作配信の出足好調で急反発、材料出尽くし懸念あり",
+      "comment": "ドラクエ最新作の配信好調が直接的な株価上昇材料",
       "whyCategory": "ニュース",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] ドラクエ新作配信出足好調で急反発、出尽くし懸念残る",
+      "surgeReason": "[ニュース] 開発担当ドラクエ最新作が好発進・配信出足好調",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] ドラクエ新作配信出足好調で急反発、出尽くし懸念残る",
+    "surgeReason": "[ニュース] 開発担当ドラクエ最新作が好発進・配信出足好調",
     "whyCategory": "ニュース",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237949"
+    "qualifiedAt": "2026-04-22T22:25:23.832978"
   },
   {
     "stockCode": "46840",
@@ -2589,19 +2589,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "決算発表＋自社株買い・消却の二重材料、継続性高い",
-      "whyCategory": "決算",
+      "comment": "決算好業績＋自社株買い・消却のダブル材料で強い継続性",
+      "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_go",
-      "surgeReason": "[決算] 2026年3月期決算短信＋自社株買い・消却発表で急騰",
+      "surgeReason": "[決算] 2026年3月期決算＋自社株買い・消却発表でダブル材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2026年3月期決算短信＋自社株買い・消却発表で急騰",
-    "whyCategory": "決算",
+    "surgeReason": "[決算] 2026年3月期決算＋自社株買い・消却発表でダブル材料",
+    "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237950"
+    "qualifiedAt": "2026-04-22T22:25:23.832979"
   },
   {
     "stockCode": "40280",
@@ -2631,19 +2631,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "子会社工場火災の開示で需給混乱、ネガティブ材料につき継続性不明",
-      "whyCategory": "ニュース",
+      "comment": "子会社工場の火災発生はネガティブ材料であり急騰理由と矛盾",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 子会社神戸工場火災発生の開示、急騰理由として不整合",
+      "surgeReason": "[不明] 子会社火災開示あるが急騰理由は材料特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 子会社神戸工場火災発生の開示、急騰理由として不整合",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 子会社火災開示あるが急騰理由は材料特定不可",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237952"
+    "qualifiedAt": "2026-04-22T22:25:23.832980"
   },
   {
     "stockCode": "99840",
@@ -2673,19 +2673,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "傘下アーム株高を好感、時価総額30兆円回復でテーマ継続性あり",
+      "comment": "傘下アーム株高・時価総額30兆円回復とAI投資テーマ再評価",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] アーム株高好感でSBG急騰、時価総額30兆円台回復",
+      "surgeReason": "[ニュース] アーム株高を好感・時価総額30兆円台回復でAI再評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] アーム株高好感でSBG急騰、時価総額30兆円台回復",
+    "surgeReason": "[ニュース] アーム株高を好感・時価総額30兆円台回復でAI再評価",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237953"
+    "qualifiedAt": "2026-04-22T22:25:23.832982"
   },
   {
     "stockCode": "69620",
@@ -2713,21 +2713,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "業績修正・自社株買い発表・過去最高売上目標で材料複数あり",
-      "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 業績修正＋自己株買い発表で大幅反発、過去最高売上目指す",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "決算説明会内容や業績修正は過去開示で当日材料の新規性低い",
+      "whyCategory": "不明",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績修正＋自己株買い発表で大幅反発、過去最高売上目指す",
-    "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237954"
+    "qualifiedAt": "2026-04-22T22:25:23.832983"
   },
   {
     "stockCode": "69860",
@@ -2757,19 +2757,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "MAZIN出資・災害ドローン導入でニュース材料あり、継続性は限定的",
-      "whyCategory": "資本提携・M&A",
+      "comment": "千葉での災害ドローン導入・MAZINへの出資が直近の材料",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] MAZINへ出資発表＋千葉で災害ドローン2件目導入で続伸",
+      "surgeReason": "[ニュース] 災害ドローン2件目導入＋MAZINへの出資でドローンテーマ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] MAZINへ出資発表＋千葉で災害ドローン2件目導入で続伸",
-    "whyCategory": "資本提携・M&A",
+    "surgeReason": "[ニュース] 災害ドローン2件目導入＋MAZINへの出資でドローンテーマ",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-22T10:56:57.237955"
+    "qualifiedAt": "2026-04-22T22:25:23.832984"
   },
   {
     "stockCode": "58890",
@@ -2799,19 +2799,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "売上・営業利益が通期過去最高達成、店舗売上13%増で業績好調",
+      "comment": "売上収益・営業利益が通期過去最高達成・店舗売上13%増が評価",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 通期売上・営業利益過去最高達成、店舗売上13%増が好感",
+      "surgeReason": "[ニュース] 売上・営業利益通期過去最高達成・店舗売上13%増",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 通期売上・営業利益過去最高達成、店舗売上13%増が好感",
+    "surgeReason": "[ニュース] 売上・営業利益通期過去最高達成・店舗売上13%増",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237959"
+    "qualifiedAt": "2026-04-22T22:25:23.832987"
   },
   {
     "stockCode": "40040",
@@ -2839,21 +2839,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "medium",
-      "comment": "上場子会社の配当政策重視が評価されての上昇、継続性は様子見",
-      "whyCategory": "ニュース",
+      "comment": "上場子会社の配当政策重視評価＋半導体AI需要で35年ぶり高値",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 上場子会社の配当政策重視評価で急騰、継続性は不明",
+      "surgeReason": "[ニュース] 子会社配当政策重視評価＋AI半導体テーマで35年ぶり高値",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上場子会社の配当政策重視評価で急騰、継続性は不明",
-    "whyCategory": "ニュース",
+    "surgeReason": "[ニュース] 子会社配当政策重視評価＋AI半導体テーマで35年ぶり高値",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-22T10:56:57.237960"
+    "qualifiedAt": "2026-04-22T22:25:23.832989"
   },
   {
     "stockCode": "58050",
@@ -2882,20 +2882,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "high",
-      "comment": "米系大手が目標株価引上げ＋積極中期計画評価＋古河電工案件と材料重なる",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] 米系大手レーティング継続・目標株価引上げ＋中期計画評価",
+      "confidence": "medium",
+      "comment": "米系大手が目標株価引上げ＋古河電工から汎用ケーブル会社株譲受",
+      "whyCategory": "資本提携・M&A",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 米系証券が目標株価引上げ＋古河電工からケーブル株譲受",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米系大手レーティング継続・目標株価引上げ＋中期計画評価",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_go",
+    "surgeReason": "[ニュース] 米系証券が目標株価引上げ＋古河電工からケーブル株譲受",
+    "whyCategory": "資本提携・M&A",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-22T10:56:57.237961"
+    "qualifiedAt": "2026-04-22T22:25:23.832990"
   },
   {
     "stockCode": "36970",
@@ -2923,21 +2923,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "high",
-      "comment": "岩井コスモが最上位格上げ、中期成長基盤強化評価で継続性高い",
+      "structuralChange": false,
+      "confidence": "medium",
+      "comment": "岩井コスモが最上位格上げ・中期成長基盤強化評価が材料",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] 岩井コスモが最上位格上げ、中期成長基盤強化を評価",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 岩井コスモが最上位に格上げ・中期成長基盤評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 岩井コスモが最上位格上げ、中期成長基盤強化を評価",
+    "surgeReason": "[ニュース] 岩井コスモが最上位に格上げ・中期成長基盤評価",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_go",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237963"
+    "qualifiedAt": "2026-04-22T22:25:23.832991"
   },
   {
     "stockCode": "70030",
@@ -2967,7 +2967,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "成長株選定記事・割安指摘あるが明確な新規材料なく継続性不明",
+      "comment": "四半期営業利益加速成長株選出記事のみで決定的な材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -2979,7 +2979,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-22T10:56:57.237964"
+    "qualifiedAt": "2026-04-22T22:25:23.832992"
   },
   {
     "stockCode": "47330",
@@ -3009,18 +3009,18 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "決算短信発表＋親会社オービック急騰との連動で材料明確",
+      "comment": "2026年3月期決算短信発表＋投資単位引下げ方針も開示",
       "whyCategory": "決算",
       "entryTiming": "day2_go",
-      "surgeReason": "[決算] 2026年3月期決算短信発表＋オービック本体との連動上昇",
+      "surgeReason": "[決算] 2026年3月期決算発表＋投資単位引下げ方針開示で評価",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2026年3月期決算短信発表＋オービック本体との連動上昇",
+    "surgeReason": "[決算] 2026年3月期決算発表＋投資単位引下げ方針開示で評価",
     "whyCategory": "決算",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-22T10:56:57.237965"
+    "qualifiedAt": "2026-04-22T22:25:23.832994"
   }
 ]
