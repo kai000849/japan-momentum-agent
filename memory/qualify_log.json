@@ -3051,19 +3051,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "カカクコム買収検討報道でりそなとの資本提携も材料視",
+      "comment": "カカクコム買収検討報道＋りそながDG持分法適用で資本再編期待",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] カカクコム買収検討報道＋りそなとの資本関係が材料",
+      "surgeReason": "[ニュース] カカクコム買収検討＋りそなとの資本提携で材料複合",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] カカクコム買収検討報道＋りそなとの資本関係が材料",
+    "surgeReason": "[ニュース] カカクコム買収検討＋りそなとの資本提携で材料複合",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875467"
+    "qualifiedAt": "2026-04-23T22:22:51.858063"
   },
   {
     "stockCode": "65260",
@@ -3096,16 +3096,16 @@
       "comment": "半導体テーマ再燃で資金流入、日経225内値上がり率トップ",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 半導体関連テーマ再燃で高出来高・資金流入加速",
+      "surgeReason": "[ニュース] 半導体テーマ再燃でソシオネクストに高出来高の資金流入",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 半導体関連テーマ再燃で高出来高・資金流入加速",
+    "surgeReason": "[ニュース] 半導体テーマ再燃でソシオネクストに高出来高の資金流入",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875478"
+    "qualifiedAt": "2026-04-23T22:22:51.858072"
   },
   {
     "stockCode": "42750",
@@ -3133,21 +3133,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "high",
-      "comment": "自社株消却による需給改善・1株益向上を好感",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "自己株消却で需給改善・1株益上昇期待＋宇宙・防衛重点領域化",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 自社株消却発表で需給改善・EPS向上期待",
+      "surgeReason": "[ニュース] 自己株消却による需給改善と防衛テーマで複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株消却発表で需給改善・EPS向上期待",
+    "surgeReason": "[ニュース] 自己株消却による需給改善と防衛テーマで複合材料",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875480"
+    "qualifiedAt": "2026-04-23T22:22:51.858074"
   },
   {
     "stockCode": "62350",
@@ -3175,21 +3175,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "支配株主等に関する事項開示、資本異動の可能性",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "支配株主等に関する事項の開示のみで詳細不明",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 支配株主関連事項開示で資本変動期待が急騰材料",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[開示] 支配株主関連開示あるが内容詳細不明・継続性判断困難",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 支配株主関連事項開示で資本変動期待が急騰材料",
+    "surgeReason": "[開示] 支配株主関連開示あるが内容詳細不明・継続性判断困難",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875481"
+    "qualifiedAt": "2026-04-23T22:22:51.858075"
   },
   {
     "stockCode": "83030",
@@ -3217,21 +3217,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "high",
-      "comment": "通期業績予想上方修正＋期末配当増額予想が材料",
+      "comment": "通期業績予想上方修正＋期末配当予想引き上げで株主還元強化",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績上方修正＋期末配当増額予想で買い集中",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 通期業績上方修正＋配当予想引き上げで株主還元強化",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績上方修正＋期末配当増額予想で買い集中",
+    "surgeReason": "[開示] 通期業績上方修正＋配当予想引き上げで株主還元強化",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_go",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875482"
+    "qualifiedAt": "2026-04-23T22:22:51.858076"
   },
   {
     "stockCode": "67230",
@@ -3261,19 +3261,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "米社による一部事業買収協議報道が急騰の主因",
+      "comment": "米企業が一部事業買収協議と日経報道、M&A期待で株価急伸",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] 米企業が一部事業買収協議と日経報道が強材料",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 米社による一部事業買収協議報道でM&A期待が急浮上",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米企業が一部事業買収協議と日経報道が強材料",
+    "surgeReason": "[ニュース] 米社による一部事業買収協議報道でM&A期待が急浮上",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_go",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-23T11:03:45.875483"
+    "qualifiedAt": "2026-04-23T22:22:51.858077"
   },
   {
     "stockCode": "42490",
@@ -3303,19 +3303,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "high",
-      "comment": "業績予想の上方修正開示が買い材料、出来高急増",
+      "comment": "業績予想上方修正開示で買い材料、ただし上昇幅は限定的",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 業績予想上方修正発表で買い優勢・出来高急増",
+      "surgeReason": "[開示] 業績予想上方修正発表、+3.5%と上昇幅は小さく継続性要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績予想上方修正発表で買い優勢・出来高急増",
+    "surgeReason": "[開示] 業績予想上方修正発表、+3.5%と上昇幅は小さく継続性要確認",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-23T11:03:45.875484"
+    "qualifiedAt": "2026-04-23T22:22:51.858078"
   },
   {
     "stockCode": "80600",
@@ -3345,19 +3345,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "Q1決算短信開示が材料、内容精査が必要",
+      "comment": "1Q決算短信開示が材料、内容精査が必要",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q決算短信開示が買い材料、内容次第で継続性判断",
+      "surgeReason": "[決算] 1Q決算短信開示が買い材料、内容の強度確認が必要",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q決算短信開示が買い材料、内容次第で継続性判断",
+    "surgeReason": "[決算] 1Q決算短信開示が買い材料、内容の強度確認が必要",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875488"
+    "qualifiedAt": "2026-04-23T22:22:51.858082"
   },
   {
     "stockCode": "64320",
@@ -3385,21 +3385,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "増配発表は過去報道、格下げ・減益報道と混在し材料不明確",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "15期連続増配・配当利回り4%超が評価、アナリスト予想も上昇",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 増配報道あるも格下げ・減益報道混在で材料不明確",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 15期連続増配・配当利回り4%超で長期株主還元評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 増配報道あるも格下げ・減益報道混在で材料不明確",
+    "surgeReason": "[ニュース] 15期連続増配・配当利回り4%超で長期株主還元評価",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875490"
+    "qualifiedAt": "2026-04-23T22:22:51.858084"
   },
   {
     "stockCode": "39930",
@@ -3429,19 +3429,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ツクルバ株買い増し変更報告書提出が材料だが影響限定的",
+      "comment": "ツクルバ株買い増しの変更報告書提出が材料、本業との連動薄い",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] ツクルバ保有割合増加報告書提出、直接材料は弱い",
+      "surgeReason": "[ニュース] ツクルバ株買い増し報告書提出、本業材料乏しく継続性低い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] ツクルバ保有割合増加報告書提出、直接材料は弱い",
+    "surgeReason": "[ニュース] ツクルバ株買い増し報告書提出、本業材料乏しく継続性低い",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875491"
+    "qualifiedAt": "2026-04-23T22:22:51.858085"
   },
   {
     "stockCode": "65900",
@@ -3471,19 +3471,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "6連騰継続・空売り買い戻し＋目標株価引き上げが支援",
+      "comment": "6連騰継続・CoWoS需要で目標株価32000円に引き上げ",
       "whyCategory": "需給",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 6連騰・空売り買い戻し＋目標株価32,000円引き上げ",
+      "surgeReason": "[ニュース] CoWoS需要で目標株価引き上げ＋信用売り買い戻し6連騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 6連騰・空売り買い戻し＋目標株価32,000円引き上げ",
+    "surgeReason": "[ニュース] CoWoS需要で目標株価引き上げ＋信用売り買い戻し6連騰",
     "whyCategory": "需給",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875492"
+    "qualifiedAt": "2026-04-23T22:22:51.858086"
   },
   {
     "stockCode": "63870",
@@ -3513,19 +3513,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "2Q受注高73%増・過去最高でストップ高気配の強材料",
+      "comment": "2Q受注高73%増・過去最高で業績急拡大、前日ストップ高起点",
       "whyCategory": "決算",
       "entryTiming": "day2_go",
-      "surgeReason": "[決算] 2Q受注高73%増・過去最高更新でストップ高気配発生",
+      "surgeReason": "[決算] 2Q受注高73%増・過去最高を記録し業績急拡大が明確",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2Q受注高73%増・過去最高更新でストップ高気配発生",
+    "surgeReason": "[決算] 2Q受注高73%増・過去最高を記録し業績急拡大が明確",
     "whyCategory": "決算",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875493"
+    "qualifiedAt": "2026-04-23T22:22:51.858087"
   },
   {
     "stockCode": "44460",
@@ -3555,19 +3555,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "海外マンガ好調報道あるが決算説明会開催告知が主、材料弱い",
+      "comment": "Crunchyroll Manga好調との報道あるが決算説明会開催告知が主",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 海外マンガ好調報道あるが急騰材料として根拠弱い",
+      "surgeReason": "[ニュース] 海外マンガ好調報道あるが材料の強度・継続性は不明",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 海外マンガ好調報道あるが急騰材料として根拠弱い",
+    "surgeReason": "[ニュース] 海外マンガ好調報道あるが材料の強度・継続性は不明",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875494"
+    "qualifiedAt": "2026-04-23T22:22:51.858088"
   },
   {
     "stockCode": "99840",
@@ -3595,21 +3595,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "medium",
-      "comment": "傘下アーム株高・米AI半導体株高で連動買い戻し加速",
+      "comment": "米AI・半導体株高を受けた買い戻しで時価総額30兆円台回復",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 傘下アーム株高＋米AI半導体株高で買い戻し加速",
+      "surgeReason": "[ニュース] 米AI・半導体株高による買い戻しで時価総額30兆円台回復",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 傘下アーム株高＋米AI半導体株高で買い戻し加速",
+    "surgeReason": "[ニュース] 米AI・半導体株高による買い戻しで時価総額30兆円台回復",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-04-23T11:03:45.875495"
+    "qualifiedAt": "2026-04-23T22:22:51.858089"
   },
   {
     "stockCode": "45210",
@@ -3637,21 +3637,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "high",
-      "comment": "J&Jとのライセンス契約マイルストン達成で業績予想修正",
+      "comment": "J&Jとのライセンスマイルストン達成で業績予想を上方修正",
       "whyCategory": "受注・契約",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] J&Jマイルストン達成・収入受領で業績予想上方修正",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] J&Jマイルストン達成によるマイルストン収入で業績上方修正",
       "stage2Available": true
     },
-    "surgeReason": "[開示] J&Jマイルストン達成・収入受領で業績予想上方修正",
+    "surgeReason": "[開示] J&Jマイルストン達成によるマイルストン収入で業績上方修正",
     "whyCategory": "受注・契約",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_go",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875496"
+    "qualifiedAt": "2026-04-23T22:22:51.858090"
   },
   {
     "stockCode": "80610",
@@ -3693,7 +3693,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875497"
+    "qualifiedAt": "2026-04-23T22:22:51.858091"
   },
   {
     "stockCode": "63310",
@@ -3735,7 +3735,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875498"
+    "qualifiedAt": "2026-04-23T22:22:51.858092"
   },
   {
     "stockCode": "70120",
@@ -3777,7 +3777,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875499"
+    "qualifiedAt": "2026-04-23T22:22:51.858093"
   },
   {
     "stockCode": "65040",
@@ -3819,7 +3819,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875501"
+    "qualifiedAt": "2026-04-23T22:22:51.858094"
   },
   {
     "stockCode": "29140",
@@ -3861,7 +3861,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875502"
+    "qualifiedAt": "2026-04-23T22:22:51.858097"
   },
   {
     "stockCode": "83660",
@@ -3903,6 +3903,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-04-23T11:03:45.875503"
+    "qualifiedAt": "2026-04-23T22:22:51.858098"
   }
 ]
