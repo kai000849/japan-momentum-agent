@@ -20,11 +20,11 @@ on:
         required: false
         type: string
       shares:
-        description: '株数（add のみ・例: 400）'
+        description: '株数（例: 400）add=購入株数 / close=売却株数（省略時は全決済）'
         required: false
         type: string
       trade_type:
-        description: '取引種別（add のみ）'
+        description: '取引種別（add/close 共通）'
         required: false
         type: choice
         options:
@@ -32,11 +32,15 @@ on:
           - margin（制度信用）
           - general_margin（一般信用）
       company:
-        description: '会社名（任意）'
+        description: '会社名（add のみ・任意）'
         required: false
         type: string
       entry_date:
         description: 'エントリー日（add のみ・省略時は今日 YYYY-MM-DD）'
+        required: false
+        type: string
+      exit_date:
+        description: '決済日（close のみ・省略時は今日 YYYY-MM-DD）'
         required: false
         type: string
       cash_amount:
@@ -93,9 +97,12 @@ jobs:
       - name: 決済記録
         if: startsWith(github.event.inputs.mode, 'close')
         run: |
-          python main.py --mode close_trade \
-            --code "${{ github.event.inputs.code }}" \
-            --price "${{ github.event.inputs.price }}"
+          TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z_]*')
+          ARGS="--code '${{ github.event.inputs.code }}' --price '${{ github.event.inputs.price }}'"
+          [ -n "${{ github.event.inputs.shares }}" ]    && ARGS="$ARGS --shares '${{ github.event.inputs.shares }}'"
+          [ -n "${TRADE_TYPE}" ]                        && ARGS="$ARGS --trade-type '${TRADE_TYPE}'"
+          [ -n "${{ github.event.inputs.exit_date }}" ] && ARGS="$ARGS --exit-date '${{ github.event.inputs.exit_date }}'"
+          eval "python main.py --mode close_trade $ARGS"
 
       - name: 現金残高更新
         if: startsWith(github.event.inputs.mode, 'update_cash')
@@ -141,7 +148,9 @@ jobs:
           elif [ "$MODE" = "update_cash" ]; then
             TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${CASH}"
           else
-            TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}\n⚠️ 税引後の実受取額が確定したら現金残高を再設定してください"
+            PARTIAL=""
+            [ -n "${SHARES}" ] && PARTIAL=" ${SHARES}株（部分決済）" || PARTIAL="（全決済）"
+            TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${PARTIAL}\n決済価格: ¥${PRICE}\n⚠️ 税引後の実受取額が確定したら現金残高を再設定してください"
           fi
 
           curl -s -X POST "$SLACK_WEBHOOK_URL" \

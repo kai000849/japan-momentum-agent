@@ -751,10 +751,12 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument("--shares",     type=int,   default=None, help="購入株数（add_trade用）")
     parser.add_argument("--company",    type=str,   default="",   help="会社名（任意）")
     parser.add_argument("--signal",     type=str,   default="",   help="シグナル種別（任意、例: SHORT_TERM）")
-    parser.add_argument("--trade-type", type=str,   default="cash", choices=["cash", "margin"],
-                        help="取引種別（add_trade用）: cash=現物 / margin=制度信用")
+    parser.add_argument("--trade-type", type=str,   default="cash", choices=["cash", "margin", "general_margin"],
+                        help="取引種別: cash=現物 / margin=制度信用 / general_margin=一般信用")
     parser.add_argument("--entry-date", type=str,   default="",
                         help="エントリー日（add_trade用、形式: YYYY-MM-DD）。省略時は今日")
+    parser.add_argument("--exit-date",  type=str,   default="",
+                        help="決済日（close_trade用、形式: YYYY-MM-DD）。省略時は今日")
 
     return parser
 
@@ -1044,17 +1046,21 @@ def main():
         elif args.mode == "close_trade":
             # 実売買決済記録
             from agents.paper_trader import close_actual_trade
-            code  = args.code
-            price = args.price
+            code       = args.code
+            price      = args.price
+            shares     = args.shares
+            trade_type = getattr(args, "trade_type", None) or None
+            exit_date  = getattr(args, "exit_date", "") or ""
 
             if not code or not price:
                 print("エラー: --code, --price は必須です。")
-                print("例: python main.py --mode close_trade --code 7203 --price 2600")
+                print("例: python main.py --mode close_trade --code 7203 --price 2600 --shares 100 --trade-type cash")
                 sys.exit(1)
 
-            success = close_actual_trade(code, price)
+            success = close_actual_trade(code, price, shares, trade_type, exit_date)
             if success:
-                print(f"✅ 決済を記録しました: {code} → ¥{price:,}")
+                partial = f"（{shares}株 部分決済）" if shares else "（全決済）"
+                print(f"✅ 決済を記録しました: {code} ¥{price:,} {partial}")
             else:
                 print(f"❌ 決済失敗（{code} の実売買記録が見つかりません）")
 

@@ -640,13 +640,22 @@ def add_actual_trade(
     return True
 
 
-def close_actual_trade(stock_code: str, exit_price: float) -> bool:
+def close_actual_trade(
+    stock_code: str,
+    exit_price: float,
+    shares_to_sell: int = None,
+    trade_type: str = None,
+    exit_date: str = "",
+) -> bool:
     """
-    実売買ポジションの決済を記録する。cash_balance を自動更新する。
+    実売買ポジションの決済（全決済・部分決済）を記録する。
 
     Args:
-        stock_code:  銘柄コード
-        exit_price:  実際の決済価格（円）
+        stock_code:     銘柄コード
+        exit_price:     決済価格（円）
+        shares_to_sell: 売却株数（省略時または全株数以上で全決済）
+        trade_type:     取引種別（"cash"/"margin"/"general_margin"、省略時は最初に見つかった実売買）
+        exit_date:      決済日（"YYYY-MM-DD"、省略時は今日）
 
     Returns:
         bool: 成功はTrue
@@ -654,27 +663,74 @@ def close_actual_trade(stock_code: str, exit_price: float) -> bool:
     trader = PaperTrader()
     positions = trader.trade_log.get("positions", [])
 
-    # 決済対象ポジションを特定（実売買のみ）
-    target = next(
-        (p for p in positions if p.get("stockCode") == stock_code and p.get("tradeType") == "actual"),
-        None
-    )
+    # 対象ポジションを特定（stockCode + tradeType="actual" + holdTypeで絞り込み）
+    target = None
+    for p in positions:
+        if p.get("stockCode") != stock_code:
+            continue
+        if p.get("tradeType") != "actual":
+            continue
+        if trade_type and p.get("holdType") != trade_type:
+            continue
+        target = p
+        break
+
     if not target:
-        logger.warning(f"実売買ポジションが見つかりません: {stock_code}")
+        logger.warning(f"実売買ポジションが見つかりません: {stock_code} ({trade_type})")
         return False
 
-    shares = target.get("shares", 0)
-    received = round(exit_price * shares)
+    held_shares = target.get("shares", 0)
+    sell_shares = shares_to_sell if shares_to_sell and shares_to_sell < held_shares else held_shares
+    is_partial = sell_shares < held_shares
+    received = round(exit_price * sell_shares)
+    date_str = exit_date if exit_date else datetime.now().strftime("%Y-%m-%d")
 
-    ok = trader.close_position(stock_code, exit_price, "手動決済（実売買）")
-    if ok:
-        # cash_balance が設定済みなら自動加算（税引前の受取額を加算・税後は手動再設定）
+    entry_price = target["entryPrice"]
+    pnl_yen = round((exit_price - entry_price) * sell_shares)
+    pnl_pct = round((exit_price - entry_price) / entry_price * 100, 2)
+
+    # closed_tradesに記録
+    closed = {
+        **{k: v for k, v in target.items() if k != "shares"},
+        "shares": sell_shares,
+        "exitDate": date_str,
+        "exitPrice": round(exit_price),
+        "exitReason": f"手動決済（{'部分' if is_partial else '全'}決済）",
+        "realizedPnl": pnl_yen,
+        "returnPct": pnl_pct,
+        "isWin": pnl_yen > 0,
+    }
+    trader.trade_log.setdefault("closed_trades", []).append(closed)
+
+    if is_partial:
+        # 部分決済: 残り株数に更新
+        target["shares"] = held_shares - sell_shares
+        target["investedAmount"] = round(entry_price * target["shares"])
+        logger.info(f"部分決済: {stock_code} {sell_shares}株 → 残り{target['shares']}株")
+    else:
+        # 全決済: ポジションから削除
+        trader.trade_log["positions"] = [p for p in positions if p is not target]
+        summary = trader.trade_log.setdefault("summary", {})
+        summary["total_trades"] = summary.get("total_trades", 0) + 1
+        summary["total_pnl"] = summary.get("total_pnl", 0) + pnl_yen
+        if pnl_yen > 0:
+            summary["winning_trades"] = summary.get("winning_trades", 0) + 1
+        else:
+            summary["losing_trades"] = summary.get("losing_trades", 0) + 1
+
+    # cash_balance 自動更新（現物のみ・税引前）
+    if target.get("holdType") == "cash":
         cb = trader.trade_log.get("cash_balance")
         if cb is not None:
             trader.trade_log["cash_balance"] = round(cb + received)
-            trader._save_trade_log()
             logger.info(f"cash_balance 自動更新: +¥{received:,} → ¥{trader.trade_log['cash_balance']:,}")
-    return ok
+
+    trader._save_trade_log()
+    hold_label = {"cash": "現物", "margin": "制度信用", "general_margin": "一般信用"}.get(
+        target.get("holdType", ""), ""
+    )
+    logger.info(f"決済記録（{hold_label}）: {stock_code} {sell_shares}株 ¥{exit_price:,} 損益{'+' if pnl_yen>=0 else ''}{pnl_yen:,}円")
+    return True
 
 
 def update_cash_balance(amount: float) -> bool:
