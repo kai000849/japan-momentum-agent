@@ -39,6 +39,10 @@ on:
         description: 'エントリー日（add のみ・省略時は今日 YYYY-MM-DD）'
         required: false
         type: string
+      cash_amount:
+        description: '現金残高（update_cash のみ・例: 21772894）'
+        required: false
+        type: string
 
 jobs:
   trade:
@@ -97,7 +101,7 @@ jobs:
         if: startsWith(github.event.inputs.mode, 'update_cash')
         run: |
           python main.py --mode update_cash \
-            --price "${{ github.event.inputs.price }}"
+            --price "${{ github.event.inputs.cash_amount }}"
 
       - name: trade_log.json を Git コミット
         run: |
@@ -124,7 +128,7 @@ jobs:
             AMOUNT=$((${PRICE%.*} * ${SHARES:-0}))
             TEXT="✅ *実売買エントリー記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n価格: ¥${PRICE} × ${SHARES}株 = ¥$(printf '%d' $AMOUNT | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')円"
           elif [ "$MODE" = "update_cash" ]; then
-            TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${PRICE}"
+            TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${{ github.event.inputs.cash_amount }}"
           else
             TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}\n⚠️ 税引後の実受取額が確定したら現金残高を再設定してください"
           fi
