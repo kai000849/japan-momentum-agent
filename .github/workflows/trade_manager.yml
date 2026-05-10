@@ -10,6 +10,7 @@ on:
         options:
           - add（エントリー記録）
           - close（決済記録）
+          - update_cash（現金残高を更新）
       code:
         description: '銘柄コード（例: 6921）'
         required: true
@@ -29,6 +30,7 @@ on:
         options:
           - cash（現物）
           - margin（制度信用）
+          - general_margin（一般信用）
       company:
         description: '会社名（任意）'
         required: false
@@ -75,7 +77,7 @@ jobs:
       - name: エントリー記録
         if: startsWith(github.event.inputs.mode, 'add')
         run: |
-          TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z]*')
+          TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z_]*')
           python main.py --mode add_trade \
             --code "${{ github.event.inputs.code }}" \
             --price "${{ github.event.inputs.price }}" \
@@ -89,6 +91,12 @@ jobs:
         run: |
           python main.py --mode close_trade \
             --code "${{ github.event.inputs.code }}" \
+            --price "${{ github.event.inputs.price }}"
+
+      - name: 現金残高更新
+        if: startsWith(github.event.inputs.mode, 'update_cash')
+        run: |
+          python main.py --mode update_cash \
             --price "${{ github.event.inputs.price }}"
 
       - name: trade_log.json を Git コミット
@@ -115,8 +123,10 @@ jobs:
           if [ "$MODE" = "add" ]; then
             AMOUNT=$((${PRICE%.*} * ${SHARES:-0}))
             TEXT="✅ *実売買エントリー記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n価格: ¥${PRICE} × ${SHARES}株 = ¥$(printf '%d' $AMOUNT | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')円"
+          elif [ "$MODE" = "update_cash" ]; then
+            TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${PRICE}"
           else
-            TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}"
+            TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}\n⚠️ 税引後の実受取額が確定したら現金残高を再設定してください"
           fi
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \

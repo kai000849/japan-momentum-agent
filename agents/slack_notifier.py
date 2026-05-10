@@ -1623,12 +1623,13 @@ def notify_actual_positions(positions: list) -> bool:
     return send_slack_message("\n".join(lines))
 
 
-def notify_portfolio_check(results: list) -> bool:
+def notify_portfolio_check(results: list, summary: dict = None) -> bool:
     """
     PFモメンタム点検くん - 保有ポジションのモメンタム継続状況をSlackに通知する。
 
     Args:
-        results: portfolio_monitor.check_portfolio_momentum() の戻り値
+        results: portfolio_monitor.check_portfolio_momentum() の戻り値[0]
+        summary: portfolio_monitor.check_portfolio_momentum() の戻り値[1]
 
     Returns:
         bool: 送信成功かどうか
@@ -1681,6 +1682,22 @@ def notify_portfolio_check(results: list) -> bool:
 
     total_sign = "+" if total_pnl >= 0 else ""
     lines.append(f"\n合計含み: {total_sign}{total_pnl:,.0f}円（{len(results)}銘柄）")
+
+    # 口座サマリー
+    if summary:
+        tv = summary.get("total_account_value")
+        cb = summary.get("cash_balance")
+        pv = summary.get("total_position_value")
+        nr = summary.get("net_long_ratio")
+        if tv:
+            lines.append(
+                f"\n💰 口座総資産: ¥{tv:,.0f}\n"
+                f"  現金: ¥{cb:,.0f}  株式時価: ¥{pv:,.0f}\n"
+                f"  ネットロング: {nr:.2f}倍"
+            )
+        else:
+            lines.append("\n💰 口座資産未設定（Trade Managerで現金残高を設定してください）")
+
     return send_slack_message("\n\n".join(lines))
 
 

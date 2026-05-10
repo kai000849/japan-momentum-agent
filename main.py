@@ -700,7 +700,7 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade", "weekly_report", "portfolio_check"],
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade", "weekly_report", "portfolio_check", "update_cash"],
         help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday / earnings_endofday / noon_scan / add_trade(実売買記録) / close_trade(実売買決済) / portfolio_check(PFモメンタム点検)"
     )
 
@@ -1010,7 +1010,7 @@ def main():
             print("【PFモメンタム点検くん】")
             from agents.portfolio_monitor import check_portfolio_momentum
             from agents.slack_notifier import notify_portfolio_check
-            results = check_portfolio_momentum()
+            results, summary = check_portfolio_momentum()
             if not results:
                 print("実売買ポジションなし。")
             else:
@@ -1021,9 +1021,25 @@ def main():
                     pnl_pct = r.get("unrealizedPnlPct")
                     pnl_str = f"{'+' if (pnl_pct or 0) >= 0 else ''}{pnl_pct:.1f}%" if pnl_pct is not None else "-"
                     print(f"  {status} {code} {name}  含み: {pnl_str}  RSI: {r.get('rsi14', '-')}  PAO: {r.get('perfectOrder', '-')}")
+                if summary.get("total_account_value"):
+                    print(f"  口座総資産: ¥{summary['total_account_value']:,.0f}  ネットロング: {summary['net_long_ratio']:.2f}倍")
                 if args.notify:
-                    ok = notify_portfolio_check(results)
+                    ok = notify_portfolio_check(results, summary)
                     print("✅ Slack通知送信" if ok else "❌ Slack通知失敗")
+
+        elif args.mode == "update_cash":
+            # 口座現金残高の手動更新
+            from agents.paper_trader import update_cash_balance
+            amount = getattr(args, "price", None)  # --price を金額として流用
+            if not amount:
+                print("エラー: --price に現金残高を指定してください。")
+                print("例: python main.py --mode update_cash --price 21772894")
+                sys.exit(1)
+            ok = update_cash_balance(amount)
+            if ok:
+                print(f"✅ 現金残高を更新しました: ¥{amount:,.0f}")
+            else:
+                print("❌ 更新失敗")
 
         elif args.mode == "close_trade":
             # 実売買決済記録

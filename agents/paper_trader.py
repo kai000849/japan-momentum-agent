@@ -627,15 +627,22 @@ def add_actual_trade(
         "signal": signal,
     })
     trader.trade_log["positions"] = positions
+
+    # cash_balance が設定済みなら自動減算（現物のみ。信用は証拠金なので減算しない）
+    if trade_type == "cash":
+        cb = trader.trade_log.get("cash_balance")
+        if cb is not None:
+            trader.trade_log["cash_balance"] = round(cb - invested)
+
     trader._save_trade_log()
-    hold_label = "現物" if trade_type == "cash" else "制度信用"
+    hold_label = {"cash": "現物", "margin": "制度信用", "general_margin": "一般信用"}.get(trade_type, trade_type)
     logger.info(f"実売買記録（{hold_label}）: {stock_code} ¥{entry_price:,}×{shares}株 = ¥{invested:,}")
     return True
 
 
 def close_actual_trade(stock_code: str, exit_price: float) -> bool:
     """
-    実売買ポジションの決済を記録する。
+    実売買ポジションの決済を記録する。cash_balance を自動更新する。
 
     Args:
         stock_code:  銘柄コード
@@ -645,7 +652,47 @@ def close_actual_trade(stock_code: str, exit_price: float) -> bool:
         bool: 成功はTrue
     """
     trader = PaperTrader()
-    return trader.close_position(stock_code, exit_price, "手動決済（実売買）")
+    positions = trader.trade_log.get("positions", [])
+
+    # 決済対象ポジションを特定（実売買のみ）
+    target = next(
+        (p for p in positions if p.get("stockCode") == stock_code and p.get("tradeType") == "actual"),
+        None
+    )
+    if not target:
+        logger.warning(f"実売買ポジションが見つかりません: {stock_code}")
+        return False
+
+    shares = target.get("shares", 0)
+    received = round(exit_price * shares)
+
+    ok = trader.close_position(stock_code, exit_price, "手動決済（実売買）")
+    if ok:
+        # cash_balance が設定済みなら自動加算（税引前の受取額を加算・税後は手動再設定）
+        cb = trader.trade_log.get("cash_balance")
+        if cb is not None:
+            trader.trade_log["cash_balance"] = round(cb + received)
+            trader._save_trade_log()
+            logger.info(f"cash_balance 自動更新: +¥{received:,} → ¥{trader.trade_log['cash_balance']:,}")
+    return ok
+
+
+def update_cash_balance(amount: float) -> bool:
+    """
+    口座現金残高を手動で再設定する。
+    出入金・外部取引・税引後調整などのときに使う。
+
+    Args:
+        amount: 新しい現金残高（円）
+
+    Returns:
+        bool: 成功はTrue
+    """
+    trader = PaperTrader()
+    trader.trade_log["cash_balance"] = round(amount)
+    trader._save_trade_log()
+    logger.info(f"cash_balance を手動設定: ¥{amount:,.0f}")
+    return True
 
 
 def get_actual_positions() -> list:

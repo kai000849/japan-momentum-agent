@@ -258,4 +258,22 @@ def check_portfolio_momentum() -> list[dict]:
         code = res["stockCode"]
         logger.info(f"PF点検: {code} {res['companyName']} → {status}")
 
-    return results
+    # 口座総資産・ネットロング倍率を計算
+    cash_balance = trade_log.get("cash_balance")
+    total_position_value = sum(r.get("positionSize") or 0 for r in results)
+
+    if cash_balance is not None:
+        total_account_value = cash_balance + total_position_value
+        net_long_ratio = total_position_value / total_account_value if total_account_value > 0 else None
+    else:
+        total_account_value = None
+        net_long_ratio = None
+
+    summary = {
+        "cash_balance": cash_balance,
+        "total_position_value": round(total_position_value),
+        "total_account_value": round(total_account_value) if total_account_value else None,
+        "net_long_ratio": round(net_long_ratio, 2) if net_long_ratio else None,
+    }
+
+    return results, summary
