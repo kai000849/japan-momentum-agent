@@ -204,7 +204,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
     for s in signals[:10]:  # 最大10件
         code = s.get("stockCode", "")
         name = (s.get("companyName") or s.get("company_name") or "")[:12]
-        name_str = f" {name}" if name else ""
+        name_str = f" *{name}*" if name else ""
         close = s.get("close", 0)
         score = s.get("score", s.get("momentum_score", 0))
 
@@ -1567,13 +1567,11 @@ def notify_noon_scan(results: list) -> bool:
                 stop = round(current * 0.95)
                 tp   = round(current * 1.15)
                 lines.append(f"  📌 損切¥{stop:,}  利確¥{tp:,}")
-            lines.append("")
 
     if watch_list:
         lines.append(f"> ⏸ 様子見（後場前半を確認）  {len(watch_list)}銘柄")
         for r in watch_list:
             lines.append(_fmt(r))
-            lines.append("")
 
     if skip_list:
         lines.append(f"> ❌ 一旦見送り（前場で失速）  {len(skip_list)}銘柄")

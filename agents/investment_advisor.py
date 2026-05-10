@@ -333,7 +333,7 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         # ---- ポートフォリオ余力チェック ----
         if portfolio["has_capacity"]:
             reasons.append(
-                f"✅ PF余力あり（{portfolio['positions']}/{portfolio['max_positions']}枠使用中）"
+                f"✅ 投資枠に余裕あり（{portfolio['positions']}/{portfolio['max_positions']}ポジション使用中）"
             )
         else:
             cautions.append(
@@ -514,7 +514,7 @@ def format_advice_for_slack(advices: list) -> str:
             invest_man = a["investAmount"] / 10000
             mode_lbl = mode_label_map.get(a.get("mode", ""), "")
             lines.append(
-                f"*{a['stockCode']} {a['companyName']}*（{mode_lbl}）\n"
+                f"`{a['stockCode']}` *{a['companyName']}*（{mode_lbl}）\n"
                 + "\n".join(f"  {r}" for r in a["reasons"])
                 + f"\n  📌 現在値（{a.get('priceSource','参考')}）: ¥{a['entryPrice']:,}"
                 + f"  損切: ¥{a['stopLoss']:,}  利確: ¥{a['takeProfit']:,}"
@@ -522,6 +522,7 @@ def format_advice_for_slack(advices: list) -> str:
             )
             if a["cautions"]:
                 lines.append("  " + " / ".join(a["cautions"]))
+            lines.append("")  # 銘柄間の空行
 
     if watch_list:
         lines.append("\n*━━ 様子見 ━━*")
