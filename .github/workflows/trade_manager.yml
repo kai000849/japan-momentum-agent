@@ -40,7 +40,7 @@ on:
         required: false
         type: string
       cash_amount:
-        description: '現金残高（update_cash のみ・例: 21772894）'
+        description: '【update_cash専用】現金残高（例: 21772894）※add/closeでは無視されます'
         required: false
         type: string
 
