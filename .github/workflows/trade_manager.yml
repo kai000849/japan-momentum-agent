@@ -1,0 +1,123 @@
+name: Trade Manager（実売買記録）
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '操作'
+        required: true
+        type: choice
+        options:
+          - add（エントリー記録）
+          - close（決済記録）
+      code:
+        description: '銘柄コード（例: 6921）'
+        required: true
+        type: string
+      price:
+        description: '価格（円、例: 44490）'
+        required: true
+        type: string
+      shares:
+        description: '株数（add のみ、例: 400）'
+        required: false
+        type: string
+      trade_type:
+        description: '取引種別（add のみ）'
+        required: false
+        type: choice
+        options:
+          - cash（現物）
+          - margin（制度信用）
+      company:
+        description: '会社名（任意）'
+        required: false
+        type: string
+      entry_date:
+        description: 'エントリー日（add のみ・省略時は今日 YYYY-MM-DD）'
+        required: false
+        type: string
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 必要パッケージをインストール
+        run: pip install -r requirements.txt
+
+      - name: config.yaml を生成
+        run: |
+          cat > config.yaml << 'EOF'
+          jquants:
+            api_key: "${{ secrets.JQUANTS_API_KEY }}"
+          edinet:
+            api_key: "${{ secrets.EDINET_API_KEY }}"
+          slack:
+            webhook_url: "${{ secrets.SLACK_WEBHOOK_URL }}"
+          anthropic:
+            api_key: "${{ secrets.ANTHROPIC_API_KEY }}"
+          paper_trading:
+            initial_capital: 3000000
+            max_position_size: 300000
+            max_positions: 10
+          EOF
+
+      - name: エントリー記録
+        if: startsWith(github.event.inputs.mode, 'add')
+        run: |
+          TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z]*')
+          python main.py --mode add_trade \
+            --code "${{ github.event.inputs.code }}" \
+            --price "${{ github.event.inputs.price }}" \
+            --shares "${{ github.event.inputs.shares }}" \
+            --trade-type "${TRADE_TYPE:-cash}" \
+            --company "${{ github.event.inputs.company }}" \
+            --entry-date "${{ github.event.inputs.entry_date }}"
+
+      - name: 決済記録
+        if: startsWith(github.event.inputs.mode, 'close')
+        run: |
+          python main.py --mode close_trade \
+            --code "${{ github.event.inputs.code }}" \
+            --price "${{ github.event.inputs.price }}"
+
+      - name: trade_log.json を Git コミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add memory/trade_log.json
+          if git diff --staged --quiet; then
+            echo "変更なし（記録失敗の可能性）"
+            exit 1
+          fi
+          git commit -m "data: 実売買記録更新（${{ github.event.inputs.mode }} ${{ github.event.inputs.code }} ¥${{ github.event.inputs.price }}）[skip ci]"
+          git push
+
+      - name: Slack通知（記録完了）
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          MODE=$(echo "${{ github.event.inputs.mode }}" | grep -o '^[a-z]*')
+          CODE="${{ github.event.inputs.code }}"
+          PRICE="${{ github.event.inputs.price }}"
+          SHARES="${{ github.event.inputs.shares }}"
+          COMPANY="${{ github.event.inputs.company }}"
+          if [ "$MODE" = "add" ]; then
+            AMOUNT=$((${PRICE%.*} * ${SHARES:-0}))
+            TEXT="✅ *実売買エントリー記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n価格: ¥${PRICE} × ${SHARES}株 = ¥$(printf '%d' $AMOUNT | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')円"
+          else
+            TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}"
+          fi
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"${TEXT}\"}"
