@@ -12,15 +12,15 @@ on:
           - close（決済記録）
           - update_cash（現金残高を更新）
       code:
-        description: '銘柄コード（例: 6921）'
-        required: true
+        description: '銘柄コード（add/close のみ・例: 6921）'
+        required: false
         type: string
       price:
-        description: '価格（円、例: 44490）'
-        required: true
+        description: '価格（add/close のみ・例: 44490）'
+        required: false
         type: string
       shares:
-        description: '株数（add のみ、例: 400）'
+        description: '株数（add のみ・例: 400）'
         required: false
         type: string
       trade_type:
@@ -40,7 +40,7 @@ on:
         required: false
         type: string
       cash_amount:
-        description: '【update_cash専用】現金残高（例: 21772894）※add/closeでは無視されます'
+        description: '【update_cash専用】現金残高（例: 21772894）'
         required: false
         type: string
 
@@ -100,10 +100,15 @@ jobs:
       - name: 現金残高更新
         if: startsWith(github.event.inputs.mode, 'update_cash')
         run: |
-          python main.py --mode update_cash \
-            --price "${{ github.event.inputs.cash_amount }}"
+          AMOUNT="${{ github.event.inputs.cash_amount }}"
+          if [ -z "$AMOUNT" ]; then
+            echo "エラー: 現金残高（cash_amount）が入力されていません"
+            exit 1
+          fi
+          python main.py --mode update_cash --price "$AMOUNT"
 
       - name: trade_log.json を Git コミット
+        id: git_commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -112,26 +117,33 @@ jobs:
             echo "変更なし（記録失敗の可能性）"
             exit 1
           fi
-          git commit -m "data: 実売買記録更新（${{ github.event.inputs.mode }} ${{ github.event.inputs.code }} ¥${{ github.event.inputs.price }}）[skip ci]"
+          git commit -m "data: 実売買記録更新（${{ github.event.inputs.mode }}）[skip ci]"
           git push
 
       - name: Slack通知（記録完了）
+        if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          MODE=$(echo "${{ github.event.inputs.mode }}" | grep -o '^[a-z]*')
+          MODE=$(echo "${{ github.event.inputs.mode }}" | grep -o '^[a-z_]*')
           CODE="${{ github.event.inputs.code }}"
           PRICE="${{ github.event.inputs.price }}"
           SHARES="${{ github.event.inputs.shares }}"
           COMPANY="${{ github.event.inputs.company }}"
-          if [ "$MODE" = "add" ]; then
+          CASH="${{ github.event.inputs.cash_amount }}"
+          GIT_RESULT="${{ steps.git_commit.outcome }}"
+
+          if [ "$GIT_RESULT" != "success" ]; then
+            TEXT="❌ *Trade Manager 失敗*\n操作: ${MODE}\nGitHubのActionsタブでエラー詳細を確認してください"
+          elif [ "$MODE" = "add" ]; then
             AMOUNT=$((${PRICE%.*} * ${SHARES:-0}))
-            TEXT="✅ *実売買エントリー記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n価格: ¥${PRICE} × ${SHARES}株 = ¥$(printf '%d' $AMOUNT | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta')円"
+            TEXT="✅ *実売買エントリー記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n価格: ¥${PRICE} × ${SHARES}株 = ¥${AMOUNT}円"
           elif [ "$MODE" = "update_cash" ]; then
-            TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${{ github.event.inputs.cash_amount }}"
+            TEXT="✅ *現金残高更新完了*\n新しい現金残高: ¥${CASH}"
           else
             TEXT="✅ *実売買決済記録完了*\n銘柄: \`${CODE}\` ${COMPANY}\n決済価格: ¥${PRICE}\n⚠️ 税引後の実受取額が確定したら現金残高を再設定してください"
           fi
+
           curl -s -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"text\":\"${TEXT}\"}"
