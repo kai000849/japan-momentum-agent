@@ -37,7 +37,6 @@ US_THEME_DIR = BASE_DIR / "data" / "processed" / "us_themes"
 # エントリー推奨の閾値
 MIN_PF = 1.2           # 最低プロフィットファクター（SHORT_TERM / EARNINGS）
 MIN_PF_MOMENTUM = 1.5  # MOMMENTUMシグナルのPF閾値（より厳格・遅れ入場リスク対策）
-MAX_POSITIONS = 10     # 最大同時保有数
 MAX_INVEST_PER_STOCK = 500000  # 1銘柄あたり最大投資額（円）
 
 
@@ -70,23 +69,16 @@ def _get_portfolio_status() -> dict:
         }
     """
     trade_log = _load_json(TRADE_LOG_PATH)
-    # ペーパートレードのみカウント（実売買は戦略判断から独立させる）
-    positions = [
+    actual_positions = [
         p for p in trade_log.get("positions", [])
-        if p.get("tradeType", "paper") != "actual"
+        if p.get("tradeType") == "actual"
     ]
-    pos_count = len(positions)
-    has_capacity = pos_count < MAX_POSITIONS
-
-    # 概算余力（初期資金3,000,000 - ペーパー投資済み金額）
-    invested = sum(p.get("investedAmount", 0) for p in positions)
-    cash_available = max(0, 3_000_000 - invested)
+    pos_count = len(actual_positions)
 
     return {
         "positions": pos_count,
-        "max_positions": MAX_POSITIONS,
-        "has_capacity": has_capacity,
-        "cash_available": cash_available,
+        "has_capacity": True,   # 最大保有数制限なし（相場に応じて判断）
+        "cash_available": MAX_INVEST_PER_STOCK,
     }
 
 
@@ -331,14 +323,8 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
             cautions.append("⚠️ PF未計算")
 
         # ---- ポートフォリオ余力チェック ----
-        if portfolio["has_capacity"]:
-            reasons.append(
-                f"✅ 投資枠に余裕あり（{portfolio['positions']}/{portfolio['max_positions']}ポジション使用中）"
-            )
-        else:
-            cautions.append(
-                f"❌ PF満枠（{portfolio['positions']}/{portfolio['max_positions']}）"
-            )
+        if portfolio["positions"] > 0:
+            reasons.append(f"📊 現在{portfolio['positions']}ポジション保有中")
 
         # ---- 米市場シグナルチェック ----
         if us_context["available"] and us_context["top_sectors"]:
@@ -372,9 +358,9 @@ def generate_advice(qualify_results: list, pf_map: dict) -> list:
         # day2_watch: 継続判定でも様子見（材料の継続性が不確か）
         if entry_timing == "day2_skip":
             recommendation = "見送り"
-        elif is_strong and pf_ok and has_capacity and entry_timing == "day2_go":
+        elif is_strong and pf_ok and entry_timing == "day2_go":
             recommendation = "エントリー"
-        elif is_strong and (not pf_ok or not has_capacity):
+        elif is_strong and not pf_ok:
             recommendation = "様子見"
         elif entry_timing == "day2_go" and not is_strong:
             recommendation = "様子見"  # 材料あり・構造的変化なし

@@ -212,7 +212,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
             rsi = s.get("rsi14", 0)
             high_ratio = s.get("priceToHighRatio", 0)
             new_high = s.get("newHighCount", 0)
-            vol_trend = s.get("volumeTrend", 1.0)
+            vol_trend = s.get("turnoverTrend", 1.0)
             vol_icon = "📶" if vol_trend >= 1.2 else ("➡️" if vol_trend >= 0.9 else "📉")
             comment = s.get("comment", "")
             comment_str = f"\n    💬 {comment}" if comment else ""
@@ -224,12 +224,12 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
             )
             lines.append(
                 f"  • `{code}`{name_str}  スコア:{score:.1f}\n"
-                f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  出来高:{vol_icon}{vol_trend:.2f}x"
+                f"    RSI:{rsi:.0f}  高値比:{high_ratio:.1f}%  新高値:{new_high}回/20日  売買代金:{vol_icon}{vol_trend:.2f}x"
                 f"{comment_str}{pattern_str}"
             )
         else:
             price_chg = s.get("priceChangePct", 0)
-            vol_ratio = s.get("volumeRatio", 0)
+            vol_ratio = s.get("turnoverRatio", 0)
             surge_reason = s.get("surgeReason", "")
             why_category = s.get("whyCategory", "")
             entry_timing = s.get("entryTiming", "")
@@ -246,7 +246,7 @@ def notify_new_signal(signals: list, mode: str, profit_factor: float, skipped_co
 
             lines.append(
                 f"  • `{code}`{name_str}  ¥{close:,.0f}  スコア:{score:.1f}{entry_str}{why_str}\n"
-                f"    前日比:{sign}{price_chg:.1f}% / 出来高:{vol_ratio:.1f}x"
+                f"    前日比:{sign}{price_chg:.1f}% / 売買代金:{vol_ratio:.1f}x"
                 f"{reason_str}"
             )
 
@@ -1019,12 +1019,12 @@ def notify_cross_signals(cross_signals: list) -> bool:
         st = c.get("shortTermData")
         if st:
             pct = st.get("priceChangePct", 0)
-            vol = st.get("volumeRatio", 0)
+            vol = st.get("turnoverRatio", 0)
             qr = normalize_qualify_label(st.get("qualifyResult", ""))
             vp = st.get("volume_pattern", "unknown")
             vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             reason = st.get("surgeReason", "")
-            row = f"  📈 急騰 +{pct:.1f}% / 出来高 {vol:.1f}倍 [{qr}]{vp_tag}"
+            row = f"  📈 急騰 +{pct:.1f}% / 売買代金 {vol:.1f}倍 [{qr}]{vp_tag}"
             if reason:
                 row += f"\n     💡 {reason}"
             rows.append(row)
@@ -1611,16 +1611,77 @@ def notify_actual_positions(positions: list) -> bool:
         current = p.get("currentPrice", 0)
         entry = p.get("entryPrice", 0)
         shares = p.get("shares", 0)
+        hold_label = "現物" if p.get("holdType") == "cash" else "信用"
         lines.append(
-            f"{icon} *{p['stockCode']} {p.get('companyName', '')}*\n"
+            f"{icon} `{p['stockCode']}` *{p.get('companyName', '')}*（{hold_label}）\n"
             f"  取得: ¥{entry:,}×{shares}株  現在: ¥{current:,}\n"
             f"  損益: {'+' if pnl >= 0 else ''}{pnl:,.0f}円（{'+' if ret >= 0 else ''}{ret:.1f}%）"
-            f"  損切: ¥{p['stopLossPrice']:,} / 利確: ¥{p['takeProfitPrice']:,}"
         )
 
     total_sign = "+" if total_pnl >= 0 else ""
     lines.append(f"\n合計含み損益: {total_sign}{total_pnl:,.0f}円（{len(positions)}銘柄）")
     return send_slack_message("\n".join(lines))
+
+
+def notify_portfolio_check(results: list) -> bool:
+    """
+    PFモメンタム点検くん - 保有ポジションのモメンタム継続状況をSlackに通知する。
+
+    Args:
+        results: portfolio_monitor.check_portfolio_momentum() の戻り値
+
+    Returns:
+        bool: 送信成功かどうか
+    """
+    if not results:
+        return send_slack_message("🔍 *PFモメンタム点検くん*\n保有ポジションなし。")
+
+    lines = [f"🔍 *PFモメンタム点検くん*（{len(results)}銘柄）\n"]
+
+    total_pnl = sum(r.get("unrealizedPnlYen") or 0 for r in results)
+
+    for r in results:
+        code = r["stockCode"]
+        name = r.get("companyName", "")
+        status = r.get("momentumStatus", "🔘不明")
+        hold_label = "現物" if r.get("holdType") == "cash" else "信用"
+
+        close = r.get("currentClose")
+        shares = r.get("shares", 0)
+        pos_size = r.get("positionSize")
+        pnl_pct = r.get("unrealizedPnlPct")
+        pnl_yen = r.get("unrealizedPnlYen")
+        days = r.get("holdDays", 0)
+
+        rsi = r.get("rsi14")
+        pao = r.get("perfectOrder")
+        h52 = r.get("high52wRatio")
+        ttr = r.get("turnoverTrendRatio")
+        warnings = r.get("warnings", [])
+
+        pao_str = "✅PAO" if pao else ("❌PAO" if pao is False else "-")
+        rsi_str = f"RSI {rsi:.0f}" if rsi is not None else "RSI -"
+        h52_str = f"高値比 {h52:.0f}%" if h52 is not None else "高値比 -"
+        ttr_str = f"売買代金 {ttr:.2f}x" if ttr is not None else "売買代金 -"
+
+        pnl_sign = "+" if (pnl_pct or 0) >= 0 else ""
+        pnl_yen_sign = "+" if (pnl_yen or 0) >= 0 else ""
+        pnl_str = f"{pnl_yen_sign}{pnl_yen:,.0f}円（{pnl_sign}{pnl_pct:.1f}%）" if pnl_yen is not None else "-"
+        pos_str = f"¥{pos_size:,.0f}" if pos_size else "-"
+        close_str = f"¥{close:,.0f}" if close else "-"
+
+        warn_str = f"  ⚠️ {' / '.join(warnings)}" if warnings else ""
+
+        lines.append(
+            f"{status} `{code}` *{name}*（{hold_label} {days}日）\n"
+            f"  現値: {close_str}  保有額: {pos_str}  含み: {pnl_str}\n"
+            f"  {pao_str}  {rsi_str}  {h52_str}  {ttr_str}"
+            + (f"\n{warn_str}" if warn_str else "")
+        )
+
+    total_sign = "+" if total_pnl >= 0 else ""
+    lines.append(f"\n合計含み: {total_sign}{total_pnl:,.0f}円（{len(results)}銘柄）")
+    return send_slack_message("\n\n".join(lines))
 
 
 def _generate_weekly_observations(
@@ -1869,12 +1930,12 @@ def notify_weekly_report() -> bool:
             for conf, s in sorted(all_patterns["by_confidence"].items(), key=lambda x: -x[1]["win_rate"]):
                 lines.append(f"    {conf}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
         if all_patterns.get("by_volume_rate"):
-            lines.append("  【出来高維持率別勝率】")
+            lines.append("  【売買代金維持率別勝率】")
             for bucket, s in sorted(all_patterns["by_volume_rate"].items(), key=lambda x: -x[1]["win_rate"]):
                 lines.append(f"    {bucket}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
         if all_patterns.get("by_volume_pattern"):
             vp_labels = {"late": "📈バズ型", "early": "🐸ジワジワ型"}
-            lines.append("  【出来高パターン別勝率】")
+            lines.append("  【売買代金パターン別勝率】")
             for vp, s in sorted(all_patterns["by_volume_pattern"].items(), key=lambda x: -x[1]["win_rate"]):
                 lines.append(f"    {vp_labels.get(vp, vp)}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
     else:
@@ -1941,9 +2002,9 @@ def notify_weekly_report() -> bool:
                 lines.append("  【52週高値比別勝率】")
                 for k, s in sorted(mo_patterns["by_high52w_ratio"].items(), key=lambda x: -x[1]["win_rate"]):
                     lines.append(f"    {k}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
-            if mo_patterns.get("by_volume_trend"):
-                lines.append("  【出来高トレンド別勝率】")
-                for k, s in sorted(mo_patterns["by_volume_trend"].items(), key=lambda x: -x[1]["win_rate"]):
+            if mo_patterns.get("by_turnover_trend"):
+                lines.append("  【売買代金トレンド別勝率】")
+                for k, s in sorted(mo_patterns["by_turnover_trend"].items(), key=lambda x: -x[1]["win_rate"]):
                     lines.append(f"    {k}: {s['win_rate']}%（{s['count']}件, 平均{s['avg_return']:+.1f}%）")
         else:
             lines.append("  データなし")

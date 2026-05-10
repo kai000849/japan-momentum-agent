@@ -167,20 +167,20 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
             if price_change_pct < 3.0:
                 continue
 
-            today_volume = float(today_row.get("Volume", 0) or 0)
+            today_turnover = float(today_row.get("TurnoverValue", 0) or 0)
 
-            past_volumes = group.loc[:target_idx - 1, "Volume"].tail(25).astype(float)
-            avg_volume_25d = past_volumes.mean()
+            past_turnovers = group.loc[:target_idx - 1, "TurnoverValue"].tail(25).astype(float)
+            avg_turnover_25d = past_turnovers.mean()
 
-            if avg_volume_25d <= 0:
+            if avg_turnover_25d <= 0:
                 continue
 
-            volume_ratio = today_volume / avg_volume_25d
+            turnover_ratio = today_turnover / avg_turnover_25d
 
-            if volume_ratio < 1.5:
+            if turnover_ratio < 1.5:
                 continue
 
-            surge_score = price_change_pct * volume_ratio
+            surge_score = price_change_pct * turnover_ratio
 
             company_name = str(today_row.get("CompanyName", "")) or ""
 
@@ -192,9 +192,9 @@ def _scan_short_term(df_all: pd.DataFrame, scan_date: str) -> list:
                 "close": today_close,
                 "prevClose": prev_close,
                 "priceChangePct": round(price_change_pct, 2),
-                "volume": int(today_volume),
-                "avgVolume25d": round(avg_volume_25d, 0),
-                "volumeRatio": round(volume_ratio, 2),
+                "turnover": int(today_turnover),
+                "avgTurnover25d": round(avg_turnover_25d, 0),
+                "turnoverRatio": round(turnover_ratio, 2),
                 "score": round(surge_score, 2),
             })
 
@@ -302,14 +302,14 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                     running_high = price
             new_high_score = new_high_count / 20.0
 
-            # ---- 条件4: 出来高増加トレンド（直近5日平均 >= 直近25日平均）----
-            volumes = group_to_date["Volume"].astype(float)
-            avg_vol_5d = float(volumes.tail(5).mean())
-            avg_vol_25d = float(volumes.tail(25).mean())
-            volume_trend = (avg_vol_5d / avg_vol_25d) if avg_vol_25d > 0 else 1.0
-            if volume_trend < 1.0:
+            # ---- 条件4: 売買代金増加トレンド（直近5日平均 >= 直近25日平均）----
+            turnovers = group_to_date["TurnoverValue"].astype(float)
+            avg_to_5d = float(turnovers.tail(5).mean())
+            avg_to_25d = float(turnovers.tail(25).mean())
+            turnover_trend = (avg_to_5d / avg_to_25d) if avg_to_25d > 0 else 1.0
+            if turnover_trend < 1.0:
                 continue
-            volume_trend = min(volume_trend, 1.5)
+            turnover_trend = min(turnover_trend, 1.5)
 
             # ---- モメンタムスコア計算 ----
             base_score = current_rsi * (price_to_high_ratio / 100)
@@ -317,7 +317,7 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 base_score
                 * (1.2 if all_ma_rising else 1.0)
                 * (1.0 + new_high_score * 0.3)
-                * (0.85 + volume_trend * 0.1)
+                * (0.85 + turnover_trend * 0.1)
             )
 
             company_name = str(group.loc[target_idx].get("CompanyName", "")) or ""
@@ -350,8 +350,8 @@ def _scan_momentum(df_all: pd.DataFrame, scan_date: str) -> list:
                 "ma_gap_25_75": ma_gap_25_75,
                 "new_high_days": new_high_count,
                 "newHighCount": new_high_count,
-                "volume_trend_ratio": round(volume_trend, 2),
-                "volumeTrend": round(volume_trend, 2),
+                "turnover_trend_ratio": round(turnover_trend, 2),
+                "turnoverTrend": round(turnover_trend, 2),
                 "return_20d_signal": return_20d_signal,
                 "score": round(momentum_score, 2),
             })
@@ -575,7 +575,7 @@ def display_top_results(results: list, top_n: int = 10) -> None:
                 f"{r.get('stockCode', 'N/A'):>8} "
                 f"{company:<20} "
                 f"{r.get('priceChangePct', 0):>+6.2f}% "
-                f"{r.get('volumeRatio', 0):>6.1f}x "
+                f"{r.get('turnoverRatio', 0):>6.1f}x "
                 f"{r.get('score', 0):>8.2f}"
             )
 

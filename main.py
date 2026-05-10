@@ -700,8 +700,8 @@ def create_parser() -> argparse.ArgumentParser:
         "--mode",
         type=str,
         required=True,
-        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade", "weekly_report"],
-        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday / earnings_endofday / noon_scan / add_trade(実売買記録) / close_trade(実売買決済)"
+        choices=["fetch", "scan", "backtest", "full", "status", "us_scan", "qualify_report", "earnings_intraday", "earnings_endofday", "noon_scan", "add_trade", "close_trade", "weekly_report", "portfolio_check"],
+        help="実行モード: fetch / scan / backtest / full / status / us_scan / qualify_report / earnings_intraday / earnings_endofday / noon_scan / add_trade(実売買記録) / close_trade(実売買決済) / portfolio_check(PFモメンタム点検)"
     )
 
     # オプション: スキャンタイプ
@@ -746,11 +746,15 @@ def create_parser() -> argparse.ArgumentParser:
     )
 
     # 実売買記録用オプション
-    parser.add_argument("--code",    type=str,   default=None, help="銘柄コード（add_trade / close_trade用）")
-    parser.add_argument("--price",   type=float, default=None, help="エントリー/決済価格（円）")
-    parser.add_argument("--shares",  type=int,   default=None, help="購入株数（add_trade用）")
-    parser.add_argument("--company", type=str,   default="",   help="会社名（任意）")
-    parser.add_argument("--signal",  type=str,   default="",   help="シグナル種別（任意、例: SHORT_TERM）")
+    parser.add_argument("--code",       type=str,   default=None, help="銘柄コード（add_trade / close_trade用）")
+    parser.add_argument("--price",      type=float, default=None, help="エントリー/決済価格（円）")
+    parser.add_argument("--shares",     type=int,   default=None, help="購入株数（add_trade用）")
+    parser.add_argument("--company",    type=str,   default="",   help="会社名（任意）")
+    parser.add_argument("--signal",     type=str,   default="",   help="シグナル種別（任意、例: SHORT_TERM）")
+    parser.add_argument("--trade-type", type=str,   default="cash", choices=["cash", "margin"],
+                        help="取引種別（add_trade用）: cash=現物 / margin=制度信用")
+    parser.add_argument("--entry-date", type=str,   default="",
+                        help="エントリー日（add_trade用、形式: YYYY-MM-DD）。省略時は今日")
 
     return parser
 
@@ -976,29 +980,50 @@ def main():
         elif args.mode == "add_trade":
             # 実売買エントリー記録
             from agents.paper_trader import add_actual_trade
-            code    = args.code
-            price   = args.price
-            shares  = args.shares
-            company = getattr(args, "company", "") or ""
-            signal  = getattr(args, "signal", "") or ""
+            code       = args.code
+            price      = args.price
+            shares     = args.shares
+            company    = getattr(args, "company", "") or ""
+            signal     = getattr(args, "signal", "") or ""
+            trade_type = getattr(args, "trade_type", "cash") or "cash"
+            entry_date = getattr(args, "entry_date", "") or ""
 
             if not code or not price or not shares:
                 print("エラー: --code, --price, --shares は必須です。")
-                print("例: python main.py --mode add_trade --code 7203 --price 2500 --shares 100")
+                print("例: python main.py --mode add_trade --code 7203 --price 2500 --shares 100 --trade-type cash")
                 sys.exit(1)
 
-            success = add_actual_trade(code, price, shares, company, signal)
+            success = add_actual_trade(code, price, shares, company, signal, trade_type, entry_date)
             if success:
                 invest = price * shares
-                stop   = round(price * 0.95)
-                tp     = round(price * 1.15)
-                print(f"✅ 実売買を記録しました")
+                hold_label = "現物" if trade_type == "cash" else "制度信用"
+                print(f"✅ 実売買を記録しました（{hold_label}）")
                 print(f"  銘柄: {code} {company}")
                 print(f"  エントリー: ¥{price:,} × {shares}株 = ¥{invest:,.0f}")
-                print(f"  損切ライン: ¥{stop:,}（-5%）")
-                print(f"  利確ライン: ¥{tp:,}（+15%）")
+                if entry_date:
+                    print(f"  エントリー日: {entry_date}")
             else:
-                print("❌ 記録失敗（同銘柄が既に記録済みの可能性があります）")
+                print("❌ 記録失敗（同銘柄・同種別が既に記録済みの可能性があります）")
+
+        elif args.mode == "portfolio_check":
+            # PFモメンタム点検くん
+            print("【PFモメンタム点検くん】")
+            from agents.portfolio_monitor import check_portfolio_momentum
+            from agents.slack_notifier import notify_portfolio_check
+            results = check_portfolio_momentum()
+            if not results:
+                print("実売買ポジションなし。")
+            else:
+                for r in results:
+                    status = r.get("momentumStatus", "🔘不明")
+                    code = r["stockCode"]
+                    name = r.get("companyName", "")
+                    pnl_pct = r.get("unrealizedPnlPct")
+                    pnl_str = f"{'+' if (pnl_pct or 0) >= 0 else ''}{pnl_pct:.1f}%" if pnl_pct is not None else "-"
+                    print(f"  {status} {code} {name}  含み: {pnl_str}  RSI: {r.get('rsi14', '-')}  PAO: {r.get('perfectOrder', '-')}")
+                if args.notify:
+                    ok = notify_portfolio_check(results)
+                    print("✅ Slack通知送信" if ok else "❌ Slack通知失敗")
 
         elif args.mode == "close_trade":
             # 実売買決済記録

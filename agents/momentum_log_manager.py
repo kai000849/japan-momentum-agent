@@ -100,8 +100,8 @@ def log_momentum_signals(signals: list) -> int:
             # B: 52週高値まわり
             "high52w_ratio": sig.get("high52w_ratio") or sig.get("priceToHighRatio"),
             "new_high_days": sig.get("new_high_days") or sig.get("newHighCount"),
-            # C: 出来高トレンド
-            "volume_trend_ratio": sig.get("volume_trend_ratio") or sig.get("volumeTrend"),
+            # C: 売買代金トレンド
+            "turnover_trend_ratio": sig.get("turnover_trend_ratio") or sig.get("turnoverTrend"),
             # 参考指標
             "rsi14": sig.get("rsi14"),
             "return_20d_signal": sig.get("return_20d_signal"),
@@ -240,7 +240,7 @@ def get_momentum_patterns() -> dict:
     分析軸:
     - A by_ma_gap:       MAギャップ5-25別勝率（小/<2% / 中/2-5% / 大/>5%）
     - B by_high52w_ratio: 52週高値比別勝率（95-97% / 97-99% / 99%以上）
-    - C by_volume_trend: 出来高トレンド別勝率（1.0-1.1x / 1.1-1.2x / 1.2x以上）
+    - C by_turnover_trend: 売買代金トレンド別勝率（1.0-1.1x / 1.1-1.2x / 1.2x以上）
 
     勝利条件: return_20d > 0
 
@@ -293,24 +293,24 @@ def get_momentum_patterns() -> dict:
             k = "99%以上"
         by_high52w.setdefault(k, []).append(e)
 
-    # C: 出来高トレンド比
-    by_vol_trend: dict[str, list] = {}
+    # C: 売買代金トレンド比
+    by_turnover_trend: dict[str, list] = {}
     for e in recorded:
-        v = e.get("volume_trend_ratio") or 1.0
+        v = e.get("turnover_trend_ratio") or 1.0
         if v < 1.1:
             k = "1.0-1.1x"
         elif v < 1.2:
             k = "1.1-1.2x"
         else:
             k = "1.2x以上"
-        by_vol_trend.setdefault(k, []).append(e)
+        by_turnover_trend.setdefault(k, []).append(e)
 
     return {
         "total": len(recorded),
         "overall": _stats(recorded),
         "by_ma_gap": {k: _stats(v) for k, v in by_ma_gap.items()},
         "by_high52w_ratio": {k: _stats(v) for k, v in by_high52w.items()},
-        "by_volume_trend": {k: _stats(v) for k, v in by_vol_trend.items()},
+        "by_turnover_trend": {k: _stats(v) for k, v in by_turnover_trend.items()},
     }
 
 
@@ -358,13 +358,13 @@ def score_signal_by_patterns(signal: dict, patterns: dict = None) -> dict:
         rates.append(stats_b["win_rate"])
         notes.append(f"高値比{bucket_b}:{stats_b['win_rate']:.0f}%({stats_b['count']}件)")
 
-    # C: 出来高トレンド
-    vol_trend = signal.get("volume_trend_ratio") or signal.get("volumeTrend") or 1.0
+    # C: 売買代金トレンド
+    vol_trend = signal.get("turnover_trend_ratio") or signal.get("turnoverTrend") or 1.0
     bucket_c = "1.2x以上" if vol_trend >= 1.2 else ("1.1-1.2x" if vol_trend >= 1.1 else "1.0-1.1x")
-    stats_c = patterns.get("by_volume_trend", {}).get(bucket_c)
+    stats_c = patterns.get("by_turnover_trend", {}).get(bucket_c)
     if stats_c and stats_c.get("count", 0) >= MIN_BUCKET_SAMPLES:
         rates.append(stats_c["win_rate"])
-        notes.append(f"出来高{bucket_c}:{stats_c['win_rate']:.0f}%({stats_c['count']}件)")
+        notes.append(f"売買代金{bucket_c}:{stats_c['win_rate']:.0f}%({stats_c['count']}件)")
 
     if not rates:
         return {"expected_win_rate": None, "pattern_notes": "", "data_sufficient": True}

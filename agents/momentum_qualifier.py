@@ -311,7 +311,7 @@ def _generate_surge_reasons_batch(stocks_with_info: list) -> dict:
 
 def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
     """
-    急騰後の出来高・株価継続性を判定する。
+    急騰後の売買代金・株価継続性を判定する。
     """
     surge_dt = pd.to_datetime(surge_date)
     df_stock = df_stock.sort_values("Date").reset_index(drop=True)
@@ -322,22 +322,22 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
 
     surge_idx = df_stock[surge_mask].index[-1]
     surge_row = df_stock.loc[surge_idx]
-    surge_volume = float(surge_row.get("Volume", 0) or 0)
+    surge_turnover = float(surge_row.get("TurnoverValue", 0) or 0)
     surge_close = float(surge_row.get("Close", 0) or 0)
 
-    if surge_volume <= 0 or surge_close <= 0:
+    if surge_turnover <= 0 or surge_close <= 0:
         return {"stage1Pass": False, "reason": "急騰日データ不正"}
 
     post_data = df_stock.loc[surge_idx + 1: surge_idx + SUSTAIN_CHECK_DAYS]
 
     if len(post_data) == 0:
         return {
-            "volumeSustained": True,
+            "turnoverSustained": True,
             "priceSustained": True,
             "stage1Pass": True,
-            "surgeVolume": surge_volume,
-            "avgPostVolume": 0.0,
-            "volumeSustainRate": 0.0,
+            "surgeTurnover": surge_turnover,
+            "avgPostTurnover": 0.0,
+            "turnoverSustainRate": 0.0,
             "surgeClose": surge_close,
             "latestClose": surge_close,
             "priceChangeAfterSurge": 0.0,
@@ -345,31 +345,31 @@ def _check_volume_sustain(df_stock: pd.DataFrame, surge_date: str) -> dict:
             "reason": "急騰後データなし（最新日）→ 保留通過"
         }
 
-    post_volumes = post_data["Volume"].astype(float)
-    avg_post_volume = float(post_volumes.mean())
-    volume_sustain_rate = avg_post_volume / surge_volume if surge_volume > 0 else 0
-    volume_sustained = volume_sustain_rate >= VOLUME_SUSTAIN_RATIO
+    post_turnovers = post_data["TurnoverValue"].astype(float)
+    avg_post_turnover = float(post_turnovers.mean())
+    turnover_sustain_rate = avg_post_turnover / surge_turnover if surge_turnover > 0 else 0
+    turnover_sustained = turnover_sustain_rate >= VOLUME_SUSTAIN_RATIO
 
     latest_close = float(post_data["Close"].iloc[-1])
     price_change_after_surge = (latest_close - surge_close) / surge_close
     price_sustained = latest_close >= surge_close * PRICE_SUSTAIN_RATIO
 
-    stage1_pass = volume_sustained and price_sustained
+    stage1_pass = turnover_sustained and price_sustained
 
     return {
-        "volumeSustained": volume_sustained,
+        "turnoverSustained": turnover_sustained,
         "priceSustained": price_sustained,
         "stage1Pass": stage1_pass,
-        "surgeVolume": surge_volume,
-        "avgPostVolume": round(avg_post_volume, 0),
-        "volumeSustainRate": round(volume_sustain_rate, 2),
+        "surgeTurnover": surge_turnover,
+        "avgPostTurnover": round(avg_post_turnover, 0),
+        "turnoverSustainRate": round(turnover_sustain_rate, 2),
         "surgeClose": surge_close,
         "latestClose": latest_close,
         "priceChangeAfterSurge": round(price_change_after_surge * 100, 2),
         "daysChecked": len(post_data),
         "reason": (
-            "✅ 出来高・株価ともに継続" if stage1_pass
-            else f"❌ {'出来高が低下' if not volume_sustained else '株価が急落'}"
+            "✅ 売買代金・株価ともに継続" if stage1_pass
+            else f"❌ {'売買代金が低下' if not turnover_sustained else '株価が急落'}"
         )
     }
 
@@ -383,7 +383,7 @@ def classify_volume_pattern(df_stock: pd.DataFrame, surge_date: str) -> str:
     出来高パターンを判定する。
 
     Args:
-        df_stock: 株価DataFrame（Date, Volume カラムが必要）
+        df_stock: 株価DataFrame（Date, TurnoverValue カラムが必要）
         surge_date: シグナル発生日（"YYYY-MM-DD"）
 
     Returns:
@@ -394,7 +394,7 @@ def classify_volume_pattern(df_stock: pd.DataFrame, surge_date: str) -> str:
         - 直近5日（シグナル日を含む）の平均出来高 >= 20日移動平均の1.5倍
     """
     try:
-        if "Volume" not in df_stock.columns:
+        if "TurnoverValue" not in df_stock.columns:
             return "unknown"
 
         df = df_stock.sort_values("Date").reset_index(drop=True)
@@ -411,19 +411,19 @@ def classify_volume_pattern(df_stock: pd.DataFrame, surge_date: str) -> str:
         if len(pre_data) < 10:
             return "unknown"
 
-        vol_20 = float(pre_data["Volume"].astype(float).tail(20).mean())
-        if vol_20 <= 0:
+        to_20 = float(pre_data["TurnoverValue"].astype(float).tail(20).mean())
+        if to_20 <= 0:
             return "unknown"
 
-        surge_volume = float(df.loc[surge_idx, "Volume"] or 0)
-        if surge_volume <= 0:
+        surge_turnover = float(df.loc[surge_idx, "TurnoverValue"] or 0)
+        if surge_turnover <= 0:
             return "unknown"
 
-        # 直近5日（シグナル日を含む）の平均出来高
+        # 直近5日（シグナル日を含む）の平均売買代金
         start_idx = max(0, surge_idx - 4)
-        avg_recent_5 = float(df.loc[start_idx:surge_idx, "Volume"].astype(float).mean())
+        avg_recent_5 = float(df.loc[start_idx:surge_idx, "TurnoverValue"].astype(float).mean())
 
-        is_late = (surge_volume >= vol_20 * 2.0) and (avg_recent_5 >= vol_20 * 1.5)
+        is_late = (surge_turnover >= to_20 * 2.0) and (avg_recent_5 >= to_20 * 1.5)
         return "late" if is_late else "early"
 
     except Exception:
@@ -463,7 +463,7 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
         tdnet_list = s.get("tdnet_disclosures", [])
         news_list = s.get("news", [])
         price_chg = s.get("price_change_pct", 0)
-        vol_ratio = s.get("volume_ratio", 0)
+        vol_ratio = s.get("turnover_ratio", 0)
 
         info_lines = []
         if tdnet_list:
@@ -480,7 +480,7 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
 
         stocks_text += (
             f"【{s['stockCode']} {s['companyName']}】"
-            f" 前日比+{price_chg:.1f}% / 出来高{vol_ratio:.1f}倍\n"
+            f" 前日比+{price_chg:.1f}% / 売買代金{vol_ratio:.1f}倍\n"
             + "\n".join(info_lines) + "\n\n"
         )
 
@@ -877,10 +877,10 @@ def get_outcome_patterns() -> dict:
         if surge_reason:
             _add("by_surge_tag", _get_surge_tag(surge_reason))
 
-        # daysChecked=0（最新日のため翌日以降データなし）は volumeSustainRate=0 になりノイズ → 除外
+        # daysChecked=0（最新日のため翌日以降データなし）は turnoverSustainRate=0 になりノイズ → 除外
         s1 = e.get("stage1", {})
         if s1.get("daysChecked", 0) >= 1:
-            _add("by_volume_rate", _vol_bucket(s1.get("volumeSustainRate", 0.0)))
+            _add("by_volume_rate", _vol_bucket(s1.get("turnoverSustainRate", 0.0)))
         conf = (e.get("stage2") or {}).get("confidence") or "不明"
         _add("by_confidence", conf)
 
@@ -979,7 +979,7 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
             wr_str = f" / 期待勝率:{expected_wr:.0f}%" if expected_wr is not None else ""
             stocks_text += (
                 f"【{code} {name}】"
-                f"RSI:{rsi:.0f} / 52週高値比:{high_ratio:.1f}% / 新高値:{new_high}回/20日 / 出来高トレンド:{vol_trend:.2f}x{wr_str}\n"
+                f"RSI:{rsi:.0f} / 52週高値比:{high_ratio:.1f}% / 新高値:{new_high}回/20日 / 売買代金トレンド:{vol_trend:.2f}x{wr_str}\n"
             )
 
         # 過去パターン学習データを文脈として追加（5件以上のoutcomeがある場合のみ）
@@ -989,7 +989,7 @@ def generate_and_cache_momentum_comments(signals: list) -> dict:
             patterns = get_momentum_patterns()
             if not patterns.get("insufficient", True) and patterns.get("total", 0) >= 5:
                 lines = [f"【過去学習データ: {patterns['total']}件のoutcome記録済み】"]
-                for axis, label in [("by_ma_gap", "MAギャップ"), ("by_high52w_ratio", "52週高値比"), ("by_volume_trend", "出来高トレンド")]:
+                for axis, label in [("by_ma_gap", "MAギャップ"), ("by_high52w_ratio", "52週高値比"), ("by_turnover_trend", "売買代金トレンド")]:
                     axis_data = patterns.get(axis, {})
                     if axis_data:
                         parts = [f"{k}→勝率{v['win_rate']:.0f}%({v['count']}件)" for k, v in axis_data.items()]
@@ -1170,7 +1170,7 @@ def requalify_watch_signals(df_all: pd.DataFrame) -> list:
                 "stockCode": t["entry"].get("stockCode", ""),
                 "companyName": t["entry"].get("companyName", ""),
                 "price_change_pct": 0,
-                "volume_ratio": 0,
+                "turnover_ratio": 0,
                 # 翌日再判定: 前回のsurgeReasonをニュースとして渡して文脈を維持
                 "tdnet_disclosures": [],
                 "news": [t["entry"].get("surgeReason", "")] if t["entry"].get("surgeReason") else [],
@@ -1297,7 +1297,7 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
                 "stockCode": code,
                 "companyName": name,
                 "price_change_pct": s.get("priceChangePct", 0),
-                "volume_ratio": s.get("volumeRatio", 0),
+                "turnover_ratio": s.get("turnoverRatio", 0),
                 "tdnet_disclosures": tdnet_matches,
                 "news": news,
             })
@@ -1360,7 +1360,7 @@ def qualify_signals(signals: list, df_all: pd.DataFrame) -> list:
                 "stockCode": s.get("stockCode", ""),
                 "companyName": s.get("companyName", ""),
                 "price_change_pct": s.get("priceChangePct", 0),
-                "volume_ratio": s.get("volumeRatio", 0),
+                "turnover_ratio": s.get("turnoverRatio", 0),
                 "tdnet_disclosures": info_map.get(s.get("stockCode", ""), {}).get("tdnet_disclosures", []),
                 "news": info_map.get(s.get("stockCode", ""), {}).get("news", []),
             }
@@ -1505,25 +1505,25 @@ def format_qualify_result_for_slack(results: list) -> str:
         for r in strong_results:
             s1 = r.get("stage1", {})
             s2 = r.get("stage2", {})
-            vol_rate = s1.get("volumeSustainRate", 0)
+            vol_rate = s1.get("turnoverSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
             days_checked = s1.get("daysChecked", -1)
             comment = s2.get("comment", "")
             confidence = s2.get("confidence", "")
             surge_reason = r.get("surgeReason", "")
-            vol_emoji = "📊" if s1.get("volumeSustained") else "📉"
+            vol_emoji = "📊" if s1.get("turnoverSustained") else "📉"
             price_emoji = "✅" if s1.get("priceSustained") else "❌"
             vp = r.get("volume_pattern", "unknown")
             vp_tag = " 📈バズ型" if vp == "late" else (" 🐸ジワジワ型" if vp == "early" else "")
             badge = conf_badge.get(confidence, "")
             badge_str = f"  {badge}" if badge else ""
 
-            # 出来高・株価継続状況を1行目末尾にインライン表示
+            # 売買代金・株価継続状況を1行目末尾にインライン表示
             if days_checked == 0:
-                status_str = "  _（出来高・株価: 翌日確認）_"
+                status_str = "  _（売買代金・株価: 翌日確認）_"
             else:
                 status_str = (
-                    f"  {vol_emoji} 出来高 {vol_rate:.0%}"
+                    f"  {vol_emoji} 売買代金 {vol_rate:.0%}"
                     f"  {price_emoji} 急騰後 {price_chg:+.1f}%"
                 )
 
@@ -1548,7 +1548,7 @@ def format_qualify_result_for_slack(results: list) -> str:
         lines.append(f"\n> ⏸ 様子見（要観察）  {len(watch_results)}銘柄")
         for r in watch_results:
             s1 = r.get("stage1", {})
-            vol_rate = s1.get("volumeSustainRate", 0)
+            vol_rate = s1.get("turnoverSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
             days_checked = s1.get("daysChecked", -1)
             vp = r.get("volume_pattern", "unknown")
@@ -1556,7 +1556,7 @@ def format_qualify_result_for_slack(results: list) -> str:
             if days_checked == 0:
                 status_str = "翌日確認"
             else:
-                status_str = f"出来高 {vol_rate:.0%}  株価 {price_chg:+.1f}%"
+                status_str = f"売買代金 {vol_rate:.0%}  株価 {price_chg:+.1f}%"
             lines.append(
                 f"• `{r.get('stockCode')}` {r.get('companyName', '')}{vp_tag}  {status_str}"
             )
@@ -1568,11 +1568,11 @@ def format_qualify_result_for_slack(results: list) -> str:
         lines.append("\n> 🔄 前日様子見 → 翌日再判定")
         for r in upgraded:
             s1 = r.get("stage1", {})
-            vol_rate = s1.get("volumeSustainRate", 0)
+            vol_rate = s1.get("turnoverSustainRate", 0)
             price_chg = s1.get("priceChangeAfterSurge", 0)
             lines.append(
                 f"✅ `{r.get('stockCode')}` *{r.get('companyName', '')}* → *継続*"
-                f"  出来高 {vol_rate:.0%}  急騰後 {price_chg:+.1f}%"
+                f"  売買代金 {vol_rate:.0%}  急騰後 {price_chg:+.1f}%"
             )
         for r in downgraded:
             s1 = r.get("stage1", {})

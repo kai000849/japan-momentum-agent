@@ -578,6 +578,8 @@ def add_actual_trade(
     shares: int,
     company_name: str = "",
     signal: str = "",
+    trade_type: str = "cash",
+    entry_date: str = "",
 ) -> bool:
     """
     実際の売買をtrade_log.jsonに記録する。
@@ -589,6 +591,8 @@ def add_actual_trade(
         shares:       購入株数
         company_name: 会社名（任意）
         signal:       きっかけシグナル（例: "SHORT_TERM"）
+        trade_type:   取引種別（"cash"=現物 / "margin"=制度信用）
+        entry_date:   エントリー日（"YYYY-MM-DD"、省略時は本日）
 
     Returns:
         bool: 記録成功はTrue
@@ -596,26 +600,26 @@ def add_actual_trade(
     trader = PaperTrader()
     positions = trader.trade_log.get("positions", [])
 
-    # 同銘柄の実売買重複チェック
+    # 同銘柄・同種別の実売買重複チェック
     for p in positions:
-        if p.get("stockCode") == stock_code and p.get("tradeType") == "actual":
-            logger.warning(f"既に実売買記録済み: {stock_code}")
+        if (p.get("stockCode") == stock_code
+                and p.get("tradeType") == "actual"
+                and p.get("holdType", "cash") == trade_type):
+            logger.warning(f"既に実売買記録済み: {stock_code} ({trade_type})")
             return False
 
-    stop_loss = round(entry_price * (1 + STOP_LOSS_PCT / 100))
-    take_profit = round(entry_price * (1 + TAKE_PROFIT_PCT / 100))
     invested = round(entry_price * shares)
+    date_str = entry_date if entry_date else datetime.now().strftime("%Y-%m-%d")
 
     positions.append({
         "stockCode": stock_code,
         "companyName": company_name,
         "tradeType": "actual",
-        "entryDate": datetime.now().strftime("%Y-%m-%d"),
+        "holdType": trade_type,       # "cash"=現物 / "margin"=制度信用
+        "entryDate": date_str,
         "entryPrice": round(entry_price),
         "shares": shares,
         "investedAmount": invested,
-        "stopLossPrice": stop_loss,
-        "takeProfitPrice": take_profit,
         "holdDays": 0,
         "currentPrice": round(entry_price),
         "unrealizedPnl": 0,
@@ -624,7 +628,8 @@ def add_actual_trade(
     })
     trader.trade_log["positions"] = positions
     trader._save_trade_log()
-    logger.info(f"実売買記録: {stock_code} ¥{entry_price:,}×{shares}株 = ¥{invested:,}")
+    hold_label = "現物" if trade_type == "cash" else "制度信用"
+    logger.info(f"実売買記録（{hold_label}）: {stock_code} ¥{entry_price:,}×{shares}株 = ¥{invested:,}")
     return True
 
 

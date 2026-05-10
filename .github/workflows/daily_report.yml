@@ -173,6 +173,12 @@ jobs:
           python main.py --mode fetch --days 150
         continue-on-error: true
 
+      - name: PFモメンタム点検くん（保有ポジション点検・Slack通知）
+        id: portfolio_check
+        run: |
+          python main.py --mode portfolio_check --notify
+        continue-on-error: true
+
       - name: スキャン実行（シグナル検出＆Slack通知）
         id: scan
         run: |
@@ -216,12 +222,13 @@ jobs:
           key: scans-${{ steps.date.outputs.today }}
 
       - name: エラー通知
-        if: steps.fetch.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.git_commit_logs.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' || steps.portfolio_check.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.status.outcome == 'failure' || steps.git_commit_logs.outcome == 'failure'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           ERRORS=""
           [ "${{ steps.fetch.outcome }}" = "failure" ] && ERRORS="${ERRORS}・株価データ取得(fetch)\n"
+          [ "${{ steps.portfolio_check.outcome }}" = "failure" ] && ERRORS="${ERRORS}・PFモメンタム点検(portfolio_check)\n"
           [ "${{ steps.scan.outcome }}" = "failure" ]  && ERRORS="${ERRORS}・スキャン実行(scan)\n"
           [ "${{ steps.status.outcome }}" = "failure" ] && ERRORS="${ERRORS}・保有状況通知(status)\n"
           [ "${{ steps.git_commit_logs.outcome }}" = "failure" ] && ERRORS="${ERRORS}・qualify_log git push失敗（学習ループ停止中）\n"
