@@ -220,21 +220,29 @@ git add . && git commit -m "メモ" && git push
 - 2026/04/19: whyCategoryパターン学習を追加 → `momentum_qualifier.py`の`get_outcome_patterns()`に`by_why_category`バケット追加（急騰理由別勝率）。Stage2フィードバックプロンプトの第一項目に。`slack_notifier.py`の週次レポートに「急騰理由別勝率」セクション追加。
 - 2026/04/19: TDnetコードマッチングバグを修正 → `tdnet_fetcher.py`の`get_disclosures_for_stock()`で比較前に`_normalize_code()`を適用（J-Quants=5桁、TDnet=4桁の不一致）。修正前: 全件マッチ0件→全銘柄がGoogleニュース fallback。修正後: 正常に開示照合。
 - 2026/04/19: Stage2分析の情報品質を改善 → `momentum_qualifier.py`の`_fetch_stock_news()`に8パターンのノイズフィルタ追加（「AIが解説」「掲示板」「Google ニュース」等）。Stage2プロンプトに創作防止ルール追加（「開示・ニュースなし」→必ず不明/day2_skip/structuralChange=false）。
+- 2026/05/10: 出来高→売買代金（TurnoverValue）に全面移行 → `scanner.py`/`momentum_qualifier.py`/`momentum_log_manager.py`/`slack_notifier.py`。値上がり時に出来高微減でも売買代金は維持される点を重視。スコア計算・パターン学習軸・表示ラベルをすべてturnoverベースに統一。
+- 2026/05/10: PFモメンタム点検くん実装 → `agents/portfolio_monitor.py`新規作成。実売買ポジションごとにRSI/PAO(5>25>75MA)/52週高値比/売買代金トレンド(5d/25d)/含み損益を算出し🟢継続/🟡要注意/🔴喪失を判定。朝スキャン後に自動Slack通知（`daily_report.yml`）。
+- 2026/05/10: 実売買PF管理を刷新 → `investment_advisor.py`のMAX_POSITIONS（10枠）廃止。`paper_trader.py`にholdType(cash/margin/general_margin)・entry_date・exit_date・部分決済対応を追加。`close_actual_trade()`に売却株数・取引種別・決済日引数を追加（部分決済時は残り株数でポジション継続）。
+- 2026/05/10: 口座資産管理・ネットロング倍率を追加 → `trade_log.json`に`cash_balance`フィールド追加。現物エントリー時に自動減算・決済時に自動加算。口座総資産=現金+保有株時価、ネットロング倍率=保有時価/口座総資産をPFモメンタム点検くんで毎朝表示。税引後調整は手動再設定。
+- 2026/05/10: trade_log.jsonをgit管理化 → `.gitignore`から除外。qualify_logと同様にgit管理でGitHub Actionsが毎朝checkout時に参照可能。trade_log.jsonのキャッシュステップを全ジョブから削除。売買記録後は`git add memory/trade_log.json && git commit && git push`が必要。
+- 2026/05/10: Trade Managerワークフロー追加 → `.github/workflows/trade_manager.yml`新規作成。スマホのGitHubアプリから実売買記録・決済・現金残高更新が可能。操作完了をSlackに通知（失敗時も`if: always()`で必ず通知）。取引種別: cash/margin/general_margin。
 
 ---
 
-## 現在の状況（2026/04/19更新）
+## 現在の状況（2026/05/10更新）
 - 4ジョブ＋週次レポート（戦略有効性モニター付き）で安定稼働中
-- **学習ループの永続化**: qualify_log/momentum_logはgit管理（キャッシュ廃止）。morning-scan/evening-scan後に自動git pushでリセット耐性を確保
+- **学習ループの永続化**: qualify_log/momentum_log/trade_logはすべてgit管理
 - **2つの学習ループが記録→フィードバックまで接続済み**
   - SHORT_TERM: qualify_log → 10日後outcome → Stage2プロンプトへ注入（whyCategoryが第一軸）
   - MOMENTUM: momentum_log → 20日後outcome → score_signals_by_patterns → Stage2プロンプトへ注入
 - **デイ2エントリー戦略**: entryTimingが投資判断の第一軸。day2_go=翌日GO、day2_skip=見送り、day2_watch=様子見。whyCategoryで材料の質を分類
-- **Stage2分析の信頼性強化**: TDnetコード照合バグ修正（5桁→4桁正規化）＋Googleニュースノイズ除去（AIが解説/掲示板等8パターン）＋創作防止プロンプト（情報なし→必ず不明/day2_skip）
+- **PFモメンタム点検くん**: 実売買ポジションのモメンタム継続を毎朝自動点検。RSI/PAO/売買代金トレンド/含み損益＋ネットロング倍率をSlack通知
+- **Trade Manager**: スマホGitHubアプリのActionsタブからエントリー・決済・現金残高更新が可能。部分決済対応
+- **実売買管理**: キオクシア(6921)を現物400株・信用100株で保有中（2026-04-30エントリー）
 - EDINET日次サマリー通知: 閑散期はサイレント（夕方のみ常時送信）
 - ペーパートレード: 無効化済み（trade_logは実売買記録専用）
-- 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示。注目テーマTOP5にも同様。
+- 米市場通知: セクター強弱（当日/中長期）＋各セクターに米国・日本代表銘柄3つずつ表示
 - Claudeモデル: Sonnet系は`claude-sonnet-4-6`、Haiku系は`claude-haiku-4-5-20251001`を使用
 - 次のマイルストーン①: qualify_log 5件蓄積 → whyCategoryパターン分析自動発動確認（5月決算シーズンが本番）
-- 次のマイルストーン②: entryTimingの精度確認（day2_goシグナルと翌日株価の照合、2〜3週後）
+- 次のマイルストーン②: entryTimingの精度確認（day2_goシグナルと翌日株価の照合）
 - 次のマイルストーン③: フェーズ5 - かいさんの投資判断ロジックをプロンプトに組み込み・精度検証
