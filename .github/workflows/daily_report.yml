@@ -151,14 +151,6 @@ jobs:
           restore-keys: |
             us-themes-
 
-      - name: trade_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
-          restore-keys: |
-            trade-log-
-
       - name: スキャン結果キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -190,12 +182,6 @@ jobs:
         run: |
           python main.py --mode status --notify
         continue-on-error: true
-
-      - name: trade_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
 
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         id: git_commit_logs
@@ -279,14 +265,6 @@ jobs:
             max_positions: 10
           EOF
 
-      - name: trade_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
-          restore-keys: |
-            trade-log-
-
       - name: スキャン結果キャッシュを復元
         uses: actions/cache@v4
         with:
@@ -312,12 +290,6 @@ jobs:
         run: |
           python main.py --mode status --notify
         continue-on-error: true
-
-      - name: trade_log.json を保存
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
 
       - name: qualify_log.json / momentum_log.json を Git コミット（学習ループ永続化）
         id: git_commit_logs
@@ -457,14 +429,6 @@ jobs:
             max_position_size: 300000
             max_positions: 10
           EOF
-
-      - name: trade_log.json を復元
-        uses: actions/cache@v4
-        with:
-          path: memory/trade_log.json
-          key: trade-log-${{ github.run_number }}
-          restore-keys: |
-            trade-log-
 
       - name: 週次レポート送信
         id: weekly

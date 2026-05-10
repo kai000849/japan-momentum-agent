@@ -22,8 +22,8 @@ env/
 data/raw/
 data/processed/
 
-# --- メモリ・ログファイル（個人の取引履歴） ---
-memory/trade_log.json
+# --- メモリ・ログファイル ---
+# trade_log.json は git 管理（qualify_log と同様・GitHub Actions で参照するため）
 memory/disclosure_log.json
 
 # --- Jupyter Notebook チェックポイント ---
