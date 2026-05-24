@@ -600,14 +600,6 @@ def add_actual_trade(
     trader = PaperTrader()
     positions = trader.trade_log.get("positions", [])
 
-    # 同銘柄・同種別の実売買重複チェック
-    for p in positions:
-        if (p.get("stockCode") == stock_code
-                and p.get("tradeType") == "actual"
-                and p.get("holdType", "cash") == trade_type):
-            logger.warning(f"既に実売買記録済み: {stock_code} ({trade_type})")
-            return False
-
     invested = round(entry_price * shares)
     date_str = entry_date if entry_date else datetime.now().strftime("%Y-%m-%d")
 
@@ -646,6 +638,7 @@ def close_actual_trade(
     shares_to_sell: int = None,
     trade_type: str = None,
     exit_date: str = "",
+    lot_entry_date: str = "",
 ) -> bool:
     """
     実売買ポジションの決済（全決済・部分決済）を記録する。
@@ -656,6 +649,7 @@ def close_actual_trade(
         shares_to_sell: 売却株数（省略時または全株数以上で全決済）
         trade_type:     取引種別（"cash"/"margin"/"general_margin"、省略時は最初に見つかった実売買）
         exit_date:      決済日（"YYYY-MM-DD"、省略時は今日）
+        lot_entry_date: ロット識別日（複数ロットある場合に指定、省略時はFIFO）
 
     Returns:
         bool: 成功はTrue
@@ -663,17 +657,26 @@ def close_actual_trade(
     trader = PaperTrader()
     positions = trader.trade_log.get("positions", [])
 
-    # 対象ポジションを特定（stockCode + tradeType="actual" + holdTypeで絞り込み）
+    # 候補ロットを絞り込み（stockCode + tradeType="actual" + holdType）
+    candidates = [
+        p for p in positions
+        if p.get("stockCode") == stock_code
+        and p.get("tradeType") == "actual"
+        and (not trade_type or p.get("holdType") == trade_type)
+    ]
+
     target = None
-    for p in positions:
-        if p.get("stockCode") != stock_code:
-            continue
-        if p.get("tradeType") != "actual":
-            continue
-        if trade_type and p.get("holdType") != trade_type:
-            continue
-        target = p
-        break
+    if lot_entry_date:
+        # 指定entryDateのロットを選択（"/" と "-" の表記ゆれを正規化）
+        norm = lot_entry_date.replace("/", "-")
+        for p in candidates:
+            if p.get("entryDate", "").replace("/", "-") == norm:
+                target = p
+                break
+    else:
+        # FIFO: entryDate昇順で最古ロットを選択
+        if candidates:
+            target = sorted(candidates, key=lambda p: p.get("entryDate", "").replace("/", "-"))[0]
 
     if not target:
         logger.warning(f"実売買ポジションが見つかりません: {stock_code} ({trade_type})")

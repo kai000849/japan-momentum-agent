@@ -43,6 +43,10 @@ on:
         description: '決済日（close のみ・省略時は今日 YYYY-MM-DD）'
         required: false
         type: string
+      lot_entry_date:
+        description: 'ロット識別日（close のみ・複数ロットある場合に指定・例: 2026-04-30）省略時はFIFO（最古ロット）'
+        required: false
+        type: string
       cash_amount:
         description: '【update_cash専用】現金残高（例: 21772894）'
         required: false
@@ -99,8 +103,9 @@ jobs:
         run: |
           TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z_]*')
           EXTRA_ARGS=""
-          [ -n "${{ github.event.inputs.shares }}" ]    && EXTRA_ARGS="$EXTRA_ARGS --shares ${{ github.event.inputs.shares }}"
-          [ -n "${{ github.event.inputs.exit_date }}" ] && EXTRA_ARGS="$EXTRA_ARGS --exit-date ${{ github.event.inputs.exit_date }}"
+          [ -n "${{ github.event.inputs.shares }}" ]         && EXTRA_ARGS="$EXTRA_ARGS --shares ${{ github.event.inputs.shares }}"
+          [ -n "${{ github.event.inputs.exit_date }}" ]      && EXTRA_ARGS="$EXTRA_ARGS --exit-date ${{ github.event.inputs.exit_date }}"
+          [ -n "${{ github.event.inputs.lot_entry_date }}" ] && EXTRA_ARGS="$EXTRA_ARGS --lot-entry-date ${{ github.event.inputs.lot_entry_date }}"
           python main.py --mode close_trade \
             --code "${{ github.event.inputs.code }}" \
             --price "${{ github.event.inputs.price }}" \

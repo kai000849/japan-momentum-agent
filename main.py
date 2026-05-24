@@ -757,6 +757,8 @@ def create_parser() -> argparse.ArgumentParser:
                         help="エントリー日（add_trade用、形式: YYYY-MM-DD）。省略時は今日")
     parser.add_argument("--exit-date",  type=str,   default="",
                         help="決済日（close_trade用、形式: YYYY-MM-DD）。省略時は今日")
+    parser.add_argument("--lot-entry-date", type=str, default="",
+                        help="ロット識別日（close_trade用・複数ロットある場合に指定、形式: YYYY-MM-DD）。省略時はFIFO")
 
     return parser
 
@@ -1048,18 +1050,19 @@ def main():
         elif args.mode == "close_trade":
             # 実売買決済記録
             from agents.paper_trader import close_actual_trade
-            code       = args.code
-            price      = args.price
-            shares     = args.shares
-            trade_type = getattr(args, "trade_type", None) or None
-            exit_date  = getattr(args, "exit_date", "") or ""
+            code           = args.code
+            price          = args.price
+            shares         = args.shares
+            trade_type     = getattr(args, "trade_type", None) or None
+            exit_date      = getattr(args, "exit_date", "") or ""
+            lot_entry_date = getattr(args, "lot_entry_date", "") or ""
 
             if not code or not price:
                 print("エラー: --code, --price は必須です。")
                 print("例: python main.py --mode close_trade --code 7203 --price 2600 --shares 100 --trade-type cash")
                 sys.exit(1)
 
-            success = close_actual_trade(code, price, shares, trade_type, exit_date)
+            success = close_actual_trade(code, price, shares, trade_type, exit_date, lot_entry_date)
             if success:
                 partial = f"（{shares}株 部分決済）" if shares else "（全決済）"
                 print(f"✅ 決済を記録しました: {code} ¥{price:,} {partial}")
