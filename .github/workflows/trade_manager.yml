@@ -133,12 +133,16 @@ jobs:
             exit 1
           fi
           git commit -m "data: 実売買記録更新（${{ github.event.inputs.mode }}）[skip ci]"
-          for i in 1 2 3; do
-            git push && break || {
-              echo "push失敗（試行${i}）、pullしてリトライ..."
-              git pull --rebase origin main
-            }
+          PUSHED=false
+          for i in 1 2 3 4 5; do
+            git push && PUSHED=true && break || true
+            echo "push失敗（試行${i}/5）、pullしてリトライ..."
+            git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; }
           done
+          if [ "$PUSHED" != "true" ]; then
+            echo "push 5回全失敗"
+            exit 1
+          fi
 
       - name: Slack通知（記録完了）
         if: always()

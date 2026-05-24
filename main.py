@@ -1068,6 +1068,7 @@ def main():
                 print(f"✅ 決済を記録しました: {code} ¥{price:,} {partial}")
             else:
                 print(f"❌ 決済失敗（{code} の実売買記録が見つかりません）")
+                sys.exit(1)
 
         elif args.mode == "qualify_report":
             # 判定精度レポートモード
