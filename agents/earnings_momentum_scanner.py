@@ -428,12 +428,12 @@ def fetch_endofday_reaction(stock_code: str, df_all: "pd.DataFrame") -> dict:
         high_p = float(today_row["High"])
         low_p = float(today_row["Low"])
         close_p = float(today_row["Close"])
-        volume = float(today_row.get("Volume", 0))
+        volume = float(today_row.get("TurnoverValue", 0))
         prev_close = float(prev_row["Close"])
 
-        # 直近20日平均出来高（当日を除く）
-        hist = df_stock["Volume"].iloc[-21:-1]
-        avg_vol = float(hist.mean()) if len(hist) >= 5 else float(df_stock["Volume"].iloc[:-1].mean())
+        # 直近20日平均売買代金（当日を除く）
+        hist = df_stock["TurnoverValue"].iloc[-21:-1]
+        avg_vol = float(hist.mean()) if len(hist) >= 5 else float(df_stock["TurnoverValue"].iloc[:-1].mean())
 
         day_return_pct = (close_p / prev_close - 1) * 100 if prev_close > 0 else 0.0
         close_vs_open_pct = (close_p / open_p - 1) * 100 if open_p > 0 else 0.0
@@ -447,7 +447,7 @@ def fetch_endofday_reaction(stock_code: str, df_all: "pd.DataFrame") -> dict:
         # ストップ高・寄らず検出
         stop_price = _estimate_stop_price(prev_close)
         is_stop_high = close_p >= stop_price * 0.999          # 終値がストップ高価格以上
-        is_yobarazu = volume < 100 or (avg_vol > 0 and volume / avg_vol < 0.03)  # 出来高ほぼゼロ
+        is_yobarazu = volume <= 0 or (avg_vol > 0 and volume / avg_vol < 0.03)  # 売買代金ほぼゼロ
 
         # ローソク足パターン判定
         body = abs(close_p - open_p)

@@ -945,13 +945,13 @@ def notify_endofday_earnings_scan(scan_results: list, stats: dict = None) -> boo
         if not eod:
             detail = "（引け後データ取得不可）"
         elif is_yobarazu_eod:
-            detail = f"🚨 寄らずS高  前日比:{sign_d}{day_ret:.1f}%（出来高ほぼゼロ）"
+            detail = f"🚨 寄らずS高  前日比:{sign_d}{day_ret:.1f}%（売買代金ほぼゼロ）"
         elif is_stop_high:
-            detail = f"🔥 ストップ高張り付き  前日比:{sign_d}{day_ret:.1f}% / 出来高:{vol:.1f}x"
+            detail = f"🔥 ストップ高張り付き  前日比:{sign_d}{day_ret:.1f}% / 売買代金:{vol:.1f}x"
         else:
             detail = (
                 f"前日比:{sign_d}{day_ret:.1f}% / 寄り後:{sign_c}{close_vs_open:.1f}%"
-                f" / 出来高:{vol:.1f}x / {candle}"
+                f" / 売買代金:{vol:.1f}x / {candle}"
             )
 
         comment_str = f"\n  💬 {comment}" if comment else ""
