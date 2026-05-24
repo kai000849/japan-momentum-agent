@@ -230,7 +230,7 @@ def _generate_surge_reasons_batch(stocks_with_info: list) -> dict:
 
         stocks_text += (
             f"【{s['stockCode']} {s['companyName']}】"
-            f" 前日比+{s.get('price_change_pct', 0):.1f}% / 出来高{s.get('volume_ratio', 0):.1f}倍\n"
+            f" 前日比+{s.get('price_change_pct', 0):.1f}% / 売買代金{s.get('turnover_ratio', 0):.1f}倍\n"
             + "\n".join(info_lines) + "\n\n"
         )
 
@@ -1478,7 +1478,11 @@ def _save_qualify_log(results: list):
     ]
 
     existing.extend(to_add)
-    existing = existing[-500:]
+    # outcome未記録(pending)は10営業日後に結果を書くまで絶対に消えないよう全件保持。
+    # 記録済みエントリのみ最新500件に絞る（cleanup_qualify_logが90日超を削除する）
+    _pending  = [e for e in existing if e.get("outcome") is None]
+    _recorded = [e for e in existing if e.get("outcome") is not None]
+    existing  = _recorded[-500:] + _pending
 
     with open(QUALIFY_LOG_PATH, "w", encoding="utf-8") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
