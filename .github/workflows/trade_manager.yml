@@ -98,11 +98,14 @@ jobs:
         if: startsWith(github.event.inputs.mode, 'close')
         run: |
           TRADE_TYPE=$(echo "${{ github.event.inputs.trade_type }}" | grep -o '^[a-z_]*')
-          ARGS="--code '${{ github.event.inputs.code }}' --price '${{ github.event.inputs.price }}'"
-          [ -n "${{ github.event.inputs.shares }}" ]    && ARGS="$ARGS --shares '${{ github.event.inputs.shares }}'"
-          [ -n "${TRADE_TYPE}" ]                        && ARGS="$ARGS --trade-type '${TRADE_TYPE}'"
-          [ -n "${{ github.event.inputs.exit_date }}" ] && ARGS="$ARGS --exit-date '${{ github.event.inputs.exit_date }}'"
-          eval "python main.py --mode close_trade $ARGS"
+          EXTRA_ARGS=""
+          [ -n "${{ github.event.inputs.shares }}" ]    && EXTRA_ARGS="$EXTRA_ARGS --shares ${{ github.event.inputs.shares }}"
+          [ -n "${{ github.event.inputs.exit_date }}" ] && EXTRA_ARGS="$EXTRA_ARGS --exit-date ${{ github.event.inputs.exit_date }}"
+          python main.py --mode close_trade \
+            --code "${{ github.event.inputs.code }}" \
+            --price "${{ github.event.inputs.price }}" \
+            --trade-type "${TRADE_TYPE:-cash}" \
+            $EXTRA_ARGS
 
       - name: 現金残高更新
         if: startsWith(github.event.inputs.mode, 'update_cash')
@@ -125,7 +128,12 @@ jobs:
             exit 1
           fi
           git commit -m "data: 実売買記録更新（${{ github.event.inputs.mode }}）[skip ci]"
-          git push
+          for i in 1 2 3; do
+            git push && break || {
+              echo "push失敗（試行${i}）、pullしてリトライ..."
+              git pull --rebase origin main
+            }
+          done
 
       - name: Slack通知（記録完了）
         if: always()
