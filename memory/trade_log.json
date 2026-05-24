@@ -189,6 +189,21 @@
       "unrealizedPnl": 0,
       "unrealizedPnlPct": 0.0,
       "signal": ""
+    },
+    {
+      "stockCode": "285A",
+      "companyName": "キオクシアホールディングス",
+      "tradeType": "actual",
+      "holdType": "cash",
+      "entryDate": "2026/05/12",
+      "entryPrice": 41729,
+      "shares": 400,
+      "investedAmount": 16691600,
+      "holdDays": 0,
+      "currentPrice": 41729,
+      "unrealizedPnl": 0,
+      "unrealizedPnlPct": 0.0,
+      "signal": ""
     }
   ],
   "closed_trades": [],
@@ -197,7 +212,7 @@
     "winning_trades": 0,
     "losing_trades": 0,
     "total_pnl": 0,
-    "last_updated": "2026-05-10T06:00:08.947267"
+    "last_updated": "2026-05-24T04:25:33.714304"
   },
-  "cash_balance": 21772894
+  "cash_balance": 5081294
 }
