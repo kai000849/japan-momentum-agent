@@ -204,6 +204,21 @@
       "unrealizedPnl": 0,
       "unrealizedPnlPct": 0.0,
       "signal": ""
+    },
+    {
+      "stockCode": "4062",
+      "companyName": "イビデン",
+      "tradeType": "actual",
+      "holdType": "cash",
+      "entryDate": "2026/05/14",
+      "entryPrice": 17280,
+      "shares": 100,
+      "investedAmount": 1728000,
+      "holdDays": 0,
+      "currentPrice": 17280,
+      "unrealizedPnl": 0,
+      "unrealizedPnlPct": 0.0,
+      "signal": ""
     }
   ],
   "closed_trades": [],
@@ -212,7 +227,7 @@
     "winning_trades": 0,
     "losing_trades": 0,
     "total_pnl": 0,
-    "last_updated": "2026-05-24T04:25:33.714304"
+    "last_updated": "2026-05-24T04:26:40.415607"
   },
-  "cash_balance": 5081294
+  "cash_balance": 3353294
 }
