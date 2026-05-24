@@ -495,7 +495,7 @@ def format_advice_for_slack(advices: list) -> str:
     mode_label_map = {"SHORT_TERM": "急騰", "MOMENTUM": "長期モメンタム", "EARNINGS": "決算"}
 
     if entry_list:
-        lines.append("*━━ エントリー推奨 ━━*")
+        lines.append(f"> 🎯 *エントリー推奨*  {len(entry_list)}銘柄")
         for a in entry_list:
             invest_man = a["investAmount"] / 10000
             mode_lbl = mode_label_map.get(a.get("mode", ""), "")
@@ -511,18 +511,18 @@ def format_advice_for_slack(advices: list) -> str:
             lines.append("")  # 銘柄間の空行
 
     if watch_list:
-        lines.append("\n*━━ 様子見 ━━*")
+        lines.append(f"\n> 🟡 *様子見*  {len(watch_list)}銘柄")
         for a in watch_list:
             mode_lbl = mode_label_map.get(a.get("mode", ""), "")
             lines.append(
-                f"{a['stockCode']} {a['companyName']}（{mode_lbl}） — "
+                f"`{a['stockCode']}` {a['companyName']}（{mode_lbl}） — "
                 + " / ".join(a["cautions"])
             )
 
     if skip_list:
-        lines.append("\n*━━ 見送り ━━*")
+        lines.append(f"\n> 🔴 *見送り*  {len(skip_list)}銘柄")
         for a in skip_list:
             top_caution = a["cautions"][0] if a["cautions"] else "判定: 一時的/ノイズ"
-            lines.append(f"{a['stockCode']} {a['companyName']} — {top_caution}")
+            lines.append(f"`{a['stockCode']}` {a['companyName']} — {top_caution}")
 
     return "\n".join(lines)
