@@ -657,10 +657,12 @@ def close_actual_trade(
     trader = PaperTrader()
     positions = trader.trade_log.get("positions", [])
 
-    # 候補ロットを絞り込み（stockCode + tradeType="actual" + holdType）
+    # 候補ロットを絞り込み（stockCode前方4文字マッチ + tradeType="actual" + holdType）
+    # 285A0(5文字) と 285A(4文字) の表記ゆれを吸収するため先頭4文字で照合
+    stock_code_prefix = str(stock_code)[:4]
     candidates = [
         p for p in positions
-        if p.get("stockCode") == stock_code
+        if str(p.get("stockCode", ""))[:4] == stock_code_prefix
         and p.get("tradeType") == "actual"
         and (not trade_type or p.get("holdType") == trade_type)
     ]
