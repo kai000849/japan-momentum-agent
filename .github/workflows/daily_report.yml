@@ -194,12 +194,16 @@ jobs:
             exit 0
           fi
           git commit -m "chore: qualify_log/momentum_log更新（朝スキャン） [skip ci]"
-          for i in 1 2 3; do
-            git push && break || {
-              echo "push失敗（試行${i}）、pullしてリトライ..."
-              git pull --rebase origin main
-            }
+          PUSHED=false
+          for i in 1 2 3 4 5; do
+            git push && PUSHED=true && break || true
+            echo "push失敗（試行${i}/5）、pullしてリトライ..."
+            git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; }
           done
+          if [ "$PUSHED" != "true" ]; then
+            echo "push 5回全失敗"
+            exit 1
+          fi
 
       - name: スキャン結果キャッシュを保存（日付キー・noon-scan受け渡し用）
         uses: actions/cache@v4
@@ -302,12 +306,16 @@ jobs:
             exit 0
           fi
           git commit -m "chore: qualify_log/momentum_log更新（夕方スキャン） [skip ci]"
-          for i in 1 2 3; do
-            git push && break || {
-              echo "push失敗（試行${i}）、pullしてリトライ..."
-              git pull --rebase origin main
-            }
+          PUSHED=false
+          for i in 1 2 3 4 5; do
+            git push && PUSHED=true && break || true
+            echo "push失敗（試行${i}/5）、pullしてリトライ..."
+            git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; }
           done
+          if [ "$PUSHED" != "true" ]; then
+            echo "push 5回全失敗"
+            exit 1
+          fi
 
       - name: スキャン結果キャッシュを保存
         uses: actions/cache@v4
