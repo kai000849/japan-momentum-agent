@@ -165,21 +165,6 @@
       "companyName": "キオクシアホールディングス",
       "tradeType": "actual",
       "holdType": "cash",
-      "entryDate": "2026-04-30",
-      "entryPrice": 44490,
-      "shares": 400,
-      "investedAmount": 17796000,
-      "holdDays": 0,
-      "currentPrice": 44490,
-      "unrealizedPnl": 0,
-      "unrealizedPnlPct": 0.0,
-      "signal": ""
-    },
-    {
-      "stockCode": "285A0",
-      "companyName": "キオクシアホールディングス",
-      "tradeType": "actual",
-      "holdType": "cash",
       "entryDate": "2026-05-12",
       "entryPrice": 41729,
       "shares": 400,
@@ -227,14 +212,35 @@
       "realizedPnl": 161000,
       "returnPct": 3.62,
       "isWin": true
+    },
+    {
+      "stockCode": "285A0",
+      "companyName": "キオクシアホールディングス",
+      "tradeType": "actual",
+      "holdType": "cash",
+      "entryDate": "2026-04-30",
+      "entryPrice": 44490,
+      "investedAmount": 17796000,
+      "holdDays": 0,
+      "currentPrice": 44490,
+      "unrealizedPnl": 0,
+      "unrealizedPnlPct": 0.0,
+      "signal": "",
+      "shares": 400,
+      "exitDate": "20260512",
+      "exitPrice": 46100,
+      "exitReason": "手動決済（全決済）",
+      "realizedPnl": 644000,
+      "returnPct": 3.62,
+      "isWin": true
     }
   ],
   "summary": {
-    "total_trades": 1,
-    "winning_trades": 1,
+    "total_trades": 2,
+    "winning_trades": 2,
     "losing_trades": 0,
-    "total_pnl": 161000,
-    "last_updated": "2026-05-24T05:13:01.067052"
+    "total_pnl": 805000,
+    "last_updated": "2026-05-24T05:24:51.869305"
   },
-  "cash_balance": 26377380
+  "cash_balance": 44817380
 }
