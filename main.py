@@ -1024,7 +1024,9 @@ def main():
                     pnl_str = f"{'+' if (pnl_pct or 0) >= 0 else ''}{pnl_pct:.1f}%" if pnl_pct is not None else "-"
                     print(f"  {status} {code} {name}  含み: {pnl_str}  RSI: {r.get('rsi14', '-')}  PAO: {r.get('perfectOrder', '-')}")
                 if summary.get("total_account_value"):
-                    print(f"  口座総資産: ¥{summary['total_account_value']:,.0f}  ネットロング: {summary['net_long_ratio']:.2f}倍")
+                    nr = summary.get("net_long_ratio")
+                    nr_str = f"{nr:.2f}倍" if nr is not None else "-"
+                    print(f"  口座総資産: ¥{summary['total_account_value']:,.0f}  ネットロング: {nr_str}")
                 if args.notify:
                     ok = notify_portfolio_check(results, summary)
                     print("✅ Slack通知送信" if ok else "❌ Slack通知失敗")

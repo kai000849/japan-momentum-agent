@@ -129,7 +129,8 @@ def _analyze_position(pos: dict, df_all: pd.DataFrame) -> dict:
     result["unrealizedPnlPct"] = round((current_close - entry_price) / entry_price * 100, 2) if entry_price > 0 else 0
 
     # RSI
-    result["rsi14"] = round(_calc_rsi(closes), 1) if _calc_rsi(closes) is not None else None
+    rsi_val = _calc_rsi(closes)
+    result["rsi14"] = round(rsi_val, 1) if rsi_val is not None else None
 
     # 移動平均
     for period in [5, 25, 75]:
@@ -223,17 +224,17 @@ def _analyze_position(pos: dict, df_all: pd.DataFrame) -> dict:
 # メイン: 全ポジション点検
 # ========================================
 
-def check_portfolio_momentum() -> list[dict]:
+def check_portfolio_momentum() -> tuple[list[dict], dict]:
     """
     実売買ポジション全件のモメンタムを点検して返す。
 
     Returns:
-        list[dict]: ポジションごとの点検結果リスト
+        tuple[list[dict], dict]: (ポジションごとの点検結果リスト, 口座サマリー)
     """
     trade_log_path = Path(__file__).parent.parent / "memory" / "trade_log.json"
     if not trade_log_path.exists():
         logger.warning("trade_log.json が見つかりません。")
-        return []
+        return [], {}
 
     with open(trade_log_path, "r", encoding="utf-8") as f:
         trade_log = json.load(f)
@@ -244,7 +245,7 @@ def check_portfolio_momentum() -> list[dict]:
     ]
     if not positions:
         logger.info("実売買ポジションなし。")
-        return []
+        return [], {}
 
     # ローカルCSVから株価データを取得
     from agents.jquants_fetcher import load_latest_quotes
@@ -272,8 +273,8 @@ def check_portfolio_momentum() -> list[dict]:
     summary = {
         "cash_balance": cash_balance,
         "total_position_value": round(total_position_value),
-        "total_account_value": round(total_account_value) if total_account_value else None,
-        "net_long_ratio": round(net_long_ratio, 2) if net_long_ratio else None,
+        "total_account_value": round(total_account_value) if total_account_value is not None else None,
+        "net_long_ratio": round(net_long_ratio, 2) if net_long_ratio is not None else None,
     }
 
     return results, summary

@@ -766,7 +766,8 @@ def get_actual_positions() -> list:
     if not positions:
         return []
 
-    # yfinanceで最新価格を取得して損益を更新
+    # Step1: yfinanceで最新価格を取得（市場時間中のみ有効）
+    updated_codes: set = set()
     try:
         from agents.noon_scanner import fetch_intraday
         for p in positions:
@@ -777,8 +778,32 @@ def get_actual_positions() -> list:
                 p["currentPrice"] = current
                 p["unrealizedPnl"] = round((current - entry) * p["shares"])
                 p["unrealizedPnlPct"] = round((current - entry) / entry * 100, 2)
+                updated_codes.add(p["stockCode"])
     except Exception as e:
-        logger.warning(f"実売買現在価格取得エラー（記録価格で表示）: {e}")
+        logger.warning(f"yfinance取得エラー: {e}")
+
+    # Step2: yfinanceで取得できなかったポジションはJ-Quants CSVの前日終値にフォールバック
+    not_updated = [p for p in positions if p["stockCode"] not in updated_codes]
+    if not_updated:
+        try:
+            from agents.jquants_fetcher import load_latest_quotes
+            df_all = load_latest_quotes()
+            if not df_all.empty:
+                code_col = next((c for c in ["Code", "code", "StockCode"] if c in df_all.columns), None)
+                close_col = "Close" if "Close" in df_all.columns else None
+                if code_col and close_col:
+                    for p in not_updated:
+                        stock_code = str(p["stockCode"])
+                        stock_df = df_all[df_all[code_col].astype(str).str[:4] == stock_code[:4]]
+                        if not stock_df.empty:
+                            latest_close = float(stock_df.sort_values("Date").iloc[-1][close_col])
+                            if latest_close > 0:
+                                entry = p["entryPrice"]
+                                p["currentPrice"] = latest_close
+                                p["unrealizedPnl"] = round((latest_close - entry) * p["shares"])
+                                p["unrealizedPnlPct"] = round((latest_close - entry) / entry * 100, 2)
+        except Exception as e:
+            logger.warning(f"J-Quants CSV取得エラー（記録価格で表示）: {e}")
 
     return sorted(positions, key=lambda x: x.get("unrealizedPnlPct", 0), reverse=True)
 

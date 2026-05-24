@@ -1690,10 +1690,11 @@ def notify_portfolio_check(results: list, summary: dict = None) -> bool:
         pv = summary.get("total_position_value")
         nr = summary.get("net_long_ratio")
         if tv:
+            nr_str = f"{nr:.2f}倍" if nr is not None else "-"
             lines.append(
                 f"\n💰 口座総資産: ¥{tv:,.0f}\n"
                 f"  現金: ¥{cb:,.0f}  株式時価: ¥{pv:,.0f}\n"
-                f"  ネットロング: {nr:.2f}倍"
+                f"  ネットロング: {nr_str}"
             )
         else:
             lines.append("\n💰 口座資産未設定（Trade Managerで現金残高を設定してください）")
