@@ -508,11 +508,16 @@ def _analyze_structural_change_batch(stocks: list) -> dict:
                 lines.append(f"  確信度別勝率: {' / '.join(parts)}")
             if patterns.get("by_volume_rate"):
                 parts = [f"{k}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_volume_rate"].items()]
-                lines.append(f"  出来高維持率別勝率: {' / '.join(parts)}")
+                lines.append(f"  売買代金維持率別勝率: {' / '.join(parts)}")
             if patterns.get("by_volume_pattern"):
                 vp_labels = {"late": "バズ型(late)", "early": "ジワジワ型(early)"}
                 parts = [f"{vp_labels.get(k, k)}:{v['win_rate']}%({v['count']}件)" for k, v in patterns["by_volume_pattern"].items()]
                 lines.append(f"  出来高パターン別勝率: {' / '.join(parts)}")
+            lines.append(
+                "【この実績データの使い方】急騰理由別・情報源別の勝率が50%未満のカテゴリは"
+                "entryTimingをday2_skipに、70%以上のカテゴリはday2_goを優先してください。"
+                "確信度が低い(low)場合は原則day2_watchまたはday2_skipとしてください。"
+            )
             accuracy_context = "\n".join(lines) + "\n\n"
     except Exception:
         pass
