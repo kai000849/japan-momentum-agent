@@ -161,21 +161,6 @@
       "profitFactor": null
     },
     {
-      "stockCode": "285A0",
-      "companyName": "キオクシアホールディングス",
-      "tradeType": "actual",
-      "holdType": "cash",
-      "entryDate": "2026-05-12",
-      "entryPrice": 41729,
-      "shares": 400,
-      "investedAmount": 16691600,
-      "holdDays": 0,
-      "currentPrice": 41729,
-      "unrealizedPnl": 0,
-      "unrealizedPnlPct": 0.0,
-      "signal": ""
-    },
-    {
       "stockCode": "4062",
       "companyName": "イビデン",
       "tradeType": "actual",
@@ -233,14 +218,35 @@
       "realizedPnl": 644000,
       "returnPct": 3.62,
       "isWin": true
+    },
+    {
+      "stockCode": "285A0",
+      "companyName": "キオクシアホールディングス",
+      "tradeType": "actual",
+      "holdType": "cash",
+      "entryDate": "2026-05-12",
+      "entryPrice": 41729,
+      "investedAmount": 16691600,
+      "holdDays": 0,
+      "currentPrice": 41729,
+      "unrealizedPnl": 0,
+      "unrealizedPnlPct": 0.0,
+      "signal": "",
+      "shares": 400,
+      "exitDate": "20260529",
+      "exitPrice": 63000,
+      "exitReason": "手動決済（全決済）",
+      "realizedPnl": 8508400,
+      "returnPct": 50.97,
+      "isWin": true
     }
   ],
   "summary": {
-    "total_trades": 2,
-    "winning_trades": 2,
+    "total_trades": 3,
+    "winning_trades": 3,
     "losing_trades": 0,
-    "total_pnl": 805000,
-    "last_updated": "2026-05-28T10:21:02.045491"
+    "total_pnl": 9313400,
+    "last_updated": "2026-06-02T02:44:40.503816"
   },
-  "cash_balance": 1335482
+  "cash_balance": 26535482
 }
