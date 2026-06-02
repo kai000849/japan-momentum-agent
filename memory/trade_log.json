@@ -159,21 +159,6 @@
       "unrealizedPnlPct": 0,
       "reason": "テスト",
       "profitFactor": null
-    },
-    {
-      "stockCode": "4062",
-      "companyName": "イビデン",
-      "tradeType": "actual",
-      "holdType": "cash",
-      "entryDate": "2026-05-14",
-      "entryPrice": 17280,
-      "shares": 100,
-      "investedAmount": 1728000,
-      "holdDays": 0,
-      "currentPrice": 17280,
-      "unrealizedPnl": 0,
-      "unrealizedPnlPct": 0.0,
-      "signal": ""
     }
   ],
   "closed_trades": [
@@ -239,14 +224,35 @@
       "realizedPnl": 8508400,
       "returnPct": 50.97,
       "isWin": true
+    },
+    {
+      "stockCode": "4062",
+      "companyName": "イビデン",
+      "tradeType": "actual",
+      "holdType": "cash",
+      "entryDate": "2026-05-14",
+      "entryPrice": 17280,
+      "investedAmount": 1728000,
+      "holdDays": 0,
+      "currentPrice": 17280,
+      "unrealizedPnl": 0,
+      "unrealizedPnlPct": 0.0,
+      "signal": "",
+      "shares": 100,
+      "exitDate": "20260529",
+      "exitPrice": 20600,
+      "exitReason": "手動決済（全決済）",
+      "realizedPnl": 332000,
+      "returnPct": 19.21,
+      "isWin": true
     }
   ],
   "summary": {
-    "total_trades": 3,
-    "winning_trades": 3,
+    "total_trades": 4,
+    "winning_trades": 4,
     "losing_trades": 0,
-    "total_pnl": 9313400,
-    "last_updated": "2026-06-02T02:44:40.503816"
+    "total_pnl": 9645400,
+    "last_updated": "2026-06-02T02:45:35.441957"
   },
-  "cash_balance": 26535482
+  "cash_balance": 28595482
 }
