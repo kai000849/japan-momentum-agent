@@ -41355,19 +41355,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算説明会開催通知のみで材料弱く、過去に下方修正報道あり継続性低い",
+      "comment": "決算説明会開催告知のみで材料弱く、過去に下方修正歴あり継続性低い",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算説明会開催通知のみ・下方修正履歴あり材料弱い",
+      "surgeReason": "[決算] 3Q決算説明会開催告知、過去下方修正歴あり材料弱い",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算説明会開催通知のみ・下方修正履歴あり材料弱い",
+    "surgeReason": "[決算] 3Q決算説明会開催告知、過去下方修正歴あり材料弱い",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-11T13:10:28.100413"
+    "qualifiedAt": "2026-06-11T23:20:10.748265"
   },
   {
     "stockCode": "79110",
@@ -41396,20 +41396,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "high",
-      "comment": "自社株買い発表＋AIテーマ相乗りで日経225構成銘柄として大幅高、継続性高い",
-      "whyCategory": "自社株買い・増配",
+      "confidence": "medium",
+      "comment": "みずほが目標株価引き上げ、AI・CPO関連テーマとして注目集める",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 自社株買い発表＋AI出遅れテーマで日経225銘柄が急騰",
+      "surgeReason": "[ニュース] みずほ目標株価引上げ、AI/CPO本命銘柄として再評価",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買い発表＋AI出遅れテーマで日経225銘柄が急騰",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[ニュース] みずほ目標株価引上げ、AI/CPO本命銘柄として再評価",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100423"
+    "qualifiedAt": "2026-06-11T23:20:10.748275"
   },
   {
     "stockCode": "65350",
@@ -41439,19 +41439,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "自社株買い（ToSTNeT-3）＋3Q決算開示の複合材料、継続性は限定的",
+      "comment": "3Q決算＋ToSTNeT-3自社株買い開示の複合材料、需給面でのサポートあり",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 自社株買いToSTNeT-3＋3Q決算同時開示の複合材料",
+      "surgeReason": "[開示] 3Q決算＋ToSTNeT-3自社株買い実施で需給好転期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買いToSTNeT-3＋3Q決算同時開示の複合材料",
+    "surgeReason": "[開示] 3Q決算＋ToSTNeT-3自社株買い実施で需給好転期待",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100425"
+    "qualifiedAt": "2026-06-11T23:20:10.748277"
   },
   {
     "stockCode": "69760",
@@ -41481,19 +41481,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "村田製作所AI相乗りで電子部品テーマに乗り急伸、需要継続期待あり",
+      "comment": "外資系がMLCC最大級サイクル到来と指摘、レーティング強気引き上げで再評価",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] AI電子部品テーマで村田製作所相乗り・需要拡大期待",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 外資系MLCC大サイクル指摘＋目標株価19,900円に引上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AI電子部品テーマで村田製作所相乗り・需要拡大期待",
+    "surgeReason": "[ニュース] 外資系MLCC大サイクル指摘＋目標株価19,900円に引上げ",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_go",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100426"
+    "qualifiedAt": "2026-06-11T23:20:10.748278"
   },
   {
     "stockCode": "26740",
@@ -41523,19 +41523,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "5月度店舗売上高・出店状況開示のみ、材料の強度は低く継続性不明",
+      "comment": "5月度店舗売上高開示のみで材料の強さ不明、継続性判断困難",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 5月度店舗売上高開示のみ・材料の強度低く継続性不明",
+      "surgeReason": "[開示] 5月度店舗売上高・出店状況開示、材料の強さ不明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 5月度店舗売上高開示のみ・材料の強度低く継続性不明",
+    "surgeReason": "[開示] 5月度店舗売上高・出店状況開示、材料の強さ不明",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100427"
+    "qualifiedAt": "2026-06-11T23:20:10.748279"
   },
   {
     "stockCode": "285A0",
@@ -41563,21 +41563,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "米メモリー株高波及＋アナリスト目標株価引き上げでテーマ相乗り継続期待",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "米メモリー株高の波及とアナリスト目標株価引き上げ、外部要因依存で継続性低い",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] 米メモリー株高波及＋目標株価引き上げでテーマ継続",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 米メモリー株高波及＋サンディスク目標株価引上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米メモリー株高波及＋目標株価引き上げでテーマ継続",
+    "surgeReason": "[ニュース] 米メモリー株高波及＋サンディスク目標株価引上げ",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_go",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100428"
+    "qualifiedAt": "2026-06-11T23:20:10.748280"
   },
   {
     "stockCode": "28020",
@@ -41605,21 +41605,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "AI銘柄として出遅れ探索の対象となり注目集まる、テーマ相乗りで継続期待",
-      "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_go",
-      "surgeReason": "[ニュース] AI出遅れ銘柄として探索対象に浮上・テーマ相乗り急騰",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "具体的な株価上昇材料が開示・ニュースから特定できず、材料不明",
+      "whyCategory": "不明",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AI出遅れ銘柄として探索対象に浮上・テーマ相乗り急騰",
-    "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_go",
-    "qualifyResult": "継続",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100429"
+    "qualifiedAt": "2026-06-11T23:20:10.748282"
   },
   {
     "stockCode": "73090",
@@ -41649,19 +41649,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常5%下方修正が報道されており、急騰の明確なポジティブ材料が不明",
+      "comment": "今期経常5%下方修正、株主提案否決と材料はネガティブ、急騰理由不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 下方修正報道あり・急騰の明確なポジティブ材料特定不可",
+      "surgeReason": "[不明] 下方修正・株主提案否決でネガティブ材料、急騰理由不明",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 下方修正報道あり・急騰の明確なポジティブ材料特定不可",
+    "surgeReason": "[不明] 下方修正・株主提案否決でネガティブ材料、急騰理由不明",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100433"
+    "qualifiedAt": "2026-06-11T23:20:10.748285"
   },
   {
     "stockCode": "62780",
@@ -41691,19 +41691,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "AI機器向けドリル需要拡大＋業績上方修正でストップ高、継続性高い",
+      "comment": "業績上方修正＋AI機器向けドリル需要増で増産、26年ぶり高値の構造変化あり",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] AI機器向けドリル需要増＋業績上方修正でストップ高急騰",
+      "surgeReason": "[開示] 業績上方修正＋AI需要でドリル増産、26年ぶり高値更新",
       "stage2Available": true
     },
-    "surgeReason": "[開示] AI機器向けドリル需要増＋業績上方修正でストップ高急騰",
+    "surgeReason": "[開示] 業績上方修正＋AI需要でドリル増産、26年ぶり高値更新",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100435"
+    "qualifiedAt": "2026-06-11T23:20:10.748287"
   },
   {
     "stockCode": "81730",
@@ -41733,19 +41733,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "5連騰・エンタメ・携帯販売好調報道のみで具体的開示なく材料弱い",
+      "comment": "5連騰でエンタメ・携帯販売好調の成長期待、具体的開示材料なく過熱感あり",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 5連騰・収益拡大期待の報道のみ・具体的開示材料なし",
+      "surgeReason": "[ニュース] 5連騰・成長期待買い継続も具体材料なく過熱感あり",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 5連騰・収益拡大期待の報道のみ・具体的開示材料なし",
+    "surgeReason": "[ニュース] 5連騰・成長期待買い継続も具体材料なく過熱感あり",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-11T13:10:28.100436"
+    "qualifiedAt": "2026-06-11T23:20:10.748291"
   },
   {
     "stockCode": "25310",
@@ -41775,18 +41775,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "品評会金賞受賞報道のみで材料の投資インパクト低く継続性乏しい",
+      "comment": "国内品評会金賞受賞のニュースで上昇、材料の株価インパクトは限定的",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 国内的酒類品評会金賞受賞報道のみ・投資インパクト低い",
+      "surgeReason": "[ニュース] 国内酒類品評会金賞受賞、材料インパクト限定的",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 国内的酒類品評会金賞受賞報道のみ・投資インパクト低い",
+    "surgeReason": "[ニュース] 国内酒類品評会金賞受賞、材料インパクト限定的",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-11T13:10:28.100437"
+    "qualifiedAt": "2026-06-11T23:20:10.748292"
   }
 ]
