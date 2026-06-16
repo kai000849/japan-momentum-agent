@@ -37111,21 +37111,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "high",
-      "comment": "米ファンドによるTOBが最大材料。TOB価格へのサヤ寄せで上値余地あり",
-      "whyCategory": "需給",
+      "structuralChange": false,
+      "confidence": "medium",
+      "comment": "2Q増収増益・管理戸数増・入居率高水準。継続性あるが急騰幅大きく過熱感。",
+      "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 米ファンドTOB価格へのサヤ寄せ+2Q増収増益が重なり急騰",
+      "surgeReason": "[決算] 2Q増収増益・学生マンション管理戸数順調増加・入居率高水準",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米ファンドTOB価格へのサヤ寄せ+2Q増収増益が重なり急騰",
-    "whyCategory": "需給",
+    "surgeReason": "[決算] 2Q増収増益・学生マンション管理戸数順調増加・入居率高水準",
+    "whyCategory": "決算",
     "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832383"
+    "qualifiedAt": "2026-06-16T23:18:16.653117"
   },
   {
     "stockCode": "46660",
@@ -37155,19 +37155,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "決算短信＋通期業績予想修正の正式開示。内容確認次第で継続性判断",
+      "comment": "TDnet開示で通期業績予想を上方修正。特別損益含む決算改善で継続性高い。",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績予想修正・特別損益計上を正式開示し急騰",
+      "surgeReason": "[開示] 通期業績予想上方修正・特損計上も中間期実績上振れ",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績予想修正・特別損益計上を正式開示し急騰",
+    "surgeReason": "[開示] 通期業績予想上方修正・特損計上も中間期実績上振れ",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832394"
+    "qualifiedAt": "2026-06-16T23:18:16.653130"
   },
   {
     "stockCode": "44460",
@@ -37197,19 +37197,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "子会社株式譲渡の開示のみ。事業への影響・ポジ度不明で継続性低い",
+      "comment": "連結子会社の株式譲渡開示。売却による影響不明で継続性判断困難。",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 連結子会社異動（株式譲渡）開示で急騰も継続性不明",
+      "surgeReason": "[開示] 連結子会社株式譲渡（売却）発表・継続性不明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 連結子会社異動（株式譲渡）開示で急騰も継続性不明",
+    "surgeReason": "[開示] 連結子会社株式譲渡（売却）発表・継続性不明",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832395"
+    "qualifiedAt": "2026-06-16T23:18:16.653131"
   },
   {
     "stockCode": "67870",
@@ -37239,19 +37239,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "最高益・プロの注目報道があるが売買代金倍率1.8倍と低く出来高不足",
+      "comment": "半導体関連・最高益見通しでプロ注目。テーマ性強いが明確な開示なく様子見。",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 最高益報道＋半導体関連テーマ相乗りで急騰",
+      "surgeReason": "[ニュース] 半導体基板テーマ・最高益期待でプロ注目の本命株",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 最高益報道＋半導体関連テーマ相乗りで急騰",
+    "surgeReason": "[ニュース] 半導体基板テーマ・最高益期待でプロ注目の本命株",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832399"
+    "qualifiedAt": "2026-06-16T23:18:16.653133"
   },
   {
     "stockCode": "69660",
@@ -37281,19 +37281,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "一転営業増益の業績修正。ストップ高気配と報道あり強い継続性期待",
+      "comment": "27年1月期一転営業増益・米系大手証券が強気レーティング。材料明確で継続性高。",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 27年1月期一転営業増益修正でストップ高気配急騰",
+      "surgeReason": "[ニュース] 27年1月期一転営業増益・米系大手証券強気目標1200円",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 27年1月期一転営業増益修正でストップ高気配急騰",
+    "surgeReason": "[ニュース] 27年1月期一転営業増益・米系大手証券強気目標1200円",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832400"
+    "qualifiedAt": "2026-06-16T23:18:16.653134"
   },
   {
     "stockCode": "63870",
@@ -37323,19 +37323,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "業績・配当計画増額修正で上場来高値更新。続騰中だが過熱感に注意",
+      "comment": "26年7月期業績・配当計画増額発表で続騰・上場来高値更新。継続性あり。",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 26年7月期業績・配当計画増額修正で上場来高値更新",
+      "surgeReason": "[ニュース] 26年7月期業績・配当増額・上場来高値更新で続騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 26年7月期業績・配当計画増額修正で上場来高値更新",
+    "surgeReason": "[ニュース] 26年7月期業績・配当増額・上場来高値更新で続騰",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832401"
+    "qualifiedAt": "2026-06-16T23:18:16.653135"
   },
   {
     "stockCode": "212A0",
@@ -37363,21 +37363,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "業績・配当上方修正で5連騰。モメンタム継続中も追いかけ注意",
+      "comment": "26年10月期業績・配当上方修正で5連騰。モメンタム継続も過熱感に注意。",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 26年10月期業績・配当上方修正で5連騰継続",
+      "surgeReason": "[決算] 26年10月期業績・配当上方修正・5連騰中",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 26年10月期業績・配当上方修正で5連騰継続",
+    "surgeReason": "[決算] 26年10月期業績・配当上方修正・5連騰中",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832402"
+    "qualifiedAt": "2026-06-16T23:18:16.653136"
   },
   {
     "stockCode": "69760",
@@ -37407,19 +37407,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "レーティング引き上げ・野村の保有増報告。外部評価起因で継続性弱い",
-      "whyCategory": "需給",
+      "comment": "半年で6倍・過熱感強調記事あり。AIテーマ相乗りだが過熱感明確でスキップ推奨。",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] アナリスト強気格上げ＋野村保有増の変更報告書で上昇",
+      "surgeReason": "[ニュース] AI物色コンデンサー・半年6倍で過熱感強く上値リスク大",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] アナリスト強気格上げ＋野村保有増の変更報告書で上昇",
-    "whyCategory": "需給",
+    "surgeReason": "[ニュース] AI物色コンデンサー・半年6倍で過熱感強く上値リスク大",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-16T14:40:08.832406"
+    "qualifiedAt": "2026-06-16T23:18:16.653141"
   },
   {
     "stockCode": "57260",
@@ -37448,20 +37448,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "low",
-      "comment": "英マラソンの7%超保有報告が材料。需給主導で業績改善との連動薄い",
+      "confidence": "medium",
+      "comment": "英マラソン・アセットが7%超保有と大量保有報告。需給改善で株価8%高。",
       "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 英マラソン・アセットが7%超保有の大量保有報告で急騰",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 英マラソン・アセットが7%超保有・大量保有報告で需給改善",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 英マラソン・アセットが7%超保有の大量保有報告で急騰",
+    "surgeReason": "[ニュース] 英マラソン・アセットが7%超保有・大量保有報告で需給改善",
     "whyCategory": "需給",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832408"
+    "qualifiedAt": "2026-06-16T23:18:16.653142"
   },
   {
     "stockCode": "40220",
@@ -37489,21 +37489,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "TSMCテーマ相乗りで急騰。テーマ性は高いが実態根拠薄く過熱感強い",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "TSMC関連・光通信InP材料の本命として脚光。テーマ性強く前日はS高演じる。",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] TSMC有力関連銘柄として脚光を浴びテーマ相乗りで急騰",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] TSMC関連・光通信InP材料本命として脚光・前日S高",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] TSMC有力関連銘柄として脚光を浴びテーマ相乗りで急騰",
+    "surgeReason": "[ニュース] TSMC関連・光通信InP材料本命として脚光・前日S高",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832409"
+    "qualifiedAt": "2026-06-16T23:18:16.653144"
   },
   {
     "stockCode": "96030",
@@ -37533,19 +37533,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "業績下方修正・最終赤字転落報道あり。年初来安値水準で上昇理由不明",
+      "comment": "26年10月期一転最終赤字の報道あり。材料ネガティブでエントリー不適。",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 業績下方修正報道あるも株価上昇・急騰理由特定不可",
+      "surgeReason": "[不明] 最終赤字転落報道あり・急騰理由不明で材料特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 業績下方修正報道あるも株価上昇・急騰理由特定不可",
+    "surgeReason": "[不明] 最終赤字転落報道あり・急騰理由不明で材料特定不可",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832410"
+    "qualifiedAt": "2026-06-16T23:18:16.653145"
   },
   {
     "stockCode": "49730",
@@ -37573,21 +37573,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "8年来のファンド攻防に転機・増配発表。株主還元強化で構造変化の兆し",
+      "comment": "3期連続増配・配当利回り4.8%・株主還元積極化でアクティビスト攻防に雪解け。",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] ファンドとの関係改善・30円増配で株主還元積極化が評価",
+      "surgeReason": "[ニュース] 3期連続増配・配当利回り4.8%・株主還元積極化で注目",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] ファンドとの関係改善・30円増配で株主還元積極化が評価",
+    "surgeReason": "[ニュース] 3期連続増配・配当利回り4.8%・株主還元積極化で注目",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832411"
+    "qualifiedAt": "2026-06-16T23:18:16.653146"
   },
   {
     "stockCode": "47090",
@@ -37615,21 +37615,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "中期経営計画の修正開示。内容の上方度次第だが材料としては明確",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "中期経営計画修正開示。内容詳細不明で継続性判断困難。確信度低くスキップ。",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 中期経営計画修正を正式開示し上昇も継続性は内容次第",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[開示] 中期経営計画修正発表・詳細不明で継続性判断困難",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 中期経営計画修正を正式開示し上昇も継続性は内容次第",
+    "surgeReason": "[開示] 中期経営計画修正発表・詳細不明で継続性判断困難",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832412"
+    "qualifiedAt": "2026-06-16T23:18:16.653147"
   },
   {
     "stockCode": "67070",
@@ -37659,19 +37659,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "エフィッシモの保有株数変わらず保有比率増加の変更報告のみ。材料弱い",
+      "comment": "エフィッシモが保有割合増加の変更報告書提出。株数変わらず需給インパクト限定。",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] エフィッシモ保有比率増加の変更報告書提出で需給思惑上昇",
+      "surgeReason": "[需給] エフィッシモ保有割合増加報告・実株数変わらず実質的変化薄い",
       "stage2Available": true
     },
-    "surgeReason": "[需給] エフィッシモ保有比率増加の変更報告書提出で需給思惑上昇",
+    "surgeReason": "[需給] エフィッシモ保有割合増加報告・実株数変わらず実質的変化薄い",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832413"
+    "qualifiedAt": "2026-06-16T23:18:16.653148"
   },
   {
     "stockCode": "68570",
@@ -37701,18 +37701,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "目標株価引き上げ・日経平均寄与が主因。個別材料なく指数連動的上昇",
-      "whyCategory": "ニュース",
+      "comment": "目標株価引き上げのみ・日経平均寄与銘柄として連動上昇。個別材料は薄い。",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] アナリスト目標株価引き上げ＋日経平均寄与上位で連れ高",
+      "surgeReason": "[ニュース] 目標株価引き上げ・日経平均寄与連動・個別材料薄い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] アナリスト目標株価引き上げ＋日経平均寄与上位で連れ高",
-    "whyCategory": "ニュース",
+    "surgeReason": "[ニュース] 目標株価引き上げ・日経平均寄与連動・個別材料薄い",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-16T14:40:08.832414"
+    "qualifiedAt": "2026-06-16T23:18:16.653149"
   }
 ]
