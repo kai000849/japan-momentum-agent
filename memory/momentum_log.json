@@ -40434,7 +40434,18 @@
     "rsi14": 70.26,
     "return_20d_signal": 51.43,
     "score": 95.94,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.742723",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 53290.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 96000.0,
+      "return_20d": 80.15,
+      "max_drawdown_20d": -4.07,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216604"
   },
   {
@@ -40451,7 +40462,18 @@
     "rsi14": 68.14,
     "return_20d_signal": 80.41,
     "score": 95.26,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.751901",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1174.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 950.0,
+      "return_20d": -19.08,
+      "max_drawdown_20d": -36.12,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216614"
   },
   {
@@ -40468,7 +40490,18 @@
     "rsi14": 69.04,
     "return_20d_signal": 15.27,
     "score": 93.42,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.760845",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 25015.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 27455.0,
+      "return_20d": 9.75,
+      "max_drawdown_20d": -5.46,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216619"
   },
   {
@@ -40485,7 +40518,18 @@
     "rsi14": 70.87,
     "return_20d_signal": 11.03,
     "score": 93.11,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.769797",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3543.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3330.0,
+      "return_20d": -6.01,
+      "max_drawdown_20d": -6.15,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216622"
   },
   {
@@ -40502,7 +40546,18 @@
     "rsi14": 70.08,
     "return_20d_signal": 29.85,
     "score": 92.16,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.778553",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4428.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4122.0,
+      "return_20d": -6.91,
+      "max_drawdown_20d": -18.22,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216626"
   },
   {
@@ -40519,7 +40574,18 @@
     "rsi14": 71.86,
     "return_20d_signal": 7.7,
     "score": 91.4,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.787443",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3050.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3465.0,
+      "return_20d": 13.61,
+      "max_drawdown_20d": -4.46,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216630"
   },
   {
@@ -40536,7 +40602,18 @@
     "rsi14": 69.07,
     "return_20d_signal": 18.35,
     "score": 90.37,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.796378",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2200.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2352.0,
+      "return_20d": 6.91,
+      "max_drawdown_20d": -5.73,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216634"
   },
   {
@@ -40553,7 +40630,18 @@
     "rsi14": 70.76,
     "return_20d_signal": 7.06,
     "score": 90.01,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.805622",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2329.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2246.0,
+      "return_20d": -3.58,
+      "max_drawdown_20d": -6.35,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216640"
   },
   {
@@ -40570,7 +40658,18 @@
     "rsi14": 70.42,
     "return_20d_signal": 20.96,
     "score": 89.91,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.814764",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6700.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 7000.0,
+      "return_20d": 4.48,
+      "max_drawdown_20d": -1.49,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216643"
   },
   {
@@ -40587,7 +40686,18 @@
     "rsi14": 69.13,
     "return_20d_signal": 6.81,
     "score": 89.49,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.823755",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1900.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1810.5,
+      "return_20d": -4.71,
+      "max_drawdown_20d": -6.32,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216647"
   },
   {
@@ -40604,7 +40714,18 @@
     "rsi14": 71.41,
     "return_20d_signal": 17.46,
     "score": 89.36,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.832490",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2059.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2014.0,
+      "return_20d": -2.21,
+      "max_drawdown_20d": -3.23,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216649"
   },
   {
@@ -40621,7 +40742,18 @@
     "rsi14": 67.46,
     "return_20d_signal": 8.76,
     "score": 88.24,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.841385",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2252.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2347.0,
+      "return_20d": 4.22,
+      "max_drawdown_20d": -1.38,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216652"
   },
   {
@@ -40638,7 +40770,18 @@
     "rsi14": 69.82,
     "return_20d_signal": 5.6,
     "score": 87.56,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.850467",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1720.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1660.0,
+      "return_20d": -3.49,
+      "max_drawdown_20d": -5.12,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216655"
   },
   {
@@ -40655,7 +40798,18 @@
     "rsi14": 69.99,
     "return_20d_signal": 5.3,
     "score": 86.45,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.859579",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1060.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1059.0,
+      "return_20d": -0.09,
+      "max_drawdown_20d": -3.3,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216658"
   },
   {
@@ -40672,7 +40826,18 @@
     "rsi14": 68.3,
     "return_20d_signal": 3.4,
     "score": 85.65,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.868674",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1563.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1532.0,
+      "return_20d": -1.98,
+      "max_drawdown_20d": -3.52,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216660"
   },
   {
@@ -40689,7 +40854,18 @@
     "rsi14": 64.58,
     "return_20d_signal": 9.57,
     "score": 84.83,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.878038",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1858.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2007.5,
+      "return_20d": 8.05,
+      "max_drawdown_20d": -2.85,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216664"
   },
   {
@@ -40706,7 +40882,18 @@
     "rsi14": 69.13,
     "return_20d_signal": 15.49,
     "score": 84.29,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.886996",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1823.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1704.0,
+      "return_20d": -6.53,
+      "max_drawdown_20d": -6.69,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216667"
   },
   {
@@ -40723,7 +40910,18 @@
     "rsi14": 69.54,
     "return_20d_signal": 9.9,
     "score": 84.25,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.896106",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4396.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3880.0,
+      "return_20d": -11.74,
+      "max_drawdown_20d": -13.99,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216670"
   },
   {
@@ -40740,7 +40938,18 @@
     "rsi14": 66.25,
     "return_20d_signal": 14.29,
     "score": 84.1,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.905172",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3117.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2956.5,
+      "return_20d": -5.15,
+      "max_drawdown_20d": -6.87,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216672"
   },
   {
@@ -40757,7 +40966,18 @@
     "rsi14": 70.44,
     "return_20d_signal": 22.29,
     "score": 83.87,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.914549",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1669.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1643.0,
+      "return_20d": -1.56,
+      "max_drawdown_20d": -3.83,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216675"
   },
   {
@@ -40774,7 +40994,18 @@
     "rsi14": 66.69,
     "return_20d_signal": 12.12,
     "score": 83.79,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.923796",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 7800.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 7252.0,
+      "return_20d": -7.03,
+      "max_drawdown_20d": -11.65,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216677"
   },
   {
@@ -40791,7 +41022,18 @@
     "rsi14": 65.65,
     "return_20d_signal": 6.91,
     "score": 83.5,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.933059",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4600.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4310.0,
+      "return_20d": -6.3,
+      "max_drawdown_20d": -8.48,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216680"
   },
   {
@@ -40808,7 +41050,18 @@
     "rsi14": 70.31,
     "return_20d_signal": 10.94,
     "score": 83.36,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.942122",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6204.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6201.0,
+      "return_20d": -0.05,
+      "max_drawdown_20d": -6.87,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216682"
   },
   {
@@ -40825,7 +41078,18 @@
     "rsi14": 68.4,
     "return_20d_signal": 5.74,
     "score": 83.24,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.951183",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 770.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 756.0,
+      "return_20d": -1.82,
+      "max_drawdown_20d": -9.61,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216685"
   },
   {
@@ -40842,7 +41106,18 @@
     "rsi14": 65.62,
     "return_20d_signal": 6.24,
     "score": 83.16,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.960232",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1952.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1968.0,
+      "return_20d": 0.82,
+      "max_drawdown_20d": -5.23,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216688"
   },
   {
@@ -40859,7 +41134,18 @@
     "rsi14": 67.78,
     "return_20d_signal": 7.44,
     "score": 82.66,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.969230",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1272.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1476.0,
+      "return_20d": 16.04,
+      "max_drawdown_20d": -4.17,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216691"
   },
   {
@@ -40876,7 +41162,18 @@
     "rsi14": 67.18,
     "return_20d_signal": 14.96,
     "score": 82.39,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.978645",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4845.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4300.0,
+      "return_20d": -11.25,
+      "max_drawdown_20d": -11.25,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216693"
   },
   {
@@ -40893,7 +41190,18 @@
     "rsi14": 67.05,
     "return_20d_signal": 5.74,
     "score": 82.35,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.987830",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 810.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 785.0,
+      "return_20d": -3.09,
+      "max_drawdown_20d": -5.93,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216696"
   },
   {
@@ -40910,7 +41218,18 @@
     "rsi14": 64.35,
     "return_20d_signal": 5.55,
     "score": 82.27,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:30.996804",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2130.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2067.0,
+      "return_20d": -2.96,
+      "max_drawdown_20d": -10.38,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216699"
   },
   {
@@ -40927,7 +41246,18 @@
     "rsi14": 64.58,
     "return_20d_signal": 13.05,
     "score": 82.14,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.005644",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1833.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1462.0,
+      "return_20d": -20.24,
+      "max_drawdown_20d": -23.51,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216701"
   },
   {
@@ -40944,7 +41274,18 @@
     "rsi14": 64.52,
     "return_20d_signal": 5.44,
     "score": 82.07,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.014725",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1563.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1621.5,
+      "return_20d": 3.71,
+      "max_drawdown_20d": -3.2,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216704"
   },
   {
@@ -40961,7 +41302,18 @@
     "rsi14": 66.7,
     "return_20d_signal": 25.27,
     "score": 82.07,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.023819",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 710.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 926.0,
+      "return_20d": 30.42,
+      "max_drawdown_20d": -1.97,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216707"
   },
   {
@@ -40978,7 +41330,18 @@
     "rsi14": 66.33,
     "return_20d_signal": 3.85,
     "score": 81.72,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.032988",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6310.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6380.0,
+      "return_20d": 1.11,
+      "max_drawdown_20d": -6.97,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216710"
   },
   {
@@ -41012,7 +41375,18 @@
     "rsi14": 66.56,
     "return_20d_signal": 8.38,
     "score": 81.67,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.055951",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1052.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 774.0,
+      "return_20d": -26.43,
+      "max_drawdown_20d": -27.76,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216716"
   },
   {
@@ -41029,7 +41403,18 @@
     "rsi14": 67.15,
     "return_20d_signal": 3.13,
     "score": 81.07,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.065016",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3642.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3609.0,
+      "return_20d": -0.91,
+      "max_drawdown_20d": -4.12,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216758"
   },
   {
@@ -41046,7 +41431,18 @@
     "rsi14": 65.12,
     "return_20d_signal": 7.82,
     "score": 80.86,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.073874",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2100.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2074.0,
+      "return_20d": -1.24,
+      "max_drawdown_20d": -9.33,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216762"
   },
   {
@@ -41063,7 +41459,18 @@
     "rsi14": 64.43,
     "return_20d_signal": 5.93,
     "score": 80.8,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.082658",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1450.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1437.5,
+      "return_20d": -0.86,
+      "max_drawdown_20d": -10.41,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216764"
   },
   {
@@ -41080,7 +41487,18 @@
     "rsi14": 65.87,
     "return_20d_signal": 16.41,
     "score": 80.63,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.091569",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 8820.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 7840.0,
+      "return_20d": -11.11,
+      "max_drawdown_20d": -19.16,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216767"
   },
   {
@@ -41097,7 +41515,18 @@
     "rsi14": 67.21,
     "return_20d_signal": 5.03,
     "score": 80.6,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.100410",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2749.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2732.5,
+      "return_20d": -0.62,
+      "max_drawdown_20d": -7.58,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216769"
   },
   {
@@ -41114,7 +41543,18 @@
     "rsi14": 64.91,
     "return_20d_signal": 6.76,
     "score": 80.55,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.109212",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1929.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1882.0,
+      "return_20d": -2.46,
+      "max_drawdown_20d": -5.21,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216772"
   },
   {
@@ -41131,7 +41571,18 @@
     "rsi14": 64.47,
     "return_20d_signal": 8.19,
     "score": 80.49,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.117989",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2960.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3747.0,
+      "return_20d": 26.59,
+      "max_drawdown_20d": -1.17,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216775"
   },
   {
@@ -41148,7 +41599,18 @@
     "rsi14": 65.46,
     "return_20d_signal": 7.26,
     "score": 80.24,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.126743",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4350.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4557.0,
+      "return_20d": 4.76,
+      "max_drawdown_20d": -4.53,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216778"
   },
   {
@@ -41165,7 +41627,18 @@
     "rsi14": 68.6,
     "return_20d_signal": 7.43,
     "score": 80.22,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.135733",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2500.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2490.0,
+      "return_20d": -0.4,
+      "max_drawdown_20d": -4.56,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216780"
   },
   {
@@ -41182,7 +41655,18 @@
     "rsi14": 63.53,
     "return_20d_signal": 4.34,
     "score": 79.9,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.144566",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1505.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1448.5,
+      "return_20d": -3.75,
+      "max_drawdown_20d": -7.34,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216782"
   },
   {
@@ -41199,7 +41683,18 @@
     "rsi14": 66.53,
     "return_20d_signal": 11.49,
     "score": 79.89,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.153256",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 11200.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 10250.0,
+      "return_20d": -8.48,
+      "max_drawdown_20d": -22.77,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216785"
   },
   {
@@ -41216,7 +41711,18 @@
     "rsi14": 64.14,
     "return_20d_signal": 11.46,
     "score": 79.79,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.162241",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1824.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1652.0,
+      "return_20d": -9.43,
+      "max_drawdown_20d": -14.2,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216787"
   },
   {
@@ -41233,7 +41739,18 @@
     "rsi14": 61.73,
     "return_20d_signal": 8.9,
     "score": 79.77,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.171110",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4595.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4175.0,
+      "return_20d": -9.14,
+      "max_drawdown_20d": -9.58,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216790"
   },
   {
@@ -41250,7 +41767,18 @@
     "rsi14": 64.87,
     "return_20d_signal": 2.75,
     "score": 79.71,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.180054",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6100.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6220.0,
+      "return_20d": 1.97,
+      "max_drawdown_20d": -9.67,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216793"
   },
   {
@@ -41267,7 +41795,18 @@
     "rsi14": 65.12,
     "return_20d_signal": 10.72,
     "score": 79.66,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.188676",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1662.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1569.0,
+      "return_20d": -5.6,
+      "max_drawdown_20d": -13.9,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216795"
   },
   {
@@ -41284,7 +41823,18 @@
     "rsi14": 63.0,
     "return_20d_signal": 5.5,
     "score": 79.59,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.197467",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3075.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3160.0,
+      "return_20d": 2.76,
+      "max_drawdown_20d": -4.39,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216798"
   },
   {
@@ -41301,7 +41851,18 @@
     "rsi14": 65.72,
     "return_20d_signal": 7.79,
     "score": 79.3,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.206217",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1676.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1738.5,
+      "return_20d": 3.73,
+      "max_drawdown_20d": -8.17,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216800"
   },
   {
@@ -41318,7 +41879,18 @@
     "rsi14": 65.17,
     "return_20d_signal": 6.0,
     "score": 79.27,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.214999",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2390.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2462.5,
+      "return_20d": 3.03,
+      "max_drawdown_20d": -8.18,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216802"
   },
   {
@@ -41335,7 +41907,18 @@
     "rsi14": 63.79,
     "return_20d_signal": 22.2,
     "score": 78.75,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.223735",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3840.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3675.0,
+      "return_20d": -4.3,
+      "max_drawdown_20d": -6.9,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216805"
   },
   {
@@ -41352,7 +41935,18 @@
     "rsi14": 63.58,
     "return_20d_signal": 4.83,
     "score": 78.12,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.232508",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 790.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 715.0,
+      "return_20d": -9.49,
+      "max_drawdown_20d": -10.89,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216807"
   },
   {
@@ -41369,7 +41963,18 @@
     "rsi14": 64.55,
     "return_20d_signal": 11.6,
     "score": 77.93,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.241315",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4255.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 5138.0,
+      "return_20d": 20.75,
+      "max_drawdown_20d": 0.0,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216809"
   },
   {
@@ -41386,7 +41991,18 @@
     "rsi14": 63.26,
     "return_20d_signal": 9.64,
     "score": 77.77,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.250204",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1715.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1755.0,
+      "return_20d": 2.33,
+      "max_drawdown_20d": -4.43,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216812"
   },
   {
@@ -41403,7 +42019,18 @@
     "rsi14": 66.48,
     "return_20d_signal": 9.52,
     "score": 77.74,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.258882",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2411.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2529.0,
+      "return_20d": 4.89,
+      "max_drawdown_20d": -2.61,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216815"
   },
   {
@@ -41420,7 +42047,18 @@
     "rsi14": 62.7,
     "return_20d_signal": 6.71,
     "score": 77.32,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.267727",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4505.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4440.0,
+      "return_20d": -1.44,
+      "max_drawdown_20d": -9.66,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216818"
   },
   {
@@ -41437,7 +42075,18 @@
     "rsi14": 61.37,
     "return_20d_signal": 6.9,
     "score": 76.44,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.276518",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1198.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1096.0,
+      "return_20d": -8.51,
+      "max_drawdown_20d": -12.52,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216820"
   },
   {
@@ -41454,7 +42103,18 @@
     "rsi14": 61.7,
     "return_20d_signal": 4.18,
     "score": 76.34,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.285289",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 5333.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 5746.0,
+      "return_20d": 7.74,
+      "max_drawdown_20d": -1.41,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216823"
   },
   {
@@ -41471,7 +42131,18 @@
     "rsi14": 61.92,
     "return_20d_signal": 3.56,
     "score": 76.28,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.294088",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2360.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2445.0,
+      "return_20d": 3.6,
+      "max_drawdown_20d": -1.06,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216825"
   },
   {
@@ -41488,7 +42159,18 @@
     "rsi14": 62.09,
     "return_20d_signal": 2.18,
     "score": 76.26,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.302879",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1407.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1388.5,
+      "return_20d": -1.31,
+      "max_drawdown_20d": -10.8,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216827"
   },
   {
@@ -41505,7 +42187,18 @@
     "rsi14": 64.07,
     "return_20d_signal": 3.94,
     "score": 76.21,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.311908",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 5290.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 5270.0,
+      "return_20d": -0.38,
+      "max_drawdown_20d": -4.16,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216830"
   },
   {
@@ -41522,7 +42215,18 @@
     "rsi14": 62.0,
     "return_20d_signal": 2.47,
     "score": 76.04,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.320598",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1121.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1170.0,
+      "return_20d": 4.37,
+      "max_drawdown_20d": 0.0,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216832"
   },
   {
@@ -41539,7 +42243,18 @@
     "rsi14": 63.09,
     "return_20d_signal": 10.43,
     "score": 75.56,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.329192",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6030.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6110.0,
+      "return_20d": 1.33,
+      "max_drawdown_20d": -0.66,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216835"
   },
   {
@@ -41556,7 +42271,18 @@
     "rsi14": 62.68,
     "return_20d_signal": 0.74,
     "score": 75.52,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.337940",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6890.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6750.0,
+      "return_20d": -2.03,
+      "max_drawdown_20d": -10.16,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216838"
   },
   {
@@ -41573,7 +42299,18 @@
     "rsi14": 60.98,
     "return_20d_signal": 3.79,
     "score": 74.49,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.346729",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 7580.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 7180.0,
+      "return_20d": -5.28,
+      "max_drawdown_20d": -11.35,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216840"
   },
   {
@@ -41590,7 +42327,18 @@
     "rsi14": 62.9,
     "return_20d_signal": 5.22,
     "score": 74.37,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.355643",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3115.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3855.0,
+      "return_20d": 23.76,
+      "max_drawdown_20d": -4.08,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216843"
   },
   {
@@ -41607,7 +42355,18 @@
     "rsi14": 64.62,
     "return_20d_signal": -0.25,
     "score": 73.91,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.364554",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2044.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2131.0,
+      "return_20d": 4.26,
+      "max_drawdown_20d": -4.11,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216845"
   },
   {
@@ -41624,7 +42383,18 @@
     "rsi14": 58.55,
     "return_20d_signal": 5.79,
     "score": 73.04,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.373462",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 483.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 478.0,
+      "return_20d": -1.04,
+      "max_drawdown_20d": -11.8,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216848"
   },
   {
@@ -41641,7 +42411,18 @@
     "rsi14": 60.07,
     "return_20d_signal": 0.53,
     "score": 72.62,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.382412",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2760.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2647.5,
+      "return_20d": -4.08,
+      "max_drawdown_20d": -6.05,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216850"
   },
   {
@@ -41658,7 +42439,18 @@
     "rsi14": 60.98,
     "return_20d_signal": 2.83,
     "score": 72.58,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.391166",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3090.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3272.0,
+      "return_20d": 5.89,
+      "max_drawdown_20d": -4.08,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216852"
   },
   {
@@ -41675,7 +42467,18 @@
     "rsi14": 60.33,
     "return_20d_signal": 0.75,
     "score": 72.54,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.400006",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 4860.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 4395.0,
+      "return_20d": -9.57,
+      "max_drawdown_20d": -9.57,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216854"
   },
   {
@@ -41692,7 +42495,18 @@
     "rsi14": 58.72,
     "return_20d_signal": 5.92,
     "score": 72.15,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.408754",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 1884.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2031.0,
+      "return_20d": 7.8,
+      "max_drawdown_20d": -1.54,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216858"
   },
   {
@@ -41709,7 +42523,18 @@
     "rsi14": 59.46,
     "return_20d_signal": 4.42,
     "score": 71.84,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.417672",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 5838.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6194.0,
+      "return_20d": 6.1,
+      "max_drawdown_20d": -5.4,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216860"
   },
   {
@@ -41726,7 +42551,18 @@
     "rsi14": 58.84,
     "return_20d_signal": 3.38,
     "score": 71.68,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.426639",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6310.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 7600.0,
+      "return_20d": 20.44,
+      "max_drawdown_20d": -0.48,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216863"
   },
   {
@@ -41743,7 +42579,18 @@
     "rsi14": 59.76,
     "return_20d_signal": -0.84,
     "score": 70.68,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.435349",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6000.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 6000.0,
+      "return_20d": 0.0,
+      "max_drawdown_20d": -9.83,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216865"
   },
   {
@@ -41760,7 +42607,18 @@
     "rsi14": 58.57,
     "return_20d_signal": 4.11,
     "score": 70.33,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.444195",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2079.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1889.5,
+      "return_20d": -9.11,
+      "max_drawdown_20d": -13.16,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216867"
   },
   {
@@ -41777,7 +42635,18 @@
     "rsi14": 60.11,
     "return_20d_signal": 0.82,
     "score": 70.04,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.452954",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2382.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2383.0,
+      "return_20d": 0.04,
+      "max_drawdown_20d": -9.7,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216870"
   },
   {
@@ -41794,7 +42663,18 @@
     "rsi14": 60.4,
     "return_20d_signal": -0.04,
     "score": 69.71,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.461898",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2750.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2797.0,
+      "return_20d": 1.71,
+      "max_drawdown_20d": -6.8,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216872"
   },
   {
@@ -41811,7 +42691,18 @@
     "rsi14": 55.18,
     "return_20d_signal": 4.98,
     "score": 69.51,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.470779",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 659.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 612.0,
+      "return_20d": -7.13,
+      "max_drawdown_20d": -9.86,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216875"
   },
   {
@@ -41828,7 +42719,18 @@
     "rsi14": 58.38,
     "return_20d_signal": 0.75,
     "score": 68.75,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.480199",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2323.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2313.0,
+      "return_20d": -0.43,
+      "max_drawdown_20d": -4.86,
+      "trend_maintained": true
+    },
     "loggedAt": "2026-05-20T12:16:41.216877"
   },
   {
@@ -41845,7 +42747,18 @@
     "rsi14": 56.11,
     "return_20d_signal": 4.78,
     "score": 68.65,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.490233",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3565.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3446.0,
+      "return_20d": -3.34,
+      "max_drawdown_20d": -3.34,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216879"
   },
   {
@@ -41862,7 +42775,18 @@
     "rsi14": 57.18,
     "return_20d_signal": 0.98,
     "score": 68.55,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.499811",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3660.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 3630.0,
+      "return_20d": -0.82,
+      "max_drawdown_20d": -7.65,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216882"
   },
   {
@@ -41879,7 +42803,18 @@
     "rsi14": 56.48,
     "return_20d_signal": 0.81,
     "score": 68.49,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.509497",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 2022.5,
+      "exitDate": "2026-06-17",
+      "exitPrice": 1781.5,
+      "return_20d": -11.92,
+      "max_drawdown_20d": -13.08,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216884"
   },
   {
@@ -41896,7 +42831,18 @@
     "rsi14": 57.33,
     "return_20d_signal": 0.16,
     "score": 68.06,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.519070",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 3120.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 2958.0,
+      "return_20d": -5.19,
+      "max_drawdown_20d": -7.28,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216887"
   },
   {
@@ -41913,7 +42859,18 @@
     "rsi14": 57.52,
     "return_20d_signal": 2.87,
     "score": 67.87,
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "recordedAt": "2026-06-17T13:09:31.528509",
+      "signalDate": "2026-05-20",
+      "entryDate": "2026-05-21",
+      "entryPrice": 6180.0,
+      "exitDate": "2026-06-17",
+      "exitPrice": 5830.0,
+      "return_20d": -5.66,
+      "max_drawdown_20d": -11.17,
+      "trend_maintained": false
+    },
     "loggedAt": "2026-05-20T12:16:41.216889"
   },
   {
@@ -63981,5 +64938,957 @@
     "score": 68.24,
     "outcome": null,
     "loggedAt": "2026-06-16T14:39:20.890595"
+  },
+  {
+    "id": "69960_20260617",
+    "stockCode": "69960",
+    "companyName": "ニチコン",
+    "signalDate": "2026-06-17",
+    "close": 4755.0,
+    "ma_gap_5_25": 12.13,
+    "ma_gap_25_75": 41.87,
+    "high52w_ratio": 100.0,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.27,
+    "rsi14": 71.76,
+    "return_20d_signal": 53.88,
+    "score": 95.49,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183067"
+  },
+  {
+    "id": "52320_20260617",
+    "stockCode": "52320",
+    "companyName": "住友大阪セメント",
+    "signalDate": "2026-06-17",
+    "close": 6144.0,
+    "ma_gap_5_25": 8.16,
+    "ma_gap_25_75": 18.26,
+    "high52w_ratio": 100.0,
+    "new_high_days": 11,
+    "turnover_trend_ratio": 1.17,
+    "rsi14": 70.04,
+    "return_20d_signal": 29.29,
+    "score": 94.67,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183086"
+  },
+  {
+    "id": "57570_20260617",
+    "stockCode": "57570",
+    "companyName": "ＣＫサンエツ",
+    "signalDate": "2026-06-17",
+    "close": 5190.0,
+    "ma_gap_5_25": 2.86,
+    "ma_gap_25_75": 6.28,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.41,
+    "rsi14": 69.78,
+    "return_20d_signal": 13.2,
+    "score": 91.72,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183090"
+  },
+  {
+    "id": "69200_20260617",
+    "stockCode": "69200",
+    "companyName": "レーザーテック",
+    "signalDate": "2026-06-17",
+    "close": 52700.0,
+    "ma_gap_5_25": 12.74,
+    "ma_gap_25_75": 4.84,
+    "high52w_ratio": 100.0,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 69.96,
+    "return_20d_signal": 47.83,
+    "score": 91.51,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183094"
+  },
+  {
+    "id": "67520_20260617",
+    "stockCode": "67520",
+    "companyName": "パナソニック　ホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 4200.0,
+    "ma_gap_5_25": 8.79,
+    "ma_gap_25_75": 18.27,
+    "high52w_ratio": 100.0,
+    "new_high_days": 10,
+    "turnover_trend_ratio": 1.08,
+    "rsi14": 69.08,
+    "return_20d_signal": 30.96,
+    "score": 91.37,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183098"
+  },
+  {
+    "id": "63870_20260617",
+    "stockCode": "63870",
+    "companyName": "サムコ",
+    "signalDate": "2026-06-17",
+    "close": 16190.0,
+    "ma_gap_5_25": 17.03,
+    "ma_gap_25_75": 21.95,
+    "high52w_ratio": 99.82,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 69.71,
+    "return_20d_signal": 48.53,
+    "score": 91.01,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183102"
+  },
+  {
+    "id": "54710_20260617",
+    "stockCode": "54710",
+    "companyName": "大同特殊鋼",
+    "signalDate": "2026-06-17",
+    "close": 2385.0,
+    "ma_gap_5_25": 13.12,
+    "ma_gap_25_75": 4.27,
+    "high52w_ratio": 96.95,
+    "new_high_days": 11,
+    "turnover_trend_ratio": 1.25,
+    "rsi14": 68.51,
+    "return_20d_signal": 32.13,
+    "score": 90.55,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183105"
+  },
+  {
+    "id": "40420_20260617",
+    "stockCode": "40420",
+    "companyName": "東ソー",
+    "signalDate": "2026-06-17",
+    "close": 3019.0,
+    "ma_gap_5_25": 7.4,
+    "ma_gap_25_75": 7.8,
+    "high52w_ratio": 99.11,
+    "new_high_days": 11,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 68.39,
+    "return_20d_signal": 18.76,
+    "score": 90.43,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183112"
+  },
+  {
+    "id": "53320_20260617",
+    "stockCode": "53320",
+    "companyName": "ＴＯＴＯ",
+    "signalDate": "2026-06-17",
+    "close": 8297.0,
+    "ma_gap_5_25": 7.19,
+    "ma_gap_25_75": 17.89,
+    "high52w_ratio": 100.0,
+    "new_high_days": 10,
+    "turnover_trend_ratio": 1.08,
+    "rsi14": 68.07,
+    "return_20d_signal": 29.66,
+    "score": 89.96,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183117"
+  },
+  {
+    "id": "69810_20260617",
+    "stockCode": "69810",
+    "companyName": "村田製作所",
+    "signalDate": "2026-06-17",
+    "close": 10865.0,
+    "ma_gap_5_25": 14.64,
+    "ma_gap_25_75": 50.36,
+    "high52w_ratio": 100.0,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.2,
+    "rsi14": 67.85,
+    "return_20d_signal": 76.27,
+    "score": 89.61,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183120"
+  },
+  {
+    "id": "62780_20260617",
+    "stockCode": "62780",
+    "companyName": "ユニオンツール",
+    "signalDate": "2026-06-17",
+    "close": 26060.0,
+    "ma_gap_5_25": 13.26,
+    "ma_gap_25_75": 24.97,
+    "high52w_ratio": 98.6,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.25,
+    "rsi14": 68.73,
+    "return_20d_signal": 37.16,
+    "score": 88.85,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183123"
+  },
+  {
+    "id": "64980_20260617",
+    "stockCode": "64980",
+    "companyName": "キッツ",
+    "signalDate": "2026-06-17",
+    "close": 2559.0,
+    "ma_gap_5_25": 8.96,
+    "ma_gap_25_75": 6.71,
+    "high52w_ratio": 100.0,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.12,
+    "rsi14": 68.6,
+    "return_20d_signal": 27.19,
+    "score": 88.66,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183126"
+  },
+  {
+    "id": "77170_20260617",
+    "stockCode": "77170",
+    "companyName": "ブイ・テクノロジー",
+    "signalDate": "2026-06-17",
+    "close": 6780.0,
+    "ma_gap_5_25": 9.13,
+    "ma_gap_25_75": 14.79,
+    "high52w_ratio": 100.0,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.29,
+    "rsi14": 67.3,
+    "return_20d_signal": 31.65,
+    "score": 88.54,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183129"
+  },
+  {
+    "id": "60130_20260617",
+    "stockCode": "60130",
+    "companyName": "タクマ",
+    "signalDate": "2026-06-17",
+    "close": 3560.0,
+    "ma_gap_5_25": 5.18,
+    "ma_gap_25_75": 10.63,
+    "high52w_ratio": 100.0,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 67.38,
+    "return_20d_signal": 13.56,
+    "score": 87.65,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183133"
+  },
+  {
+    "id": "40510_20260617",
+    "stockCode": "40510",
+    "companyName": "ＧＭＯフィナンシャルゲート",
+    "signalDate": "2026-06-17",
+    "close": 6500.0,
+    "ma_gap_5_25": 5.59,
+    "ma_gap_25_75": 2.61,
+    "high52w_ratio": 100.0,
+    "new_high_days": 3,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 68.69,
+    "return_20d_signal": 9.98,
+    "score": 86.13,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183136"
+  },
+  {
+    "id": "83060_20260617",
+    "stockCode": "83060",
+    "companyName": "三菱ＵＦＪフィナンシャル・グループ",
+    "signalDate": "2026-06-17",
+    "close": 3272.0,
+    "ma_gap_5_25": 3.64,
+    "ma_gap_25_75": 7.39,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 67.81,
+    "return_20d_signal": 7.99,
+    "score": 85.79,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183139"
+  },
+  {
+    "id": "63610_20260617",
+    "stockCode": "63610",
+    "companyName": "荏原製作所",
+    "signalDate": "2026-06-17",
+    "close": 6527.0,
+    "ma_gap_5_25": 7.49,
+    "ma_gap_25_75": 5.95,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 67.68,
+    "return_20d_signal": 32.26,
+    "score": 85.59,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183141"
+  },
+  {
+    "id": "40620_20260617",
+    "stockCode": "40620",
+    "companyName": "イビデン",
+    "signalDate": "2026-06-17",
+    "close": 24000.0,
+    "ma_gap_5_25": 9.86,
+    "ma_gap_25_75": 48.46,
+    "high52w_ratio": 100.0,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.21,
+    "rsi14": 66.6,
+    "return_20d_signal": 53.45,
+    "score": 84.55,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183144"
+  },
+  {
+    "id": "41180_20260617",
+    "stockCode": "41180",
+    "companyName": "カネカ",
+    "signalDate": "2026-06-17",
+    "close": 5746.0,
+    "ma_gap_5_25": 3.65,
+    "ma_gap_25_75": 6.64,
+    "high52w_ratio": 98.39,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.12,
+    "rsi14": 67.34,
+    "return_20d_signal": 9.8,
+    "score": 84.49,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183147"
+  },
+  {
+    "id": "80840_20260617",
+    "stockCode": "80840",
+    "companyName": "ＲＹＯＤＥＮ",
+    "signalDate": "2026-06-17",
+    "close": 3995.0,
+    "ma_gap_5_25": 5.18,
+    "ma_gap_25_75": 6.25,
+    "high52w_ratio": 98.16,
+    "new_high_days": 10,
+    "turnover_trend_ratio": 1.01,
+    "rsi14": 65.16,
+    "return_20d_signal": 13.49,
+    "score": 83.9,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183150"
+  },
+  {
+    "id": "83160_20260617",
+    "stockCode": "83160",
+    "companyName": "三井住友フィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 6450.0,
+    "ma_gap_5_25": 5.55,
+    "ma_gap_25_75": 7.44,
+    "high52w_ratio": 98.94,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.14,
+    "rsi14": 66.35,
+    "return_20d_signal": 9.66,
+    "score": 83.89,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183153"
+  },
+  {
+    "id": "69710_20260617",
+    "stockCode": "69710",
+    "companyName": "京セラ",
+    "signalDate": "2026-06-17",
+    "close": 3747.0,
+    "ma_gap_5_25": 10.27,
+    "ma_gap_25_75": 17.91,
+    "high52w_ratio": 95.76,
+    "new_high_days": 10,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 66.31,
+    "return_20d_signal": 28.28,
+    "score": 83.61,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183156"
+  },
+  {
+    "id": "83090_20260617",
+    "stockCode": "83090",
+    "companyName": "三井住友トラストグループ",
+    "signalDate": "2026-06-17",
+    "close": 6033.0,
+    "ma_gap_5_25": 4.42,
+    "ma_gap_25_75": 6.49,
+    "high52w_ratio": 99.54,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.2,
+    "rsi14": 65.29,
+    "return_20d_signal": 6.91,
+    "score": 83.59,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183159"
+  },
+  {
+    "id": "99620_20260617",
+    "stockCode": "99620",
+    "companyName": "ミスミグループ本社",
+    "signalDate": "2026-06-17",
+    "close": 3859.0,
+    "ma_gap_5_25": 6.11,
+    "ma_gap_25_75": 11.65,
+    "high52w_ratio": 99.59,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 65.39,
+    "return_20d_signal": 23.33,
+    "score": 83.57,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183162"
+  },
+  {
+    "id": "84110_20260617",
+    "stockCode": "84110",
+    "companyName": "みずほフィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 8006.0,
+    "ma_gap_5_25": 4.6,
+    "ma_gap_25_75": 7.91,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.01,
+    "rsi14": 65.98,
+    "return_20d_signal": 14.67,
+    "score": 83.2,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183165"
+  },
+  {
+    "id": "63700_20260617",
+    "stockCode": "63700",
+    "companyName": "栗田工業",
+    "signalDate": "2026-06-17",
+    "close": 9370.0,
+    "ma_gap_5_25": 0.82,
+    "ma_gap_25_75": 5.21,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 65.04,
+    "return_20d_signal": 11.71,
+    "score": 82.33,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183167"
+  },
+  {
+    "id": "65250_20260617",
+    "stockCode": "65250",
+    "companyName": "ＫＯＫＵＳＡＩ　ＥＬＥＣＴＲＩＣ",
+    "signalDate": "2026-06-17",
+    "close": 9562.0,
+    "ma_gap_5_25": 18.81,
+    "ma_gap_25_75": 16.72,
+    "high52w_ratio": 96.02,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.14,
+    "rsi14": 65.23,
+    "return_20d_signal": 52.94,
+    "score": 82.24,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183170"
+  },
+  {
+    "id": "64070_20260617",
+    "stockCode": "64070",
+    "companyName": "ＣＫＤ",
+    "signalDate": "2026-06-17",
+    "close": 7450.0,
+    "ma_gap_5_25": 6.89,
+    "ma_gap_25_75": 15.71,
+    "high52w_ratio": 99.73,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.08,
+    "rsi14": 66.5,
+    "return_20d_signal": 25.84,
+    "score": 81.93,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183173"
+  },
+  {
+    "id": "96190_20260617",
+    "stockCode": "96190",
+    "companyName": "イチネンホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 2201.0,
+    "ma_gap_5_25": 2.2,
+    "ma_gap_25_75": 0.49,
+    "high52w_ratio": 98.57,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.18,
+    "rsi14": 62.95,
+    "return_20d_signal": 4.26,
+    "score": 81.8,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183176"
+  },
+  {
+    "id": "63230_20260617",
+    "stockCode": "63230",
+    "companyName": "ローツェ",
+    "signalDate": "2026-06-17",
+    "close": 4554.0,
+    "ma_gap_5_25": 7.96,
+    "ma_gap_25_75": 13.59,
+    "high52w_ratio": 100.0,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 64.35,
+    "return_20d_signal": 30.6,
+    "score": 81.46,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183178"
+  },
+  {
+    "id": "59910_20260617",
+    "stockCode": "59910",
+    "companyName": "日本発條",
+    "signalDate": "2026-06-17",
+    "close": 3938.0,
+    "ma_gap_5_25": 4.08,
+    "ma_gap_25_75": 19.45,
+    "high52w_ratio": 97.26,
+    "new_high_days": 9,
+    "turnover_trend_ratio": 1.22,
+    "rsi14": 63.12,
+    "return_20d_signal": 26.5,
+    "score": 81.3,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183181"
+  },
+  {
+    "id": "87070_20260617",
+    "stockCode": "87070",
+    "companyName": "岩井コスモホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 4010.0,
+    "ma_gap_5_25": 4.19,
+    "ma_gap_25_75": 2.44,
+    "high52w_ratio": 98.89,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.07,
+    "rsi14": 63.44,
+    "return_20d_signal": 10.16,
+    "score": 80.68,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183184"
+  },
+  {
+    "id": "86010_20260617",
+    "stockCode": "86010",
+    "companyName": "大和証券グループ本社",
+    "signalDate": "2026-06-17",
+    "close": 1607.5,
+    "ma_gap_5_25": 4.1,
+    "ma_gap_25_75": 0.42,
+    "high52w_ratio": 96.03,
+    "new_high_days": 8,
+    "turnover_trend_ratio": 1.07,
+    "rsi14": 64.86,
+    "return_20d_signal": 9.17,
+    "score": 80.08,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183187"
+  },
+  {
+    "id": "31860_20260617",
+    "stockCode": "31860",
+    "companyName": "ネクステージ",
+    "signalDate": "2026-06-17",
+    "close": 3960.0,
+    "ma_gap_5_25": 0.84,
+    "ma_gap_25_75": 5.14,
+    "high52w_ratio": 100.0,
+    "new_high_days": 2,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 64.74,
+    "return_20d_signal": 6.88,
+    "score": 80.01,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183189"
+  },
+  {
+    "id": "62660_20260617",
+    "stockCode": "62660",
+    "companyName": "タツモ",
+    "signalDate": "2026-06-17",
+    "close": 4145.0,
+    "ma_gap_5_25": 4.42,
+    "ma_gap_25_75": 26.99,
+    "high52w_ratio": 98.69,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 65.28,
+    "return_20d_signal": 12.64,
+    "score": 79.4,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183192"
+  },
+  {
+    "id": "70040_20260617",
+    "stockCode": "70040",
+    "companyName": "カナデビア",
+    "signalDate": "2026-06-17",
+    "close": 1453.0,
+    "ma_gap_5_25": 0.42,
+    "ma_gap_25_75": 13.44,
+    "high52w_ratio": 100.0,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 64.33,
+    "return_20d_signal": 9.58,
+    "score": 79.23,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183195"
+  },
+  {
+    "id": "61360_20260617",
+    "stockCode": "61360",
+    "companyName": "オーエスジー",
+    "signalDate": "2026-06-17",
+    "close": 3578.0,
+    "ma_gap_5_25": 1.27,
+    "ma_gap_25_75": 12.41,
+    "high52w_ratio": 100.0,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.24,
+    "rsi14": 63.68,
+    "return_20d_signal": 9.45,
+    "score": 78.87,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183198"
+  },
+  {
+    "id": "93040_20260617",
+    "stockCode": "93040",
+    "companyName": "澁澤倉庫",
+    "signalDate": "2026-06-17",
+    "close": 1481.0,
+    "ma_gap_5_25": 3.57,
+    "ma_gap_25_75": 4.28,
+    "high52w_ratio": 99.13,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.07,
+    "rsi14": 64.31,
+    "return_20d_signal": 7.01,
+    "score": 78.67,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183201"
+  },
+  {
+    "id": "71860_20260617",
+    "stockCode": "71860",
+    "companyName": "横浜フィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 1738.5,
+    "ma_gap_5_25": 4.31,
+    "ma_gap_25_75": 6.96,
+    "high52w_ratio": 98.72,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 63.97,
+    "return_20d_signal": 5.17,
+    "score": 76.68,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183203"
+  },
+  {
+    "id": "72820_20260617",
+    "stockCode": "72820",
+    "companyName": "豊田合成",
+    "signalDate": "2026-06-17",
+    "close": 5000.0,
+    "ma_gap_5_25": 0.66,
+    "ma_gap_25_75": 4.72,
+    "high52w_ratio": 96.77,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.04,
+    "rsi14": 64.1,
+    "return_20d_signal": 11.14,
+    "score": 76.31,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183206"
+  },
+  {
+    "id": "94010_20260617",
+    "stockCode": "94010",
+    "companyName": "ＴＢＳホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 6149.0,
+    "ma_gap_5_25": 2.14,
+    "ma_gap_25_75": 2.02,
+    "high52w_ratio": 96.91,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.25,
+    "rsi14": 61.54,
+    "return_20d_signal": 5.15,
+    "score": 74.97,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183208"
+  },
+  {
+    "id": "58890_20260617",
+    "stockCode": "58890",
+    "companyName": "Ｊａｐａｎ　Ｅｙｅｗｅａｒ　Ｈｏｌｄｉｎｇｓ",
+    "signalDate": "2026-06-17",
+    "close": 2331.0,
+    "ma_gap_5_25": 5.76,
+    "ma_gap_25_75": 2.11,
+    "high52w_ratio": 96.44,
+    "new_high_days": 3,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 61.66,
+    "return_20d_signal": 8.07,
+    "score": 74.57,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183211"
+  },
+  {
+    "id": "25310_20260617",
+    "stockCode": "25310",
+    "companyName": "宝ホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 2177.5,
+    "ma_gap_5_25": 3.05,
+    "ma_gap_25_75": 15.22,
+    "high52w_ratio": 97.32,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.36,
+    "rsi14": 58.86,
+    "return_20d_signal": 13.32,
+    "score": 73.89,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183214"
+  },
+  {
+    "id": "68570_20260617",
+    "stockCode": "68570",
+    "companyName": "アドバンテスト",
+    "signalDate": "2026-06-17",
+    "close": 30060.0,
+    "ma_gap_5_25": 5.77,
+    "ma_gap_25_75": 3.55,
+    "high52w_ratio": 95.43,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.14,
+    "rsi14": 60.94,
+    "return_20d_signal": 17.31,
+    "score": 73.33,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183216"
+  },
+  {
+    "id": "83310_20260617",
+    "stockCode": "83310",
+    "companyName": "千葉銀行",
+    "signalDate": "2026-06-17",
+    "close": 2462.5,
+    "ma_gap_5_25": 3.79,
+    "ma_gap_25_75": 6.98,
+    "high52w_ratio": 97.68,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.06,
+    "rsi14": 60.84,
+    "return_20d_signal": 4.39,
+    "score": 72.28,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183219"
+  },
+  {
+    "id": "77290_20260617",
+    "stockCode": "77290",
+    "companyName": "東京精密",
+    "signalDate": "2026-06-17",
+    "close": 19255.0,
+    "ma_gap_5_25": 7.92,
+    "ma_gap_25_75": 6.59,
+    "high52w_ratio": 97.44,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.07,
+    "rsi14": 59.91,
+    "return_20d_signal": 23.19,
+    "score": 72.08,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183222"
+  },
+  {
+    "id": "83080_20260617",
+    "stockCode": "83080",
+    "companyName": "りそなホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 2161.5,
+    "ma_gap_5_25": 3.06,
+    "ma_gap_25_75": 8.24,
+    "high52w_ratio": 98.12,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.26,
+    "rsi14": 58.93,
+    "return_20d_signal": 6.56,
+    "score": 71.78,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183224"
+  },
+  {
+    "id": "80510_20260617",
+    "stockCode": "80510",
+    "companyName": "山善",
+    "signalDate": "2026-06-17",
+    "close": 1755.0,
+    "ma_gap_5_25": 2.58,
+    "ma_gap_25_75": 8.79,
+    "high52w_ratio": 97.01,
+    "new_high_days": 6,
+    "turnover_trend_ratio": 1.09,
+    "rsi14": 58.88,
+    "return_20d_signal": 2.87,
+    "score": 71.67,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183227"
+  },
+  {
+    "id": "26740_20260617",
+    "stockCode": "26740",
+    "companyName": "ハードオフコーポレーション",
+    "signalDate": "2026-06-17",
+    "close": 2499.0,
+    "ma_gap_5_25": 4.67,
+    "ma_gap_25_75": 11.64,
+    "high52w_ratio": 95.56,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.5,
+    "rsi14": 58.52,
+    "return_20d_signal": 5.13,
+    "score": 71.14,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183230"
+  },
+  {
+    "id": "49580_20260617",
+    "stockCode": "49580",
+    "companyName": "長谷川香料",
+    "signalDate": "2026-06-17",
+    "close": 3160.0,
+    "ma_gap_5_25": 2.53,
+    "ma_gap_25_75": 5.08,
+    "high52w_ratio": 98.6,
+    "new_high_days": 3,
+    "turnover_trend_ratio": 1.02,
+    "rsi14": 58.95,
+    "return_20d_signal": 2.93,
+    "score": 69.36,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183232"
+  },
+  {
+    "id": "60550_20260617",
+    "stockCode": "60550",
+    "companyName": "ジャパンマテリアル",
+    "signalDate": "2026-06-17",
+    "close": 2361.0,
+    "ma_gap_5_25": 9.36,
+    "ma_gap_25_75": 10.14,
+    "high52w_ratio": 95.59,
+    "new_high_days": 4,
+    "turnover_trend_ratio": 1.0,
+    "rsi14": 59.69,
+    "return_20d_signal": 22.14,
+    "score": 68.95,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183235"
+  },
+  {
+    "id": "58310_20260617",
+    "stockCode": "58310",
+    "companyName": "しずおかフィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 3032.0,
+    "ma_gap_5_25": 3.69,
+    "ma_gap_25_75": 4.55,
+    "high52w_ratio": 96.44,
+    "new_high_days": 3,
+    "turnover_trend_ratio": 1.1,
+    "rsi14": 59.31,
+    "return_20d_signal": 2.02,
+    "score": 68.87,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183237"
+  },
+  {
+    "id": "73500_20260617",
+    "stockCode": "73500",
+    "companyName": "おきなわフィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 6380.0,
+    "ma_gap_5_25": 3.78,
+    "ma_gap_25_75": 7.41,
+    "high52w_ratio": 96.67,
+    "new_high_days": 5,
+    "turnover_trend_ratio": 1.03,
+    "rsi14": 57.73,
+    "return_20d_signal": 2.74,
+    "score": 68.63,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183240"
+  },
+  {
+    "id": "73370_20260617",
+    "stockCode": "73370",
+    "companyName": "ひろぎんホールディングス",
+    "signalDate": "2026-06-17",
+    "close": 2074.0,
+    "ma_gap_5_25": 1.77,
+    "ma_gap_25_75": 7.16,
+    "high52w_ratio": 98.15,
+    "new_high_days": 2,
+    "turnover_trend_ratio": 1.03,
+    "rsi14": 57.38,
+    "return_20d_signal": 0.29,
+    "score": 66.33,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183242"
+  },
+  {
+    "id": "71670_20260617",
+    "stockCode": "71670",
+    "companyName": "めぶきフィナンシャルグループ",
+    "signalDate": "2026-06-17",
+    "close": 1388.5,
+    "ma_gap_5_25": 2.04,
+    "ma_gap_25_75": 5.0,
+    "high52w_ratio": 98.23,
+    "new_high_days": 2,
+    "turnover_trend_ratio": 1.15,
+    "rsi14": 56.15,
+    "return_20d_signal": 0.22,
+    "score": 65.76,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183245"
+  },
+  {
+    "id": "83040_20260617",
+    "stockCode": "83040",
+    "companyName": "あおぞら銀行",
+    "signalDate": "2026-06-17",
+    "close": 2757.0,
+    "ma_gap_5_25": 1.29,
+    "ma_gap_25_75": 2.72,
+    "high52w_ratio": 95.33,
+    "new_high_days": 2,
+    "turnover_trend_ratio": 1.05,
+    "rsi14": 55.49,
+    "return_20d_signal": 0.68,
+    "score": 62.47,
+    "outcome": null,
+    "loggedAt": "2026-06-17T13:09:42.183247"
   }
 ]
