@@ -35895,19 +35895,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "配当修正・株主優待変更の開示。増配なら好材料だが継続性は限定的",
+      "comment": "期末配当予想修正・株主優待廃止示唆で需給刺激も材料の持続性は低い",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 期末配当予想修正・株主優待制度変更を発表",
+      "surgeReason": "[開示] 2026年12月期末配当予想修正・株主優待変更発表で急騰",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 期末配当予想修正・株主優待制度変更を発表",
+    "surgeReason": "[開示] 2026年12月期末配当予想修正・株主優待変更発表で急騰",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-23T12:29:33.660523"
+    "qualifiedAt": "2026-06-23T22:59:58.666719"
   },
   {
     "stockCode": "50740",
@@ -35937,19 +35937,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "JR東日本系からFIP太陽光発電所向け蓄電池設置工事を受注。単発材料",
-      "whyCategory": "受注・契約",
+      "comment": "3Q累計増収増益・蓄電システム案件好調だが売買代金増加幅は限定的",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] JR東日本系から蓄電池設置工事受注が急騰材料",
+      "surgeReason": "[決算] 3Q累計増収増益・蓄電システムけん引も材料鮮度は低め",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] JR東日本系から蓄電池設置工事受注が急騰材料",
-    "whyCategory": "受注・契約",
+    "surgeReason": "[決算] 3Q累計増収増益・蓄電システムけん引も材料鮮度は低め",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-23T12:29:33.660537"
+    "qualifiedAt": "2026-06-23T22:59:58.666731"
   },
   {
     "stockCode": "58030",
@@ -35979,19 +35979,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "今期一転増益で2日連続ストップ高後の値幅拡大。業績転換で継続性高い",
-      "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 今期一転増益・2日連続ストップ高後の値幅拡大局面",
+      "comment": "2日連続ストップ高後の値幅拡大・目標株価引き上げで継続的な上昇圧力",
+      "whyCategory": "ニュース",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 2日連続ストップ高後の値幅拡大・レーティング引き上げで急伸",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 今期一転増益・2日連続ストップ高後の値幅拡大局面",
-    "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 2日連続ストップ高後の値幅拡大・レーティング引き上げで急伸",
+    "whyCategory": "ニュース",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-23T12:29:33.660540"
+    "qualifiedAt": "2026-06-23T22:59:58.666732"
   },
   {
     "stockCode": "40880",
@@ -36021,19 +36021,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "責任調査委員会設置・追加調査報告書受領開示。不祥事対応で上昇理由不明",
-      "whyCategory": "不明",
+      "comment": "責任調査委員会設置・追加調査報告受領はネガティブ開示で継続性不明",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 調査委員会設置・追加調査報告書受領で急騰理由不明瞭",
+      "surgeReason": "[開示] 特別調査委追加報告・責任調査委設置のネガティブ開示で不透明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 調査委員会設置・追加調査報告書受領で急騰理由不明瞭",
-    "whyCategory": "不明",
+    "surgeReason": "[開示] 特別調査委追加報告・責任調査委設置のネガティブ開示で不透明",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-23T12:29:33.660542"
+    "qualifiedAt": "2026-06-23T22:59:58.666734"
   },
   {
     "stockCode": "47140",
@@ -36063,18 +36063,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "証券会社リサーチメモ掲載のみ。減益決算で材料弱く上昇継続性低い",
-      "whyCategory": "ニュース",
+      "comment": "アナリストレポート掲載による注目集中も材料の実質的な新規性は薄い",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] フィスコResearchメモ掲載のみ・減益決算で材料弱い",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] フィスコResearchメモ掲載のみ・減益決算で材料弱い",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-23T12:29:33.660547"
+    "qualifiedAt": "2026-06-23T22:59:58.666735"
   }
 ]
