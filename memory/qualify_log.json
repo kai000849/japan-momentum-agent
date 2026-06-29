@@ -34557,19 +34557,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "元厚労省室長の社外取締役就任。材料としては弱く継続性不明",
-      "whyCategory": "ニュース",
+      "comment": "明確な材料なし、テクニカル言及のみで急騰理由不明",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 元厚労省室長が社外取締役就任、材料弱め",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 元厚労省室長が社外取締役就任、材料弱め",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-29T14:00:56.125154"
+    "qualifiedAt": "2026-06-29T22:50:21.078918"
   },
   {
     "stockCode": "66200",
@@ -34598,20 +34598,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "新規事業進展による一転黒字の業績上方修正。継続性あり",
+      "confidence": "high",
+      "comment": "新規事業進展を踏まえた業績修正で一転黒字・ストップ高",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 新規事業進展で一転経常黒字に上方修正",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 新規事業進展による業績修正・一転黒字でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 新規事業進展で一転経常黒字に上方修正",
+    "surgeReason": "[開示] 新規事業進展による業績修正・一転黒字でストップ高",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-29T14:00:56.125168"
+    "qualifiedAt": "2026-06-29T22:50:21.078933"
   },
   {
     "stockCode": "43230",
@@ -34641,19 +34641,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "発行済株式の8.06%上限の高水準自社株買い発表。需給改善期待",
+      "comment": "発行済株式数8.06%上限の高水準自社株買い発表",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 発行済株式8.06%上限の高水準自社株買い発表",
+      "surgeReason": "[開示] 発行済株式数8.06%上限の大規模自社株買い発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 発行済株式8.06%上限の高水準自社株買い発表",
+    "surgeReason": "[開示] 発行済株式数8.06%上限の大規模自社株買い発表",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-29T14:00:56.125170"
+    "qualifiedAt": "2026-06-29T22:50:21.078935"
   },
   {
     "stockCode": "54630",
@@ -34681,21 +34681,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "米国鉄鋼市場好調・DC向け製品好調で証券格上げ。テーマ性あり",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "大和証が格上げ・米国鉄鋼市場好調・DC向け製品好調を評価",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 米国鉄鋼好調・DC向け製品評価で証券格上げ",
+      "surgeReason": "[ニュース] 大和証格上げ・米国鉄鋼市場好調・DC向け製品評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米国鉄鋼好調・DC向け製品評価で証券格上げ",
+    "surgeReason": "[ニュース] 大和証格上げ・米国鉄鋼市場好調・DC向け製品評価",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-29T14:00:56.125171"
+    "qualifiedAt": "2026-06-29T22:50:21.078936"
   },
   {
     "stockCode": "93640",
@@ -34725,19 +34725,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "420万株・150億円上限の自己株取得枠設定。需給改善材料",
+      "comment": "420万株・150億円上限の自社株買い枠設定を発表",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 420万株・150億円上限の自己株取得枠設定",
+      "surgeReason": "[開示] 420万株・150億円上限の自社株買い枠設定",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 420万株・150億円上限の自己株取得枠設定",
+    "surgeReason": "[開示] 420万株・150億円上限の自社株買い枠設定",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125172"
+    "qualifiedAt": "2026-06-29T22:50:21.078938"
   },
   {
     "stockCode": "63300",
@@ -34767,19 +34767,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "高市政権が南鳥島レアアース開発に本腰。テーマ相乗り初動の可能性",
+      "comment": "高市政権による南鳥島レアアース開発計画本格化でテーマ相乗り",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 高市政権南鳥島レアアース開発でテーマ相乗り",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 南鳥島レアアース開発計画本格化テーマ相乗り急反発",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 高市政権南鳥島レアアース開発でテーマ相乗り",
+    "surgeReason": "[ニュース] 南鳥島レアアース開発計画本格化テーマ相乗り急反発",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125173"
+    "qualifiedAt": "2026-06-29T22:50:21.078939"
   },
   {
     "stockCode": "30930",
@@ -34808,20 +34808,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "low",
-      "comment": "5月既存店売上高12.7%増。好業績だが材料としての新鮮味は限定的",
+      "confidence": "medium",
+      "comment": "5月既存店売上高12.7%増・夏物衣料伸長の月次好調",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 5月既存店売上高12.7%増、夏物衣料など伸長",
+      "surgeReason": "[ニュース] 5月既存店売上高12.7%増・夏物好調で急反発",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 5月既存店売上高12.7%増、夏物衣料など伸長",
+    "surgeReason": "[ニュース] 5月既存店売上高12.7%増・夏物好調で急反発",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125174"
+    "qualifiedAt": "2026-06-29T22:50:21.078941"
   },
   {
     "stockCode": "36610",
@@ -34851,19 +34851,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "譲渡制限付株式報酬としての自己株処分の開示。需給的にはネガティブ",
+      "comment": "自己株式処分（譲渡制限付株式報酬）開示のみで材料弱い",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 譲渡制限付株式報酬の自己株処分、需給インパクト小",
+      "surgeReason": "[開示] 譲渡制限付株式報酬としての自己株式処分開示",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 譲渡制限付株式報酬の自己株処分、需給インパクト小",
+    "surgeReason": "[開示] 譲渡制限付株式報酬としての自己株式処分開示",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125179"
+    "qualifiedAt": "2026-06-29T22:50:21.078946"
   },
   {
     "stockCode": "48190",
@@ -34893,19 +34893,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "海外ファンドと提携し投資ファンド設立へ。資本提携として継続性注目",
+      "comment": "海外ファンドと提携した投資ファンド設立・AI関連テーマ",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 海外ファンドと提携し投資ファンド設立へ",
+      "surgeReason": "[ニュース] 海外ファンドと提携・投資ファンド設立発表",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 海外ファンドと提携し投資ファンド設立へ",
+    "surgeReason": "[ニュース] 海外ファンドと提携・投資ファンド設立発表",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125183"
+    "qualifiedAt": "2026-06-29T22:50:21.078948"
   },
   {
     "stockCode": "62540",
@@ -34935,7 +34935,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "野村証の保有割合減少報告あり。急騰理由の特定材料が見当たらない",
+      "comment": "明確な新規材料なし、過去記事やテーマ注目程度",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -34947,7 +34947,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125184"
+    "qualifiedAt": "2026-06-29T22:50:21.078950"
   },
   {
     "stockCode": "60270",
@@ -34977,19 +34977,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "6期連続最高益更新見通し＋法務AIエージェント刷新＋新規事業参入",
+      "comment": "6期連続最高益更新見通し・法務AIエージェント刷新・新事業参入",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 6期連続最高益＋法務AIエージェント刷新発表",
+      "surgeReason": "[決算] 6期連続最高益更新見通し・AI法務エージェント刷新",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 6期連続最高益＋法務AIエージェント刷新発表",
+    "surgeReason": "[決算] 6期連続最高益更新見通し・AI法務エージェント刷新",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125185"
+    "qualifiedAt": "2026-06-29T22:50:21.078951"
   },
   {
     "stockCode": "65320",
@@ -35019,19 +35019,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "過去にストップ安、AI脅威論での売り後の自律反発。材料は弱い",
-      "whyCategory": "ニュース",
+      "comment": "過去ストップ安・復調途上でテクニカル言及のみ、材料弱い",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] AI脅威論急落後の自律反発、実態材料乏しい",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AI脅威論急落後の自律反発、実態材料乏しい",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125186"
+    "qualifiedAt": "2026-06-29T22:50:21.078952"
   },
   {
     "stockCode": "30500",
@@ -35060,20 +35060,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "low",
-      "comment": "3-5月期営業益17%増、高気温受けた夏物好調。季節性要因で継続性限定",
+      "confidence": "medium",
+      "comment": "1Q経常19%増益・夏物好調による第1四半期業績好調",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 3-5月期営業益17%増、夏物好調で第1四半期増益",
+      "surgeReason": "[決算] 1Q経常19%増益・夏物好調で大幅続伸",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 3-5月期営業益17%増、夏物好調で第1四半期増益",
+    "surgeReason": "[決算] 1Q経常19%増益・夏物好調で大幅続伸",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125188"
+    "qualifiedAt": "2026-06-29T22:50:21.078954"
   },
   {
     "stockCode": "92790",
@@ -35103,19 +35103,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "大和証が目標株価5200円に増額。アナリスト格上げのみで材料は弱め",
+      "comment": "大和証が目標株価5200円に増額・中長期成長力評価",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 大和証が目標株価5200円に増額、格上げ材料",
+      "surgeReason": "[ニュース] 大和証が目標株価5200円に増額・成長力評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 大和証が目標株価5200円に増額、格上げ材料",
+    "surgeReason": "[ニュース] 大和証が目標株価5200円に増額・成長力評価",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125189"
+    "qualifiedAt": "2026-06-29T22:50:21.078955"
   },
   {
     "stockCode": "94180",
@@ -35143,21 +35143,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "カラオケJOYSOUND運営エクシングを買収。M&Aによる事業拡大",
-      "whyCategory": "資本提携・M&A",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "明確な新規材料なし、PR記事・拠点開設程度",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] JOYSOUNDのエクシング買収、コンテンツ事業拡大",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] JOYSOUNDのエクシング買収、コンテンツ事業拡大",
-    "whyCategory": "資本提携・M&A",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125189"
+    "qualifiedAt": "2026-06-29T22:50:21.078956"
   },
   {
     "stockCode": "36620",
@@ -35199,7 +35199,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125190"
+    "qualifiedAt": "2026-06-29T22:50:21.078958"
   },
   {
     "stockCode": "30860",
@@ -35241,7 +35241,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125191"
+    "qualifiedAt": "2026-06-29T22:50:21.078959"
   },
   {
     "stockCode": "18130",
@@ -35283,7 +35283,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125192"
+    "qualifiedAt": "2026-06-29T22:50:21.078960"
   },
   {
     "stockCode": "96010",
@@ -35325,7 +35325,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125193"
+    "qualifiedAt": "2026-06-29T22:50:21.078967"
   },
   {
     "stockCode": "44830",
@@ -35367,7 +35367,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125194"
+    "qualifiedAt": "2026-06-29T22:50:21.078968"
   },
   {
     "stockCode": "85950",
@@ -35409,7 +35409,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-06-29T14:00:56.125195"
+    "qualifiedAt": "2026-06-29T22:50:21.078970"
   },
   {
     "stockCode": "79740",
@@ -35451,7 +35451,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125196"
+    "qualifiedAt": "2026-06-29T22:50:21.078971"
   },
   {
     "stockCode": "31970",
@@ -35493,7 +35493,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125197"
+    "qualifiedAt": "2026-06-29T22:50:21.078972"
   },
   {
     "stockCode": "45230",
@@ -35535,7 +35535,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125198"
+    "qualifiedAt": "2026-06-29T22:50:21.078973"
   },
   {
     "stockCode": "30970",
@@ -35577,7 +35577,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125199"
+    "qualifiedAt": "2026-06-29T22:50:21.078975"
   },
   {
     "stockCode": "30360",
@@ -35619,7 +35619,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125200"
+    "qualifiedAt": "2026-06-29T22:50:21.078976"
   },
   {
     "stockCode": "99460",
@@ -35661,7 +35661,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125201"
+    "qualifiedAt": "2026-06-29T22:50:21.078977"
   },
   {
     "stockCode": "75520",
@@ -35703,7 +35703,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125202"
+    "qualifiedAt": "2026-06-29T22:50:21.078979"
   },
   {
     "stockCode": "65350",
@@ -35745,7 +35745,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125203"
+    "qualifiedAt": "2026-06-29T22:50:21.078980"
   },
   {
     "stockCode": "42120",
@@ -35787,7 +35787,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125203"
+    "qualifiedAt": "2026-06-29T22:50:21.078981"
   },
   {
     "stockCode": "29750",
@@ -35829,7 +35829,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125204"
+    "qualifiedAt": "2026-06-29T22:50:21.078983"
   },
   {
     "stockCode": "27420",
@@ -35871,7 +35871,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125205"
+    "qualifiedAt": "2026-06-29T22:50:21.078984"
   },
   {
     "stockCode": "74580",
@@ -35913,7 +35913,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125206"
+    "qualifiedAt": "2026-06-29T22:50:21.078985"
   },
   {
     "stockCode": "83660",
@@ -35955,7 +35955,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125207"
+    "qualifiedAt": "2026-06-29T22:50:21.078987"
   },
   {
     "stockCode": "48280",
@@ -35997,7 +35997,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125208"
+    "qualifiedAt": "2026-06-29T22:50:21.078988"
   },
   {
     "stockCode": "76160",
@@ -36039,7 +36039,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125209"
+    "qualifiedAt": "2026-06-29T22:50:21.078989"
   },
   {
     "stockCode": "31930",
@@ -36081,7 +36081,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125210"
+    "qualifiedAt": "2026-06-29T22:50:21.078991"
   },
   {
     "stockCode": "98610",
@@ -36123,7 +36123,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125211"
+    "qualifiedAt": "2026-06-29T22:50:21.078992"
   },
   {
     "stockCode": "21570",
@@ -36165,7 +36165,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125212"
+    "qualifiedAt": "2026-06-29T22:50:21.078994"
   },
   {
     "stockCode": "78930",
@@ -36207,7 +36207,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125213"
+    "qualifiedAt": "2026-06-29T22:50:21.078995"
   },
   {
     "stockCode": "73800",
@@ -36249,7 +36249,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125214"
+    "qualifiedAt": "2026-06-29T22:50:21.078996"
   },
   {
     "stockCode": "83870",
@@ -36291,7 +36291,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125215"
+    "qualifiedAt": "2026-06-29T22:50:21.078998"
   },
   {
     "stockCode": "23250",
@@ -36333,7 +36333,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125216"
+    "qualifiedAt": "2026-06-29T22:50:21.078999"
   },
   {
     "stockCode": "38440",
@@ -36375,7 +36375,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125217"
+    "qualifiedAt": "2026-06-29T22:50:21.079000"
   },
   {
     "stockCode": "37690",
@@ -36417,7 +36417,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125218"
+    "qualifiedAt": "2026-06-29T22:50:21.079002"
   },
   {
     "stockCode": "81360",
@@ -36459,7 +36459,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125219"
+    "qualifiedAt": "2026-06-29T22:50:21.079003"
   },
   {
     "stockCode": "72830",
@@ -36501,7 +36501,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125219"
+    "qualifiedAt": "2026-06-29T22:50:21.079004"
   },
   {
     "stockCode": "75810",
@@ -36543,7 +36543,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125220"
+    "qualifiedAt": "2026-06-29T22:50:21.079006"
   },
   {
     "stockCode": "33870",
@@ -36585,7 +36585,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125221"
+    "qualifiedAt": "2026-06-29T22:50:21.079007"
   },
   {
     "stockCode": "67580",
@@ -36627,7 +36627,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125222"
+    "qualifiedAt": "2026-06-29T22:50:21.079008"
   },
   {
     "stockCode": "75160",
@@ -36669,7 +36669,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125223"
+    "qualifiedAt": "2026-06-29T22:50:21.079010"
   },
   {
     "stockCode": "75220",
@@ -36711,7 +36711,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125224"
+    "qualifiedAt": "2026-06-29T22:50:21.079011"
   },
   {
     "stockCode": "41880",
@@ -36753,7 +36753,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125225"
+    "qualifiedAt": "2026-06-29T22:50:21.079012"
   },
   {
     "stockCode": "59890",
@@ -36795,7 +36795,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125226"
+    "qualifiedAt": "2026-06-29T22:50:21.079014"
   },
   {
     "stockCode": "79660",
@@ -36837,7 +36837,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125227"
+    "qualifiedAt": "2026-06-29T22:50:21.079015"
   },
   {
     "stockCode": "57570",
@@ -36879,7 +36879,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125228"
+    "qualifiedAt": "2026-06-29T22:50:21.079017"
   },
   {
     "stockCode": "39210",
@@ -36921,6 +36921,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-06-29T14:00:56.125229"
+    "qualifiedAt": "2026-06-29T22:50:21.079018"
   }
 ]
