@@ -36315,19 +36315,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上場来高値更新も伴い急騰、具体的な材料は不明",
+      "comment": "上場来高値更新を伴う急騰、材料は不明確だが継続性に期待",
       "whyCategory": "不明",
       "entryTiming": "day2_watch",
-      "surgeReason": "[不明] 上場来高値更新も急騰理由の開示・材料特定不可",
+      "surgeReason": "[不明] 上場来高値更新も具体的材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 上場来高値更新も急騰理由の開示・材料特定不可",
+    "surgeReason": "[不明] 上場来高値更新も具体的材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843067"
+    "qualifiedAt": "2026-07-13T22:42:13.927303"
   },
   {
     "stockCode": "47220",
@@ -36357,19 +36357,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常8%増益と着地、小幅増益で継続性は限定的",
+      "comment": "1Q経常8%増益着地、増益率は小幅でサプライズ限定的",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q経常8%増益着地、増益幅は小幅で継続性低め",
+      "surgeReason": "[決算] 1Q経常8%増益着地、増益率小幅でサプライズ乏しい",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常8%増益着地、増益幅は小幅で継続性低め",
+    "surgeReason": "[決算] 1Q経常8%増益着地、増益率小幅でサプライズ乏しい",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843081"
+    "qualifiedAt": "2026-07-13T22:42:13.927313"
   },
   {
     "stockCode": "85510",
@@ -36397,21 +36397,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "2期連続最高益・増配＋資本提携だが上昇率は控えめ",
-      "whyCategory": "自社株買い・増配",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "2期連続最高益・増配＋資本提携、材料複合で注目度高い",
+      "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2期連続最高益・増配＋アイビーシーと資本提携",
+      "surgeReason": "[開示] 最高益更新・増配＋資本提携発表の複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2期連続最高益・増配＋アイビーシーと資本提携",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[開示] 最高益更新・増配＋資本提携発表の複合材料",
+    "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843083"
+    "qualifiedAt": "2026-07-13T22:42:13.927315"
   },
   {
     "stockCode": "68140",
@@ -36440,20 +36440,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "1Q営業益65%増・最終益38%増でストップ高、決算好内容",
+      "confidence": "high",
+      "comment": "1Q営業益65%増・最終38%増益でストップ高、業績急拡大",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q営業益65%増・最終益38%増でストップ高急騰",
+      "surgeReason": "[決算] 1Q営業益65%増・ストップ高、業績急拡大で継続性注目",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q営業益65%増・最終益38%増でストップ高急騰",
+    "surgeReason": "[決算] 1Q営業益65%増・ストップ高、業績急拡大で継続性注目",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843084"
+    "qualifiedAt": "2026-07-13T22:42:13.927316"
   },
   {
     "stockCode": "21570",
@@ -36483,19 +36483,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "優待2倍・増配の株主還元強化が材料",
+      "comment": "期末配当増額発表、上昇幅は限定的でモメンタム継続性弱い",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 優待発行枚数2倍化・期末配当増額で株主還元強化",
+      "surgeReason": "[開示] 26年8月期末配当予想増額発表、上昇幅小幅",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 優待発行枚数2倍化・期末配当増額で株主還元強化",
+    "surgeReason": "[開示] 26年8月期末配当予想増額発表、上昇幅小幅",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843085"
+    "qualifiedAt": "2026-07-13T22:42:13.927317"
   },
   {
     "stockCode": "61180",
@@ -36525,19 +36525,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "330万株・30億円上限の自社株買い発表が材料",
+      "comment": "自社株買い330万株・30億円上限発表、需給改善期待",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 330万株30億円上限自社株買い＋消却で需給改善期待",
+      "surgeReason": "[開示] 自社株買い30億円・5.63%上限発表、需給改善期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 330万株30億円上限自社株買い＋消却で需給改善期待",
+    "surgeReason": "[開示] 自社株買い30億円・5.63%上限発表、需給改善期待",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843086"
+    "qualifiedAt": "2026-07-13T22:42:13.927318"
   },
   {
     "stockCode": "43430",
@@ -36565,21 +36565,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "low",
-      "comment": "1Q営業益9%増・海外黒字転換だが上昇継続性は不明",
+      "comment": "1Q営業益9%増・海外黒字転換、構造改善の兆しあり",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q営業益9%増・海外事業黒字転換が評価材料",
+      "surgeReason": "[決算] 1Q営業益9%増・海外黒字転換で構造改善期待",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q営業益9%増・海外事業黒字転換が評価材料",
+    "surgeReason": "[決算] 1Q営業益9%増・海外黒字転換で構造改善期待",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843087"
+    "qualifiedAt": "2026-07-13T22:42:13.927319"
   },
   {
     "stockCode": "61360",
@@ -36609,19 +36609,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期業績・配当上方修正＋上場来高値更新で継続性高い",
+      "comment": "上場来高値更新、純利益93%増に上方修正、業績拡大明確",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期営業益上方修正・上期65%増益・上場来高値更新",
+      "surgeReason": "[開示] 純利益93%増上方修正・上場来高値更新で強いモメンタム",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期営業益上方修正・上期65%増益・上場来高値更新",
+    "surgeReason": "[開示] 純利益93%増上方修正・上場来高値更新で強いモメンタム",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843092"
+    "qualifiedAt": "2026-07-13T22:42:13.927323"
   },
   {
     "stockCode": "82000",
@@ -36651,19 +36651,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q営業益51%増と好決算も上昇率5%台で継続性不明",
+      "comment": "1Q営業益51%増・既存店好調、通期増益見通し前向き",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q営業益51%増・既存店堅調が評価、上昇率は小幅",
+      "surgeReason": "[決算] 1Q営業益51%増・既存店好調、上昇幅小幅で継続性不明",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q営業益51%増・既存店堅調が評価、上昇率は小幅",
+    "surgeReason": "[決算] 1Q営業益51%増・既存店好調、上昇幅小幅で継続性不明",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843093"
+    "qualifiedAt": "2026-07-13T22:42:13.927325"
   },
   {
     "stockCode": "75160",
@@ -36693,19 +36693,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常51%増益・高進捗が評価も上昇率は4%台",
+      "comment": "3～5月期大幅増益・高進捗、ホームセンター需要堅調",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q経常51%増益・高進捗率が好感される",
+      "surgeReason": "[決算] 3-5月期大幅増益・高進捗率、上昇幅4%台で継続性弱い",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常51%増益・高進捗率が好感される",
+    "surgeReason": "[決算] 3-5月期大幅増益・高進捗率、上昇幅4%台で継続性弱い",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843095"
+    "qualifiedAt": "2026-07-13T22:42:13.927326"
   },
   {
     "stockCode": "45770",
@@ -36735,19 +36735,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ToSTNeT-3による自社株取得結果・終了開示が材料",
+      "comment": "ToSTNeT-3自社株買い取得結果・終了開示、需給イベント完了",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] ToSTNeT-3自社株取得結果及び取得終了の開示",
+      "surgeReason": "[開示] 自社株買い立会外取引終了発表、需給イベント完了で継続性薄",
       "stage2Available": true
     },
-    "surgeReason": "[開示] ToSTNeT-3自社株取得結果及び取得終了の開示",
+    "surgeReason": "[開示] 自社株買い立会外取引終了発表、需給イベント完了で継続性薄",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843096"
+    "qualifiedAt": "2026-07-13T22:42:13.927327"
   },
   {
     "stockCode": "98610",
@@ -36777,19 +36777,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "米ラーメンチェーン買収46億円＋自社株取得の複合材料",
+      "comment": "米ラーメンチェーン買収46億円＋1Q経常2.3倍増益の複合材料",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 米ラーメンチェーン46億円買収＋自社株取得で8日続伸",
+      "surgeReason": "[ニュース] 米ラーメンチェーン46億円買収・1Q経常2.3倍増益複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米ラーメンチェーン46億円買収＋自社株取得で8日続伸",
+    "surgeReason": "[ニュース] 米ラーメンチェーン46億円買収・1Q経常2.3倍増益複合材料",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843097"
+    "qualifiedAt": "2026-07-13T22:42:13.927328"
   },
   {
     "stockCode": "80080",
@@ -36819,19 +36819,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期営業益上方修正・1Q営業益2.3倍の強い決算",
+      "comment": "通期営業益上方修正・1Q2.3倍増益、中古時計好調で構造変化",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期営業益上方修正・1Q営業益2.3倍の大幅好決算",
+      "surgeReason": "[開示] 通期上方修正・1Q営業益2.3倍増、中古時計好調で継続性期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期営業益上方修正・1Q営業益2.3倍の大幅好決算",
+    "surgeReason": "[開示] 通期上方修正・1Q営業益2.3倍増、中古時計好調で継続性期待",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843098"
+    "qualifiedAt": "2026-07-13T22:42:13.927330"
   },
   {
     "stockCode": "93040",
@@ -36861,19 +36861,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "27年3月期増益・増配計画を好感した後場急騰",
+      "comment": "27年3月期増益・増配計画発表、後場急騰だが材料規模は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 27年3月期増益・増配計画発表で後場急騰",
+      "surgeReason": "[開示] 27年3月期増益・増配計画発表で後場急騰、継続性不明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 27年3月期増益・増配計画発表で後場急騰",
+    "surgeReason": "[開示] 27年3月期増益・増配計画発表で後場急騰、継続性不明",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843101"
+    "qualifiedAt": "2026-07-13T22:42:13.927331"
   },
   {
     "stockCode": "56590",
@@ -36903,19 +36903,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常20%増益・4円増配予想が材料",
+      "comment": "今期経常20%増益・4円増配発表、上昇幅5%台で過熱感なし",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 今期経常20%増益・4円増配予想の株主還元強化",
+      "surgeReason": "[開示] 今期経常20%増益・4円増配発表、上昇幅小幅で継続性弱い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 今期経常20%増益・4円増配予想の株主還元強化",
+    "surgeReason": "[開示] 今期経常20%増益・4円増配発表、上昇幅小幅で継続性弱い",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843103"
+    "qualifiedAt": "2026-07-13T22:42:13.927332"
   },
   {
     "stockCode": "79360",
@@ -36957,7 +36957,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843104"
+    "qualifiedAt": "2026-07-13T22:42:13.927333"
   },
   {
     "stockCode": "99970",
@@ -36999,7 +36999,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843105"
+    "qualifiedAt": "2026-07-13T22:42:13.927334"
   },
   {
     "stockCode": "38640",
@@ -37041,7 +37041,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843106"
+    "qualifiedAt": "2026-07-13T22:42:13.927335"
   },
   {
     "stockCode": "21750",
@@ -37083,7 +37083,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-13T12:29:54.843107"
+    "qualifiedAt": "2026-07-13T22:42:13.927336"
   },
   {
     "stockCode": "92790",
@@ -37125,7 +37125,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843108"
+    "qualifiedAt": "2026-07-13T22:42:13.927337"
   },
   {
     "stockCode": "75810",
@@ -37167,6 +37167,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-13T12:29:54.843109"
+    "qualifiedAt": "2026-07-13T22:42:13.927338"
   }
 ]
