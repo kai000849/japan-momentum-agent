@@ -36267,19 +36267,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "3Q決算＋増配発表で急騰。増配の継続性に注目だが一過性の面も",
+      "comment": "3Q決算＋増配発表。増配は材料だが業績修正詳細不明で継続性要確認",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 3Q決算発表と配当予想修正（増配）が材料",
+      "surgeReason": "[決算] 3Q決算＋増配発表で急騰、勝率37.5%カテゴリにつきskip",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 3Q決算発表と配当予想修正（増配）が材料",
+    "surgeReason": "[決算] 3Q決算＋増配発表で急騰、勝率37.5%カテゴリにつきskip",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-20T12:11:29.778466"
+    "qualifiedAt": "2026-07-20T22:44:06.977190"
   },
   {
     "stockCode": "65720",
@@ -36309,19 +36309,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q決算開示のみで+4.2%。内容詳細不明、継続性は低い",
+      "comment": "1Q決算発表のみ。内容詳細不明で継続性判断困難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2027年2月期1Q決算短信・説明資料を開示",
+      "surgeReason": "[決算] 1Q決算発表。勝率42.4%・確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年2月期1Q決算短信・説明資料を開示",
+    "surgeReason": "[決算] 1Q決算発表。勝率42.4%・確信度low→skip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-20T12:11:29.778480"
+    "qualifiedAt": "2026-07-20T22:44:06.977205"
   },
   {
     "stockCode": "36970",
@@ -36351,19 +36351,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "業績修正＋3Q決算で急騰。営業外費用・特別損失計上も含む複合材料",
+      "comment": "業績予想修正＋特別損失計上。修正内容の上下不明で継続性不確か",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 業績予想修正と3Q決算、損失計上も同時開示",
+      "surgeReason": "[開示] 業績予想修正＋特別損失計上。勝率40.7%カテゴリにつきskip",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績予想修正と3Q決算、損失計上も同時開示",
+    "surgeReason": "[開示] 業績予想修正＋特別損失計上。勝率40.7%カテゴリにつきskip",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-20T12:11:29.778482"
+    "qualifiedAt": "2026-07-20T22:44:06.977207"
   },
   {
     "stockCode": "28710",
@@ -36393,19 +36393,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "システム障害発生開示で急騰は不自然。材料との連動性が不明確",
-      "whyCategory": "ニュース",
+      "comment": "システム障害発生開示で急騰は材料と逆方向で理由不明",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] システム障害発生開示、上昇理由との整合性不明",
+      "surgeReason": "[不明] システム障害開示で急騰、材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] システム障害発生開示、上昇理由との整合性不明",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] システム障害開示で急騰、材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-20T12:11:29.778483"
+    "qualifiedAt": "2026-07-20T22:44:06.977208"
   },
   {
     "stockCode": "68690",
@@ -36433,21 +36433,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "low",
-      "comment": "血液1滴アルツハイマー診断テーマ＋増配。下落後のリバウンド局面",
+      "comment": "TDnet開示なし。アルツハイマー診断テーマ記事あるが6日続落後の反発",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] アルツハイマー診断テーマ注目＋今期増配発表",
+      "surgeReason": "[ニュース] アルツハイマー診断テーマ記事。勝率35.3%・確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] アルツハイマー診断テーマ注目＋今期増配発表",
+    "surgeReason": "[ニュース] アルツハイマー診断テーマ記事。勝率35.3%・確信度low→skip",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778484"
+    "qualifiedAt": "2026-07-20T22:44:06.977210"
   },
   {
     "stockCode": "23370",
@@ -36477,19 +36477,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q決算開示で+4.1%。内容詳細不明、判断材料不足",
+      "comment": "1Q決算発表。内容詳細不明、+4.1%・売買代金2.2倍で継続性不明",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2027年2月期1Q決算短信・説明資料を開示",
+      "surgeReason": "[決算] 1Q決算発表。勝率42.4%・確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年2月期1Q決算短信・説明資料を開示",
+    "surgeReason": "[決算] 1Q決算発表。勝率42.4%・確信度low→skip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778486"
+    "qualifiedAt": "2026-07-20T22:44:06.977211"
   },
   {
     "stockCode": "73090",
@@ -36519,19 +36519,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "欧州系大手が強気転換・目標株価大幅引き上げが材料。需給主導",
-      "whyCategory": "需給",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 欧州系大手が強気転換、目標株価20,652円に引き上げ",
+      "comment": "欧州系大手が強気転換・目標株価2万円超えに大幅引き上げ",
+      "whyCategory": "ニュース",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 欧州系大手が強気転換・目標株価大幅引き上げ。勝率45.7%→skip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 欧州系大手が強気転換、目標株価20,652円に引き上げ",
-    "whyCategory": "需給",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 欧州系大手が強気転換・目標株価大幅引き上げ。勝率45.7%→skip",
+    "whyCategory": "ニュース",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-20T12:11:29.778487"
+    "qualifiedAt": "2026-07-20T22:44:06.977212"
   },
   {
     "stockCode": "24330",
@@ -36561,19 +36561,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "譲渡制限付株式報酬の自己株処分開示のみ。株価上昇材料としては弱い",
-      "whyCategory": "自社株買い・増配",
+      "comment": "譲渡制限付株式報酬としての自己株式処分開示。急騰材料として弱い",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 譲渡制限付株式報酬として自己株式処分を開示",
+      "surgeReason": "[不明] 自己株式処分開示のみ。急騰材料として弱く・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 譲渡制限付株式報酬として自己株式処分を開示",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[不明] 自己株式処分開示のみ。急騰材料として弱く・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778491"
+    "qualifiedAt": "2026-07-20T22:44:06.977217"
   },
   {
     "stockCode": "96970",
@@ -36603,19 +36603,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "社外取締役への譲渡制限付株式処分完了の開示のみ。材料として極めて弱い",
+      "comment": "社外取締役への譲渡制限付株式処分割当完了のみ。実質的材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 自己株処分割当完了開示のみ、急騰理由として不明瞭",
+      "surgeReason": "[不明] 自己株式処分割当完了開示のみ、材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 自己株処分割当完了開示のみ、急騰理由として不明瞭",
+    "surgeReason": "[不明] 自己株式処分割当完了開示のみ、材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778493"
+    "qualifiedAt": "2026-07-20T22:44:06.977219"
   },
   {
     "stockCode": "33820",
@@ -36645,19 +36645,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "一部報道への対応開示のみ。内容不明でM&A・事業再編報道への反応か",
-      "whyCategory": "ニュース",
+      "comment": "一部報道についての開示のみ。報道内容不明で材料判断困難",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 一部報道についての開示、内容詳細は不明",
+      "surgeReason": "[不明] 一部報道に関する開示。内容不明・材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 一部報道についての開示、内容詳細は不明",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 一部報道に関する開示。内容不明・材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778494"
+    "qualifiedAt": "2026-07-20T22:44:06.977221"
   },
   {
     "stockCode": "32760",
@@ -36687,19 +36687,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "7期連続増配・配当利回り4.8%が材料。ただし情報の鮮度に疑問",
+      "comment": "7期連続増配・配当利回り4.8%の記事あるが開示なし",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 7期連続増配・配当利回り4.8%が注目材料",
+      "surgeReason": "[ニュース] 7期連続増配記事。勝率37.5%・確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 7期連続増配・配当利回り4.8%が注目材料",
+    "surgeReason": "[ニュース] 7期連続増配記事。勝率37.5%・確信度low→skip",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778495"
+    "qualifiedAt": "2026-07-20T22:44:06.977222"
   },
   {
     "stockCode": "27910",
@@ -36729,19 +36729,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "配当情報・決算情報・新店舗情報あるが急騰の直接材料が特定困難",
+      "comment": "TDnet開示なし。配当・決算情報へのリンクのみで内容不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 配当・決算・新店情報あるが急騰直接材料は特定不可",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 配当・決算・新店情報あるが急騰直接材料は特定不可",
+    "surgeReason": "[不明] 材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778496"
+    "qualifiedAt": "2026-07-20T22:44:06.977223"
   },
   {
     "stockCode": "90690",
@@ -36771,18 +36771,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "分配可能額超の自己株取得問題で第三者委員会報告・再発防止策開示",
-      "whyCategory": "ニュース",
+      "comment": "自己株式取得不正に関する第三者委員会報告・再発防止策開示。ネガティブ材料",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自己株取得問題の第三者委員会報告書・再発防止策公表",
+      "surgeReason": "[不明] 自己株式取得不正の再発防止策開示。材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自己株取得問題の第三者委員会報告書・再発防止策公表",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 自己株式取得不正の再発防止策開示。材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-20T12:11:29.778497"
+    "qualifiedAt": "2026-07-20T22:44:06.977224"
   }
 ]
