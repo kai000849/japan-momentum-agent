@@ -36477,19 +36477,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "決算・業績修正・増配・中期経営計画と複合材料で継続性あり",
+      "comment": "1Q決算・業績修正・増配・中計策定と複数材料が重なる好材料セット",
       "whyCategory": "決算",
       "entryTiming": "day2_go",
-      "surgeReason": "[決算] Q1決算＋業績修正＋増配＋中期経営計画の複合材料",
+      "surgeReason": "[決算] 1Q決算・業績修正・増配・中期経営計画策定が同時開示",
       "stage2Available": true
     },
-    "surgeReason": "[決算] Q1決算＋業績修正＋増配＋中期経営計画の複合材料",
+    "surgeReason": "[決算] 1Q決算・業績修正・増配・中期経営計画策定が同時開示",
     "whyCategory": "決算",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-23T11:34:07.825389"
+    "qualifiedAt": "2026-07-23T22:44:18.844262"
   },
   {
     "stockCode": "90900",
@@ -36519,19 +36519,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "株主優待新設のみで業績改善材料なく継続性低い",
+      "comment": "株主優待新設のみ。業績改善の根拠なく継続性に乏しい",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 株主優待制度新設のみ、業績材料なく継続性低",
+      "surgeReason": "[開示] 株主優待制度新設のみ。業績への直接寄与なし",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 株主優待制度新設のみ、業績材料なく継続性低",
+    "surgeReason": "[開示] 株主優待制度新設のみ。業績への直接寄与なし",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-23T11:34:07.825399"
+    "qualifiedAt": "2026-07-23T22:44:18.844276"
   },
   {
     "stockCode": "429A0",
@@ -36560,20 +36560,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "low",
-      "comment": "欧州系証券の買い推奨、ロジック向け投資拡大期待のアナリスト主導",
-      "whyCategory": "ニュース",
+      "confidence": "medium",
+      "comment": "欧州系証券がロジック向け投資拡大期待で買い推奨、テーマ性あり",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 欧州系証券買い推奨・ロジック向け投資拡大期待",
+      "surgeReason": "[ニュース] 欧州系証券がロジック向け投資拡大期待で買い推奨",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 欧州系証券買い推奨・ロジック向け投資拡大期待",
-    "whyCategory": "ニュース",
+    "surgeReason": "[ニュース] 欧州系証券がロジック向け投資拡大期待で買い推奨",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825401"
+    "qualifiedAt": "2026-07-23T22:44:18.844278"
   },
   {
     "stockCode": "21080",
@@ -36603,19 +36603,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "配当方針変更(DOE4%)が材料だが急騰継続材料として弱い",
+      "comment": "DOE4%基準への配当方針変更が材料。決算内容の詳細不明",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] DOE4%基準配当方針変更、継続性は限定的",
+      "surgeReason": "[ニュース] DOE4%基準配当方針変更・資本効率改善方針が材料",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] DOE4%基準配当方針変更、継続性は限定的",
+    "surgeReason": "[ニュース] DOE4%基準配当方針変更・資本効率改善方針が材料",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825402"
+    "qualifiedAt": "2026-07-23T22:44:18.844279"
   },
   {
     "stockCode": "48470",
@@ -36645,19 +36645,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常16%下方修正で材料ネガティブ、急騰理由不明",
+      "comment": "今期経常16%下方修正と業績悪化。ポジティブ材料なし",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 今期経常16%下方修正、上昇継続根拠乏しい",
+      "surgeReason": "[決算] 今期経常16%下方修正、急騰の正当な材料が見当たらない",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 今期経常16%下方修正、上昇継続根拠乏しい",
+    "surgeReason": "[決算] 今期経常16%下方修正、急騰の正当な材料が見当たらない",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825403"
+    "qualifiedAt": "2026-07-23T22:44:18.844280"
   },
   {
     "stockCode": "62370",
@@ -36687,19 +36687,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "外国機関投資家の保有増加報告が材料、需給主導の動き",
+      "comment": "外国投資家の保有増加報告が需給材料。業績系材料なし",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 外国機関投資家の保有増加報告、需給主導",
+      "surgeReason": "[需給] Charon Finance社の保有増加（変更報告書）が材料",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 外国機関投資家の保有増加報告、需給主導",
+    "surgeReason": "[需給] Charon Finance社の保有増加（変更報告書）が材料",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825405"
+    "qualifiedAt": "2026-07-23T22:44:18.844281"
   },
   {
     "stockCode": "38630",
@@ -36729,19 +36729,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "野村絢氏・シティインデックスが大量保有、アクティビスト需給",
+      "comment": "野村絢氏ら5%超取得。アクティビスト介入による需給・思惑材料",
       "whyCategory": "需給",
       "entryTiming": "day2_watch",
-      "surgeReason": "[需給] アクティビスト野村絢氏ら5.11%取得、再編期待",
+      "surgeReason": "[需給] 野村絢氏ら5.11%取得、アクティビスト介入期待",
       "stage2Available": true
     },
-    "surgeReason": "[需給] アクティビスト野村絢氏ら5.11%取得、再編期待",
+    "surgeReason": "[需給] 野村絢氏ら5.11%取得、アクティビスト介入期待",
     "whyCategory": "需給",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825408"
+    "qualifiedAt": "2026-07-23T22:44:18.844282"
   },
   {
     "stockCode": "85440",
@@ -36771,19 +36771,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "村上系野村絢氏が2.17%保有、地銀再編期待の需給材料",
+      "comment": "野村絢氏が2.17%保有、地銀再編思惑。ただし利益急減速が懸念",
       "whyCategory": "需給",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[需給] 村上系アクティビスト2.17%保有、地銀再編思惑",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[需給] 村上系・野村絢氏が2.17%取得、地銀再編思惑",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 村上系アクティビスト2.17%保有、地銀再編思惑",
+    "surgeReason": "[需給] 村上系・野村絢氏が2.17%取得、地銀再編思惑",
     "whyCategory": "需給",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825412"
+    "qualifiedAt": "2026-07-23T22:44:18.844286"
   },
   {
     "stockCode": "75810",
@@ -36813,19 +36813,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "値上げ方針転換・中国底打ちで複数証券が目標株価引き上げ",
+      "comment": "社長の価格改定（値上げ）発言を好感。中国底打ち・国内戦略転換評価",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 値上げ転換・中国底打ちで複数社目標株価引き上げ",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 社長の値上げ検討発言・中国既存店底打ち評価でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 値上げ転換・中国底打ちで複数社目標株価引き上げ",
+    "surgeReason": "[ニュース] 社長の値上げ検討発言・中国既存店底打ち評価でストップ高",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825413"
+    "qualifiedAt": "2026-07-23T22:44:18.844288"
   },
   {
     "stockCode": "40920",
@@ -36855,18 +36855,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "STYLE BLEACH保有減・C&I Holdings新規大量保有で需給変動",
+      "comment": "C&I Holdingsが5.59%新規取得。アクティビスト系需給材料",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 大株主入れ替え需給変動、実態材料なし",
+      "surgeReason": "[需給] C&I Holdingsが5.59%新規取得、5%ルール報告が材料",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 大株主入れ替え需給変動、実態材料なし",
+    "surgeReason": "[需給] C&I Holdingsが5.59%新規取得、5%ルール報告が材料",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-23T11:34:07.825414"
+    "qualifiedAt": "2026-07-23T22:44:18.844289"
   }
 ]
