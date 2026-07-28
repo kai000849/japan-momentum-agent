@@ -38203,21 +38203,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "Q1決算＋業績予想修正開示。業績修正カテゴリは勝率20.8%と低水準",
-      "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] Q1決算短信＋業績予想修正開示で急騰",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "Q1決算と業績修正を同時開示。AI/クラウド需要継続が背景",
+      "whyCategory": "決算",
+      "entryTiming": "day2_go",
+      "surgeReason": "[決算] Q1決算＋業績修正同時開示、クラウド需要継続",
       "stage2Available": true
     },
-    "surgeReason": "[決算] Q1決算短信＋業績予想修正開示で急騰",
-    "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "surgeReason": "[決算] Q1決算＋業績修正同時開示、クラウド需要継続",
+    "whyCategory": "決算",
+    "entryTiming": "day2_go",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-28T11:43:59.551359"
+    "qualifiedAt": "2026-07-28T22:47:43.784317"
   },
   {
     "stockCode": "36970",
@@ -38259,7 +38259,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-28T11:43:59.551370"
+    "qualifiedAt": "2026-07-28T22:47:43.784335"
   },
   {
     "stockCode": "80840",
@@ -38288,20 +38288,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "low",
-      "comment": "上期・通期業績上方修正＋増配開示。自社株買い・増配勝率51%",
+      "confidence": "medium",
+      "comment": "中間・通期業績上方修正＋増配を同時開示。明確な好材料",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績上方修正＋増配発表で急騰",
+      "surgeReason": "[開示] 中間・通期上方修正＋増配発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績上方修正＋増配発表で急騰",
+    "surgeReason": "[開示] 中間・通期上方修正＋増配発表",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-07-28T11:43:59.551372"
+    "qualifiedAt": "2026-07-28T22:47:43.784338"
   },
   {
     "stockCode": "67020",
@@ -38329,21 +38329,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "low",
-      "comment": "OpenAI連携開始＋ソフトウェア株見直し買い継続。テーマ相乗り",
+      "comment": "OpenAIとの連携開始＋ソフトウェア株見直し買い継続",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] OpenAI連携＋ソフトウェア株見直し買い継続",
+      "surgeReason": "[ニュース] OpenAI連携＋ソフト株見直し買いテーマ相乗り",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] OpenAI連携＋ソフトウェア株見直し買い継続",
+    "surgeReason": "[ニュース] OpenAI連携＋ソフト株見直し買いテーマ相乗り",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551373"
+    "qualifiedAt": "2026-07-28T22:47:43.784339"
   },
   {
     "stockCode": "46120",
@@ -38372,20 +38372,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "low",
-      "comment": "アクゾ建築塗料部門に約1.4兆円の買収提案。資本提携・M&A勝率50%",
+      "confidence": "medium",
+      "comment": "蘭アクゾノーベル建築塗料部門に約1.4兆円買収提案が浮上",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 蘭アクゾ建築塗料事業に約1.4兆円買収提案",
+      "surgeReason": "[ニュース] 蘭アクゾ塗料部門に1.4兆円規模の買収提案",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 蘭アクゾ建築塗料事業に約1.4兆円買収提案",
+    "surgeReason": "[ニュース] 蘭アクゾ塗料部門に1.4兆円規模の買収提案",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551374"
+    "qualifiedAt": "2026-07-28T22:47:43.784340"
   },
   {
     "stockCode": "30380",
@@ -38415,7 +38415,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ニュースは軟調・減益見通し据え置きで急騰理由と矛盾。材料不明",
+      "comment": "ニュースは増益も来期減益据え置きで軟調材料。急騰理由不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -38427,7 +38427,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551375"
+    "qualifiedAt": "2026-07-28T22:47:43.784341"
   },
   {
     "stockCode": "22120",
@@ -38457,19 +38457,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "コラボ商品・PRニュースのみ。株価急騰を説明する明確材料なし",
-      "whyCategory": "不明",
+      "comment": "年間配当50円→60円に増額。増配が急騰の主因",
+      "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・要確認",
+      "surgeReason": "[ニュース] 年間配当50円→60円に増額発表",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・要確認",
-    "whyCategory": "不明",
+    "surgeReason": "[ニュース] 年間配当50円→60円に増額発表",
+    "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551376"
+    "qualifiedAt": "2026-07-28T22:47:43.784342"
   },
   {
     "stockCode": "64600",
@@ -38499,19 +38499,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "UBS・マッコーリーが相次ぎ格上げ＋目標株価引き上げ",
+      "comment": "UBS・マッコーリーが相次ぎ格上げ、目標株価3000円に",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] UBS・マッコーリーが格上げ、目標株価3000円",
+      "surgeReason": "[ニュース] UBS・マッコーリー相次ぎ格上げ、目標3000円",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] UBS・マッコーリーが格上げ、目標株価3000円",
+    "surgeReason": "[ニュース] UBS・マッコーリー相次ぎ格上げ、目標3000円",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551380"
+    "qualifiedAt": "2026-07-28T22:47:43.784348"
   },
   {
     "stockCode": "96020",
@@ -38541,19 +38541,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "映画「ちいかわ」出足好調と報道。コンテンツヒットによる需給改善",
+      "comment": "映画「ちいかわ」出足好調と伝わり買い。興行次第で継続性あり",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 映画「ちいかわ」出足好調報道で急騰",
+      "surgeReason": "[ニュース] 映画「ちいかわ」出足好調の報道で買い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 映画「ちいかわ」出足好調報道で急騰",
+    "surgeReason": "[ニュース] 映画「ちいかわ」出足好調の報道で買い",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551382"
+    "qualifiedAt": "2026-07-28T22:47:43.784350"
   },
   {
     "stockCode": "81730",
@@ -38583,7 +38583,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "5連騰・成長期待との記事のみ。明確な新規材料確認できず",
+      "comment": "5連騰で成長期待高まると報道。明確な開示材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -38595,7 +38595,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551383"
+    "qualifiedAt": "2026-07-28T22:47:43.784352"
   },
   {
     "stockCode": "43070",
@@ -38625,19 +38625,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "AI導入支援で再評価・国内事業好調との記事。テーマ相乗り",
+      "comment": "国内事業好調・AI導入支援で再評価との報道。材料はニュース",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] AI導入支援再評価・国内事業好調報道",
+      "surgeReason": "[ニュース] 国内事業好調＋AI導入支援再評価の報道",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AI導入支援再評価・国内事業好調報道",
+    "surgeReason": "[ニュース] 国内事業好調＋AI導入支援再評価の報道",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551384"
+    "qualifiedAt": "2026-07-28T22:47:43.784353"
   },
   {
     "stockCode": "79740",
@@ -38667,19 +38667,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "非AIゲーム株見直し買いとの記事。テーマ相乗りだが勝率低い",
+      "comment": "非AIゲーム株見直し買い。開示なく需給・テーマ相乗りが主因",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 非AIゲーム関連株として見直し買い流入",
+      "surgeReason": "[需給] 非AIゲーム株見直し買いのテーマ相乗り",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 非AIゲーム関連株として見直し買い流入",
+    "surgeReason": "[需給] 非AIゲーム株見直し買いのテーマ相乗り",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551385"
+    "qualifiedAt": "2026-07-28T22:47:43.784354"
   },
   {
     "stockCode": "97660",
@@ -38709,7 +38709,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "7/30決算発表予定の思惑。明確な新材料なく期待先行",
+      "comment": "7/30決算発表予定の思惑買い。明確な好材料はまだなし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -38721,7 +38721,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551387"
+    "qualifiedAt": "2026-07-28T22:47:43.784355"
   },
   {
     "stockCode": "37620",
@@ -38749,21 +38749,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "low",
-      "comment": "12期連続最高益・増配実績。決算評価だが勝率参照でlow判定",
+      "comment": "12期連続最高益＋増配。DX関連として注目記事も後押し",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 12期連続最高益＋増配で見直し買い",
+      "surgeReason": "[ニュース] 12期連続最高益＋増配、DX関連として注目",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 12期連続最高益＋増配で見直し買い",
+    "surgeReason": "[ニュース] 12期連続最高益＋増配、DX関連として注目",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551388"
+    "qualifiedAt": "2026-07-28T22:47:43.784356"
   },
   {
     "stockCode": "70850",
@@ -38793,19 +38793,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "東海東京証券が目標株価1370円に引き上げ。3日続伸中",
+      "comment": "東海東京・国内調査機関が目標株価引き上げ。3日続伸中",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 東海東京証が目標株価1370円に引き上げ",
+      "surgeReason": "[ニュース] 複数機関が目標株価引き上げ、3日続伸",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 東海東京証が目標株価1370円に引き上げ",
+    "surgeReason": "[ニュース] 複数機関が目標株価引き上げ、3日続伸",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551389"
+    "qualifiedAt": "2026-07-28T22:47:43.784357"
   },
   {
     "stockCode": "64170",
@@ -38847,6 +38847,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-07-28T11:43:59.551390"
+    "qualifiedAt": "2026-07-28T22:47:43.784358"
   }
 ]
