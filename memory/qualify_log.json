@@ -47409,19 +47409,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "アパグループが4.5%保有で大株主浮上、TOB思惑あるが不透明",
+      "comment": "アパグループが4.5%取得で大株主浮上、TOB思惑と上期最終利益+77%が複合材料",
       "whyCategory": "需給",
       "entryTiming": "day2_watch",
-      "surgeReason": "[需給] アパグループが藤田観光株4.5%取得、買収思惑浮上",
+      "surgeReason": "[ニュース] アパGが大株主浮上・TOB思惑＋上期最終利益77%増",
       "stage2Available": true
     },
-    "surgeReason": "[需給] アパグループが藤田観光株4.5%取得、買収思惑浮上",
+    "surgeReason": "[ニュース] アパGが大株主浮上・TOB思惑＋上期最終利益77%増",
     "whyCategory": "需給",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654439"
+    "qualifiedAt": "2026-08-23T22:01:25.979613"
   },
   {
     "stockCode": "91070",
@@ -47449,21 +47449,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "中東リスク高まりで海運株買い、外資目標株価引き上げも材料",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "中東リスクで海運株買い・外資目標株価引き上げが材料だが、直近で5.5%安の記事もあり不安定",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 中東リスク拡大＋外資目標株価引き上げで海運株買い",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 中東リスク・海運テーマ相乗り＋外資目標株価引き上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 中東リスク拡大＋外資目標株価引き上げで海運株買い",
+    "surgeReason": "[ニュース] 中東リスク・海運テーマ相乗り＋外資目標株価引き上げ",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654451"
+    "qualifiedAt": "2026-08-23T22:01:25.979624"
   },
   {
     "stockCode": "40050",
@@ -47493,19 +47493,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1Q営業利益2.4倍・外資目標株価引き上げ・今期最高益更新へ",
+      "comment": "外資目標株価引き上げ＋1Q営業利益2.4倍・コアOP今期最高益更新見通し",
       "whyCategory": "業績修正",
       "entryTiming": "day2_go",
-      "surgeReason": "[決算] 1Q営業利益2.4倍、外資が目標株価引き上げ今期最高益へ",
+      "surgeReason": "[決算] 1Q営業利益2.4倍・外資目標株価引き上げで業績回復鮮明",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q営業利益2.4倍、外資が目標株価引き上げ今期最高益へ",
+    "surgeReason": "[決算] 1Q営業利益2.4倍・外資目標株価引き上げで業績回復鮮明",
     "whyCategory": "業績修正",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654453"
+    "qualifiedAt": "2026-08-23T22:01:25.979625"
   },
   {
     "stockCode": "39320",
@@ -47534,20 +47534,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "high",
-      "comment": "サニーサイドアップとの経営統合TOB開始、イベント主導の動き",
+      "confidence": "medium",
+      "comment": "サニーサイドアップとの経営統合に向けたTOB開始発表が材料",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] サニーサイドアップとの経営統合TOB開始を発表",
+      "surgeReason": "[開示] サニーサイドアップとの経営統合TOB開始発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] サニーサイドアップとの経営統合TOB開始を発表",
+    "surgeReason": "[開示] サニーサイドアップとの経営統合TOB開始発表",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-21T22:04:24.654454"
+    "qualifiedAt": "2026-08-23T22:01:25.979626"
   },
   {
     "stockCode": "47840",
@@ -47575,21 +47575,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "上期経常40%増益・子会社株売り出しで売却益405億円計上",
-      "whyCategory": "決算",
+      "comment": "子会社株売り出しで売却益405億円・上期経常40%増益が材料",
+      "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 上期経常40%増益、子会社株売却益405億円で収益大幅改善",
+      "surgeReason": "[決算] 子会社株売却益405億円＋上期経常40%増益",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 上期経常40%増益、子会社株売却益405億円で収益大幅改善",
-    "whyCategory": "決算",
+    "surgeReason": "[決算] 子会社株売却益405億円＋上期経常40%増益",
+    "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-21T22:04:24.654455"
+    "qualifiedAt": "2026-08-23T22:01:25.979628"
   },
   {
     "stockCode": "79890",
@@ -47619,19 +47619,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上期経常23%増・純利益過去最高・価格改定効果と新中計発表",
+      "comment": "上期経常23%増益・4-6月29%増益・過去最高純利益・新中計発表が材料",
       "whyCategory": "決算",
-      "entryTiming": "day2_go",
-      "surgeReason": "[決算] 上期経常23%増・純利益過去最高、価格改定効果と新中計",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 上期経常23%増・純利益最高更新・新中計発表",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 上期経常23%増・純利益過去最高、価格改定効果と新中計",
+    "surgeReason": "[決算] 上期経常23%増・純利益最高更新・新中計発表",
     "whyCategory": "決算",
-    "entryTiming": "day2_go",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-21T22:04:24.654456"
+    "qualifiedAt": "2026-08-23T22:01:25.979629"
   },
   {
     "stockCode": "57110",
@@ -47661,19 +47661,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "27年3月期純利益3.4倍に大幅上方修正、ストップ高気配",
+      "comment": "27年3月期純利益3.4倍に大幅上方修正・ストップ高気配のポジティブサプライズ",
       "whyCategory": "業績修正",
       "entryTiming": "day2_go",
-      "surgeReason": "[開示] 純利益3.4倍に上方修正、AI・資源循環テーマも追い風",
+      "surgeReason": "[開示] 27/3期純利益3.4倍に大幅上方修正・ストップ高気配",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 純利益3.4倍に上方修正、AI・資源循環テーマも追い風",
+    "surgeReason": "[開示] 27/3期純利益3.4倍に大幅上方修正・ストップ高気配",
     "whyCategory": "業績修正",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-21T22:04:24.654457"
+    "qualifiedAt": "2026-08-23T22:01:25.979630"
   },
   {
     "stockCode": "91040",
@@ -47701,21 +47701,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "27年3月期13%最終増益へ上方修正、北欧大手好決算で海運買い",
+      "comment": "27年3月期最終利益13%増へ上方修正＋北欧海運大手好決算・中東リスクで海運株買い",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_go",
-      "surgeReason": "[開示] 通期13%最終増益に上方修正、海運セクター全体に買い波及",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 27/3期最終利益13%増上方修正＋海運テーマ買い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期13%最終増益に上方修正、海運セクター全体に買い波及",
+    "surgeReason": "[開示] 27/3期最終利益13%増上方修正＋海運テーマ買い",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_go",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-21T22:04:24.654462"
+    "qualifiedAt": "2026-08-23T22:01:25.979634"
   },
   {
     "stockCode": "21080",
@@ -47745,19 +47745,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "high",
-      "comment": "自社株買い・株式分割・配当修正・消却を同時発表、材料集中",
+      "comment": "自社株買い・消却＋株式分割・増配のTDnet開示が複合材料",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_go",
-      "surgeReason": "[開示] 自社株買い・株式分割・増配・消却を同時発表で材料集中",
+      "surgeReason": "[開示] 自社株買い・消却＋株式分割・増配を同時発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買い・株式分割・増配・消却を同時発表で材料集中",
+    "surgeReason": "[開示] 自社株買い・消却＋株式分割・増配を同時発表",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_go",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654463"
+    "qualifiedAt": "2026-08-23T22:01:25.979635"
   },
   {
     "stockCode": "91010",
@@ -47785,21 +47785,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "中東緊迫で運賃上昇思惑、1Q大幅増収増益・通期上方修正済み",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "中東緊迫による運賃上昇思惑・海運テーマ相乗りで連日最高値",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 中東緊迫で運賃上昇思惑、1Q増益・上場来高値更新",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 中東緊迫・運賃上昇思惑で海運テーマ相乗り",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 中東緊迫で運賃上昇思惑、1Q増益・上場来高値更新",
+    "surgeReason": "[ニュース] 中東緊迫・運賃上昇思惑で海運テーマ相乗り",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654464"
+    "qualifiedAt": "2026-08-23T22:01:25.979636"
   },
   {
     "stockCode": "97420",
@@ -47829,19 +47829,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "英ファンドAVIが5%保有で大株主浮上、ただし業績は減損計上",
-      "whyCategory": "需給",
+      "comment": "決算情報への言及あるが具体的な数値・材料が不明確",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 英ファンドAVIが5.02%取得で大株主浮上、業績懸念残る",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 英ファンドAVIが5.02%取得で大株主浮上、業績懸念残る",
-    "whyCategory": "需給",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654466"
+    "qualifiedAt": "2026-08-23T22:01:25.979638"
   },
   {
     "stockCode": "41160",
@@ -47871,19 +47871,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上期経常64%上方修正・通期も増額、業績改善が明確",
+      "comment": "上期経常64%上方修正・通期も増額・中東逆風跳ね返す高付加価値化が奏功",
       "whyCategory": "業績修正",
       "entryTiming": "day2_go",
-      "surgeReason": "[開示] 上期経常64%上方修正・通期も増額、業績改善が鮮明",
+      "surgeReason": "[開示] 上期経常64%上方修正・通期増額・高付加価値化奏功",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 上期経常64%上方修正・通期も増額、業績改善が鮮明",
+    "surgeReason": "[開示] 上期経常64%上方修正・通期増額・高付加価値化奏功",
     "whyCategory": "業績修正",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654467"
+    "qualifiedAt": "2026-08-23T22:01:25.979639"
   },
   {
     "stockCode": "58570",
@@ -47913,19 +47913,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "2期連続増配・配当利回り3.8%、ただし急騰との直接関連が不明瞭",
-      "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 2期連続増配発表・配当利回り3.8%、2年で配当1.6倍",
+      "comment": "決算情報への言及はあるが具体的な業績数値・材料が確認できない",
+      "whyCategory": "不明",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 2期連続増配発表・配当利回り3.8%、2年で配当1.6倍",
-    "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654468"
+    "qualifiedAt": "2026-08-23T22:01:25.979640"
   },
   {
     "stockCode": "60270",
@@ -47954,20 +47954,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "low",
-      "comment": "AIプロダクトが株価7割上昇の牽引役、テーマ性継続中",
-      "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] AIプロダクトが株価上昇牽引、テーマ相乗りで継続物色",
+      "confidence": "medium",
+      "comment": "AI法務サービス需要増でストップ高・4-6月大幅増益・4連騰と継続性あり",
+      "whyCategory": "決算",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] AI法務サービス需要増・4-6月大幅増益でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AIプロダクトが株価上昇牽引、テーマ相乗りで継続物色",
-    "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
+    "surgeReason": "[ニュース] AI法務サービス需要増・4-6月大幅増益でストップ高",
+    "whyCategory": "決算",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654469"
+    "qualifiedAt": "2026-08-23T22:01:25.979641"
   },
   {
     "stockCode": "73830",
@@ -47997,19 +47997,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "Q1 atone GMV43.9%増・NP掛け払い20.9%増で成長加速鮮明",
+      "comment": "atone GMV43.9%増・NP掛け払い20.9%増・営業利益35.4%増と成長加速",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] Q1 GMV大幅拡大・営業利益35%増、中計でさらなる成長示す",
+      "surgeReason": "[決算] GMV大幅拡大・営業利益35%増で成長加速を確認",
       "stage2Available": true
     },
-    "surgeReason": "[決算] Q1 GMV大幅拡大・営業利益35%増、中計でさらなる成長示す",
+    "surgeReason": "[決算] GMV大幅拡大・営業利益35%増で成長加速を確認",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654470"
+    "qualifiedAt": "2026-08-23T22:01:25.979642"
   },
   {
     "stockCode": "38640",
@@ -48051,7 +48051,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654471"
+    "qualifiedAt": "2026-08-23T22:01:25.979643"
   },
   {
     "stockCode": "59760",
@@ -48093,7 +48093,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654472"
+    "qualifiedAt": "2026-08-23T22:01:25.979644"
   },
   {
     "stockCode": "78460",
@@ -48135,6 +48135,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-21T22:04:24.654473"
+    "qualifiedAt": "2026-08-23T22:01:25.979645"
   }
 ]
