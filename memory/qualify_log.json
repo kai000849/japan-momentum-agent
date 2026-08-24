@@ -44217,19 +44217,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q純利益27%増も通期見通し据え置き、継続性限定的",
+      "comment": "1Q純利益27%増・既存店好調だが通期見通し据え置きで継続性限定的",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q純利益27%増も通期据え置き、材料出尽くし感",
+      "surgeReason": "[決算] 1Q純利益27%増・既存店好調、通期見通し据え置き",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q純利益27%増も通期据え置き、材料出尽くし感",
+    "surgeReason": "[決算] 1Q純利益27%増・既存店好調、通期見通し据え置き",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812236"
+    "qualifiedAt": "2026-08-24T22:08:24.194925"
   },
   {
     "stockCode": "63050",
@@ -44259,19 +44259,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "日立が全株売却・340億円自社株買い発表、需給改善期待",
+      "comment": "通期上方修正＋340億自社株買い＋日立から完全独立・社名変更と複合材料",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 日立全株売却＋340億円自社株買いで需給大幅改善",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 自社株買い340億・通期上方修正・完全独立と社名変更",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 日立全株売却＋340億円自社株買いで需給大幅改善",
+    "surgeReason": "[開示] 自社株買い340億・通期上方修正・完全独立と社名変更",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812248"
+    "qualifiedAt": "2026-08-24T22:08:24.194939"
   },
   {
     "stockCode": "60270",
@@ -44299,21 +44299,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "AIプロダクト・弁護士保険新サービス開始で中長期成長期待",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] AIプロダクト注目＋弁護士保険取り扱い開始材料",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "弁護士保険取り扱い開始・AI関連テーマ継続で大幅続伸",
+      "whyCategory": "テーマ相乗り",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] AI・弁護士保険新規取扱いでテーマ買い継続",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] AIプロダクト注目＋弁護士保険取り扱い開始材料",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "surgeReason": "[ニュース] AI・弁護士保険新規取扱いでテーマ買い継続",
+    "whyCategory": "テーマ相乗り",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812249"
+    "qualifiedAt": "2026-08-24T22:08:24.194942"
   },
   {
     "stockCode": "96920",
@@ -44342,20 +44342,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "業績上方修正で7年8カ月ぶり高値、継続性要確認",
+      "confidence": "low",
+      "comment": "27年1月期業績上方修正で7年8カ月ぶり高値、継続性は要確認",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 27年1月期業績上方修正で一時7年8カ月ぶり高値",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 27年1月期業績上方修正・7年8カ月ぶり高値更新",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 27年1月期業績上方修正で一時7年8カ月ぶり高値",
+    "surgeReason": "[開示] 27年1月期業績上方修正・7年8カ月ぶり高値更新",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812251"
+    "qualifiedAt": "2026-08-24T22:08:24.194943"
   },
   {
     "stockCode": "43440",
@@ -44385,19 +44385,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ポケトーク新型機開発・株主優待刷新、材料の継続性弱い",
+      "comment": "ポケトーク通信不要新型機開発発表、製品ニュース主導の急騰",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 通信不要ポケトーク新型機開発・優待刷新発表",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 通信不要ポケトーク新型機開発発表で大幅反発",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 通信不要ポケトーク新型機開発・優待刷新発表",
+    "surgeReason": "[ニュース] 通信不要ポケトーク新型機開発発表で大幅反発",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812252"
+    "qualifiedAt": "2026-08-24T22:08:24.194944"
   },
   {
     "stockCode": "48490",
@@ -44427,19 +44427,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "オアシスが株式買い増し保有12.41%、需給思惑主導",
+      "comment": "オアシスMが保有11.4→12.4%に買い増し、需給主導の上昇",
       "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[需給] オアシスが株式買い増し12.41%保有で思惑台頭",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[需給] オアシスM保有比率12.41%に買い増し・思惑台頭",
       "stage2Available": true
     },
-    "surgeReason": "[需給] オアシスが株式買い増し12.41%保有で思惑台頭",
+    "surgeReason": "[需給] オアシスM保有比率12.41%に買い増し・思惑台頭",
     "whyCategory": "需給",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812253"
+    "qualifiedAt": "2026-08-24T22:08:24.194945"
   },
   {
     "stockCode": "57130",
@@ -44469,19 +44469,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "金・銅市況上昇と大和証券目標株価引き上げが材料",
+      "comment": "金・銅国際市況上昇とアナリスト目標株価引き上げが材料",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 非鉄市況高・大和目標株価引き上げで物色",
+      "surgeReason": "[ニュース] 金・銅市況上昇＋アナリスト目標株価引き上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 非鉄市況高・大和目標株価引き上げで物色",
+    "surgeReason": "[ニュース] 金・銅市況上昇＋アナリスト目標株価引き上げ",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812256"
+    "qualifiedAt": "2026-08-24T22:08:24.194946"
   },
   {
     "stockCode": "57070",
@@ -44511,19 +44511,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "銀価格上昇による非鉄市況連動、個別材料は乏しい",
+      "comment": "米国債買い入れ増で銀価格上昇、市況連動の非鉄株買い",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 米国債買い増しで銀価格上昇、非鉄連動で急伸",
+      "surgeReason": "[ニュース] 銀価格上昇（米国債買い増し）で非鉄関連として急騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米国債買い増しで銀価格上昇、非鉄連動で急伸",
+    "surgeReason": "[ニュース] 銀価格上昇（米国債買い増し）で非鉄関連として急騰",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812261"
+    "qualifiedAt": "2026-08-24T22:08:24.194951"
   },
   {
     "stockCode": "63300",
@@ -44553,19 +44553,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常2.8倍増＋レアアース関連テーマ物色の複合材料",
-      "whyCategory": "テーマ相乗り",
+      "comment": "1Q経常2.8倍増益と好決算、売買代金1.5倍で過熱感は低め",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] レアアース関連テーマ物色＋1Q経常2.8倍増着地",
+      "surgeReason": "[決算] 1Q経常利益2.8倍増益で急騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] レアアース関連テーマ物色＋1Q経常2.8倍増着地",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[決算] 1Q経常利益2.8倍増益で急騰",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812263"
+    "qualifiedAt": "2026-08-24T22:08:24.194953"
   },
   {
     "stockCode": "57410",
@@ -44595,19 +44595,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "エフィッシモが保有比率約24%に買い増し、需給思惑",
+      "comment": "エフィッシモが大株主変更報告、需給思惑と決算情報が重なる",
       "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[需給] エフィッシモが約24%まで買い増し、需給思惑",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[需給] エフィッシモ変更報告提出・需給思惑と決算重なる",
       "stage2Available": true
     },
-    "surgeReason": "[需給] エフィッシモが約24%まで買い増し、需給思惑",
+    "surgeReason": "[需給] エフィッシモ変更報告提出・需給思惑と決算重なる",
     "whyCategory": "需給",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812264"
+    "qualifiedAt": "2026-08-24T22:08:24.194954"
   },
   {
     "stockCode": "57110",
@@ -44637,19 +44637,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "シルチェスターが保有減少、目標株価引き上げも中立評価",
-      "whyCategory": "不明",
+      "comment": "シルチェスターが保有5.64→4.62%に減少、売り圧力懸念残る",
+      "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 大株主保有減少＋目標株価引き上げ、材料弱い",
+      "surgeReason": "[需給] シルチェスター保有減少・目標株価引き上げが材料",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 大株主保有減少＋目標株価引き上げ、材料弱い",
-    "whyCategory": "不明",
+    "surgeReason": "[需給] シルチェスター保有減少・目標株価引き上げが材料",
+    "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-24T10:19:59.812265"
+    "qualifiedAt": "2026-08-24T22:08:24.194955"
   },
   {
     "stockCode": "15150",
@@ -44679,19 +44679,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "自社株買い6.3%・経常21%上方修正・増配の三重材料",
+      "comment": "発行済6.3%・100億円上限の自社株買い発表が主要材料",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 自社株買い6.3%＋経常21%上方修正＋増配の三重材料",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 発行済6.3%・100億円上限の自社株買い発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買い6.3%＋経常21%上方修正＋増配の三重材料",
+    "surgeReason": "[開示] 発行済6.3%・100億円上限の自社株買い発表",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812266"
+    "qualifiedAt": "2026-08-24T22:08:24.194956"
   },
   {
     "stockCode": "57150",
@@ -44721,19 +44721,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自己株式消却開示あるも非鉄市況連動の側面が強い",
-      "whyCategory": "テーマ相乗り",
+      "comment": "決算情報・配当情報掲載のみで具体的な急騰材料が不明瞭",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 非鉄市況高への連動、自己株式消却開示も材料弱め",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 非鉄市況高への連動、自己株式消却開示も材料弱め",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812267"
+    "qualifiedAt": "2026-08-24T22:08:24.194957"
   },
   {
     "stockCode": "54440",
@@ -44762,20 +44762,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "今期経常28%上方修正、JPモルガン買い増しも追い風",
+      "confidence": "low",
+      "comment": "今期経常28%上方修正＋JPモルガン保有増加が複合材料",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 今期経常28%上方修正＋JPモルガン保有増加",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 今期経常28%上方修正・JPモルガン保有増加",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 今期経常28%上方修正＋JPモルガン保有増加",
+    "surgeReason": "[開示] 今期経常28%上方修正・JPモルガン保有増加",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812268"
+    "qualifiedAt": "2026-08-24T22:08:24.194958"
   },
   {
     "stockCode": "39680",
@@ -44805,19 +44805,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "経常13%上方修正も公募増資による希薄化懸念が上値抑制",
+      "comment": "今期経常13%上方修正・最高益上乗せだが公募増資希薄化懸念も並存",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 経常13%上方修正も公募増資希薄化懸念で上値重い",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 経常13%上方修正・最高益更新も公募希薄化懸念あり",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 経常13%上方修正も公募増資希薄化懸念で上値重い",
+    "surgeReason": "[開示] 経常13%上方修正・最高益更新も公募希薄化懸念あり",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812269"
+    "qualifiedAt": "2026-08-24T22:08:24.194959"
   },
   {
     "stockCode": "38430",
@@ -44859,7 +44859,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812270"
+    "qualifiedAt": "2026-08-24T22:08:24.194960"
   },
   {
     "stockCode": "74560",
@@ -44901,7 +44901,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812271"
+    "qualifiedAt": "2026-08-24T22:08:24.194961"
   },
   {
     "stockCode": "97420",
@@ -44943,7 +44943,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812272"
+    "qualifiedAt": "2026-08-24T22:08:24.194962"
   },
   {
     "stockCode": "78560",
@@ -44985,6 +44985,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-24T10:19:59.812273"
+    "qualifiedAt": "2026-08-24T22:08:24.194963"
   }
 ]
