@@ -37413,19 +37413,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "high",
-      "comment": "TOB公表により株価はTOB価格に収斂、モメンタム追撃は不適",
+      "comment": "VICによるTOB公表。応募推奨で株価はTOB価格に収斂する見込み",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 合同会社VICによるTOB開始予定・賛同意見表明を公表",
+      "surgeReason": "[開示] VICによるTOB開始予定・賛同意見表明・応募推奨",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 合同会社VICによるTOB開始予定・賛同意見表明を公表",
+    "surgeReason": "[開示] VICによるTOB開始予定・賛同意見表明・応募推奨",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-29T03:30:53.083152"
+    "qualifiedAt": "2026-08-30T23:58:00.876370"
   },
   {
     "stockCode": "47760",
@@ -37455,19 +37455,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上期経常21%増益着地・SaaS関連物色でテーマ性あり継続注視",
+      "comment": "上期経常21%増益で着地。SaaS事業の好調持続を示唆",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 上期経常21%増益着地＋SaaS関連テーマ物色が重なり急騰",
+      "surgeReason": "[決算] 上期経常21%増益着地、月次売上高も堅調推移",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 上期経常21%増益着地＋SaaS関連テーマ物色が重なり急騰",
+    "surgeReason": "[決算] 上期経常21%増益着地、月次売上高も堅調推移",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-29T03:30:53.083162"
+    "qualifiedAt": "2026-08-30T23:58:00.876380"
   },
   {
     "stockCode": "24920",
@@ -37497,19 +37497,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "オアシスが持分13.4%に買い増し、需給主導で継続性期待",
+      "comment": "オアシスら海外アクティビスト2社が株式買い増し、需給改善期待",
       "whyCategory": "需給",
       "entryTiming": "day2_go",
-      "surgeReason": "[需給] 海外アクティビスト・オアシスが株式買い増し13.40%保有",
+      "surgeReason": "[需給] オアシスら海外ファンド2社が株式買い増し・保有比率上昇",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 海外アクティビスト・オアシスが株式買い増し13.40%保有",
+    "surgeReason": "[需給] オアシスら海外ファンド2社が株式買い増し・保有比率上昇",
     "whyCategory": "需給",
     "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083163"
+    "qualifiedAt": "2026-08-30T23:58:00.876382"
   },
   {
     "stockCode": "44320",
@@ -37539,19 +37539,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "株主優待新設は一時的材料、継続騰勢は期待しにくい",
+      "comment": "株主優待新設が材料。継続的な業績改善につながる材料ではない",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設を発表",
+      "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設（年2回）",
       "stage2Available": true
     },
-    "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設を発表",
+    "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設（年2回）",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-29T03:30:53.083164"
+    "qualifiedAt": "2026-08-30T23:58:00.876383"
   },
   {
     "stockCode": "93410",
@@ -37580,20 +37580,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "決算説明会書き起こし公開、内容精査が必要で確証待ち",
+      "confidence": "low",
+      "comment": "Q1決算発表・歯科流通事業の取引回復進展。材料の強さは限定的",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 2027年3月期1Q決算説明会内容が好感され買い優勢",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] Q1決算説明・歯科流通事業の取引回復と関東シェア拡大加速",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年3月期1Q決算説明会内容が好感され買い優勢",
+    "surgeReason": "[決算] Q1決算説明・歯科流通事業の取引回復と関東シェア拡大加速",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083165"
+    "qualifiedAt": "2026-08-30T23:58:00.876386"
   },
   {
     "stockCode": "63300",
@@ -37622,20 +37622,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "high",
-      "comment": "1Q経常2.8倍増益＋日米重要鉱物枠組みでテーマ・業績両輪",
-      "whyCategory": "決算",
+      "confidence": "medium",
+      "comment": "Q1経常2.8倍増益＋日米重要鉱物枠組みのテーマ相乗り。複合材料",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q経常2.8倍増益＋日米重要鉱物供給枠組みでストップ高",
+      "surgeReason": "[ニュース] Q1経常2.8倍増益＋日米重要鉱物供給枠組みのテーマ買い",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常2.8倍増益＋日米重要鉱物供給枠組みでストップ高",
-    "whyCategory": "決算",
+    "surgeReason": "[ニュース] Q1経常2.8倍増益＋日米重要鉱物供給枠組みのテーマ買い",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-08-29T03:30:53.083166"
+    "qualifiedAt": "2026-08-30T23:58:00.876387"
   },
   {
     "stockCode": "43730",
@@ -37665,19 +37665,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "新債券トレーディングシステム開発＋優待新設の複合材料",
-      "whyCategory": "ニュース",
+      "comment": "株主優待新設が主材料。業績への実質的な影響は軽微",
+      "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 新債券トレーディングシステム開発＋株主優待新設発表",
+      "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設（9月末600株以上）",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 新債券トレーディングシステム開発＋株主優待新設発表",
-    "whyCategory": "ニュース",
+    "surgeReason": "[開示] プレミアム優待倶楽部の株主優待新設（9月末600株以上）",
+    "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083167"
+    "qualifiedAt": "2026-08-30T23:58:00.876388"
   },
   {
     "stockCode": "31760",
@@ -37705,21 +37705,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "自社株買い・記念配当・優待新設の複合材料だが一時的要因強い",
-      "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自社株買い・記念配当・株主優待新設の複合材料で急騰",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "優待新設＋記念配当＋上期好業績による通期上方修正の複合材料",
+      "whyCategory": "業績修正",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 優待新設・記念配当＋上期好業績で通期上方修正・史上最高売上見込み",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買い・記念配当・株主優待新設の複合材料で急騰",
-    "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "surgeReason": "[開示] 優待新設・記念配当＋上期好業績で通期上方修正・史上最高売上見込み",
+    "whyCategory": "業績修正",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083171"
+    "qualifiedAt": "2026-08-30T23:58:00.876392"
   },
   {
     "stockCode": "39940",
@@ -37749,19 +37749,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "優待新設＋SaaS関連物色の複合だが主因特定困難、過熱感あり",
-      "whyCategory": "テーマ相乗り",
+      "comment": "急騰の明確な材料が特定できず。日経平均連動の地合い上昇の可能性",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 優待新設＋米SF上昇によるSaaS関連テーマ物色で上昇",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 優待新設＋米SF上昇によるSaaS関連テーマ物色で上昇",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083172"
+    "qualifiedAt": "2026-08-30T23:58:00.876394"
   },
   {
     "stockCode": "61180",
@@ -37791,19 +37791,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q決算開示あるが内容詳細不明、売買代金3.5倍で要精査",
+      "comment": "Q1決算短信開示あり。内容の詳細不明で継続性判断が困難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2027年3月期1Q決算短信開示が材料視される",
+      "surgeReason": "[決算] Q1決算短信開示。内容詳細不明・継続性判断困難",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年3月期1Q決算短信開示が材料視される",
+    "surgeReason": "[決算] Q1決算短信開示。内容詳細不明・継続性判断困難",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083173"
+    "qualifiedAt": "2026-08-30T23:58:00.876395"
   },
   {
     "stockCode": "46840",
@@ -37833,19 +37833,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "複数アナリストが目標株価引き上げ、SI・SS事業好調で継続期待",
+      "comment": "東海東京・GSが目標株価引き上げ。SI・SS事業好調で大手引き合い強い",
       "whyCategory": "ニュース",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 東海東京など複数証券が目標株価引き上げ、業績好調評価",
+      "surgeReason": "[ニュース] 複数証券が目標株価引き上げ、SI・SS事業好調で大手引き合い強い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 東海東京など複数証券が目標株価引き上げ、業績好調評価",
+    "surgeReason": "[ニュース] 複数証券が目標株価引き上げ、SI・SS事業好調で大手引き合い強い",
     "whyCategory": "ニュース",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083174"
+    "qualifiedAt": "2026-08-30T23:58:00.876396"
   },
   {
     "stockCode": "76130",
@@ -37875,19 +37875,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算情報あるが内容不明確、急騰主因の特定が困難",
-      "whyCategory": "決算",
+      "comment": "急騰の明確な材料が特定できず。話題株として言及のみ",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算情報公開が材料視される模様だが詳細不明",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算情報公開が材料視される模様だが詳細不明",
-    "whyCategory": "決算",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083175"
+    "qualifiedAt": "2026-08-30T23:58:00.876397"
   },
   {
     "stockCode": "55350",
@@ -37917,19 +37917,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "有償ストックオプション発行は希薄化懸念、急騰材料として弱い",
+      "comment": "有償ストックオプション発行開示あり。株式希薄化懸念で上昇継続は疑問",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 有償ストックオプション発行開示、急騰主因は特定困難",
+      "surgeReason": "[開示] 有償ストックオプション発行。希薄化懸念あり急騰理由として弱い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 有償ストックオプション発行開示、急騰主因は特定困難",
+    "surgeReason": "[開示] 有償ストックオプション発行。希薄化懸念あり急騰理由として弱い",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083176"
+    "qualifiedAt": "2026-08-30T23:58:00.876398"
   },
   {
     "stockCode": "60980",
@@ -37958,20 +37958,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "上場来高値更新中、日経平均寄与上位・SaaS物色で地合い追い風",
-      "whyCategory": "テーマ相乗り",
+      "confidence": "high",
+      "comment": "27年3月期純利益を上方修正でストップ高。業績の上振れ継続性高い",
+      "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 上場来高値更新継続＋SaaS関連テーマ物色で日経牽引",
+      "surgeReason": "[開示] 27年3月期純利益を上方修正・ストップ高水準の大幅高",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上場来高値更新継続＋SaaS関連テーマ物色で日経牽引",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[開示] 27年3月期純利益を上方修正・ストップ高水準の大幅高",
+    "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083179"
+    "qualifiedAt": "2026-08-30T23:58:00.876400"
   },
   {
     "stockCode": "97220",
@@ -38001,19 +38001,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "アパグループが4.5%保有の大株主浮上、資本関係進展で継続注目",
+      "comment": "アパグループが藤田観光株4.5%保有・大株主浮上。買収思惑の需給材料",
       "whyCategory": "需給",
       "entryTiming": "day2_watch",
-      "surgeReason": "[需給] アパグループが藤田観光株4.5%保有の大株主に急浮上",
+      "surgeReason": "[ニュース] アパグループが4.5%保有・大株主浮上。買収思惑でホテル業界再編期待",
       "stage2Available": true
     },
-    "surgeReason": "[需給] アパグループが藤田観光株4.5%保有の大株主に急浮上",
+    "surgeReason": "[ニュース] アパグループが4.5%保有・大株主浮上。買収思惑でホテル業界再編期待",
     "whyCategory": "需給",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083180"
+    "qualifiedAt": "2026-08-30T23:58:00.876401"
   },
   {
     "stockCode": "36940",
@@ -38055,7 +38055,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083181"
+    "qualifiedAt": "2026-08-30T23:58:00.876402"
   },
   {
     "stockCode": "31530",
@@ -38097,7 +38097,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083181"
+    "qualifiedAt": "2026-08-30T23:58:00.876403"
   },
   {
     "stockCode": "58570",
@@ -38139,7 +38139,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083182"
+    "qualifiedAt": "2026-08-30T23:58:00.876404"
   },
   {
     "stockCode": "69470",
@@ -38181,7 +38181,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083183"
+    "qualifiedAt": "2026-08-30T23:58:00.876405"
   },
   {
     "stockCode": "39230",
@@ -38223,7 +38223,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083184"
+    "qualifiedAt": "2026-08-30T23:58:00.876406"
   },
   {
     "stockCode": "85510",
@@ -38265,7 +38265,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083184"
+    "qualifiedAt": "2026-08-30T23:58:00.876407"
   },
   {
     "stockCode": "83450",
@@ -38307,7 +38307,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083185"
+    "qualifiedAt": "2026-08-30T23:58:00.876408"
   },
   {
     "stockCode": "80600",
@@ -38349,7 +38349,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083186"
+    "qualifiedAt": "2026-08-30T23:58:00.876409"
   },
   {
     "stockCode": "37740",
@@ -38391,6 +38391,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-08-29T03:30:53.083187"
+    "qualifiedAt": "2026-08-30T23:58:00.876410"
   }
 ]
