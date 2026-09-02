@@ -35059,21 +35059,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "Q1決算開示が材料。内容詳細不明だが売買代金8.1倍と過熱感あり",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "1Q決算開示が材料。内容次第だが売買代金8倍超で市場の反応は明確",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 2027年4月期Q1決算短信開示が急騰の引き金",
+      "surgeReason": "[決算] 1Q決算短信開示、売買代金8倍超の強い反応",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年4月期Q1決算短信開示が急騰の引き金",
+    "surgeReason": "[決算] 1Q決算短信開示、売買代金8倍超の強い反応",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-02T13:56:08.072334"
+    "qualifiedAt": "2026-09-02T23:43:16.527873"
   },
   {
     "stockCode": "95340",
@@ -35103,19 +35103,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "純利益42%減も自社株買い実施が材料。業績悪化で継続性に疑問",
+      "comment": "純利益42%減の弱い決算だが自社株買い実施が支援材料。上値は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 純利益42%減も自社株買い実施で需給改善期待",
+      "surgeReason": "[ニュース] 純利益42%減も自社株買い実施で下支え期待",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 純利益42%減も自社株買い実施で需給改善期待",
+    "surgeReason": "[ニュース] 純利益42%減も自社株買い実施で下支え期待",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-02T13:56:08.072343"
+    "qualifiedAt": "2026-09-02T23:43:16.527884"
   },
   {
     "stockCode": "67450",
@@ -35145,19 +35145,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "5期連続最高益更新・海外/ストック事業が牽引。構造的成長の初動可能性",
+      "comment": "5期連続最高益更新・海外売上拡大で構造的成長示すが上昇幅は小幅",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 売上・利益が計画大幅超・5期連続最高益更新が材料",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 5期連続最高益・海外ストックビジネス拡大が材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 売上・利益が計画大幅超・5期連続最高益更新が材料",
+    "surgeReason": "[ニュース] 5期連続最高益・海外ストックビジネス拡大が材料",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-02T13:56:08.072344"
+    "qualifiedAt": "2026-09-02T23:43:16.527886"
   },
   {
     "stockCode": "24920",
@@ -35185,20 +35185,20 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "low",
-      "comment": "Oasisが保有増加の変更報告書提出。アクティビスト需給が主因か",
+      "comment": "アクティビスト保有増・通期営業利益+75%予想が材料。継続性に期待",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] アクティビストOasisが株式保有増加報告で需給思惑",
+      "surgeReason": "[ニュース] アクティビスト保有増加＋通期営業利益+75%予想が刺激",
       "stage2Available": true
     },
-    "surgeReason": "[需給] アクティビストOasisが株式保有増加報告で需給思惑",
+    "surgeReason": "[ニュース] アクティビスト保有増加＋通期営業利益+75%予想が刺激",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-02T13:56:08.072345"
+    "qualifiedAt": "2026-09-02T23:43:16.527887"
   }
 ]
