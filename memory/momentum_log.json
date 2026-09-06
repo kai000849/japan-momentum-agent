@@ -218506,5 +218506,39 @@
     "score": 66.23,
     "outcome": null,
     "loggedAt": "2026-09-04T13:48:41.792188"
+  },
+  {
+    "id": "95050_20260904",
+    "stockCode": "95050",
+    "companyName": "北陸電力",
+    "signalDate": "2026-09-04",
+    "close": 1054.5,
+    "ma_gap_5_25": 7.7,
+    "ma_gap_25_75": 7.26,
+    "high52w_ratio": 95.43,
+    "new_high_days": 12,
+    "turnover_trend_ratio": 1.23,
+    "rsi14": 65.81,
+    "return_20d_signal": 14.43,
+    "score": 86.55,
+    "outcome": null,
+    "loggedAt": "2026-09-06T23:14:28.463776"
+  },
+  {
+    "id": "18200_20260904",
+    "stockCode": "18200",
+    "companyName": "西松建設",
+    "signalDate": "2026-09-04",
+    "close": 5617.0,
+    "ma_gap_5_25": 2.6,
+    "ma_gap_25_75": 1.7,
+    "high52w_ratio": 95.56,
+    "new_high_days": 7,
+    "turnover_trend_ratio": 1.17,
+    "rsi14": 60.22,
+    "return_20d_signal": 5.56,
+    "score": 73.82,
+    "outcome": null,
+    "loggedAt": "2026-09-06T23:14:28.463819"
   }
 ]
