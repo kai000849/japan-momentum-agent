@@ -33423,19 +33423,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "アーム株上昇・米ハイテク連動の外部要因。構造変化ではなく市場連動",
+      "comment": "ARM株高の波及効果。個別材料なくテーマ相乗り的上昇で継続性薄い",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] アーム株高・米ハイテク上昇に連動した外部要因",
+      "surgeReason": "[ニュース] 傘下ARM株高の波及。独自開示なくテーマ性頼み",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] アーム株高・米ハイテク上昇に連動した外部要因",
+    "surgeReason": "[ニュース] 傘下ARM株高の波及。独自開示なくテーマ性頼み",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559125"
+    "qualifiedAt": "2026-09-07T23:54:42.614490"
   },
   {
     "stockCode": "65940",
@@ -33465,19 +33465,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "品質不適切844件の報告書開示。ネガティブ材料混在で継続性不明",
+      "comment": "品質不適切844件の報告書公表。ネガティブ材料での急伸は信頼性低い",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 品質不適切報告書開示、ネガティブ材料混在で不透明",
+      "surgeReason": "[ニュース] 品質不適切報告公表後の急伸。材料の継続性不透明",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 品質不適切報告書開示、ネガティブ材料混在で不透明",
+    "surgeReason": "[ニュース] 品質不適切報告公表後の急伸。材料の継続性不透明",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-07T15:19:00.559137"
+    "qualifiedAt": "2026-09-07T23:54:42.614500"
   },
   {
     "stockCode": "98240",
@@ -33507,19 +33507,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "業績・配当の上方修正開示。増額継続で中長期的上昇初動の可能性",
+      "comment": "業績・配当予想を上方修正。増配込みの好材料で継続性あり",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 業績・期末配当予想を上方修正、増額を好感",
+      "surgeReason": "[開示] 業績・期末配当を上方修正。増配も好感されポジティブ材料",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績・期末配当予想を上方修正、増額を好感",
+    "surgeReason": "[開示] 業績・期末配当を上方修正。増配も好感されポジティブ材料",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-07T15:19:00.559138"
+    "qualifiedAt": "2026-09-07T23:54:42.614501"
   },
   {
     "stockCode": "53440",
@@ -33549,19 +33549,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "米系大手が目標株価90,000円に引上げ。AI特需でセラミック基板需要拡大",
-      "whyCategory": "ニュース",
+      "comment": "AI特需でセラミック基板需要拡大。米系大手が目標株価9万円に引上げ",
+      "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 米系大手が目標株価90,000円に引上げ、AI特需継続",
+      "surgeReason": "[ニュース] AI特需×セラミック基板。米系証券が目標株価9万円に引上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米系大手が目標株価90,000円に引上げ、AI特需継続",
-    "whyCategory": "ニュース",
+    "surgeReason": "[ニュース] AI特需×セラミック基板。米系証券が目標株価9万円に引上げ",
+    "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559140"
+    "qualifiedAt": "2026-09-07T23:54:42.614502"
   },
   {
     "stockCode": "62980",
@@ -33591,19 +33591,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "経常利益YoY+110%の大幅改善、M&A効果も寄与し収益構造改善",
+      "comment": "最終利益前期比倍増着地・今期経常2.5倍増益・5円増配と材料豊富",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 中間期経常利益+110%、M&A効果で収益構造が大幅改善",
+      "surgeReason": "[決算] 最終利益倍増着地・今期経常2.5倍増益・増配のトリプル好材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 中間期経常利益+110%、M&A効果で収益構造が大幅改善",
+    "surgeReason": "[決算] 最終利益倍増着地・今期経常2.5倍増益・増配のトリプル好材料",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559141"
+    "qualifiedAt": "2026-09-07T23:54:42.614503"
   },
   {
     "stockCode": "54710",
@@ -33633,19 +33633,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "需要好調で計画上振れ期待との声。根拠薄く推測ベースの材料",
-      "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 需要好調で計画上振れ期待との市場観測、材料弱い",
+      "comment": "需要好調で計画上振れ期待との声。東北特殊鋼TOB完全子会社化も材料",
+      "whyCategory": "ニュース",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 需要好調で上振れ期待。TOBによる完全子会社化も材料視",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 需要好調で計画上振れ期待との市場観測、材料弱い",
-    "whyCategory": "需給",
-    "entryTiming": "day2_skip",
+    "surgeReason": "[ニュース] 需要好調で上振れ期待。TOBによる完全子会社化も材料視",
+    "whyCategory": "ニュース",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559142"
+    "qualifiedAt": "2026-09-07T23:54:42.614504"
   },
   {
     "stockCode": "63300",
@@ -33675,19 +33675,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "日米重要鉱物供給枠組み＋1Q経常2.8倍増益。テーマと業績の二重材料",
+      "comment": "日米重要鉱物供給枠組みでテーマ性浮上。ただし財務面の脆弱さに注意",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 日米重要鉱物枠組み＋1Q経常2.8倍増益の二重材料",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 日米重要鉱物供給枠組み報道。テーマ性あるが財務脆弱で継続性不安",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 日米重要鉱物枠組み＋1Q経常2.8倍増益の二重材料",
+    "surgeReason": "[ニュース] 日米重要鉱物供給枠組み報道。テーマ性あるが財務脆弱で継続性不安",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559143"
+    "qualifiedAt": "2026-09-07T23:54:42.614505"
   },
   {
     "stockCode": "36870",
@@ -33715,21 +33715,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "シンカとの資本提携契約締結。演算高速化技術への市場注目が高まる",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "シンカとの資本提携が材料。過去にストップ高→ストップ安の実績あり過熱注意",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] シンカとの資本提携契約締結、第三者割当新株発行を発表",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[開示] シンカとの資本提携締結。過去にストップ高→安の急変あり過熱警戒",
       "stage2Available": true
     },
-    "surgeReason": "[開示] シンカとの資本提携契約締結、第三者割当新株発行を発表",
+    "surgeReason": "[開示] シンカとの資本提携締結。過去にストップ高→安の急変あり過熱警戒",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559147"
+    "qualifiedAt": "2026-09-07T23:54:42.614509"
   },
   {
     "stockCode": "19820",
@@ -33759,19 +33759,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1Q経常32%増益。データセンター設備工事需要拡大で中長期成長期待",
+      "comment": "1Q経常32%増益。データセンター設備工事テーマで構造的恩恵期待",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q経常32%増益、DC設備工事需要拡大で成長期待",
+      "surgeReason": "[決算] 1Q経常32%増益。データセンター設備工事テーマの構造的恩恵銘柄",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常32%増益、DC設備工事需要拡大で成長期待",
+    "surgeReason": "[決算] 1Q経常32%増益。データセンター設備工事テーマの構造的恩恵銘柄",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559148"
+    "qualifiedAt": "2026-09-07T23:54:42.614510"
   },
   {
     "stockCode": "70040",
@@ -33801,19 +33801,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "日経平均除外で需給主導の反発。構造変化なく材料の継続性が低い",
+      "comment": "日経平均除外銘柄として需給変化。みずほ証券の変更報告書も材料か",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 日経平均除外銘柄の需給主導反発、材料の継続性なし",
+      "surgeReason": "[需給] 日経平均除外での需給変化が材料。業績裏付けなく継続性低い",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 日経平均除外銘柄の需給主導反発、材料の継続性なし",
+    "surgeReason": "[需給] 日経平均除外での需給変化が材料。業績裏付けなく継続性低い",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559149"
+    "qualifiedAt": "2026-09-07T23:54:42.614511"
   },
   {
     "stockCode": "40430",
@@ -33842,20 +33842,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "low",
-      "comment": "半導体シリコン材工場完成。AI・半導体テーマへの波及期待だが材料軽微",
-      "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 半導体シリコン材工場完成、テーマ相乗りだが材料軽微",
+      "confidence": "medium",
+      "comment": "オアシスが5.01%取得。アクティビスト参入で株主還元改善期待が高まる",
+      "whyCategory": "需給",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 投資ファンドのオアシスが5%超取得。アクティビスト参入で還元期待",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 半導体シリコン材工場完成、テーマ相乗りだが材料軽微",
-    "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
+    "surgeReason": "[ニュース] 投資ファンドのオアシスが5%超取得。アクティビスト参入で還元期待",
+    "whyCategory": "需給",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559150"
+    "qualifiedAt": "2026-09-07T23:54:42.614512"
   },
   {
     "stockCode": "99600",
@@ -33883,21 +33883,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
+      "structuralChange": true,
       "confidence": "low",
-      "comment": "15期連続最高益・増配継続は好材料だが上昇幅3.7%で過熱感は低い",
+      "comment": "15期連続最高益・前期配当11円増額。長期的な成長継続を示す実績",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 15期連続最高益・増配継続も上昇幅小さく継続性不明",
+      "surgeReason": "[決算] 15期連続最高益・11円増額配当。ただし確信度低くday2_skip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 15期連続最高益・増配継続も上昇幅小さく継続性不明",
+    "surgeReason": "[決算] 15期連続最高益・11円増額配当。ただし確信度低くday2_skip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559152"
+    "qualifiedAt": "2026-09-07T23:54:42.614513"
   },
   {
     "stockCode": "19450",
@@ -33927,19 +33927,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1Q経常2.8倍増益＋業績・配当上方修正の二重開示で継続性あり",
+      "comment": "1Q経常2.8倍増益・業績配当上方修正。東電HD株一部売却で需給面も注目",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 1Q経常2.8倍増益＋業績・配当上方修正の二重材料",
+      "surgeReason": "[開示] 1Q経常2.8倍増益・業績配当上方修正。業績修正勝率低めで慎重に",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 1Q経常2.8倍増益＋業績・配当上方修正の二重材料",
+    "surgeReason": "[開示] 1Q経常2.8倍増益・業績配当上方修正。業績修正勝率低めで慎重に",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559155"
+    "qualifiedAt": "2026-09-07T23:54:42.614514"
   },
   {
     "stockCode": "52620",
@@ -33969,18 +33969,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "新中期経営計画始動・過去最高業績。材料の新規性が低く継続性不明",
-      "whyCategory": "ニュース",
+      "comment": "1Q経常33%増益・新中計始動。ただし上昇率3.2%で過去最高業績の織込み進む",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 新中期計画始動・最高業績も材料新規性低く継続性不明",
+      "surgeReason": "[決算] 1Q経常33%増益・新中計「NEXT100」始動。上昇率小さく確信度低い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 新中期計画始動・最高業績も材料新規性低く継続性不明",
-    "whyCategory": "ニュース",
+    "surgeReason": "[決算] 1Q経常33%増益・新中計「NEXT100」始動。上昇率小さく確信度低い",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-07T15:19:00.559156"
+    "qualifiedAt": "2026-09-07T23:54:42.614515"
   }
 ]
