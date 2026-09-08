@@ -33759,19 +33759,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "資本業務提携＋自己株式処分＋Q3決算＋株主優待と複合材料",
+      "comment": "資本業務提携・自己株式処分・決算・株主優待と複数材料が重なる",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 資本業務提携契約締結・第三者割当・Q3決算重なる複合材料",
+      "surgeReason": "[開示] 資本業務提携締結＋自己株式処分＋Q3決算・株主優待同時発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 資本業務提携契約締結・第三者割当・Q3決算重なる複合材料",
+    "surgeReason": "[開示] 資本業務提携締結＋自己株式処分＋Q3決算・株主優待同時発表",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-08T13:54:48.834915"
+    "qualifiedAt": "2026-09-08T23:47:47.489838"
   },
   {
     "stockCode": "99840",
@@ -33801,19 +33801,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "Arm株高波及・Q1決算説明会開催。外部要因依存で継続性不明",
+      "comment": "傘下アーム株高の波及・Q1決算説明会開催が材料、継続性は不明",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 傘下Arm株高波及・Q1決算説明会開催が材料",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 傘下アーム株高波及とQ1決算説明会開催が材料",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 傘下Arm株高波及・Q1決算説明会開催が材料",
+    "surgeReason": "[ニュース] 傘下アーム株高波及とQ1決算説明会開催が材料",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-08T13:54:48.834928"
+    "qualifiedAt": "2026-09-08T23:47:47.489847"
   },
   {
     "stockCode": "45650",
@@ -33841,21 +33841,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "low",
       "comment": "SMBC日興が目標株価1800円に引き上げ・パイプライン進展評価",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
+      "entryTiming": "day2_watch",
       "surgeReason": "[ニュース] 国内証券が目標株価引き上げ・パイプライン進展評価",
       "stage2Available": true
     },
     "surgeReason": "[ニュース] 国内証券が目標株価引き上げ・パイプライン進展評価",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-08T13:54:48.834929"
+    "qualifiedAt": "2026-09-08T23:47:47.489850"
   },
   {
     "stockCode": "98430",
@@ -33885,19 +33885,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "円高追い風・販売堅調・目標株価引き上げも中立据え置きで弱い",
+      "comment": "円高進行で恩恵・販売堅調が評価され半年ぶり高値水準",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 円高恩恵・販売堅調・目標株価引上げも評価中立据置き",
+      "surgeReason": "[ニュース] 円高メリット再評価・販売堅調で半年ぶり高値水準",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 円高恩恵・販売堅調・目標株価引上げも評価中立据置き",
+    "surgeReason": "[ニュース] 円高メリット再評価・販売堅調で半年ぶり高値水準",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-08T13:54:48.834930"
+    "qualifiedAt": "2026-09-08T23:47:47.489852"
   },
   {
     "stockCode": "49670",
@@ -33927,19 +33927,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "香港系ファンドが筆頭株主へ買い増し13.7%・目標株価引き上げ",
-      "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 香港系ファンドが筆頭株主に浮上・13.7%保有で需給思惑",
+      "comment": "日系大手証券が目標株価6900円に引き上げ・強気継続が材料",
+      "whyCategory": "ニュース",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 日系大手証券が目標株価6900円引き上げ・強気継続",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 香港系ファンドが筆頭株主に浮上・13.7%保有で需給思惑",
-    "whyCategory": "需給",
-    "entryTiming": "day2_skip",
+    "surgeReason": "[ニュース] 日系大手証券が目標株価6900円引き上げ・強気継続",
+    "whyCategory": "ニュース",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-08T13:54:48.834931"
+    "qualifiedAt": "2026-09-08T23:47:47.489853"
   },
   {
     "stockCode": "27910",
@@ -33969,19 +33969,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常39%増益・配当増額発表。好決算だが売買代金倍率低め",
+      "comment": "今期経常39%増益・前期配当4円増額・今期配当39円継続が材料",
       "whyCategory": "決算",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 今期経常39%増益・前期配当4円増額・今期39円継続発表",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 今期経常39%増益・増配発表が好感される",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 今期経常39%増益・前期配当4円増額・今期39円継続発表",
+    "surgeReason": "[決算] 今期経常39%増益・増配発表が好感される",
     "whyCategory": "決算",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-08T13:54:48.834932"
+    "qualifiedAt": "2026-09-08T23:47:47.489854"
   },
   {
     "stockCode": "30380",
@@ -34011,19 +34011,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今週決算発表予定で期待先行。実際の開示材料はなく不明確",
-      "whyCategory": "不明",
+      "comment": "決算発表予定が注目材料、業務スーパー堅調継続への期待",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 今週決算発表予定の期待先行か・実材料未確認",
+      "surgeReason": "[ニュース] 決算発表予定控え・業務スーパー堅調への期待先回り",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 今週決算発表予定の期待先行か・実材料未確認",
-    "whyCategory": "不明",
+    "surgeReason": "[ニュース] 決算発表予定控え・業務スーパー堅調への期待先回り",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-08T13:54:48.834934"
+    "qualifiedAt": "2026-09-08T23:47:47.489855"
   },
   {
     "stockCode": "96030",
@@ -34053,19 +34053,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自己株式取得状況開示のみ。買い取り規模・進捗詳細不明",
+      "comment": "自己株式取得状況の開示が材料、需給改善期待",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自己株式取得状況報告開示。規模・進捗詳細は要確認",
+      "surgeReason": "[開示] 自己株式取得状況開示・需給改善期待も継続性低い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自己株式取得状況報告開示。規模・進捗詳細は要確認",
+    "surgeReason": "[開示] 自己株式取得状況開示・需給改善期待も継続性低い",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-08T13:54:48.834938"
+    "qualifiedAt": "2026-09-08T23:47:47.489859"
   },
   {
     "stockCode": "90230",
@@ -34095,18 +34095,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常13%減益・2円増配発表。業績悪化で継続性に疑問",
+      "comment": "今期13%減益・2円増配発表、材料としての牽引力は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 今期経常13%減益も2円増配発表・株主総会関連も材料か",
+      "surgeReason": "[ニュース] 今期減益も2円増配発表・上昇の継続性は低い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 今期経常13%減益も2円増配発表・株主総会関連も材料か",
+    "surgeReason": "[ニュース] 今期減益も2円増配発表・上昇の継続性は低い",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-08T13:54:48.834940"
+    "qualifiedAt": "2026-09-08T23:47:47.489861"
   }
 ]
