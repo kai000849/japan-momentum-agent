@@ -34137,19 +34137,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "high",
-      "comment": "ライフコーポによるTOB発表。TOB価格へのサヤ寄せ完了後は上値限定",
+      "comment": "ライフコーポによるTOB発表。公開買付価格に収斂する動き",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] ライフコーポによるTOB公表・賛同表明で急騰",
+      "surgeReason": "[開示] ライフコーポによるTOB賛同表明・応募推奨で急騰",
       "stage2Available": true
     },
-    "surgeReason": "[開示] ライフコーポによるTOB公表・賛同表明で急騰",
+    "surgeReason": "[開示] ライフコーポによるTOB賛同表明・応募推奨で急騰",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-09T13:58:44.843530"
+    "qualifiedAt": "2026-09-09T23:40:49.488303"
   },
   {
     "stockCode": "67790",
@@ -34177,21 +34177,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "上期最終87%増益の上方修正＋野村が6.42%大量保有報告",
+      "comment": "上期最終87%増益・通期上方修正。野村の大量保有報告も材料",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 上期最終87%増益上方修正＋野村大量保有報告",
+      "surgeReason": "[決算] 上期最終87%増益・通期上方修正で評価買い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上期最終87%増益上方修正＋野村大量保有報告",
+    "surgeReason": "[決算] 上期最終87%増益・通期上方修正で評価買い",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843539"
+    "qualifiedAt": "2026-09-09T23:40:49.488318"
   },
   {
     "stockCode": "42030",
@@ -34221,19 +34221,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "半導体材料で世界シェア4割、決算好調で最高値接近と日経報道",
+      "comment": "AI向け半導体封止材で世界シェア4割・最高値接近の構造変化",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 半導体材料世界シェア4割・最高値接近と日経報道",
+      "surgeReason": "[ニュース] AI・GPU向け封止材好調、世界シェア4割で最高値接近",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 半導体材料世界シェア4割・最高値接近と日経報道",
+    "surgeReason": "[ニュース] AI・GPU向け封止材好調、世界シェア4割で最高値接近",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843539"
+    "qualifiedAt": "2026-09-09T23:40:49.488320"
   },
   {
     "stockCode": "53010",
@@ -34261,21 +34261,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "SMBC日興が目標株価引き上げ＋自社株消却発表",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "SMBC日興が目標株価引き上げ・自社株消却も材料に",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] SMBC日興目標株価引き上げ＋自社株消却発表",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] SMBC日興目標株価引き上げ・自社株消却が複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] SMBC日興目標株価引き上げ＋自社株消却発表",
+    "surgeReason": "[ニュース] SMBC日興目標株価引き上げ・自社株消却が複合材料",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843540"
+    "qualifiedAt": "2026-09-09T23:40:49.488321"
   },
   {
     "stockCode": "50190",
@@ -34305,19 +34305,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "レーティング格上げ観測＋アルビスTOB関連物色の波及",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] レーティング格上げ観測とTOB関連物色の波及",
+      "comment": "原油相場上昇を手掛かりとした石油株買い。テーマ波及",
+      "whyCategory": "テーマ相乗り",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 原油高を背景に石油株全般買われ大幅高",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] レーティング格上げ観測とTOB関連物色の波及",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 原油高を背景に石油株全般買われ大幅高",
+    "whyCategory": "テーマ相乗り",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843541"
+    "qualifiedAt": "2026-09-09T23:40:49.488322"
   },
   {
     "stockCode": "78260",
@@ -34347,19 +34347,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "27年6月期連続最高益更新・増配計画でS高、業績の継続性高い",
-      "whyCategory": "決算",
+      "comment": "27年6月期連続最高益・増配計画。1カ月で4割上昇の強いモメンタム",
+      "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 27年6月期連続最高益・増配計画発表でS高急騰",
+      "surgeReason": "[決算] 連続最高益・増配計画発表でS高、モメンタム継続期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 27年6月期連続最高益・増配計画発表でS高急騰",
-    "whyCategory": "決算",
+    "surgeReason": "[決算] 連続最高益・増配計画発表でS高、モメンタム継続期待",
+    "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-09T13:58:44.843541"
+    "qualifiedAt": "2026-09-09T23:40:49.488323"
   },
   {
     "stockCode": "63300",
@@ -34387,21 +34387,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "政府・民間レアアース新プロジェクト報道でテーマ物色",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "日米レアアース供給枠組み報道でストップ高。政策テーマ初動",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] レアアース官民新プロジェクト報道でテーマ物色",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 日米重要鉱物供給枠組み報道でレアアース関連として急騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] レアアース官民新プロジェクト報道でテーマ物色",
+    "surgeReason": "[ニュース] 日米重要鉱物供給枠組み報道でレアアース関連として急騰",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843542"
+    "qualifiedAt": "2026-09-09T23:40:49.488324"
   },
   {
     "stockCode": "99840",
@@ -34431,19 +34431,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ブリッジローン期限前返済開示。財務改善だが継続性不明",
+      "comment": "ブリッジローン期限前返済の開示。財務改善材料だが上昇余地限定",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] ブリッジローン期限前返済で財務健全化アピール",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[開示] ブリッジローン期限前返済で財務健全化評価",
       "stage2Available": true
     },
-    "surgeReason": "[開示] ブリッジローン期限前返済で財務健全化アピール",
+    "surgeReason": "[開示] ブリッジローン期限前返済で財務健全化評価",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-09T13:58:44.843545"
+    "qualifiedAt": "2026-09-09T23:40:49.488329"
   },
   {
     "stockCode": "69510",
@@ -34473,19 +34473,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q赤字転落の悪材料あり。急騰理由と乖離しており材料不明瞭",
+      "comment": "1Q経常赤字転落の悪材料あり。急騰理由と矛盾し材料特定困難",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 1Q赤字転落報道あり急騰理由と矛盾・要確認",
+      "surgeReason": "[不明] 材料特定不可・1Q赤字転落と急騰が矛盾",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 1Q赤字転落報道あり急騰理由と矛盾・要確認",
+    "surgeReason": "[不明] 材料特定不可・1Q赤字転落と急騰が矛盾",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843546"
+    "qualifiedAt": "2026-09-09T23:40:49.488331"
   },
   {
     "stockCode": "50200",
@@ -34515,19 +34515,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "原油高による石油関連株への連れ高。テーマ相乗りで継続性低い",
+      "comment": "原油高を背景とした石油関連株全般の物色。個別材料は薄い",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 原油高騰による石油関連株への連れ高物色",
+      "surgeReason": "[ニュース] WTI原油上昇を背景に石油株全般が買われ続伸",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 原油高騰による石油関連株への連れ高物色",
+    "surgeReason": "[ニュース] WTI原油上昇を背景に石油株全般が買われ続伸",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843547"
+    "qualifiedAt": "2026-09-09T23:40:49.488332"
   },
   {
     "stockCode": "66380",
@@ -34557,7 +34557,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "新ブランド立ち上げPRのみ。株価急騰の明確な材料特定困難",
+      "comment": "新ブランド発表・大量保有報告のみ。急騰の明確材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -34569,7 +34569,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843547"
+    "qualifiedAt": "2026-09-09T23:40:49.488333"
   },
   {
     "stockCode": "79660",
@@ -34599,7 +34599,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "社外取締役辞任開示のみ。急騰との因果関係が不明",
+      "comment": "社外取締役辞任の開示のみ。急騰理由として材料不十分",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 社外取締役辞任開示のみ・急騰理由特定不可",
@@ -34611,7 +34611,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843548"
+    "qualifiedAt": "2026-09-09T23:40:49.488334"
   },
   {
     "stockCode": "69970",
@@ -34641,19 +34641,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "米系証券が割安感から格上げ。需給面の好材料だが継続性は限定的",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 米系証券が割安感を理由にレーティング格上げ",
+      "comment": "米系証券が割安感として格上げ。需給改善期待だが継続性不明",
+      "whyCategory": "需給",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 米系証券が割安感指摘で格上げ・大幅反発",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米系証券が割安感を理由にレーティング格上げ",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 米系証券が割安感指摘で格上げ・大幅反発",
+    "whyCategory": "需給",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843549"
+    "qualifiedAt": "2026-09-09T23:40:49.488335"
   },
   {
     "stockCode": "40990",
@@ -34683,18 +34683,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "売出価格決定と自社株取得進捗開示。需給改善期待だが材料弱い",
+      "comment": "売出価格決定・自社株取得の開示。需給イベント通過で上値重い",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 売出価格決定＋自社株取得進捗開示で需給改善期待",
+      "surgeReason": "[開示] 自社株取得実施・売出価格決定の需給イベント",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 売出価格決定＋自社株取得進捗開示で需給改善期待",
+    "surgeReason": "[開示] 自社株取得実施・売出価格決定の需給イベント",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-09T13:58:44.843549"
+    "qualifiedAt": "2026-09-09T23:40:49.488336"
   }
 ]
