@@ -33717,19 +33717,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "業績修正＋特別損失計上＋決算短信開示。減損で実態悪化懸念あり",
+      "comment": "通期業績修正と特別損失開示。減損計上でネガティブ要素混在、継続性低い",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 通期業績修正発表も関係会社株式減損の特別損失計上あり",
+      "surgeReason": "[開示] 通期業績修正＋関係会社株式減損による特別損失計上",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績修正発表も関係会社株式減損の特別損失計上あり",
+    "surgeReason": "[開示] 通期業績修正＋関係会社株式減損による特別損失計上",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-11T23:42:40.965393"
+    "qualifiedAt": "2026-09-13T23:35:58.457136"
   },
   {
     "stockCode": "61840",
@@ -33759,19 +33759,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "2Q決算短信開示が材料。内容詳細不明のため継続性判断困難",
+      "comment": "2Q決算短信開示。内容詳細不明のため継続性判断困難、様子見が無難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2027年1月期第2四半期決算短信・説明資料を開示",
+      "surgeReason": "[決算] 2027年1月期2Q決算短信・説明資料開示",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年1月期第2四半期決算短信・説明資料を開示",
+    "surgeReason": "[決算] 2027年1月期2Q決算短信・説明資料開示",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-11T23:42:40.965404"
+    "qualifiedAt": "2026-09-13T23:35:58.457147"
   },
   {
     "stockCode": "83620",
@@ -33801,19 +33801,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常24%減益も増配。地銀選別局面で利ざや拡大評価との報道",
+      "comment": "配当性向引き上げ・株主優待拡充で株主還元強化。ただし今期経常減益見通しが重石",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 42円増配発表も経常24%減益。地銀株選別局面での物色",
+      "surgeReason": "[開示] 配当性向引き上げ・株主優待拡充で還元強化も減益見通し",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 42円増配発表も経常24%減益。地銀株選別局面での物色",
+    "surgeReason": "[開示] 配当性向引き上げ・株主優待拡充で還元強化も減益見通し",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965406"
+    "qualifiedAt": "2026-09-13T23:35:58.457149"
   },
   {
     "stockCode": "78670",
@@ -33841,21 +33841,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "SMBC日興が目標株価を3000→4000円に大幅引き上げ。持続的成長を評価",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "SMBC日興が目標株価引き上げ、持続的成長評価。アナリスト評価改善が材料",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] SMBC日興が目標株価4000円へ引き上げ、持続的成長に胎動と評価",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、持続的成長に胎動と評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] SMBC日興が目標株価4000円へ引き上げ、持続的成長に胎動と評価",
+    "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、持続的成長に胎動と評価",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_skip",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965407"
+    "qualifiedAt": "2026-09-13T23:35:58.457150"
   },
   {
     "stockCode": "71840",
@@ -33885,19 +33885,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常62%増益・純利益13%増と好決算。ただし上昇率3.6%で継続性不明",
+      "comment": "1Q経常62%増益・純利益13%増と好決算。地銀株の継続性は限定的",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q経常62%増益、有価証券運用好調で純利益13%増",
+      "surgeReason": "[決算] 1Q経常62%増益・純利益13%増、有価証券運用好調",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常62%増益、有価証券運用好調で純利益13%増",
+    "surgeReason": "[決算] 1Q経常62%増益・純利益13%増、有価証券運用好調",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965408"
+    "qualifiedAt": "2026-09-13T23:35:58.457151"
   },
   {
     "stockCode": "99020",
@@ -33927,19 +33927,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算情報が材料とみられるが詳細不明。材料弱く継続性判断困難",
+      "comment": "決算開示が材料とみられるが内容詳細不明。話題株掲載で需給面の関心あり",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算情報が材料とみられるが内容詳細は確認不十分",
+      "surgeReason": "[決算] 決算開示が主因とみられるが詳細不明・継続性要確認",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算情報が材料とみられるが内容詳細は確認不十分",
+    "surgeReason": "[決算] 決算開示が主因とみられるが詳細不明・継続性要確認",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965409"
+    "qualifiedAt": "2026-09-13T23:35:58.457151"
   },
   {
     "stockCode": "82550",
@@ -33969,19 +33969,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "200万株上限の自社株買い発表。下値フシでの下げ止まり効果との報道",
+      "comment": "200万株上限の自社株買い発表で下値支持。大幅続伸だが過熱感に注意",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 200万株上限の自社株買い発表。下値サポートとして評価",
+      "surgeReason": "[開示] 200万株上限の自社株買い発表、下値のフシで下げ止まり",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 200万株上限の自社株買い発表。下値サポートとして評価",
+    "surgeReason": "[開示] 200万株上限の自社株買い発表、下値のフシで下げ止まり",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965410"
+    "qualifiedAt": "2026-09-13T23:35:58.457152"
   },
   {
     "stockCode": "74330",
@@ -34011,18 +34011,18 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1Q経常3.2倍増益・増配55円・中計見直しと材料が複数重なり好感",
+      "comment": "1Q経常3.2倍増益・配当5.3%利回り・株式分割と複合材料で構造変化の初動か",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q経常3.2倍増益＋増配55円＋中期計画見直しを好感",
+      "surgeReason": "[決算] 1Q経常3.2倍増益＋大幅増配・株式分割の複合好材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常3.2倍増益＋増配55円＋中期計画見直しを好感",
+    "surgeReason": "[決算] 1Q経常3.2倍増益＋大幅増配・株式分割の複合好材料",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-11T23:42:40.965413"
+    "qualifiedAt": "2026-09-13T23:35:58.457156"
   }
 ]
