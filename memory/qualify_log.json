@@ -30939,19 +30939,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "光通信等がTOB発表、最大2676億円。株価はTOB価格に収斂する可能性高い",
+      "comment": "光通信によるTOB発表。プレミアム付き買収でイベント確実性高い",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 光通信ら最大2676億円でTOB発表、ストップ高気配",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 光通信によるTOB発表、ストップ高気配",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 光通信ら最大2676億円でTOB発表、ストップ高気配",
+    "surgeReason": "[ニュース] 光通信によるTOB発表、ストップ高気配",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187515"
+    "qualifiedAt": "2026-09-17T23:50:28.239183"
   },
   {
     "stockCode": "49330",
@@ -30981,19 +30981,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "金融庁から課徴金納付命令という悪材料開示。急騰理由と矛盾し材料不明",
+      "comment": "金融庁から課徴金納付命令。ネガティブ開示で急騰理由と乖離",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 課徴金命令の悪材料開示、急騰理由特定不可",
+      "surgeReason": "[開示] 金融庁課徴金命令。ネガティブ材料で急騰理由不明",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 課徴金命令の悪材料開示、急騰理由特定不可",
+    "surgeReason": "[開示] 金融庁課徴金命令。ネガティブ材料で急騰理由不明",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187534"
+    "qualifiedAt": "2026-09-17T23:50:28.239193"
   },
   {
     "stockCode": "46580",
@@ -31023,19 +31023,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "経常利益14%上方修正・最高益更新＋増配。不正行為開示はリスク要因",
+      "comment": "経常14%上方修正・最高益・増配と不正開示の混在。好業績主導",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 経常14%上方修正・最高益・増配、不正行為開示がリスク",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 経常14%上方修正・最高益・増配で業績好調",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 経常14%上方修正・最高益・増配、不正行為開示がリスク",
+    "surgeReason": "[開示] 経常14%上方修正・最高益・増配で業績好調",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187536"
+    "qualifiedAt": "2026-09-17T23:50:28.239195"
   },
   {
     "stockCode": "67400",
@@ -31065,7 +31065,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "TDnet開示なし、ニュースも将来性記事のみで具体的材料不明",
+      "comment": "明確な材料なし。将来性解説記事のみで実体的カタリスト不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -31077,7 +31077,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187537"
+    "qualifiedAt": "2026-09-17T23:50:28.239196"
   },
   {
     "stockCode": "77210",
@@ -31107,19 +31107,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "国内証券が目標株価引き上げ、防衛・新領域牽引で続伸。アナリスト評価",
+      "comment": "国内証券が目標株価引き上げ。防衛・新領域テーマで継続性期待",
       "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 国内証券が目標株価引き上げ、新領域牽引で大幅続伸",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 証券会社が目標株価引き上げ、新領域牽引評価",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 国内証券が目標株価引き上げ、新領域牽引で大幅続伸",
+    "surgeReason": "[ニュース] 証券会社が目標株価引き上げ、新領域牽引評価",
     "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187538"
+    "qualifiedAt": "2026-09-17T23:50:28.239197"
   },
   {
     "stockCode": "36570",
@@ -31149,19 +31149,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "中間期経常利益が計画比4倍超、ゲーム需要旺盛で黒字転換。決算大幅超過",
+      "comment": "中間期経常利益が計画比4倍超・黒字転換。ゲーム需要旺盛",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 中間経常が計画比4倍超達成、ゲーム分野牽引で黒字転換",
+      "surgeReason": "[決算] 中間期経常が計画比4倍超・黒字転換で業績急改善",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 中間経常が計画比4倍超達成、ゲーム分野牽引で黒字転換",
+    "surgeReason": "[決算] 中間期経常が計画比4倍超・黒字転換で業績急改善",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187540"
+    "qualifiedAt": "2026-09-17T23:50:28.239198"
   },
   {
     "stockCode": "31530",
@@ -31191,19 +31191,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常85%増益と好決算。ただし売買代金倍率2.4倍と継続性やや弱い",
+      "comment": "1Q経常85%増益で好発進。ただし売買代金倍率低く過熱感乏しい",
       "whyCategory": "決算",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 4-6月期経常85%増益で着地、最高益水準",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 1Q経常85%増益で着地、業績好調確認",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 4-6月期経常85%増益で着地、最高益水準",
+    "surgeReason": "[決算] 1Q経常85%増益で着地、業績好調確認",
     "whyCategory": "決算",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187541"
+    "qualifiedAt": "2026-09-17T23:50:28.239199"
   },
   {
     "stockCode": "56320",
@@ -31233,19 +31233,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "2Q業績予想修正の開示あり。売買代金倍率1.9倍と低く継続性不明",
+      "comment": "2Q業績予想修正開示あり。詳細不明で継続性判断困難",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 2Q業績予想修正開示、詳細内容要確認",
+      "surgeReason": "[開示] 2Q業績予想修正。内容詳細不明で継続性不透明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 2Q業績予想修正開示、詳細内容要確認",
+    "surgeReason": "[開示] 2Q業績予想修正。内容詳細不明で継続性不透明",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187547"
+    "qualifiedAt": "2026-09-17T23:50:28.239203"
   },
   {
     "stockCode": "78670",
@@ -31275,19 +31275,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "組織変更・執行役員管掌変更の開示のみ。株価急騰の実質的材料として弱い",
+      "comment": "組織変更・執行役員管掌変更のみ。株価急騰の実質的材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 組織変更開示のみ、急騰の実質材料特定不可",
+      "surgeReason": "[不明] 組織変更開示のみ。株価急騰の実質材料なし",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 組織変更開示のみ、急騰の実質材料特定不可",
+    "surgeReason": "[不明] 組織変更開示のみ。株価急騰の実質材料なし",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187550"
+    "qualifiedAt": "2026-09-17T23:50:28.239205"
   },
   {
     "stockCode": "54100",
@@ -31317,19 +31317,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自社株買い取得状況・終了開示。買い終了で需給サポート消滅リスクあり",
+      "comment": "自己株式取得終了の開示。需給改善材料だが継続性は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自社株買い取得終了開示、需給サポート消滅に注意",
+      "surgeReason": "[開示] 自己株式取得終了通知。需給材料だが継続性乏しい",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自社株買い取得終了開示、需給サポート消滅に注意",
+    "surgeReason": "[開示] 自己株式取得終了通知。需給材料だが継続性乏しい",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187551"
+    "qualifiedAt": "2026-09-17T23:50:28.239206"
   },
   {
     "stockCode": "99020",
@@ -31359,19 +31359,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "経常15%上方修正・最高益更新＋20円増配。材料の質は高く好評価",
+      "comment": "経常15%上方修正・最高益・20円増配。3点セットで強い好材料",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 経常15%上方修正・最高益＋20円増配、複合好材料",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 経常15%上方修正・最高益・20円増配の3点セット",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 経常15%上方修正・最高益＋20円増配、複合好材料",
+    "surgeReason": "[決算] 経常15%上方修正・最高益・20円増配の3点セット",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-17T14:33:18.187552"
+    "qualifiedAt": "2026-09-17T23:50:28.239207"
   },
   {
     "stockCode": "38800",
@@ -31401,19 +31401,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "資本関係見直し報道があるが具体的開示なし。材料弱く売買代金も低水準",
+      "comment": "北越コーポとの資本見直し報道あるも詳細不明。材料弱い",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 資本見直し報道あるが開示なし、材料特定不可",
+      "surgeReason": "[不明] 資本見直し報道あるも詳細不明・材料特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 資本見直し報道あるが開示なし、材料特定不可",
+    "surgeReason": "[不明] 資本見直し報道あるも詳細不明・材料特定不可",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187554"
+    "qualifiedAt": "2026-09-17T23:50:28.239208"
   },
   {
     "stockCode": "60800",
@@ -31443,7 +31443,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "地方局放映・業務提携のみ。株価急騰を説明できる重要材料なし",
+      "comment": "地方局放映・地方紙提携など軽微なニュースのみ。材料弱い",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -31455,7 +31455,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187555"
+    "qualifiedAt": "2026-09-17T23:50:28.239209"
   },
   {
     "stockCode": "45490",
@@ -31485,19 +31485,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "株主優待新設報道あるが、株主提案否決・株価大幅安の記事も混在し不安定",
-      "whyCategory": "不明",
+      "comment": "株主提案が45%賛成で否決。株主優待新設も継続性不明",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 優待新設あるが株主提案否決報道混在、材料不明瞭",
+      "surgeReason": "[ニュース] 株主提案否決・優待新設。材料混在で方向性不明",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 優待新設あるが株主提案否決報道混在、材料不明瞭",
-    "whyCategory": "不明",
+    "surgeReason": "[ニュース] 株主提案否決・優待新設。材料混在で方向性不明",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187556"
+    "qualifiedAt": "2026-09-17T23:50:28.239210"
   },
   {
     "stockCode": "64400",
@@ -31527,18 +31527,18 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1-6月期利益急拡大＋自社株買い発表の複合好材料。業績自信示す",
+      "comment": "1〜6月期利益急拡大・自社株買い発表。業績改善と需給両輪",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 収益改善で利益急拡大＋自社株買い発表の複合好材料",
+      "surgeReason": "[開示] 利益急拡大・自社株買い発表で業績と需給両面好材料",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 収益改善で利益急拡大＋自社株買い発表の複合好材料",
+    "surgeReason": "[開示] 利益急拡大・自社株買い発表で業績と需給両面好材料",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-17T14:33:18.187557"
+    "qualifiedAt": "2026-09-17T23:50:28.239212"
   }
 ]
