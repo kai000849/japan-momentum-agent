@@ -30561,19 +30561,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "3Q決算＋通期業績予想修正の上方修正が主因。売買代金71.6倍と急騰",
+      "comment": "3Q決算＋通期業績修正開示、売買代金71.6倍と極めて強い需給",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 3Q決算＋通期業績予想上方修正で売買代金71.6倍急騰",
+      "surgeReason": "[開示] 3Q決算＋通期業績予想修正開示、売買代金急増",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 3Q決算＋通期業績予想上方修正で売買代金71.6倍急騰",
+    "surgeReason": "[開示] 3Q決算＋通期業績予想修正開示、売買代金急増",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259838"
+    "qualifiedAt": "2026-09-23T14:29:27.991789"
   },
   {
     "stockCode": "69050",
@@ -30603,19 +30603,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q決算＋中間・通期業績予想修正開示。+3.9%と上昇は限定的",
+      "comment": "1Q決算＋中間・通期業績予想修正開示、上振れ幅要確認",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 1Q決算＋中間・通期業績予想修正を同時開示",
+      "surgeReason": "[開示] 1Q決算＋通期業績修正、上振れ幅と継続性要確認",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 1Q決算＋中間・通期業績予想修正を同時開示",
+    "surgeReason": "[開示] 1Q決算＋通期業績修正、上振れ幅と継続性要確認",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259851"
+    "qualifiedAt": "2026-09-23T14:29:27.991806"
   },
   {
     "stockCode": "49330",
@@ -30645,19 +30645,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "金融庁課徴金納付命令という悪材料での急騰は需給的に不安定",
-      "whyCategory": "需給",
+      "comment": "金融庁課徴金命令開示、ネガティブ材料での急騰は継続性薄い",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 金融庁課徴金命令という悪材料、急騰理由不明確",
+      "surgeReason": "[開示] 金融庁課徴金命令、悪材料出尽くし的反応か",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 金融庁課徴金命令という悪材料、急騰理由不明確",
-    "whyCategory": "需給",
+    "surgeReason": "[開示] 金融庁課徴金命令、悪材料出尽くし的反応か",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259853"
+    "qualifiedAt": "2026-09-23T14:29:27.991807"
   },
   {
     "stockCode": "84180",
@@ -30687,19 +30687,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "J-クレジット連携会議設置のニュースのみで明確な業績材料なし",
-      "whyCategory": "不明",
+      "comment": "地銀高値パターン・金利上昇テーマ相乗り、固有材料なし",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・要確認",
+      "surgeReason": "[不明] 地銀金利上昇テーマ相乗りか、固有開示材料なし",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・要確認",
-    "whyCategory": "不明",
+    "surgeReason": "[不明] 地銀金利上昇テーマ相乗りか、固有開示材料なし",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259854"
+    "qualifiedAt": "2026-09-23T14:29:27.991808"
   },
   {
     "stockCode": "17210",
@@ -30728,20 +30728,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "純利益47%増・3期連続最高益見通し・増配。DC工事好調で継続性あり",
+      "confidence": "low",
+      "comment": "4-6月純利益47%増・3期連続最高益・増配、DC工事好調",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 純利益47%増・3期連続最高益・増配でDC関連好調",
+      "surgeReason": "[ニュース] 純利益47%増・最高益・増配、DC工事需要追い風",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 純利益47%増・3期連続最高益・増配でDC関連好調",
+    "surgeReason": "[ニュース] 純利益47%増・最高益・増配、DC工事需要追い風",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259855"
+    "qualifiedAt": "2026-09-23T14:29:27.991810"
   },
   {
     "stockCode": "40470",
@@ -30771,19 +30771,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上期経常25%上方修正・通期も増額。キオクシア向け特殊ガスで業績好調",
+      "comment": "上期経常25%上方修正・通期増額、特殊ガスでキオクシア需要",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 上期経常25%上方修正・通期増額。特殊ガス需要継続",
+      "surgeReason": "[ニュース] 上期経常25%上方修正・通期増額、特殊ガス需要好調",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上期経常25%上方修正・通期増額。特殊ガス需要継続",
+    "surgeReason": "[ニュース] 上期経常25%上方修正・通期増額、特殊ガス需要好調",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259856"
+    "qualifiedAt": "2026-09-23T14:29:27.991811"
   },
   {
     "stockCode": "83620",
@@ -30813,7 +30813,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "明確な急騰材料なし。地銀株全体の動向に連動した可能性",
+      "comment": "固有開示材料なし、地銀金利上昇テーマ相乗りの可能性",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -30825,7 +30825,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259857"
+    "qualifiedAt": "2026-09-23T14:29:27.991812"
   },
   {
     "stockCode": "63870",
@@ -30855,19 +30855,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算はマイナスインパクト銘柄として掲載。営業増益・増配も過去材料",
-      "whyCategory": "決算",
+      "comment": "決算マイナス評価報道あり、半導体関連テーマ相乗りか",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算マイナスインパクト掲載銘柄、急騰理由弱い",
+      "surgeReason": "[不明] 決算マイナス評価も株価上昇、材料特定困難",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算マイナスインパクト掲載銘柄、急騰理由弱い",
-    "whyCategory": "決算",
+    "surgeReason": "[不明] 決算マイナス評価も株価上昇、材料特定困難",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259862"
+    "qualifiedAt": "2026-09-23T14:29:27.991817"
   },
   {
     "stockCode": "69200",
@@ -30896,20 +30896,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "野村が目標株価4万1800円に引き上げ。半導体テーマ継続性あり",
+      "confidence": "low",
+      "comment": "野村が目標株価4.18万円に引き上げ、半導体検査装置主導銘柄",
       "whyCategory": "ニュース",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 野村証券が目標株価4万1800円に大幅引き上げ",
+      "surgeReason": "[ニュース] 野村目標株価引き上げ、半導体テーマ主導株",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 野村証券が目標株価4万1800円に大幅引き上げ",
+    "surgeReason": "[ニュース] 野村目標株価引き上げ、半導体テーマ主導株",
     "whyCategory": "ニュース",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259864"
+    "qualifiedAt": "2026-09-23T14:29:27.991819"
   },
   {
     "stockCode": "61340",
@@ -30939,7 +30939,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "話題株・注目ニュース掲載のみ。キオクシア関連の連れ高の可能性",
+      "comment": "話題株・買い気配として取り上げられるも固有材料不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -30951,7 +30951,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259865"
+    "qualifiedAt": "2026-09-23T14:29:27.991820"
   },
   {
     "stockCode": "83870",
@@ -30981,19 +30981,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常9%減益で着地。自己株処分と株主優待情報のみで明確材料なし",
-      "whyCategory": "不明",
+      "comment": "地銀高値パターン・金利上昇テーマ、1Q経常9%減益と業績弱い",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・要確認",
+      "surgeReason": "[不明] 地銀金利テーマ相乗りか、1Q減益で業績面は弱い",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・要確認",
-    "whyCategory": "不明",
+    "surgeReason": "[不明] 地銀金利テーマ相乗りか、1Q減益で業績面は弱い",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259866"
+    "qualifiedAt": "2026-09-23T14:29:27.991821"
   },
   {
     "stockCode": "83440",
@@ -31023,19 +31023,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自社株買い実施発表あり。ただし地銀全体テーマ相乗りの可能性も",
-      "whyCategory": "自社株買い・増配",
+      "comment": "自社株取得状況開示・地銀金利テーマ相乗り、固有材料弱い",
+      "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 自社株買い実施発表。地銀全体テーマ連動の可能性",
+      "surgeReason": "[不明] 自社株取得継続と地銀テーマ、固有材料として弱い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 自社株買い実施発表。地銀全体テーマ連動の可能性",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[不明] 自社株取得継続と地銀テーマ、固有材料として弱い",
+    "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259867"
+    "qualifiedAt": "2026-09-23T14:29:27.991822"
   },
   {
     "stockCode": "40920",
@@ -31065,19 +31065,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "3期連続増配・配当3.4倍・DC向けチタン酸バリウム増産で構造変化",
+      "comment": "3期連続増配・配当利回り4.3%・DC向けチタン酸バリウム増産",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 3期連続増配・DC向け生産増強で構造的成長期待",
+      "surgeReason": "[ニュース] 3期連続増配・DC向け生産増強、構造的成長期待",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 3期連続増配・DC向け生産増強で構造的成長期待",
+    "surgeReason": "[ニュース] 3期連続増配・DC向け生産増強、構造的成長期待",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259869"
+    "qualifiedAt": "2026-09-23T14:29:27.991823"
   },
   {
     "stockCode": "64810",
@@ -31107,19 +31107,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上場来高値更新・自動車部品事業売却・AI関連高配当で注目度高い",
+      "comment": "自動車部品事業売却・上場来高値更新・高配当6%超でAI関連注目",
       "whyCategory": "ニュース",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 上場来高値更新・自動車事業売却・AI関連高配当注目",
+      "surgeReason": "[ニュース] 自動車部品売却・上場来高値・AI関連高配当注目",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上場来高値更新・自動車事業売却・AI関連高配当注目",
+    "surgeReason": "[ニュース] 自動車部品売却・上場来高値・AI関連高配当注目",
     "whyCategory": "ニュース",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259870"
+    "qualifiedAt": "2026-09-23T14:29:27.991824"
   },
   {
     "stockCode": "68560",
@@ -31149,19 +31149,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "純利益35%増・業績上振れ・記念配240円。新工場稼働で成長継続",
+      "comment": "純利益35%増・通期上振れ・記念配240円、業績・株主還元好調",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 純利益35%増・業績上振れ・記念配240円・新工場稼働",
+      "surgeReason": "[ニュース] 純利益35%増・上振れ・記念配240円、好業績継続",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 純利益35%増・業績上振れ・記念配240円・新工場稼働",
+    "surgeReason": "[ニュース] 純利益35%増・上振れ・記念配240円、好業績継続",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259873"
+    "qualifiedAt": "2026-09-23T14:29:27.991825"
   },
   {
     "stockCode": "65330",
@@ -31203,7 +31203,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259874"
+    "qualifiedAt": "2026-09-23T14:29:27.991826"
   },
   {
     "stockCode": "65940",
@@ -31245,7 +31245,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259875"
+    "qualifiedAt": "2026-09-23T14:29:27.991827"
   },
   {
     "stockCode": "63230",
@@ -31287,7 +31287,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259876"
+    "qualifiedAt": "2026-09-23T14:29:27.991828"
   },
   {
     "stockCode": "83410",
@@ -31329,7 +31329,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259877"
+    "qualifiedAt": "2026-09-23T14:29:27.991829"
   },
   {
     "stockCode": "71800",
@@ -31371,7 +31371,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259878"
+    "qualifiedAt": "2026-09-23T14:29:27.991830"
   },
   {
     "stockCode": "62580",
@@ -31413,7 +31413,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259879"
+    "qualifiedAt": "2026-09-23T14:29:27.991831"
   },
   {
     "stockCode": "83430",
@@ -31455,7 +31455,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259880"
+    "qualifiedAt": "2026-09-23T14:29:27.991832"
   },
   {
     "stockCode": "73800",
@@ -31497,7 +31497,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259881"
+    "qualifiedAt": "2026-09-23T14:29:27.991833"
   },
   {
     "stockCode": "83770",
@@ -31539,7 +31539,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259882"
+    "qualifiedAt": "2026-09-23T14:29:27.991834"
   },
   {
     "stockCode": "34980",
@@ -31581,7 +31581,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259883"
+    "qualifiedAt": "2026-09-23T14:29:27.991836"
   },
   {
     "stockCode": "48470",
@@ -31623,7 +31623,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259884"
+    "qualifiedAt": "2026-09-23T14:29:27.991837"
   },
   {
     "stockCode": "66220",
@@ -31665,7 +31665,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259886"
+    "qualifiedAt": "2026-09-23T14:29:27.991838"
   },
   {
     "stockCode": "31320",
@@ -31707,7 +31707,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259887"
+    "qualifiedAt": "2026-09-23T14:29:27.991839"
   },
   {
     "stockCode": "74560",
@@ -31749,7 +31749,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259888"
+    "qualifiedAt": "2026-09-23T14:29:27.991840"
   },
   {
     "stockCode": "35630",
@@ -31791,7 +31791,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-22T23:57:41.259889"
+    "qualifiedAt": "2026-09-23T14:29:27.991841"
   },
   {
     "stockCode": "63680",
@@ -31833,6 +31833,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-22T23:57:41.259890"
+    "qualifiedAt": "2026-09-23T14:29:27.991842"
   }
 ]
