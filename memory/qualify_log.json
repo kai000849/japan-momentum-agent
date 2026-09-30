@@ -33459,19 +33459,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "medium",
-      "comment": "9期連続増配・優待拡充で優待利回り10%超、配当利回り4%。材料は明確だが過熱感あり",
+      "comment": "増配と株主優待拡充でストップ高。還元強化材料だが継続性は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 9期連続増配＋記念優待でトータル利回り10%超",
+      "surgeReason": "[開示] 増配・株主優待拡充を好感しストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 9期連続増配＋記念優待でトータル利回り10%超",
+    "surgeReason": "[開示] 増配・株主優待拡充を好感しストップ高",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-29T16:12:09.443805"
+    "qualifiedAt": "2026-09-30T00:54:39.277907"
   },
   {
     "stockCode": "75520",
@@ -33500,20 +33500,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "low",
-      "comment": "業績予想修正の開示あり。内容詳細不明のため継続性判断困難",
+      "confidence": "medium",
+      "comment": "業績予想修正開示で急騰。内容次第だが修正系勝率36%で慎重判断",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 業績予想修正を開示、詳細内容の確認要",
+      "surgeReason": "[開示] 業績予想修正発表により急騰",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績予想修正を開示、詳細内容の確認要",
+    "surgeReason": "[開示] 業績予想修正発表により急騰",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-29T16:12:09.443817"
+    "qualifiedAt": "2026-09-30T00:54:39.277918"
   },
   {
     "stockCode": "42160",
@@ -33543,19 +33543,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "業績・配当予想修正とシンジケートローン締結開示。上昇率は小さく継続性不明",
+      "comment": "業績修正＋配当修正＋シンジケートローン締結。材料複合だが上昇幅小さい",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 業績・配当修正＋シンジケートローン契約締結",
+      "surgeReason": "[開示] 業績・配当修正とローン契約締結を材料に上昇",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績・配当修正＋シンジケートローン契約締結",
+    "surgeReason": "[開示] 業績・配当修正とローン契約締結を材料に上昇",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-29T16:12:09.443818"
+    "qualifiedAt": "2026-09-30T00:54:39.277919"
   },
   {
     "stockCode": "79210",
@@ -33585,19 +33585,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "第1四半期決算短信開示。上昇率3.3%と小幅、内容詳細不明",
+      "comment": "1Q決算短信開示で上昇。内容不明で継続性判断困難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2027年5月期第1四半期決算短信を開示",
+      "surgeReason": "[決算] 第1四半期決算短信開示を材料に上昇",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2027年5月期第1四半期決算短信を開示",
+    "surgeReason": "[決算] 第1四半期決算短信開示を材料に上昇",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-29T16:12:09.443819"
+    "qualifiedAt": "2026-09-30T00:54:39.277920"
   },
   {
     "stockCode": "64400",
@@ -33627,19 +33627,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1〜6月期利益急拡大報道でS高。業績改善の実態あるが急騰後の過熱感に注意",
-      "whyCategory": "決算",
+      "comment": "みずほ銀行の保有減少報告のみで急騰理由不明確。需給要因か",
+      "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 収益改善で1〜6月期利益急拡大、S高を付ける",
+      "surgeReason": "[需給] 大株主保有減少報告書提出、明確材料なし",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 収益改善で1〜6月期利益急拡大、S高を付ける",
-    "whyCategory": "決算",
+    "surgeReason": "[需給] 大株主保有減少報告書提出、明確材料なし",
+    "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443820"
+    "qualifiedAt": "2026-09-30T00:54:39.277920"
   },
   {
     "stockCode": "53010",
@@ -33667,21 +33667,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "自社株消却＋半導体関連アナリスト評価上昇。複合材料だが上昇率は小幅",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "自社株消却＋SMBC日興目標引き上げ＋半導体関連テーマで複合材料",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 自社株消却＋SMBC日興が半導体関連で目標株価引き上げ",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 自社株消却発表とアナリスト目標株価引き上げ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 自社株消却＋SMBC日興が半導体関連で目標株価引き上げ",
+    "surgeReason": "[ニュース] 自社株消却発表とアナリスト目標株価引き上げ",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-09-29T16:12:09.443821"
+    "qualifiedAt": "2026-09-30T00:54:39.277921"
   },
   {
     "stockCode": "212A0",
@@ -33711,19 +33711,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "売出価格決定の開示。需給悪化懸念材料であり上昇継続は疑問",
+      "comment": "売出価格決定発表。需給悪化懸念の売出材料でネガティブリスクあり",
       "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 売出価格等の決定を開示、需給影響に注意",
+      "surgeReason": "[需給] 売出価格決定開示、需給悪化リスクあり",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 売出価格等の決定を開示、需給影響に注意",
+    "surgeReason": "[需給] 売出価格決定開示、需給悪化リスクあり",
     "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443822"
+    "qualifiedAt": "2026-09-30T00:54:39.277922"
   },
   {
     "stockCode": "65070",
@@ -33753,19 +33753,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "伊勢製作所に航空宇宙事業の新工場建設。中長期テーマだが材料としてのインパクトは限定的",
+      "comment": "航空宇宙新工場建設発表。中長期テーマだが直近材料としての強度は中程度",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 伊勢製作所に航空宇宙事業新工場建設を発表",
+      "surgeReason": "[ニュース] 航空宇宙事業向け新工場建設を発表",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 伊勢製作所に航空宇宙事業新工場建設を発表",
+    "surgeReason": "[ニュース] 航空宇宙事業向け新工場建設を発表",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443826"
+    "qualifiedAt": "2026-09-30T00:54:39.277925"
   },
   {
     "stockCode": "61460",
@@ -33795,19 +33795,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "SMBC日興が投資評価引き上げ＋米半導体株高追随。外部要因主体で継続性不明",
+      "comment": "SMBC日興が投資評価引き上げ＋米半導体株高の追随。テーマ相乗り",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] SMBC日興格上げ＋米半導体株高の追随で上昇",
+      "surgeReason": "[ニュース] アナリスト格上げと米半導体高に連動し上昇",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] SMBC日興格上げ＋米半導体株高の追随で上昇",
+    "surgeReason": "[ニュース] アナリスト格上げと米半導体高に連動し上昇",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443827"
+    "qualifiedAt": "2026-09-30T00:54:39.277926"
   },
   {
     "stockCode": "49800",
@@ -33837,19 +33837,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "テクニカル節目突破の報道のみ。固有の材料なく上昇根拠が薄い",
+      "comment": "25日線突破・テクニカル評価のみで明確な材料なし",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] テクニカル節目突破の報道のみ、固有材料特定不可",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] テクニカル節目突破の報道のみ、固有材料特定不可",
+    "surgeReason": "[不明] 材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443828"
+    "qualifiedAt": "2026-09-30T00:54:39.277927"
   },
   {
     "stockCode": "77350",
@@ -33879,18 +33879,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "今期経常4%上方修正・最高益更新・増配。半導体関連テーマも後押し",
-      "whyCategory": "業績修正",
+      "comment": "前期営業利益上振れ着地・生成AI需要寄与が材料。過去に大幅高済み",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 今期経常4%上方修正・最高益・増配を発表",
+      "surgeReason": "[決算] 前期営業利益上振れ着地と生成AI需要拡大を好感",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 今期経常4%上方修正・最高益・増配を発表",
-    "whyCategory": "業績修正",
+    "surgeReason": "[決算] 前期営業利益上振れ着地と生成AI需要拡大を好感",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-09-29T16:12:09.443830"
+    "qualifiedAt": "2026-09-30T00:54:39.277928"
   }
 ]
