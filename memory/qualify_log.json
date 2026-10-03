@@ -34844,8 +34844,8 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "自社株買い決定＋持分法関連会社株式譲渡完了の複合材料",
+      "confidence": "low",
+      "comment": "自社株買い決定＋持分法関連会社の株式譲渡完了が材料",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
       "surgeReason": "[開示] 自社株買い決定＋持分法関連会社株式譲渡完了",
@@ -34857,7 +34857,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334309"
+    "qualifiedAt": "2026-10-03T00:52:43.289938"
   },
   {
     "stockCode": "65330",
@@ -34887,19 +34887,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "記念優待＋株主優待拡充で優待利回り10%超が話題",
+      "comment": "記念優待・優待拡充＋9期連続増配・配当利回り4%が材料",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 記念優待＋優待拡充で優待利回り10%超に",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 9期連続増配＋記念優待拡充で優待利回り10%超",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 記念優待＋優待拡充で優待利回り10%超に",
+    "surgeReason": "[ニュース] 9期連続増配＋記念優待拡充で優待利回り10%超",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334319"
+    "qualifiedAt": "2026-10-03T00:52:43.289947"
   },
   {
     "stockCode": "73840",
@@ -34929,19 +34929,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "青森みちのく・秋田・岩手3行の経営統合検討開始の大型M&A材料",
+      "comment": "青森みちのく・秋田・岩手銀行3行経営統合検討開始の開示",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 東北3地銀の経営統合検討開始で構造変化期待",
+      "surgeReason": "[開示] 3地銀経営統合検討開始、構造変化の初動",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 東北3地銀の経営統合検討開始で構造変化期待",
+    "surgeReason": "[開示] 3地銀経営統合検討開始、構造変化の初動",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334321"
+    "qualifiedAt": "2026-10-03T00:52:43.289948"
   },
   {
     "stockCode": "74470",
@@ -34970,20 +34970,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "決算発表＋自社株買い決定の複合材料",
+      "confidence": "low",
+      "comment": "決算短信＋自社株買い決定が材料、内容精査が必要",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 8月期決算発表＋自社株買い決定の複合材料",
+      "surgeReason": "[決算] 8月期決算発表＋自社株買い決定",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 8月期決算発表＋自社株買い決定の複合材料",
+    "surgeReason": "[決算] 8月期決算発表＋自社株買い決定",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334322"
+    "qualifiedAt": "2026-10-03T00:52:43.289949"
   },
   {
     "stockCode": "40040",
@@ -35013,19 +35013,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "石油化学事業のパーシャル・スピンオフ完了で事業構造転換",
+      "comment": "石化事業パーシャル・スピンオフ完了で事業構造変化",
       "whyCategory": "資本提携・M&A",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 石化事業スピンオフ完了で事業ポートフォリオ転換",
+      "surgeReason": "[開示] 石化事業スピンオフ完了、事業ポートフォリオ転換",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 石化事業スピンオフ完了で事業ポートフォリオ転換",
+    "surgeReason": "[開示] 石化事業スピンオフ完了、事業ポートフォリオ転換",
     "whyCategory": "資本提携・M&A",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334323"
+    "qualifiedAt": "2026-10-03T00:52:43.289951"
   },
   {
     "stockCode": "58010",
@@ -35054,20 +35054,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "上期業績36%上方修正＋海底光ファイバー生産能力3倍拡大",
-      "whyCategory": "業績修正",
+      "confidence": "low",
+      "comment": "海底光ファイバー生産能力3倍拡張、欧米需要取込みへ",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 上期最終36%上方修正＋海底光ファイバー能力3倍",
+      "surgeReason": "[ニュース] 米子会社が海底光ファイバー生産能力3倍に拡張",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上期最終36%上方修正＋海底光ファイバー能力3倍",
-    "whyCategory": "業績修正",
+    "surgeReason": "[ニュース] 米子会社が海底光ファイバー生産能力3倍に拡張",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334324"
+    "qualifiedAt": "2026-10-03T00:52:43.289952"
   },
   {
     "stockCode": "65320",
@@ -35097,19 +35097,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "米アクセンチュア好決算を受けたコンサル株テーマ相乗り",
+      "comment": "米アクセンチュア好決算によるコンサル株テーマ相乗り",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 米アクセンチュア好決算波及のコンサル株物色",
+      "surgeReason": "[ニュース] 米アクセンチュア好決算でコンサル株に波及",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 米アクセンチュア好決算波及のコンサル株物色",
+    "surgeReason": "[ニュース] 米アクセンチュア好決算でコンサル株に波及",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334325"
+    "qualifiedAt": "2026-10-03T00:52:43.289953"
   },
   {
     "stockCode": "30640",
@@ -35139,7 +35139,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "明確な急騰材料が特定できず需給・話題株扱い",
+      "comment": "株探・フィスコ記事掲載のみで独自材料が確認できず",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -35151,7 +35151,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334329"
+    "qualifiedAt": "2026-10-03T00:52:43.289957"
   },
   {
     "stockCode": "65070",
@@ -35181,19 +35181,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "伊勢製作所に航空宇宙事業の新工場建設、27年1月稼働予定",
+      "comment": "航空宇宙事業の新工場建設発表、27年1月稼働予定",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 航空宇宙向け新工場建設発表、27年1月稼働予定",
+      "surgeReason": "[ニュース] 伊勢に航空宇宙新工場建設、27年1月稼働予定",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 航空宇宙向け新工場建設発表、27年1月稼働予定",
+    "surgeReason": "[ニュース] 伊勢に航空宇宙新工場建設、27年1月稼働予定",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334331"
+    "qualifiedAt": "2026-10-03T00:52:43.289958"
   },
   {
     "stockCode": "64900",
@@ -35223,19 +35223,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "SMBC日興が目標株価引き上げ、メモリーサイクル回復期待",
-      "whyCategory": "ニュース",
+      "comment": "SMBC日興が目標株価引き上げ、8連騰で過熱感あり",
+      "whyCategory": "需給",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、メモリー回復期待",
+      "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、8連騰で過熱",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、メモリー回復期待",
-    "whyCategory": "ニュース",
+    "surgeReason": "[ニュース] SMBC日興が目標株価引き上げ、8連騰で過熱",
+    "whyCategory": "需給",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334332"
+    "qualifiedAt": "2026-10-03T00:52:43.289960"
   },
   {
     "stockCode": "69470",
@@ -35265,19 +35265,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "6期連続最高益更新見込みの好決算、ドローンテーマ関連にも注目",
+      "comment": "6期連続最高益更新見通しの決算発表が材料",
       "whyCategory": "決算",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 今期経常9%増・6期連続最高益更新見通し",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 今期経常9%増・6期連続最高益更新予想",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 今期経常9%増・6期連続最高益更新見通し",
+    "surgeReason": "[決算] 今期経常9%増・6期連続最高益更新予想",
     "whyCategory": "決算",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-02T16:06:27.334333"
+    "qualifiedAt": "2026-10-03T00:52:43.289961"
   },
   {
     "stockCode": "58030",
@@ -35305,21 +35305,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "low",
-      "comment": "みずほ・SBIが目標株価引き上げ＋米コーニング株高の波及",
+      "comment": "みずほ・SBIが目標株価引き上げ、米コーニング株高も波及",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 複数証券が目標株価引き上げ＋米コーニング高波及",
+      "surgeReason": "[ニュース] 複数証券が目標株価引き上げ、米コーニング高波及",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 複数証券が目標株価引き上げ＋米コーニング高波及",
+    "surgeReason": "[ニュース] 複数証券が目標株価引き上げ、米コーニング高波及",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334334"
+    "qualifiedAt": "2026-10-03T00:52:43.289962"
   },
   {
     "stockCode": "58020",
@@ -35347,20 +35347,20 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "low",
-      "comment": "上期経常19%上方修正・最高益更新＋海底ケーブル参画好感",
+      "comment": "上期経常19%上方修正・最高益上乗せ、海底ケーブル参画",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 上期経常19%上方修正・最高益＋海底ケーブル参画",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 上期経常19%上方修正・最高益、海底ケーブル参画",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 上期経常19%上方修正・最高益＋海底ケーブル参画",
+    "surgeReason": "[ニュース] 上期経常19%上方修正・最高益、海底ケーブル参画",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-02T16:06:27.334335"
+    "qualifiedAt": "2026-10-03T00:52:43.289963"
   }
 ]
