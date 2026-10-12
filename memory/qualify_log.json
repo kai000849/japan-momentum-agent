@@ -33921,19 +33921,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期業績上方修正＋増配。半導体搬送装置の需要継続が期待される",
+      "comment": "通期業績予想修正＋配当修正で材料明確、半導体装置テーマ継続",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 通期上方修正＋増配発表、半導体関連継続性に期待",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 通期業績予想上方修正＋増配発表で急騰",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期上方修正＋増配発表、半導体関連継続性に期待",
+    "surgeReason": "[開示] 通期業績予想上方修正＋増配発表で急騰",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849152"
+    "qualifiedAt": "2026-10-12T19:22:18.558931"
   },
   {
     "stockCode": "45520",
@@ -33963,19 +33963,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "ハンター症候群薬でイタリア企業と資本提携・ライセンス契約。バイオ材料",
+      "comment": "ハンター症候群薬でイタリア企業と提携、希少疾患領域の材料",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] ハンター症候群薬でイタリア企業と提携契約",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] ハンター症候群薬でイタリア企業と提携契約締結",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] ハンター症候群薬でイタリア企業と提携契約",
+    "surgeReason": "[ニュース] ハンター症候群薬でイタリア企業と提携契約締結",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849163"
+    "qualifiedAt": "2026-10-12T19:22:18.558941"
   },
   {
     "stockCode": "62580",
@@ -34005,19 +34005,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ローツェ上方修正によるテーマ相乗り。固有材料なく継続性低い",
+      "comment": "明確な開示なし、ローツェ連れ高・半導体装置テーマ相乗りか",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] ローツェ上方修正の波及・半導体搬送テーマ相乗り",
+      "surgeReason": "[不明] 半導体装置テーマ相乗り、独自材料特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[不明] ローツェ上方修正の波及・半導体搬送テーマ相乗り",
+    "surgeReason": "[不明] 半導体装置テーマ相乗り、独自材料特定不可",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849164"
+    "qualifiedAt": "2026-10-12T19:22:18.558942"
   },
   {
     "stockCode": "80160",
@@ -34046,8 +34046,8 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "創業100周年記念配当＋中間期決算開示。一過性配当で継続性限定的",
+      "confidence": "low",
+      "comment": "創業100周年記念配当＋決算開示、一時的なイベント要因",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
       "surgeReason": "[開示] 創業100周年記念配当実施＋中間期決算発表",
@@ -34059,7 +34059,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849164"
+    "qualifiedAt": "2026-10-12T19:22:18.558944"
   },
   {
     "stockCode": "39250",
@@ -34089,19 +34089,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q経常7%増益着地。増益幅小さく材料弱め、継続性不明",
+      "comment": "1Q経常7%増益のみ、材料軽微で継続性低い",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q経常7%増益着地、増益幅小さく材料弱い",
+      "surgeReason": "[不明] 1Q小幅増益のみ、急騰の主因特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q経常7%増益着地、増益幅小さく材料弱い",
+    "surgeReason": "[不明] 1Q小幅増益のみ、急騰の主因特定不可",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849165"
+    "qualifiedAt": "2026-10-12T19:22:18.558945"
   },
   {
     "stockCode": "39160",
@@ -34129,21 +34129,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "4期連続増配・17期連続最高益見込み。高配当利回り4.4%で安定成長",
+      "structuralChange": false,
+      "confidence": "low",
+      "comment": "4期連続増配・利回り4.4%が材料、配当目的の需給主導か",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 4期連続増配・17期連続最高益、利回り4.4%",
+      "surgeReason": "[ニュース] 4期連続増配・配当利回り4.4%で注目集まる",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 4期連続増配・17期連続最高益、利回り4.4%",
+    "surgeReason": "[ニュース] 4期連続増配・配当利回り4.4%で注目集まる",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849165"
+    "qualifiedAt": "2026-10-12T19:22:18.558946"
   },
   {
     "stockCode": "39680",
@@ -34173,19 +34173,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "セキュリティ関連テーマ物色か。固有材料薄くテーマ相乗り色強い",
+      "comment": "セキュリティテーマ相乗り、独自材料は製品追加程度で弱い",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] セキュリティ関連テーマ物色・固有材料不明",
+      "surgeReason": "[ニュース] セキュリティ関連テーマ相乗り、材料は軽微",
       "stage2Available": true
     },
-    "surgeReason": "[不明] セキュリティ関連テーマ物色・固有材料不明",
+    "surgeReason": "[ニュース] セキュリティ関連テーマ相乗り、材料は軽微",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849166"
+    "qualifiedAt": "2026-10-12T19:22:18.558947"
   },
   {
     "stockCode": "62660",
@@ -34215,19 +34215,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間期業績下振れ着地報道あり。材料ネガティブで急騰理由不明確",
+      "comment": "中間期業績下振れ報道あり、急騰理由と矛盾・材料不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 中間期下振れ着地報道あり、急騰理由特定不可",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 中間期下振れ着地報道あり、急騰理由特定不可",
+    "surgeReason": "[不明] 材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849169"
+    "qualifiedAt": "2026-10-12T19:22:18.558951"
   },
   {
     "stockCode": "62640",
@@ -34257,19 +34257,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "本決算＋増配発表。半導体部品精密加工で業績好調継続期待",
+      "comment": "決算＋増配修正開示、半導体精密部品で構造的成長期待",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 本決算発表＋増配、半導体精密部品需要継続期待",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 通期決算発表＋増配修正で好材料重なる",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 本決算発表＋増配、半導体精密部品需要継続期待",
+    "surgeReason": "[開示] 通期決算発表＋増配修正で好材料重なる",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849170"
+    "qualifiedAt": "2026-10-12T19:22:18.558953"
   },
   {
     "stockCode": "30400",
@@ -34299,19 +34299,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "製品導入事例ニュースのみ。固有の業績材料なく急騰理由不明確",
-      "whyCategory": "不明",
+      "comment": "リモートPCアレイ導入事例のみ、テーマ相乗りで材料軽微",
+      "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・製品導入事例程度でニュース弱い",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・製品導入事例程度でニュース弱い",
-    "whyCategory": "不明",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849171"
+    "qualifiedAt": "2026-10-12T19:22:18.558956"
   },
   {
     "stockCode": "98610",
@@ -34340,20 +34340,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "通期業績上方修正＋中間増配発表。外食回復継続だが株価過熱注意",
+      "confidence": "low",
+      "comment": "業績修正＋中間増配で材料明確だが外食株の継続性低い",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 通期上方修正＋中間配当増配、外食回復継続",
+      "surgeReason": "[開示] 中間期業績修正＋中間配当増配を同時発表",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期上方修正＋中間配当増配、外食回復継続",
+    "surgeReason": "[開示] 中間期業績修正＋中間配当増配を同時発表",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849172"
+    "qualifiedAt": "2026-10-12T19:22:18.558958"
   },
   {
     "stockCode": "44620",
@@ -34383,19 +34383,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自社株取得開示あるが今期減益予想。増配は4円のみ材料弱い",
+      "comment": "自社株買い実施中だが今期減益見通し、材料混在で弱い",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 自社株買い実施も今期減益予想、材料弱い",
+      "surgeReason": "[不明] 自社株買い継続中だが減益見通しで材料弱い",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 自社株買い実施も今期減益予想、材料弱い",
+    "surgeReason": "[不明] 自社株買い継続中だが減益見通しで材料弱い",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849172"
+    "qualifiedAt": "2026-10-12T19:22:18.558959"
   },
   {
     "stockCode": "37880",
@@ -34423,21 +34423,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "DSS署名数600万件突破のニュースのみ。業績への直接影響不明",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] DSS月間署名数600万件突破・過去最高更新",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "AWSと戦略的協業契約締結、クラウドセキュリティ領域で継続性あり",
+      "whyCategory": "資本提携・M&A",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] AWSと戦略的協業契約締結、クラウド事業強化",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] DSS月間署名数600万件突破・過去最高更新",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "surgeReason": "[ニュース] AWSと戦略的協業契約締結、クラウド事業強化",
+    "whyCategory": "資本提携・M&A",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849173"
+    "qualifiedAt": "2026-10-12T19:22:18.558960"
   },
   {
     "stockCode": "39940",
@@ -34467,19 +34467,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "半導体株安でSaaSへ資金シフトのテーマ物色。固有材料なし",
-      "whyCategory": "テーマ相乗り",
+      "comment": "急騰に対応する明確な開示・ニュースなし、材料不明",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 半導体株安によるSaaS資金シフト・テーマ相乗り",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 半導体株安によるSaaS資金シフト・テーマ相乗り",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[不明] 材料特定不可・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849173"
+    "qualifiedAt": "2026-10-12T19:22:18.558961"
   },
   {
     "stockCode": "65070",
@@ -34509,19 +34509,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "航空宇宙事業の新工場建設発表。中長期成長期待だが即時材料弱い",
+      "comment": "航空宇宙新工場建設は中長期材料だが短期急騰の直接根拠弱い",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 航空宇宙新工場建設発表、2027年1月稼働予定",
+      "surgeReason": "[ニュース] 航空宇宙事業新工場建設発表、中長期テーマ",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 航空宇宙新工場建設発表、2027年1月稼働予定",
+    "surgeReason": "[ニュース] 航空宇宙事業新工場建設発表、中長期テーマ",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849174"
+    "qualifiedAt": "2026-10-12T19:22:18.558962"
   },
   {
     "stockCode": "69410",
@@ -34563,7 +34563,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849174"
+    "qualifiedAt": "2026-10-12T19:22:18.558963"
   },
   {
     "stockCode": "62980",
@@ -34605,7 +34605,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849175"
+    "qualifiedAt": "2026-10-12T19:22:18.558964"
   },
   {
     "stockCode": "68710",
@@ -34647,7 +34647,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849175"
+    "qualifiedAt": "2026-10-12T19:22:18.558965"
   },
   {
     "stockCode": "37620",
@@ -34689,7 +34689,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849176"
+    "qualifiedAt": "2026-10-12T19:22:18.558966"
   },
   {
     "stockCode": "42120",
@@ -34731,7 +34731,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849177"
+    "qualifiedAt": "2026-10-12T19:22:18.558967"
   },
   {
     "stockCode": "47040",
@@ -34773,7 +34773,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849177"
+    "qualifiedAt": "2026-10-12T19:22:18.558968"
   },
   {
     "stockCode": "43070",
@@ -34815,7 +34815,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849178"
+    "qualifiedAt": "2026-10-12T19:22:18.558969"
   },
   {
     "stockCode": "66380",
@@ -34857,7 +34857,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849178"
+    "qualifiedAt": "2026-10-12T19:22:18.558970"
   },
   {
     "stockCode": "66220",
@@ -34899,7 +34899,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849179"
+    "qualifiedAt": "2026-10-12T19:22:18.558971"
   },
   {
     "stockCode": "27600",
@@ -34941,7 +34941,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849179"
+    "qualifiedAt": "2026-10-12T19:22:18.558972"
   },
   {
     "stockCode": "43440",
@@ -34983,7 +34983,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849180"
+    "qualifiedAt": "2026-10-12T19:22:18.558973"
   },
   {
     "stockCode": "47680",
@@ -35025,7 +35025,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849180"
+    "qualifiedAt": "2026-10-12T19:22:18.558974"
   },
   {
     "stockCode": "27370",
@@ -35067,7 +35067,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849181"
+    "qualifiedAt": "2026-10-12T19:22:18.558975"
   },
   {
     "stockCode": "36970",
@@ -35109,7 +35109,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849181"
+    "qualifiedAt": "2026-10-12T19:22:18.558976"
   },
   {
     "stockCode": "98800",
@@ -35151,7 +35151,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849182"
+    "qualifiedAt": "2026-10-12T19:22:18.558977"
   },
   {
     "stockCode": "30640",
@@ -35193,7 +35193,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849182"
+    "qualifiedAt": "2026-10-12T19:22:18.558979"
   },
   {
     "stockCode": "97160",
@@ -35235,7 +35235,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849183"
+    "qualifiedAt": "2026-10-12T19:22:18.558980"
   },
   {
     "stockCode": "34980",
@@ -35277,7 +35277,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849183"
+    "qualifiedAt": "2026-10-12T19:22:18.558981"
   },
   {
     "stockCode": "64900",
@@ -35319,7 +35319,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849184"
+    "qualifiedAt": "2026-10-12T19:22:18.558982"
   },
   {
     "stockCode": "36360",
@@ -35361,7 +35361,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849185"
+    "qualifiedAt": "2026-10-12T19:22:18.558983"
   },
   {
     "stockCode": "64070",
@@ -35403,7 +35403,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849185"
+    "qualifiedAt": "2026-10-12T19:22:18.558984"
   },
   {
     "stockCode": "68590",
@@ -35445,7 +35445,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849186"
+    "qualifiedAt": "2026-10-12T19:22:18.558985"
   },
   {
     "stockCode": "29140",
@@ -35487,7 +35487,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849186"
+    "qualifiedAt": "2026-10-12T19:22:18.558986"
   },
   {
     "stockCode": "50360",
@@ -35529,7 +35529,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849187"
+    "qualifiedAt": "2026-10-12T19:22:18.558987"
   },
   {
     "stockCode": "65320",
@@ -35571,7 +35571,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849187"
+    "qualifiedAt": "2026-10-12T19:22:18.558988"
   },
   {
     "stockCode": "41870",
@@ -35613,7 +35613,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849188"
+    "qualifiedAt": "2026-10-12T19:22:18.558989"
   },
   {
     "stockCode": "277A0",
@@ -35655,7 +35655,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849188"
+    "qualifiedAt": "2026-10-12T19:22:18.558990"
   },
   {
     "stockCode": "96290",
@@ -35697,7 +35697,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849189"
+    "qualifiedAt": "2026-10-12T19:22:18.558991"
   },
   {
     "stockCode": "67280",
@@ -35739,7 +35739,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849191"
+    "qualifiedAt": "2026-10-12T19:22:18.558992"
   },
   {
     "stockCode": "23260",
@@ -35781,7 +35781,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849191"
+    "qualifiedAt": "2026-10-12T19:22:18.558993"
   },
   {
     "stockCode": "48260",
@@ -35823,7 +35823,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-12T00:55:27.849192"
+    "qualifiedAt": "2026-10-12T19:22:18.558994"
   },
   {
     "stockCode": "32010",
@@ -35865,7 +35865,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849193"
+    "qualifiedAt": "2026-10-12T19:22:18.558995"
   },
   {
     "stockCode": "63150",
@@ -35907,7 +35907,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849193"
+    "qualifiedAt": "2026-10-12T19:22:18.558996"
   },
   {
     "stockCode": "39930",
@@ -35949,7 +35949,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849194"
+    "qualifiedAt": "2026-10-12T19:22:18.558997"
   },
   {
     "stockCode": "98890",
@@ -35991,7 +35991,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849194"
+    "qualifiedAt": "2026-10-12T19:22:18.558998"
   },
   {
     "stockCode": "76090",
@@ -36033,7 +36033,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849195"
+    "qualifiedAt": "2026-10-12T19:22:18.558999"
   },
   {
     "stockCode": "69510",
@@ -36075,7 +36075,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849195"
+    "qualifiedAt": "2026-10-12T19:22:18.559000"
   },
   {
     "stockCode": "44610",
@@ -36117,7 +36117,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849196"
+    "qualifiedAt": "2026-10-12T19:22:18.559001"
   },
   {
     "stockCode": "70710",
@@ -36159,7 +36159,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849196"
+    "qualifiedAt": "2026-10-12T19:22:18.559002"
   },
   {
     "stockCode": "34330",
@@ -36201,7 +36201,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849197"
+    "qualifiedAt": "2026-10-12T19:22:18.559003"
   },
   {
     "stockCode": "46860",
@@ -36243,7 +36243,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849197"
+    "qualifiedAt": "2026-10-12T19:22:18.559004"
   },
   {
     "stockCode": "77350",
@@ -36285,7 +36285,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849198"
+    "qualifiedAt": "2026-10-12T19:22:18.559005"
   },
   {
     "stockCode": "44430",
@@ -36327,7 +36327,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849198"
+    "qualifiedAt": "2026-10-12T19:22:18.559006"
   },
   {
     "stockCode": "36570",
@@ -36369,7 +36369,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849199"
+    "qualifiedAt": "2026-10-12T19:22:18.559007"
   },
   {
     "stockCode": "38430",
@@ -36411,7 +36411,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849200"
+    "qualifiedAt": "2026-10-12T19:22:18.559010"
   },
   {
     "stockCode": "64800",
@@ -36453,7 +36453,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849200"
+    "qualifiedAt": "2026-10-12T19:22:18.559011"
   },
   {
     "stockCode": "68070",
@@ -36495,7 +36495,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849201"
+    "qualifiedAt": "2026-10-12T19:22:18.559012"
   },
   {
     "stockCode": "68660",
@@ -36537,7 +36537,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849201"
+    "qualifiedAt": "2026-10-12T19:22:18.559013"
   },
   {
     "stockCode": "47760",
@@ -36579,7 +36579,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849202"
+    "qualifiedAt": "2026-10-12T19:22:18.559014"
   },
   {
     "stockCode": "97390",
@@ -36621,7 +36621,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849203"
+    "qualifiedAt": "2026-10-12T19:22:18.559015"
   },
   {
     "stockCode": "39620",
@@ -36663,7 +36663,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849203"
+    "qualifiedAt": "2026-10-12T19:22:18.559016"
   },
   {
     "stockCode": "40530",
@@ -36705,7 +36705,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849204"
+    "qualifiedAt": "2026-10-12T19:22:18.559017"
   },
   {
     "stockCode": "96580",
@@ -36747,7 +36747,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849204"
+    "qualifiedAt": "2026-10-12T19:22:18.559018"
   },
   {
     "stockCode": "45490",
@@ -36789,7 +36789,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849205"
+    "qualifiedAt": "2026-10-12T19:22:18.559019"
   },
   {
     "stockCode": "81590",
@@ -36831,7 +36831,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849205"
+    "qualifiedAt": "2026-10-12T19:22:18.559020"
   },
   {
     "stockCode": "63400",
@@ -36873,7 +36873,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849206"
+    "qualifiedAt": "2026-10-12T19:22:18.559021"
   },
   {
     "stockCode": "97660",
@@ -36915,7 +36915,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849206"
+    "qualifiedAt": "2026-10-12T19:22:18.559022"
   },
   {
     "stockCode": "25310",
@@ -36957,7 +36957,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849207"
+    "qualifiedAt": "2026-10-12T19:22:18.559023"
   },
   {
     "stockCode": "64810",
@@ -36999,7 +36999,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849207"
+    "qualifiedAt": "2026-10-12T19:22:18.559024"
   },
   {
     "stockCode": "48470",
@@ -37041,7 +37041,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849208"
+    "qualifiedAt": "2026-10-12T19:22:18.559025"
   },
   {
     "stockCode": "79950",
@@ -37083,7 +37083,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849208"
+    "qualifiedAt": "2026-10-12T19:22:18.559026"
   },
   {
     "stockCode": "67020",
@@ -37125,7 +37125,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849209"
+    "qualifiedAt": "2026-10-12T19:22:18.559027"
   },
   {
     "stockCode": "62840",
@@ -37167,6 +37167,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-12T00:55:27.849209"
+    "qualifiedAt": "2026-10-12T19:22:18.559028"
   }
 ]
