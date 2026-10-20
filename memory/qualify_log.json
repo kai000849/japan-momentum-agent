@@ -38877,19 +38877,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "決算プラスインパクト銘柄として注目、ストップ高水準からの続伸",
+      "comment": "27年8月期大幅増益予想＋ファンド設立でストップ高、継続性あり",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 決算プラスインパクト銘柄として評価、ストップ高後続伸",
+      "surgeReason": "[決算] 27年8月期大幅増益・ファンド設立発表でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算プラスインパクト銘柄として評価、ストップ高後続伸",
+    "surgeReason": "[決算] 27年8月期大幅増益・ファンド設立発表でストップ高",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754257"
+    "qualifiedAt": "2026-10-20T00:45:56.523268"
   },
   {
     "stockCode": "65320",
@@ -38919,19 +38919,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "好決算・新中計・目標株価引き上げと複数の好材料が重なり評価継続",
+      "comment": "好決算・新中計評価継続＋大手証券が目標株価引き上げで続伸",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 好決算+新中計+目標株価引き上げで株価最高値更新",
+      "surgeReason": "[決算] 好決算・新中計評価＋証券目標株価引き上げで続伸",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 好決算+新中計+目標株価引き上げで株価最高値更新",
+    "surgeReason": "[決算] 好決算・新中計評価＋証券目標株価引き上げで続伸",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754268"
+    "qualifiedAt": "2026-10-20T00:45:56.523359"
   },
   {
     "stockCode": "18140",
@@ -38959,21 +38959,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "medium",
-      "comment": "業績・配当予想の上方修正で6期連続増配、配当利回り6.9%に",
-      "whyCategory": "業績修正",
+      "comment": "6期連続増配・業績上方修正でストップ高、配当利回り6.9%",
+      "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 業績上方修正＋6期連続増配で配当利回り6.9%に上昇",
+      "surgeReason": "[開示] 業績上方修正＋6期連続増配・配当利回り6.9%でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績上方修正＋6期連続増配で配当利回り6.9%に上昇",
-    "whyCategory": "業績修正",
+    "surgeReason": "[開示] 業績上方修正＋6期連続増配・配当利回り6.9%でストップ高",
+    "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_watch",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754270"
+    "qualifiedAt": "2026-10-20T00:45:56.523361"
   },
   {
     "stockCode": "75810",
@@ -39001,21 +39001,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "値上げ発表と今期営業益29%増計画を好感、一時14%高の急騰",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 6年ぶり値上げ発表と今期営業益29%増計画を好感",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "6年ぶり値上げ発表＋今期営業益29%増計画で急反発・14%高",
+      "whyCategory": "業績修正",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 6年ぶり値上げ＋今期営業益29%増計画を好感し急騰",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 6年ぶり値上げ発表と今期営業益29%増計画を好感",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "surgeReason": "[ニュース] 6年ぶり値上げ＋今期営業益29%増計画を好感し急騰",
+    "whyCategory": "業績修正",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754270"
+    "qualifiedAt": "2026-10-20T00:45:56.523362"
   },
   {
     "stockCode": "96020",
@@ -39045,19 +39045,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算説明でゴジラ新作への自信が示され急反発、継続性は不明",
+      "comment": "決算説明でゴジラ続編に自信、材料やや弱く過熱感あり",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算説明でゴジラ新作への強気姿勢を好感し急反発",
+      "surgeReason": "[決算] 決算説明会でゴジラ続編への自信表明が材料視",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算説明でゴジラ新作への強気姿勢を好感し急反発",
+    "surgeReason": "[決算] 決算説明会でゴジラ続編への自信表明が材料視",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754271"
+    "qualifiedAt": "2026-10-20T00:45:56.523363"
   },
   {
     "stockCode": "81740",
@@ -39085,21 +39085,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": true,
+      "structuralChange": false,
       "confidence": "low",
-      "comment": "ガス業界再編盟主狙いの戦略開示、時価総額1兆円目標を掲げる",
+      "comment": "再編盟主狙い・時価総額1兆円目標の記事あるが材料やや弱い",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 再編盟主宣言・時価総額1兆円目標開示が材料視",
+      "surgeReason": "[ニュース] ガス再編盟主狙い・時価総額1兆円目標報道が材料視",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 再編盟主宣言・時価総額1兆円目標開示が材料視",
+    "surgeReason": "[ニュース] ガス再編盟主狙い・時価総額1兆円目標報道が材料視",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
+    "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754274"
+    "qualifiedAt": "2026-10-20T00:45:56.523364"
   },
   {
     "stockCode": "81630",
@@ -39129,19 +39129,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "株主優待拡充と決算・月次売上好調（京樽子会社化寄与）が材料",
-      "whyCategory": "自社株買い・増配",
+      "comment": "株主優待拡充（100株以上に対象拡大）＋決算が材料",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 株主優待拡充と月次売上136%・決算好調が複合材料",
+      "surgeReason": "[開示] 株主優待制度拡充（100株以上対象）が主な材料",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 株主優待拡充と月次売上136%・決算好調が複合材料",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[開示] 株主優待制度拡充（100株以上対象）が主な材料",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-19T16:44:56.754275"
+    "qualifiedAt": "2026-10-20T00:45:56.523365"
   },
   {
     "stockCode": "277A0",
@@ -39171,19 +39171,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算は1Q最終3%減益、米同業株高追い風の見直し買いで続伸",
-      "whyCategory": "テーマ相乗り",
+      "comment": "1Q売上高過去最高も最終3%減益、材料としては弱い",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q減益も米同業高追い風の見直し買いで続伸",
+      "surgeReason": "[決算] 1Q売上過去最高も最終減益、材料混在で継続性不透明",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q減益も米同業高追い風の見直し買いで続伸",
-    "whyCategory": "テーマ相乗り",
+    "surgeReason": "[決算] 1Q売上過去最高も最終減益、材料混在で継続性不透明",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-19T16:44:56.754278"
+    "qualifiedAt": "2026-10-20T00:45:56.523369"
   },
   {
     "stockCode": "30970",
@@ -39213,19 +39213,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "FTSE指数採用が材料か、一方で顧客情報漏洩リスクも指摘されている",
-      "whyCategory": "需給",
+      "comment": "顧客情報漏洩報道あり急落後の反発か、材料不明確",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] FTSE指数採用一方で顧客情報漏洩問題もありリスク併存",
+      "surgeReason": "[不明] 材料特定不可・顧客情報漏洩報道もあり要確認",
       "stage2Available": true
     },
-    "surgeReason": "[需給] FTSE指数採用一方で顧客情報漏洩問題もありリスク併存",
-    "whyCategory": "需給",
+    "surgeReason": "[不明] 材料特定不可・顧客情報漏洩報道もあり要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-19T16:44:56.754280"
+    "qualifiedAt": "2026-10-20T00:45:56.523370"
   },
   {
     "stockCode": "81790",
@@ -39255,19 +39255,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "上期経常5%増益着地・4-6月期22%増益と堅調決算が材料",
-      "whyCategory": "決算",
+      "comment": "1Q経常11%減益、ホテル高付加価値化戦略記事のみで材料弱い",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 上期経常5%増益・4-6月期22%増益の堅調決算を評価",
+      "surgeReason": "[ニュース] ホテル高付加価値化戦略報道も1Q減益で材料弱い",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 上期経常5%増益・4-6月期22%増益の堅調決算を評価",
-    "whyCategory": "決算",
+    "surgeReason": "[ニュース] ホテル高付加価値化戦略報道も1Q減益で材料弱い",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-19T16:44:56.754281"
+    "qualifiedAt": "2026-10-20T00:45:56.523372"
   },
   {
     "stockCode": "98610",
@@ -39297,19 +39297,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ラーメン事業海外展開戦略報道、明確な業績開示材料は確認できず",
-      "whyCategory": "ニュース",
+      "comment": "通期業績・配当予想上方修正が材料、4日続伸で過熱感あり",
+      "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 海外展開戦略報道、外食セクター物色の恩恵か",
+      "surgeReason": "[開示] 通期業績・年間配当予想上方修正も4日続伸で過熱感",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 海外展開戦略報道、外食セクター物色の恩恵か",
-    "whyCategory": "ニュース",
+    "surgeReason": "[開示] 通期業績・年間配当予想上方修正も4日続伸で過熱感",
+    "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-19T16:44:56.754281"
+    "qualifiedAt": "2026-10-20T00:45:56.523372"
   },
   {
     "stockCode": "98870",
@@ -39339,18 +39339,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "牛めし類20円値上げと決算開示が材料、外食セクター全般物色も",
+      "comment": "牛めし類一律20円値上げ発表が材料、外食値上げテーマ相乗り",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 牛めし全品20円値上げ発表と決算が材料視",
+      "surgeReason": "[ニュース] 牛めし類一律20円値上げ発表・外食値上げテーマ相乗り",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 牛めし全品20円値上げ発表と決算が材料視",
+    "surgeReason": "[ニュース] 牛めし類一律20円値上げ発表・外食値上げテーマ相乗り",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-19T16:44:56.754282"
+    "qualifiedAt": "2026-10-20T00:45:56.523373"
   }
 ]
