@@ -37532,20 +37532,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "業績予想修正開示あり。上方か下方か不明だが売買代金3.9倍と反応大",
+      "confidence": "low",
+      "comment": "業績予想修正開示あり。過去実績で業績修正カテゴリ勝率40.5%と低水準",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 業績予想修正発表により急騰、内容精査が必要",
+      "surgeReason": "[開示] 業績予想修正発表が材料、継続性は不透明",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 業績予想修正発表により急騰、内容精査が必要",
+    "surgeReason": "[開示] 業績予想修正発表が材料、継続性は不透明",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-20T14:34:54.606926"
+    "qualifiedAt": "2026-10-21T00:15:49.932897"
   },
   {
     "stockCode": "96020",
@@ -37574,20 +37574,20 @@
     },
     "stage2": {
       "structuralChange": false,
-      "confidence": "medium",
-      "comment": "決算説明会でゴジラ続編への自信示し見直し買い継続。売買代金2.7倍",
+      "confidence": "low",
+      "comment": "決算説明会でゴジラ続編に自信。決算カテゴリ勝率38.6%で低水準",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 決算説明会でゴジラ新作への自信示し見直し買い継続",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 3〜8月期決算説明会で次作ゴジラへの期待が再評価",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算説明会でゴジラ新作への自信示し見直し買い継続",
+    "surgeReason": "[決算] 3〜8月期決算説明会で次作ゴジラへの期待が再評価",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-20T14:34:54.606938"
+    "qualifiedAt": "2026-10-21T00:15:49.932911"
   },
   {
     "stockCode": "98610",
@@ -37617,19 +37617,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "外食支援策の思惑買いが継続し上場来高値更新。需給主導で過熱感あり",
+      "comment": "外食支援策の思惑継続で上場来高値更新。テーマ性あるが根拠は需給・思惑",
       "whyCategory": "テーマ相乗り",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 外食支援策の思惑継続で上場来高値更新も過熱感あり",
+      "surgeReason": "[ニュース] 外食支援策の思惑買い継続で上場来高値更新",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 外食支援策の思惑継続で上場来高値更新も過熱感あり",
+    "surgeReason": "[ニュース] 外食支援策の思惑買い継続で上場来高値更新",
     "whyCategory": "テーマ相乗り",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-10-20T14:34:54.606939"
+    "qualifiedAt": "2026-10-21T00:15:49.932913"
   },
   {
     "stockCode": "77470",
@@ -37659,19 +37659,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算・配当開示あるが売買代金1.7倍と反応限定的。材料の強さ不明",
-      "whyCategory": "決算",
+      "comment": "決算・増配開示あり。詳細不明確で判断根拠不十分。売買代金増も小幅",
+      "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 決算・増配開示あるが急騰材料の強さ不明で要確認",
+      "surgeReason": "[開示] 決算発表と剰余金配当開示が材料も内容詳細不明",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 決算・増配開示あるが急騰材料の強さ不明で要確認",
-    "whyCategory": "決算",
+    "surgeReason": "[開示] 決算発表と剰余金配当開示が材料も内容詳細不明",
+    "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-20T14:34:54.606940"
+    "qualifiedAt": "2026-10-21T00:15:49.932914"
   },
   {
     "stockCode": "27910",
@@ -37701,7 +37701,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "1Q決算は65%最終減益と悪材料。上昇理由が明確でなく材料不明",
+      "comment": "1Q65%最終減益・既存店売上減と悪材料優勢。急騰理由不明確",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -37713,7 +37713,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-20T14:34:54.606941"
+    "qualifiedAt": "2026-10-21T00:15:49.932915"
   },
   {
     "stockCode": "30460",
@@ -37743,19 +37743,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "前期下振れ着地で嫌気も翌日反発。社長コメントは強気だが材料弱い",
-      "whyCategory": "ニュース",
+      "comment": "前期下振れ着地で嫌気売りも反発。アナリスト予想下降で継続性乏しい",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 前期下振れ着地後の自律反発、材料乏しく継続性低い",
+      "surgeReason": "[決算] 前期下振れ着地を嫌気後の自律反発、継続性低い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 前期下振れ着地後の自律反発、材料乏しく継続性低い",
-    "whyCategory": "ニュース",
+    "surgeReason": "[決算] 前期下振れ着地を嫌気後の自律反発、継続性低い",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-20T14:34:54.606941"
+    "qualifiedAt": "2026-10-21T00:15:49.932916"
   },
   {
     "stockCode": "82370",
@@ -37785,7 +37785,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "上期経常14%減益着地で悪材料。急反落報道もあり上昇理由が不明瞭",
+      "comment": "上期14%減益着地・売上高11%減と悪材料。+3.1%上昇の理由不明確",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -37797,6 +37797,6 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-10-20T14:34:54.606944"
+    "qualifiedAt": "2026-10-21T00:15:49.932918"
   }
 ]
