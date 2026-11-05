@@ -35019,19 +35019,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ストップ安気配・業績下方修正で需給混乱。急騰理由不明確",
+      "comment": "ストップ安売り気配・業績下方修正の報道あり、急騰理由と矛盾",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 下方修正ショック後の反発、継続性低く需給不安定",
+      "surgeReason": "[ニュース] 業績下方修正でストップ安報道、急騰理由と矛盾し判断困難",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 下方修正ショック後の反発、継続性低く需給不安定",
+    "surgeReason": "[ニュース] 業績下方修正でストップ安報道、急騰理由と矛盾し判断困難",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271705"
+    "qualifiedAt": "2026-11-05T01:56:14.839196"
   },
   {
     "stockCode": "23170",
@@ -35061,19 +35061,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自社株買い・消却発表。勝率34.4%と低く様子見推奨",
+      "comment": "自社株買い・消却発表。勝率データ上は優位性低く様子見",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自己株式消却・自社株取得決定発表",
+      "surgeReason": "[開示] 自己株式消却・自社株買い発表もカテゴリ勝率34.4%でskip",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自己株式消却・自社株取得決定発表",
+    "surgeReason": "[開示] 自己株式消却・自社株買い発表もカテゴリ勝率34.4%でskip",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271717"
+    "qualifiedAt": "2026-11-05T01:56:14.839206"
   },
   {
     "stockCode": "90640",
@@ -35103,19 +35103,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期業績上方修正・中間決算発表。構造改革進捗が確認された",
-      "whyCategory": "業績修正",
+      "comment": "決算と業績上方修正のダブル材料、構造改革進展の可能性",
+      "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績予想を上方修正、中間決算発表",
+      "surgeReason": "[決算] 2Q決算短信と通期業績予想修正を同時開示、改善期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績予想を上方修正、中間決算発表",
-    "whyCategory": "業績修正",
+    "surgeReason": "[決算] 2Q決算短信と通期業績予想修正を同時開示、改善期待",
+    "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271718"
+    "qualifiedAt": "2026-11-05T01:56:14.839207"
   },
   {
     "stockCode": "80580",
@@ -35143,21 +35143,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
+      "structuralChange": true,
+      "confidence": "medium",
       "comment": "決算＋自社株買い消却＋特定子会社異動の複合材料",
-      "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 決算・自社株買い消却・子会社異動の複合発表",
+      "whyCategory": "決算",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 2Q決算・自社株買い消却・子会社異動の複合開示で上昇",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 決算・自社株買い消却・子会社異動の複合発表",
-    "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "surgeReason": "[決算] 2Q決算・自社株買い消却・子会社異動の複合開示で上昇",
+    "whyCategory": "決算",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271720"
+    "qualifiedAt": "2026-11-05T01:56:14.839209"
   },
   {
     "stockCode": "40910",
@@ -35187,19 +35187,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間決算発表のみ。材料内容不明で継続性判断困難",
+      "comment": "2Q決算開示のみ、内容詳細不明で継続性判断困難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2Q中間決算短信・補足資料開示",
+      "surgeReason": "[決算] 2Q決算短信開示のみ、詳細不明で確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2Q中間決算短信・補足資料開示",
+    "surgeReason": "[決算] 2Q決算短信開示のみ、詳細不明で確信度low→skip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271721"
+    "qualifiedAt": "2026-11-05T01:56:14.839210"
   },
   {
     "stockCode": "82550",
@@ -35229,19 +35229,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間決算発表。内容詳細不明で継続性判断困難",
+      "comment": "2Q決算開示、内容詳細不明で継続性判断困難",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2Q中間決算短信・説明資料開示",
+      "surgeReason": "[決算] 2Q決算短信・説明資料開示のみ、詳細不明でskip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2Q中間決算短信・説明資料開示",
+    "surgeReason": "[決算] 2Q決算短信・説明資料開示のみ、詳細不明でskip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271722"
+    "qualifiedAt": "2026-11-05T01:56:14.839211"
   },
   {
     "stockCode": "44100",
@@ -35271,19 +35271,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "NZ事業撤退・特損特益同時計上。材料混在で不明確",
+      "comment": "NZ事業撤退・特損特益同時計上、材料の方向性不明",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] NZ事業撤退・特損特益同時計上の発表",
+      "surgeReason": "[ニュース] NZ事業撤退・特損特益計上、ポジネガ混在で継続性不明",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] NZ事業撤退・特損特益同時計上の発表",
+    "surgeReason": "[ニュース] NZ事業撤退・特損特益計上、ポジネガ混在で継続性不明",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271723"
+    "qualifiedAt": "2026-11-05T01:56:14.839212"
   },
   {
     "stockCode": "92010",
@@ -35313,19 +35313,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間決算・中間配当発表。内容詳細不明で様子見",
-      "whyCategory": "自社株買い・増配",
+      "comment": "2Q決算と中間配当発表、増配有無など詳細不明",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 中間決算・中間配当発表",
+      "surgeReason": "[決算] 2Q決算・中間配当開示、詳細不明で確信度low→skip",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 中間決算・中間配当発表",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[決算] 2Q決算・中間配当開示、詳細不明で確信度low→skip",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271727"
+    "qualifiedAt": "2026-11-05T01:56:14.839216"
   },
   {
     "stockCode": "75750",
@@ -35355,19 +35355,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "みずほ格上げ・商号変更ニュース。勝率37.5%で低い",
+      "comment": "みずほが投資判断引き上げ、28.3期増益確度高まるとの評価",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] みずほ投資判断引き上げ・商号変更発表",
+      "surgeReason": "[ニュース] みずほ投資判断引き上げ、ニュース勝率31.8%でskip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] みずほ投資判断引き上げ・商号変更発表",
+    "surgeReason": "[ニュース] みずほ投資判断引き上げ、ニュース勝率31.8%でskip",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271729"
+    "qualifiedAt": "2026-11-05T01:56:14.839217"
   },
   {
     "stockCode": "34910",
@@ -35397,19 +35397,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "東証プライム市場区分変更承認。需給改善・指数組入期待",
-      "whyCategory": "ニュース",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] 東証プライム市場への区分変更承認、需給改善期待",
+      "comment": "東証プライム市場への区分変更承認、需給改善・インデックス組入期待",
+      "whyCategory": "需給",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 東証プライム市場区分変更承認、需給カテゴリ勝率15.4%でskip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 東証プライム市場への区分変更承認、需給改善期待",
-    "whyCategory": "ニュース",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 東証プライム市場区分変更承認、需給カテゴリ勝率15.4%でskip",
+    "whyCategory": "需給",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271730"
+    "qualifiedAt": "2026-11-05T01:56:14.839219"
   },
   {
     "stockCode": "70130",
@@ -35437,21 +35437,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "増配・中間決算発表。勝率低いが材料は明確",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "2Q決算＋増配発表の複合材料、決算カテゴリ勝率45.5%で最高",
       "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 期末増配予想修正・2Q決算発表",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] 期末増配予想修正＋2Q決算開示の複合材料で上昇",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 期末増配予想修正・2Q決算発表",
+    "surgeReason": "[開示] 期末増配予想修正＋2Q決算開示の複合材料で上昇",
     "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271731"
+    "qualifiedAt": "2026-11-05T01:56:14.839220"
   },
   {
     "stockCode": "95190",
@@ -35481,19 +35481,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "再エネ売電量が計画超過のニュース。材料やや弱い",
+      "comment": "再エネ売電量が計画を大きく上回ると報道、テーマ性あり",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 再エネ売電量が計画を大幅上回ると報道",
+      "surgeReason": "[ニュース] 再エネ売電量が計画超過の報道、ニュース勝率31.8%でskip",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 再エネ売電量が計画を大幅上回ると報道",
+    "surgeReason": "[ニュース] 再エネ売電量が計画超過の報道、ニュース勝率31.8%でskip",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271733"
+    "qualifiedAt": "2026-11-05T01:56:14.839221"
   },
   {
     "stockCode": "21240",
@@ -35523,19 +35523,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "自社株取得終了開示のみ。急騰材料として弱い",
-      "whyCategory": "自社株買い・増配",
+      "comment": "決算情報とアムステルダム新拠点開設の報道、材料は弱め",
+      "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 自己株式取得終了の開示、材料としては弱い",
+      "surgeReason": "[ニュース] 決算・海外拠点開設報道のみ、明確な急騰材料特定困難",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 自己株式取得終了の開示、材料としては弱い",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[ニュース] 決算・海外拠点開設報道のみ、明確な急騰材料特定困難",
+    "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271734"
+    "qualifiedAt": "2026-11-05T01:56:14.839222"
   },
   {
     "stockCode": "25310",
@@ -35563,21 +35563,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "タカラバイオ事業承継の経過開示。M&A関連だが詳細不明",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "タカラバイオ事業承継の進捗開示、資本再編による価値顕在化期待",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[開示] タカラバイオ事業承継（簡易吸収分割）の経過開示",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[開示] タカラバイオ吸収分割による事業承継の経過開示、再編期待",
       "stage2Available": true
     },
-    "surgeReason": "[開示] タカラバイオ事業承継（簡易吸収分割）の経過開示",
+    "surgeReason": "[開示] タカラバイオ吸収分割による事業承継の経過開示、再編期待",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271735"
+    "qualifiedAt": "2026-11-05T01:56:14.839223"
   },
   {
     "stockCode": "22220",
@@ -35607,19 +35607,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間決算発表。内容詳細不明で継続性判断困難",
+      "comment": "2Q決算短信と補足説明資料開示、内容詳細不明",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2Q中間決算短信・補足説明資料開示",
+      "surgeReason": "[決算] 2Q決算短信・補足説明資料開示のみ、詳細不明でskip",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2Q中間決算短信・補足説明資料開示",
+    "surgeReason": "[決算] 2Q決算短信・補足説明資料開示のみ、詳細不明でskip",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271736"
+    "qualifiedAt": "2026-11-05T01:56:14.839224"
   },
   {
     "stockCode": "79510",
@@ -35661,7 +35661,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271737"
+    "qualifiedAt": "2026-11-05T01:56:14.839225"
   },
   {
     "stockCode": "90220",
@@ -35703,7 +35703,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271738"
+    "qualifiedAt": "2026-11-05T01:56:14.839226"
   },
   {
     "stockCode": "95170",
@@ -35745,7 +35745,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271739"
+    "qualifiedAt": "2026-11-05T01:56:14.839227"
   },
   {
     "stockCode": "96820",
@@ -35787,7 +35787,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-04T17:34:40.271741"
+    "qualifiedAt": "2026-11-05T01:56:14.839228"
   },
   {
     "stockCode": "69880",
@@ -35829,6 +35829,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-04T17:34:40.271742"
+    "qualifiedAt": "2026-11-05T01:56:14.839229"
   }
 ]
