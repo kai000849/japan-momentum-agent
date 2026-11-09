@@ -46023,19 +46023,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算短信＋業績予想・配当修正が重なり急騰。内容精査要。",
+      "comment": "決算短信＋業績予想・配当予想修正の開示。内容次第だが継続性は不明",
       "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 3Q決算短信と業績予想・配当予想の修正を同時開示",
+      "surgeReason": "[決算] 3Q決算＋業績・配当予想修正を同時開示",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 3Q決算短信と業績予想・配当予想の修正を同時開示",
+    "surgeReason": "[決算] 3Q決算＋業績・配当予想修正を同時開示",
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-07T01:17:24.209583"
+    "qualifiedAt": "2026-11-09T01:21:23.162202"
   },
   {
     "stockCode": "31100",
@@ -46065,19 +46065,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間決算＋増配発表。上昇幅3.4%・出来高2.6倍は限定的。",
+      "comment": "中間決算＋配当修正開示。増配期待の上昇だが勝率低カテゴリ",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 中間決算と配当予想修正（増配）を同時開示",
+      "surgeReason": "[決算] 中間決算＋配当予想修正（増配期待）を開示",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 中間決算と配当予想修正（増配）を同時開示",
+    "surgeReason": "[決算] 中間決算＋配当予想修正（増配期待）を開示",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-07T01:17:24.209597"
+    "qualifiedAt": "2026-11-09T01:21:23.162215"
   },
   {
     "stockCode": "37740",
@@ -46107,19 +46107,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上方修正開示あり。IIJの通期業績上振れは構造的成長示唆。",
+      "comment": "通期業績予想の上方修正を開示。IIJのクラウド・セキュリティ好調示唆",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 2Q実績好調＋通期業績予想を上方修正",
+      "surgeReason": "[開示] 2Q決算＋通期業績予想を上方修正、継続性を注視",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 2Q実績好調＋通期業績予想を上方修正",
+    "surgeReason": "[開示] 2Q決算＋通期業績予想を上方修正、継続性を注視",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-07T01:17:24.209598"
+    "qualifiedAt": "2026-11-09T01:21:23.162216"
   },
   {
     "stockCode": "64130",
@@ -46149,18 +46149,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "業績修正＋フィリピン子会社完全化のM&A複合材料。継続性不明。",
-      "whyCategory": "資本提携・M&A",
+      "comment": "業績修正＋フィリピン子会社完全子会社化の2材料。M&A含む複合開示",
+      "whyCategory": "業績修正",
       "entryTiming": "day2_skip",
       "surgeReason": "[開示] 業績修正＋フィリピン子会社完全子会社化を同時開示",
       "stage2Available": true
     },
     "surgeReason": "[開示] 業績修正＋フィリピン子会社完全子会社化を同時開示",
-    "whyCategory": "資本提携・M&A",
+    "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-07T01:17:24.209599"
+    "qualifiedAt": "2026-11-09T01:21:23.162218"
   }
 ]
