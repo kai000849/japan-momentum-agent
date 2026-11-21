@@ -40563,19 +40563,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期業績予想の上方修正＋株主優待導入で複合材料。継続性あり",
+      "comment": "通期業績予想修正＋株主優待導入の複合材料。業績修正の勝率は50%。",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合材料",
+      "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合ポジティブ開示",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合材料",
+    "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合ポジティブ開示",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-20T18:05:20.796092"
+    "qualifiedAt": "2026-11-21T02:55:41.384223"
   },
   {
     "stockCode": "60580",
@@ -40603,21 +40603,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "1Q純利益2.6倍も通期据え置きで出尽くし感。続落継続リスク高",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "上期経常39%増益・上振れ着地。決算勝率54.3%でやや優位。",
       "whyCategory": "決算",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 純利益2.6倍も通期据え置きで出尽くし感・続落",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 上期経常39%増益・上振れ着地で買い優勢",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 純利益2.6倍も通期据え置きで出尽くし感・続落",
+    "surgeReason": "[決算] 上期経常39%増益・上振れ着地で買い優勢",
     "whyCategory": "決算",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-20T18:05:20.796104"
+    "qualifiedAt": "2026-11-21T02:55:41.384237"
   },
   {
     "stockCode": "64400",
@@ -40647,19 +40647,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1〜6月期利益急拡大でS高。収益改善トレンド初動の可能性",
+      "comment": "1～6月期利益急拡大でS高実績。決算勝率54.3%。自社株買い終了も添え材料。",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1〜6月期利益急拡大・S高到達で収益改善評価",
+      "surgeReason": "[決算] 収益改善で中間期利益急拡大、S高実績あり",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1〜6月期利益急拡大・S高到達で収益改善評価",
+    "surgeReason": "[決算] 収益改善で中間期利益急拡大、S高実績あり",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-20T18:05:20.796104"
+    "qualifiedAt": "2026-11-21T02:55:41.384239"
   },
   {
     "stockCode": "66300",
@@ -40689,19 +40689,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "業績低進捗＋優待内容変更を嫌気しS安売り気配。材料ネガティブ",
-      "whyCategory": "ニュース",
+      "comment": "ストップ安・業績低進捗・優待内容変更と悪材料集中。急騰との整合性なし。",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 業績低進捗・優待変更嫌気でS安売り気配",
+      "surgeReason": "[不明] 材料特定不可・ストップ安報道と急騰が矛盾",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 業績低進捗・優待変更嫌気でS安売り気配",
-    "whyCategory": "ニュース",
+    "surgeReason": "[不明] 材料特定不可・ストップ安報道と急騰が矛盾",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-20T18:05:20.796105"
+    "qualifiedAt": "2026-11-21T02:55:41.384240"
   },
   {
     "stockCode": "67060",
@@ -40731,18 +40731,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間無配・期末配当未定の補足開示。材料としてはネガティブ方向",
-      "whyCategory": "自社株買い・増配",
+      "comment": "中間配当無配・期末配当未定の補足開示。ネガティブ材料のみで急騰理由不明。",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 中間無配・期末配当未定の補足開示で材料不透明",
+      "surgeReason": "[不明] 無配・期末配当未定の補足開示のみ、材料特定不可",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 中間無配・期末配当未定の補足開示で材料不透明",
-    "whyCategory": "自社株買い・増配",
+    "surgeReason": "[不明] 無配・期末配当未定の補足開示のみ、材料特定不可",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-20T18:05:20.796106"
+    "qualifiedAt": "2026-11-21T02:55:41.384241"
   }
 ]
