@@ -1,209 +1,5 @@
 [
   {
-    "stockCode": "67440",
-    "companyName": "能美防災",
-    "mode": "SHORT_TERM",
-    "scanDate": "2026-10-22",
-    "close": 4315.0,
-    "prevClose": 4110.0,
-    "priceChangePct": 4.99,
-    "turnover": 950148500,
-    "avgTurnover25d": 392939340.0,
-    "turnoverRatio": 2.42,
-    "score": 12.06,
-    "stage1": {
-      "turnoverSustained": true,
-      "priceSustained": true,
-      "stage1Pass": true,
-      "surgeTurnover": 950148500.0,
-      "avgPostTurnover": 0.0,
-      "turnoverSustainRate": 0.0,
-      "surgeClose": 4315.0,
-      "latestClose": 4315.0,
-      "priceChangeAfterSurge": 0.0,
-      "daysChecked": 0,
-      "reason": "急騰後データなし（最新日）→ 保留通過"
-    },
-    "stage2": {
-      "structuralChange": true,
-      "confidence": "medium",
-      "comment": "1Q経常27倍増益・今期売上高1500億円超え見込みの好決算",
-      "whyCategory": "決算",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1Q経常27倍増益・今期売上高初の1500億円超え見込み",
-      "stage2Available": true
-    },
-    "surgeReason": "[決算] 1Q経常27倍増益・今期売上高初の1500億円超え見込み",
-    "whyCategory": "決算",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
-    "outcome": {
-      "status": "recorded",
-      "entryPrice": 4300.0,
-      "entryDate": "2026-10-23",
-      "exitPrice": 4120.0,
-      "exitDate": "2026-11-06",
-      "returnPct": -4.19,
-      "isWin": false,
-      "recordedAt": "2026-11-06T17:01:36.583488"
-    },
-    "volume_pattern": "early",
-    "qualifiedAt": "2026-10-23T00:18:19.704016"
-  },
-  {
-    "stockCode": "65320",
-    "companyName": "ベイカレント",
-    "mode": "SHORT_TERM",
-    "scanDate": "2026-10-22",
-    "close": 11440.0,
-    "prevClose": 11025.0,
-    "priceChangePct": 3.76,
-    "turnover": 37321455500,
-    "avgTurnover25d": 12345921924.0,
-    "turnoverRatio": 3.02,
-    "score": 11.38,
-    "stage1": {
-      "turnoverSustained": true,
-      "priceSustained": true,
-      "stage1Pass": true,
-      "surgeTurnover": 37321455500.0,
-      "avgPostTurnover": 0.0,
-      "turnoverSustainRate": 0.0,
-      "surgeClose": 11440.0,
-      "latestClose": 11440.0,
-      "priceChangeAfterSurge": 0.0,
-      "daysChecked": 0,
-      "reason": "急騰後データなし（最新日）→ 保留通過"
-    },
-    "stage2": {
-      "structuralChange": true,
-      "confidence": "low",
-      "comment": "上場来高値更新・株価3割高と強いモメンタム継続も材料不明",
-      "whyCategory": "需給",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 上場来高値更新・強いモメンタム継続も直接材料は不明",
-      "stage2Available": true
-    },
-    "surgeReason": "[需給] 上場来高値更新・強いモメンタム継続も直接材料は不明",
-    "whyCategory": "需給",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "継続",
-    "outcome": {
-      "status": "recorded",
-      "entryPrice": 11655.0,
-      "entryDate": "2026-10-23",
-      "exitPrice": 11735.0,
-      "exitDate": "2026-11-06",
-      "returnPct": 0.69,
-      "isWin": true,
-      "recordedAt": "2026-11-06T17:01:36.591043"
-    },
-    "volume_pattern": "late",
-    "qualifiedAt": "2026-10-23T00:18:19.704016"
-  },
-  {
-    "stockCode": "61960",
-    "companyName": "ストライクグループ",
-    "mode": "SHORT_TERM",
-    "scanDate": "2026-10-22",
-    "close": 1436.0,
-    "prevClose": 1388.0,
-    "priceChangePct": 3.46,
-    "turnover": 1556502300,
-    "avgTurnover25d": 476116700.0,
-    "turnoverRatio": 3.27,
-    "score": 11.31,
-    "stage1": {
-      "turnoverSustained": true,
-      "priceSustained": true,
-      "stage1Pass": true,
-      "surgeTurnover": 1556502300.0,
-      "avgPostTurnover": 0.0,
-      "turnoverSustainRate": 0.0,
-      "surgeClose": 1436.0,
-      "latestClose": 1436.0,
-      "priceChangeAfterSurge": 0.0,
-      "daysChecked": 0,
-      "reason": "急騰後データなし（最新日）→ 保留通過"
-    },
-    "stage2": {
-      "structuralChange": null,
-      "confidence": "low",
-      "comment": "判定結果なし",
-      "whyCategory": "不明",
-      "entryTiming": "day2_watch",
-      "surgeReason": "",
-      "stage2Available": false
-    },
-    "surgeReason": "",
-    "whyCategory": "不明",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "様子見",
-    "outcome": {
-      "status": "recorded",
-      "entryPrice": 1435.0,
-      "entryDate": "2026-10-23",
-      "exitPrice": 1697.0,
-      "exitDate": "2026-11-06",
-      "returnPct": 18.26,
-      "isWin": true,
-      "recordedAt": "2026-11-06T17:01:36.598642"
-    },
-    "volume_pattern": "early",
-    "qualifiedAt": "2026-10-23T00:18:19.704017"
-  },
-  {
-    "stockCode": "43960",
-    "companyName": "システムサポートホールディングス",
-    "mode": "SHORT_TERM",
-    "scanDate": "2026-10-22",
-    "close": 1568.0,
-    "prevClose": 1504.0,
-    "priceChangePct": 4.26,
-    "turnover": 219884400,
-    "avgTurnover25d": 93013152.0,
-    "turnoverRatio": 2.36,
-    "score": 10.06,
-    "stage1": {
-      "turnoverSustained": true,
-      "priceSustained": true,
-      "stage1Pass": true,
-      "surgeTurnover": 219884400.0,
-      "avgPostTurnover": 0.0,
-      "turnoverSustainRate": 0.0,
-      "surgeClose": 1568.0,
-      "latestClose": 1568.0,
-      "priceChangeAfterSurge": 0.0,
-      "daysChecked": 0,
-      "reason": "急騰後データなし（最新日）→ 保留通過"
-    },
-    "stage2": {
-      "structuralChange": null,
-      "confidence": "low",
-      "comment": "判定結果なし",
-      "whyCategory": "不明",
-      "entryTiming": "day2_watch",
-      "surgeReason": "",
-      "stage2Available": false
-    },
-    "surgeReason": "",
-    "whyCategory": "不明",
-    "entryTiming": "day2_watch",
-    "qualifyResult": "様子見",
-    "outcome": {
-      "status": "recorded",
-      "entryPrice": 1570.0,
-      "entryDate": "2026-10-23",
-      "exitPrice": 1431.0,
-      "exitDate": "2026-11-06",
-      "returnPct": -8.85,
-      "isWin": false,
-      "recordedAt": "2026-11-06T17:01:36.606163"
-    },
-    "volume_pattern": "late",
-    "qualifiedAt": "2026-10-23T00:18:19.704017"
-  },
-  {
     "stockCode": "80600",
     "companyName": "キヤノンマーケティングジャパン",
     "mode": "SHORT_TERM",
@@ -25537,7 +25333,16 @@
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "entryPrice": 2930.0,
+      "entryDate": "2026-11-09",
+      "exitPrice": 2766.0,
+      "exitDate": "2026-11-20",
+      "returnPct": -5.6,
+      "isWin": false,
+      "recordedAt": "2026-11-23T02:06:45.087698"
+    },
     "volume_pattern": "late",
     "qualifiedAt": "2026-11-09T01:21:23.162202"
   },
@@ -25579,7 +25384,16 @@
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "entryPrice": 2400.0,
+      "entryDate": "2026-11-09",
+      "exitPrice": 2098.5,
+      "exitDate": "2026-11-20",
+      "returnPct": -12.56,
+      "isWin": false,
+      "recordedAt": "2026-11-23T02:06:45.094899"
+    },
     "volume_pattern": "early",
     "qualifiedAt": "2026-11-09T01:21:23.162215"
   },
@@ -25621,7 +25435,16 @@
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "entryPrice": 3710.0,
+      "entryDate": "2026-11-09",
+      "exitPrice": 3926.0,
+      "exitDate": "2026-11-20",
+      "returnPct": 5.82,
+      "isWin": true,
+      "recordedAt": "2026-11-23T02:06:45.102277"
+    },
     "volume_pattern": "early",
     "qualifiedAt": "2026-11-09T01:21:23.162216"
   },
@@ -25663,7 +25486,16 @@
     "whyCategory": "業績修正",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
-    "outcome": null,
+    "outcome": {
+      "status": "recorded",
+      "entryPrice": 1089.0,
+      "entryDate": "2026-11-09",
+      "exitPrice": 1094.0,
+      "exitDate": "2026-11-20",
+      "returnPct": 0.46,
+      "isWin": true,
+      "recordedAt": "2026-11-23T02:06:45.110532"
+    },
     "volume_pattern": "early",
     "qualifiedAt": "2026-11-09T01:21:23.162218"
   },
@@ -40563,19 +40395,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "通期業績予想修正＋株主優待導入の複合材料。業績修正の勝率は50%。",
+      "comment": "通期業績予想修正＋株主優待導入の二重材料。業績修正の勝率52%だがmedium確信度は低勝率",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合ポジティブ開示",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[開示] 通期業績予想修正＋株主優待新設の複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合ポジティブ開示",
+    "surgeReason": "[開示] 通期業績予想修正＋株主優待新設の複合材料",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-21T02:55:41.384223"
+    "qualifiedAt": "2026-11-23T02:07:16.265088"
   },
   {
     "stockCode": "60580",
@@ -40605,19 +40437,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "上期経常39%増益・上振れ着地。決算勝率54.3%でやや優位。",
+      "comment": "1Q純利益2.6倍・上期経常39%増益で上振れ着地。好決算継続性あるが続落報道も混在",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 上期経常39%増益・上振れ着地で買い優勢",
+      "surgeReason": "[決算] 上期経常39%増益・純利益2.6倍で上振れ着地",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 上期経常39%増益・上振れ着地で買い優勢",
+    "surgeReason": "[決算] 上期経常39%増益・純利益2.6倍で上振れ着地",
     "whyCategory": "決算",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-21T02:55:41.384237"
+    "qualifiedAt": "2026-11-23T02:07:16.265099"
   },
   {
     "stockCode": "64400",
@@ -40646,20 +40478,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "1～6月期利益急拡大でS高実績。決算勝率54.3%。自社株買い終了も添え材料。",
+      "confidence": "low",
+      "comment": "1〜6月期利益急拡大でS高。自社株買い終了開示も。決算主導の急騰で継続性要確認",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 収益改善で中間期利益急拡大、S高実績あり",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 1〜6月期利益急拡大によるS高・収益改善鮮明",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 収益改善で中間期利益急拡大、S高実績あり",
+    "surgeReason": "[決算] 1〜6月期利益急拡大によるS高・収益改善鮮明",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-21T02:55:41.384239"
+    "qualifiedAt": "2026-11-23T02:07:16.265101"
   },
   {
     "stockCode": "66300",
@@ -40689,19 +40521,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "ストップ安・業績低進捗・優待内容変更と悪材料集中。急騰との整合性なし。",
+      "comment": "PER100倍超の高バリュエーション言及あり。注目銘柄ダイジェスト掲載だが具体材料不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・ストップ安報道と急騰が矛盾",
+      "surgeReason": "[不明] 材料特定不可・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・ストップ安報道と急騰が矛盾",
+    "surgeReason": "[不明] 材料特定不可・要確認",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-21T02:55:41.384240"
+    "qualifiedAt": "2026-11-23T02:07:16.265102"
   },
   {
     "stockCode": "67060",
@@ -40731,18 +40563,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "中間配当無配・期末配当未定の補足開示。ネガティブ材料のみで急騰理由不明。",
+      "comment": "中間配当無配・期末配当未定の補足開示。ネガティブ材料にもかかわらず急騰、需給主導か",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 無配・期末配当未定の補足開示のみ、材料特定不可",
+      "surgeReason": "[不明] 配当無配・未定補足開示、急騰理由不明確",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 無配・期末配当未定の補足開示のみ、材料特定不可",
+    "surgeReason": "[不明] 配当無配・未定補足開示、急騰理由不明確",
     "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-21T02:55:41.384241"
+    "qualifiedAt": "2026-11-23T02:07:16.265104"
   }
 ]
