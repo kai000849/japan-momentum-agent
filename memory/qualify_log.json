@@ -40395,19 +40395,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "業績予想修正と株主優待導入の二重材料。継続性は要確認",
+      "comment": "通期業績予想の上方修正＋株主優待導入で好材料重複",
       "whyCategory": "業績修正",
       "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の二重開示",
+      "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合材料",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の二重開示",
+    "surgeReason": "[開示] 通期業績予想修正＋株主優待導入の複合材料",
     "whyCategory": "業績修正",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-23T21:45:28.146788"
+    "qualifiedAt": "2026-11-24T05:39:49.984303"
   },
   {
     "stockCode": "60580",
@@ -40437,7 +40437,7 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "上期経常39%増益・純利益2.6倍と好決算。ただし大幅続落報道も混在",
+      "comment": "上期経常39%増益・純利益2.6倍と好決算で上振れ着地",
       "whyCategory": "決算",
       "entryTiming": "day2_watch",
       "surgeReason": "[決算] 上期経常39%増益・純利益2.6倍で上振れ着地",
@@ -40449,7 +40449,7 @@
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-23T21:45:28.146798"
+    "qualifiedAt": "2026-11-24T05:39:49.984314"
   },
   {
     "stockCode": "64400",
@@ -40479,19 +40479,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "low",
-      "comment": "1-6月期利益急拡大＋自社株買い発表で二重材料。S高実績あり",
-      "whyCategory": "自社株買い・増配",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 1-6月期利益急拡大＋自社株買い発表でS高",
+      "comment": "1〜6月期利益急拡大でS高、収益改善が鮮明",
+      "whyCategory": "決算",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[決算] 1〜6月期利益急拡大・収益改善でS高水準",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1-6月期利益急拡大＋自社株買い発表でS高",
-    "whyCategory": "自社株買い・増配",
-    "entryTiming": "day2_skip",
+    "surgeReason": "[決算] 1〜6月期利益急拡大・収益改善でS高水準",
+    "whyCategory": "決算",
+    "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-23T21:45:28.146799"
+    "qualifiedAt": "2026-11-24T05:39:49.984316"
   },
   {
     "stockCode": "66300",
@@ -40521,7 +40521,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "明確な開示材料なし。株主優待・PER100倍超の注目記事のみ",
+      "comment": "明確な開示材料なし、株主優待情報のみで急騰理由不明",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -40533,7 +40533,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-23T21:45:28.146801"
+    "qualifiedAt": "2026-11-24T05:39:49.984317"
   },
   {
     "stockCode": "67060",
@@ -40563,18 +40563,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "配当修正（無配・未定）の補足開示のみ。ネガティブ材料の可能性",
+      "comment": "中間無配・期末未定の補足開示で需給や失望感に注意",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 中間配当無配・期末配当未定の補足開示",
+      "surgeReason": "[開示] 中間無配・期末配当未定の補足開示、材料弱い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 中間配当無配・期末配当未定の補足開示",
+    "surgeReason": "[開示] 中間無配・期末配当未定の補足開示、材料弱い",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-23T21:45:28.146802"
+    "qualifiedAt": "2026-11-24T05:39:49.984318"
   }
 ]
