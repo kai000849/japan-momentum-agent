@@ -34725,19 +34725,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "high",
-      "comment": "MBOによる株式非公開化発表。TOB価格でキャップされ上値余地限定的",
+      "comment": "MBOによる株式非公開化発表。TOB価格へのサヤ寄せ期待で継続性高い",
       "whyCategory": "資本提携・M&A",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] MBOで株式非公開化発表、TOBプレミアム期待",
+      "entryTiming": "day2_go",
+      "surgeReason": "[ニュース] MBOによる株式非公開化発表、TOBプレミアム期待",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] MBOで株式非公開化発表、TOBプレミアム期待",
+    "surgeReason": "[ニュース] MBOによる株式非公開化発表、TOBプレミアム期待",
     "whyCategory": "資本提携・M&A",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-26T19:21:02.007245"
+    "qualifiedAt": "2026-11-27T03:57:02.467040"
   },
   {
     "stockCode": "36780",
@@ -34767,19 +34767,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "特別配当上方修正はポジティブだが不正アクセス被害の業績影響が不透明",
+      "comment": "特別配当上方修正はポジティブだが、不正アクセスによる業績影響が不透明",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 特別配当上方修正も不正アクセス被害の業績リスク併存",
+      "surgeReason": "[開示] 特別配当修正も不正アクセス業績影響リスクあり",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 特別配当上方修正も不正アクセス被害の業績リスク併存",
+    "surgeReason": "[開示] 特別配当修正も不正アクセス業績影響リスクあり",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-26T19:21:02.007258"
+    "qualifiedAt": "2026-11-27T03:57:02.467052"
   },
   {
     "stockCode": "61670",
@@ -34809,19 +34809,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "決算補足説明資料開示のみで上昇幅・出来高倍率ともに限定的",
+      "comment": "決算補足説明資料の開示のみで上昇幅も小さく材料の継続性は不明",
       "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 2Q決算補足説明資料開示、上昇幅・出来高倍率小さい",
+      "surgeReason": "[決算] 2Q決算補足説明資料開示、材料の強度は限定的",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 2Q決算補足説明資料開示、上昇幅・出来高倍率小さい",
+    "surgeReason": "[決算] 2Q決算補足説明資料開示、材料の強度は限定的",
     "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-26T19:21:02.007259"
+    "qualifiedAt": "2026-11-27T03:57:02.467053"
   },
   {
     "stockCode": "97400",
@@ -34851,19 +34851,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "年間配当21円増額・過去最高売上で業績堅調だが上昇幅は限定的",
+      "comment": "年間配当21円増額修正はポジティブだが勝率12.5%の増配カテゴリで見送り",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 年間配当21円増額・過去最高売上更新を好感",
+      "surgeReason": "[ニュース] 年間配当21円増額修正・1Q経常6%増益着地",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 年間配当21円増額・過去最高売上更新を好感",
+    "surgeReason": "[ニュース] 年間配当21円増額修正・1Q経常6%増益着地",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-26T19:21:02.007260"
+    "qualifiedAt": "2026-11-27T03:57:02.467054"
   },
   {
     "stockCode": "40640",
@@ -34893,19 +34893,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "2期連続増配・配当利回り5.1%と高水準だが上昇幅3%と小さい",
+      "comment": "2期連続増配・配当利回り5%超は魅力だが増配カテゴリ勝率12.5%で見送り",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 2期連続増配・配当利回り5.1%を好感",
+      "surgeReason": "[ニュース] 2期連続増配・配当利回り5.1%・2年で配当2倍",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 2期連続増配・配当利回り5.1%を好感",
+    "surgeReason": "[ニュース] 2期連続増配・配当利回り5.1%・2年で配当2倍",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-26T19:21:02.007261"
+    "qualifiedAt": "2026-11-27T03:57:02.467055"
   },
   {
     "stockCode": "61360",
@@ -34935,18 +34935,18 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "26年11月期業績・配当予想増額を好感。上昇幅3%と小幅",
-      "whyCategory": "業績修正",
+      "comment": "決算情報・割安報道はあるが明確な急騰トリガーの特定が困難",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[決算] 26年11月期業績・配当予想増額発表を好感",
+      "surgeReason": "[決算] 決算情報・割安評価報道、急騰トリガー特定困難",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 26年11月期業績・配当予想増額発表を好感",
-    "whyCategory": "業績修正",
+    "surgeReason": "[決算] 決算情報・割安評価報道、急騰トリガー特定困難",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-26T19:21:02.007261"
+    "qualifiedAt": "2026-11-27T03:57:02.467056"
   }
 ]
