@@ -32667,19 +32667,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "TOPIX新規採用＋新機能開示で需給・事業両面に材料あり",
-      "whyCategory": "ニュース",
+      "comment": "TOPIX新規採用＋AI不動産機能追加で需給・事業両面に材料",
+      "whyCategory": "需給",
       "entryTiming": "day2_watch",
-      "surgeReason": "[ニュース] TOPIX採用＋RENOSY新機能提供開始で需給・事業面好材料",
+      "surgeReason": "[需給] TOPIX新規採用による需給インパクトが主因",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] TOPIX採用＋RENOSY新機能提供開始で需給・事業面好材料",
-    "whyCategory": "ニュース",
+    "surgeReason": "[需給] TOPIX新規採用による需給インパクトが主因",
+    "whyCategory": "需給",
     "entryTiming": "day2_watch",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-27T19:17:02.975068"
+    "qualifiedAt": "2026-11-28T03:41:10.015987"
   },
   {
     "stockCode": "65240",
@@ -32709,19 +32709,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "26年12月期業績上方修正を好感、最高益更新期待",
+      "comment": "26年12月期業績上方修正を好感、決算材料明確",
       "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 26年12月期上方修正発表、業績改善を好感した買い",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 26年12月期上方修正を好感した買い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 26年12月期上方修正発表、業績改善を好感した買い",
+    "surgeReason": "[決算] 26年12月期上方修正を好感した買い",
     "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-27T19:17:02.975080"
+    "qualifiedAt": "2026-11-28T03:41:10.015997"
   },
   {
     "stockCode": "66170",
@@ -32749,21 +32749,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "東電力HDのAIインフラ10兆円投資報道に関連株として反応",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "東電HD10兆円AIインフラ投資報道で関連株として物色",
       "whyCategory": "テーマ相乗り",
-      "entryTiming": "day2_skip",
-      "surgeReason": "[ニュース] 東電力HDのAIインフラ10兆円投資報道への関連株物色",
+      "entryTiming": "day2_watch",
+      "surgeReason": "[ニュース] 東電HDのAIインフラ10兆円投資報道に乗じた関連株買い",
       "stage2Available": true
     },
-    "surgeReason": "[ニュース] 東電力HDのAIインフラ10兆円投資報道への関連株物色",
+    "surgeReason": "[ニュース] 東電HDのAIインフラ10兆円投資報道に乗じた関連株買い",
     "whyCategory": "テーマ相乗り",
-    "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "entryTiming": "day2_watch",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975081"
+    "qualifiedAt": "2026-11-28T03:41:10.015997"
   },
   {
     "stockCode": "67870",
@@ -32793,7 +32793,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "明確な開示材料なし、動意株として取り上げられたのみ",
+      "comment": "明確な材料なし、話題株・動意株として取り上げられのみ",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -32805,7 +32805,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975083"
+    "qualifiedAt": "2026-11-28T03:41:10.015998"
   },
   {
     "stockCode": "58380",
@@ -32835,19 +32835,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "直近ストップ安・急落後のリバウンドとみられるが材料は悪材料",
-      "whyCategory": "需給",
+      "comment": "情報漏えいやカード苦戦報道あり、急騰理由と逆方向の材料",
+      "whyCategory": "不明",
       "entryTiming": "day2_skip",
-      "surgeReason": "[需給] 急落後のリバウンド需給、根本材料は情報漏洩・業績懸念",
+      "surgeReason": "[不明] ネガティブ材料が目立ち急騰理由と乖離・要確認",
       "stage2Available": true
     },
-    "surgeReason": "[需給] 急落後のリバウンド需給、根本材料は情報漏洩・業績懸念",
-    "whyCategory": "需給",
+    "surgeReason": "[不明] ネガティブ材料が目立ち急騰理由と乖離・要確認",
+    "whyCategory": "不明",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975084"
+    "qualifiedAt": "2026-11-28T03:41:10.015999"
   },
   {
     "stockCode": "53840",
@@ -32877,19 +32877,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "シンジケートローン契約締結のみ、業績直結材料としては弱い",
+      "comment": "シンジケートローン契約締結のみで株価急騰の直接材料として弱い",
       "whyCategory": "ニュース",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] シンジケートローン契約締結開示、業績への直接寄与は不明",
+      "surgeReason": "[開示] シンジケートローン契約締結開示、急騰材料としては弱い",
       "stage2Available": true
     },
-    "surgeReason": "[開示] シンジケートローン契約締結開示、業績への直接寄与は不明",
+    "surgeReason": "[開示] シンジケートローン契約締結開示、急騰材料としては弱い",
     "whyCategory": "ニュース",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975085"
+    "qualifiedAt": "2026-11-28T03:41:10.015999"
   },
   {
     "stockCode": "44750",
@@ -32919,19 +32919,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "27年9月期営業益18%増＋VC出資で成長性評価、ストップ高",
+      "comment": "27年9月期営業益18%増見通しでストップ高、業績好感が主因",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 27年9月期営業益18%増予想＋VC出資発表でストップ高",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 27年9月期営業益18%増計画を好感しストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 27年9月期営業益18%増予想＋VC出資発表でストップ高",
+    "surgeReason": "[決算] 27年9月期営業益18%増計画を好感しストップ高",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975086"
+    "qualifiedAt": "2026-11-28T03:41:10.016000"
   },
   {
     "stockCode": "19450",
@@ -32959,21 +32959,21 @@
       "reason": "急騰後データなし（最新日）→ 保留通過"
     },
     "stage2": {
-      "structuralChange": false,
-      "confidence": "low",
-      "comment": "決算情報あるが急騰の明確な材料特定できず",
-      "whyCategory": "不明",
+      "structuralChange": true,
+      "confidence": "medium",
+      "comment": "上期経常77%増益・7-9月期28%増益と好決算が急騰材料",
+      "whyCategory": "決算",
       "entryTiming": "day2_skip",
-      "surgeReason": "[不明] 材料特定不可・要確認",
+      "surgeReason": "[決算] 上期経常77%増益の好決算を好感した買い",
       "stage2Available": true
     },
-    "surgeReason": "[不明] 材料特定不可・要確認",
-    "whyCategory": "不明",
+    "surgeReason": "[決算] 上期経常77%増益の好決算を好感した買い",
+    "whyCategory": "決算",
     "entryTiming": "day2_skip",
-    "qualifyResult": "一時的",
+    "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975090"
+    "qualifiedAt": "2026-11-28T03:41:10.016003"
   },
   {
     "stockCode": "80610",
@@ -33003,19 +33003,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "今期経常5%上方修正・最高益更新・増配11円で業績好感",
-      "whyCategory": "業績修正",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[開示] 今期経常5%上方修正・最高益・増配11円で業績面好材料",
+      "comment": "東京産業への持分法適用会社化決定＋増収増益・増配予想が材料",
+      "whyCategory": "資本提携・M&A",
+      "entryTiming": "day2_go",
+      "surgeReason": "[開示] 東京産業の持分法適用会社化決定と増配予想が好感",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 今期経常5%上方修正・最高益・増配11円で業績面好材料",
-    "whyCategory": "業績修正",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[開示] 東京産業の持分法適用会社化決定と増配予想が好感",
+    "whyCategory": "資本提携・M&A",
+    "entryTiming": "day2_go",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975092"
+    "qualifiedAt": "2026-11-28T03:41:10.016004"
   },
   {
     "stockCode": "67370",
@@ -33045,7 +33045,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "NEUTRAL継続評価のみ、急騰の明確な材料なし",
+      "comment": "明確な急騰材料なし、アナリストNEUTRAL継続で材料弱い",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -33057,7 +33057,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-27T19:17:02.975093"
+    "qualifiedAt": "2026-11-28T03:41:10.016005"
   },
   {
     "stockCode": "59910",
@@ -33087,19 +33087,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "今期営業益29%増計画＋半導体・DC関連拡大でS高",
+      "comment": "今期営業益29%増計画でストップ高、HDD・DC関連拡大が材料",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 今期営業益29%増計画、半導体・データセンター関連拡大期待",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 今期営業益29%増計画・DC関連拡大でストップ高",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 今期営業益29%増計画、半導体・データセンター関連拡大期待",
+    "surgeReason": "[決算] 今期営業益29%増計画・DC関連拡大でストップ高",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "late",
-    "qualifiedAt": "2026-11-27T19:17:02.975094"
+    "qualifiedAt": "2026-11-28T03:41:10.016005"
   },
   {
     "stockCode": "68200",
@@ -33129,7 +33129,7 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "好業績・低PBR・防衛通信向け拡大期待だが明確な開示なし",
+      "comment": "動意株として取り上げられるも明確な急騰材料が確認できない",
       "whyCategory": "不明",
       "entryTiming": "day2_skip",
       "surgeReason": "[不明] 材料特定不可・要確認",
@@ -33141,7 +33141,7 @@
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975106"
+    "qualifiedAt": "2026-11-28T03:41:10.016006"
   },
   {
     "stockCode": "45650",
@@ -33171,19 +33171,19 @@
     "stage2": {
       "structuralChange": true,
       "confidence": "medium",
-      "comment": "1〜9月23億円最終黒字で2年ぶり高値、業績回復を評価",
+      "comment": "1〜9月23億円最終黒字で2年ぶり高値、業績回復が材料",
       "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1〜9月期23億円最終黒字、2年ぶり高値で業績回復評価",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[決算] 1〜9月23億円最終黒字で2年ぶり高値更新",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1〜9月期23億円最終黒字、2年ぶり高値で業績回復評価",
+    "surgeReason": "[決算] 1〜9月23億円最終黒字で2年ぶり高値更新",
     "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975108"
+    "qualifiedAt": "2026-11-28T03:41:10.016006"
   },
   {
     "stockCode": "575A0",
@@ -33213,19 +33213,19 @@
     "stage2": {
       "structuralChange": false,
       "confidence": "low",
-      "comment": "株主優待新設・業績予想開示が材料だが上昇率・材料やや弱い",
+      "comment": "株主優待新設・業績予想開示が材料、継続性は限定的",
       "whyCategory": "自社株買い・増配",
       "entryTiming": "day2_skip",
-      "surgeReason": "[開示] 株主優待新設・業績予想開示が材料、継続性は限定的",
+      "surgeReason": "[開示] 株主優待新設と業績予想開示が材料、継続性低",
       "stage2Available": true
     },
-    "surgeReason": "[開示] 株主優待新設・業績予想開示が材料、継続性は限定的",
+    "surgeReason": "[開示] 株主優待新設と業績予想開示が材料、継続性低",
     "whyCategory": "自社株買い・増配",
     "entryTiming": "day2_skip",
     "qualifyResult": "一時的",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975109"
+    "qualifiedAt": "2026-11-28T03:41:10.016007"
   },
   {
     "stockCode": "63610",
@@ -33254,20 +33254,20 @@
     },
     "stage2": {
       "structuralChange": true,
-      "confidence": "medium",
-      "comment": "1Q過去最高更新＋米系証券目標株価大幅引き上げで強気継続",
-      "whyCategory": "決算",
-      "entryTiming": "day2_watch",
-      "surgeReason": "[決算] 1Q受注・売上・利益が過去最高＋米系証券が目標株価引き上げ",
+      "confidence": "low",
+      "comment": "米系証券が強気継続・目標株価引き上げで上値追い継続",
+      "whyCategory": "ニュース",
+      "entryTiming": "day2_skip",
+      "surgeReason": "[ニュース] 米系証券による強気継続・目標株価引き上げが材料",
       "stage2Available": true
     },
-    "surgeReason": "[決算] 1Q受注・売上・利益が過去最高＋米系証券が目標株価引き上げ",
-    "whyCategory": "決算",
-    "entryTiming": "day2_watch",
+    "surgeReason": "[ニュース] 米系証券による強気継続・目標株価引き上げが材料",
+    "whyCategory": "ニュース",
+    "entryTiming": "day2_skip",
     "qualifyResult": "継続",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975110"
+    "qualifiedAt": "2026-11-28T03:41:10.016007"
   },
   {
     "stockCode": "256A0",
@@ -33309,7 +33309,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975111"
+    "qualifiedAt": "2026-11-28T03:41:10.016008"
   },
   {
     "stockCode": "95020",
@@ -33351,7 +33351,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975112"
+    "qualifiedAt": "2026-11-28T03:41:10.016008"
   },
   {
     "stockCode": "71020",
@@ -33393,7 +33393,7 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975113"
+    "qualifiedAt": "2026-11-28T03:41:10.016009"
   },
   {
     "stockCode": "41160",
@@ -33435,6 +33435,6 @@
     "qualifyResult": "様子見",
     "outcome": null,
     "volume_pattern": "early",
-    "qualifiedAt": "2026-11-27T19:17:02.975114"
+    "qualifiedAt": "2026-11-28T03:41:10.016010"
   }
 ]
